@@ -34,125 +34,119 @@ function Signin() {
   };
 
   return (
-    <Grid
-      display="flex"
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
-      gap={5}
-    >
-      <Grid sx={{ marginLeft: 15 }}>
+    <Grid display="flex" flexDirection="column">
+      <Box position="relative" height="50vh">
+        <img
+          src={BackgroundPhoto}
+          alt="photo"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+        {/* the filter of imge */}
+        <Box
+          position="absolute"
+          left={0}
+          top={0}
+          width="100%"
+          height="100%"
+          bgcolor="filter.main"
+          sx={{ opacity: 0.25 }}
+        ></Box>
         <Box
           display="flex"
-          flexDirection="column"
-          alignItems="center"
           justifyContent="center"
-          sx={{
-            height: "730px",
-            width: "630px",
-            borderRadius: "35px",
-            background: "#D9D9D9",
-          }}
-          gap={7}
+          alignItems="center"
+          position="absolute"
+          borderRadius="50%"
+          backgroundColor="white"
+          overflow="hidden"
+          bottom={0}
+          left="50%"
+          width={160}
+          height={160}
+          padding={2}
+          sx={{ transform: "translate(-50%,50%)" }}
         >
-          <Grid>
-            <img className="logo" src={logo} alt="log" />
-          </Grid>
+          <img
+            src={logo}
+            alt="logos"
+            style={{ width: "100%", height: "100%" }}
+          />
+        </Box>
+        <Grid
+          flexGrow={1}
+          paddingX={4}
+          paddingY={2}
+          display="flex"
+          flexDirection="column"
+          gap={2}
+        >
+          <Box height={40}></Box>
+          <TextField
+            name="email"
+            placeholder="Correo electronico"
+            required
+            fullWidth
+            style={{
+              borderRadius: "10px",
+            }}
+            InputProps={{
+              style: {
+                color: "black",
+                fontSize: "25px",
+                fontWeight: 500,
+                borderRadius: "15px",
+                borderColor: "primary.main",
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlineIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
 
-          <Grid
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            gap={2}
-            borderRadius="28px"
-          >
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              borderRadius="28px"
-            >
-              <Grid display="flex" flexDirection="column" gap={2}>
-                <TextField
-                  name="email"
-                  placeholder="Correo electronico"
-                  required
-                  style={{
-                    width: "500px",
-                    borderColor: "white",
-                    borderRadius: "10px",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: "#FFFF",
-                      height: "88px",
-                      fontSize: "25px",
-                      fontWeight: 500,
-                      borderRadius: "15px",
-                      borderColor: "white",
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <MailOutlineIcon
-                          style={{ color: "rgba(255, 255, 255, 0.9)" }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+          <TextField
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            required
+            fullWidth
+            style={{
+              borderRadius: "10px",
+            }}
+            InputProps={{
+              style: {
+                color: "black",
+                fontSize: "25px",
+                fontWeight: 500,
+                borderRadius: "15px",
+                borderColor: "primary.main",
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
 
-                <TextField
-                  name="password"
-                  type="password"
-                  placeholder="Contraseña"
-                  required
-                  fullWidth
-                  style={{
-                    width: "500px",
-                    color: "#FFFF",
-                    borderColor: "white",
-                    borderRadius: "10px",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: "#FFFF",
-
-                      fontWeight: 500,
-                      fontSize: "25px",
-
-                      height: "88px",
-                      borderRadius: "15px",
-                      borderColor: "white",
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOutlinedIcon
-                          style={{ color: "rgba(255, 255, 255, 0.9)" }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-            </Box>
-          </Grid>
           <Grid display="flex" flexDirection="column" alignItems="center">
             <Button
               color="secondary"
+              fullWidth
               sx={{
-                width: "472.01px",
-                height: "57.63px",
-                backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
+                backgroundImage: "linear-gradient(to top, #7DCF43, #60A033)",
                 fontSize: "25px",
-                textTransform: "none", // Convierte el texto en minúsculas
+                textTransform: "none", 
                 "&:hover": {
                   backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
                 },
               }}
-              fullWidth
               onClick={() => route("/home")}
             >
               Iniciar sesión
@@ -172,11 +166,11 @@ function Signin() {
               sx={{
                 cursor: "pointer",
                 color: isClicked ? "#FFFF" : "#67AA36",
-                fontSize: "25px",
+                fontSize: "23px",
                 transition: "color 0.2s ease-in-out",
                 textDecoration: "none",
                 "&:hover": {
-                  color: "#FFFF", // Cambia el color al puntero estar encima del enlace
+                  color: "#FFFF", 
                 },
               }}
             >
@@ -189,30 +183,19 @@ function Signin() {
               sx={{
                 cursor: "pointer",
                 color: isClicked ? "#FFFF" : "#67AA36",
-                fontSize: "25px",
+                fontSize: "23px",
                 transition: "color 0.2s ease-in-out",
                 textDecoration: "none",
                 "&:hover": {
-                  color: "#FFFF", // Cambia el color al puntero estar encima del enlace
+                  color: "#FFFF", 
                 },
               }}
             >
               ¿Has olvidado tu contraseña?
             </Link>
-           
           </Grid>
-        </Box>
-      </Grid>
-      <Grid>
-        <img
-          src={BackgroundPhoto}
-          style={{
-            position: "relative",
-            backgroundColor: "rgba(96, 160, 51, 0.9)", // Utiliza un color verde con opacidad
-          }}
-          alt="photo"
-        />
-      </Grid>
+        </Grid>
+      </Box>
     </Grid>
   );
 }

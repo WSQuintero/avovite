@@ -36,185 +36,185 @@ function Signup() {
   };
 
   return (
-    <Grid
-      display="flex"
-      color={theme.palette.primary.main}
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
-      gap={5}
-    >
-      <Grid sx={{ marginLeft: 15 }}>
+    <Grid display="flex" flexDirection="column">
+      <Box position="relative" height="50vh">
+        <img
+          src={BackgroundPhoto}
+          alt="photo"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+        {/* the filter of image */}
+        <Box
+          position="absolute"
+          left={0}
+          top={0}
+          width="100%"
+          height="100%"
+          bgcolor="filter.main"
+          sx={{ opacity: 0.25 }}
+        ></Box>
         <Box
           display="flex"
-          flexDirection="column"
-          alignItems="center"
           justifyContent="center"
+          alignItems="center"
+          position="absolute"
+          borderRadius="50%"
+          backgroundColor="white"
+          overflow="hidden"
+          bottom={0}
+          left="50%"
+          width={160}
+          height={160}
+          padding={2}
           sx={{
-            height: "730px",
-            width: "630px",
-            borderRadius: "35px",
-            background: "#D9D9D9",
+            transform: "translate(-50%,50%)",
           }}
-          gap={4}
         >
-          <Grid>
-            <img className="logo" src={logo} alt="log" />
-          </Grid>
+          <img
+            src={logo}
+            alt="logos"
+            style={{ width: "100%", height: "100%" }}
+          />
+        </Box>
+        <Grid
+          flexGrow={1}
+          paddingX={4}
+          paddingY={2}
+          display="flex"
+          flexDirection="column"
+          
+          gap={1}
+        >
+          <Box height={40}></Box>
 
-          <Grid
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            gap={2}
-            borderRadius="28px"
-          >
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              borderRadius="28px"
-            >
-              <Grid display="flex" flexDirection="column" gap={1}>
-                <TextField
-                  name="email"
-                  placeholder="Correo electronico"
-                  required
-                  style={{
-                    width: "500px",
-                    borderColor: "white",
-                    borderRadius: "10px",
+          <TextField
+            name="email"
+            placeholder="Nombre de usuario"
+            required
+            style={{
+              borderRadius: "10px",
+              backgroundColor: "rgba(192,192,192,0.4 )",
+              border: "none",
+            }}
+            InputProps={{
+              style: {
+                color: "black",
+                height: "40px",
+                fontSize: "20px",
+                fontWeight: 500,
+                borderRadius: "10px",
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Person sx={{ color: theme.palette.primary.main }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            name="email"
+            placeholder="Correo electronico"
+            required
+            fullWidth
+            style={{
+              borderRadius: "10px",
+              backgroundColor: "rgba(192,192,192,0.4 )",
+              border: "none",
+            }}
+            InputProps={{
+              style: {
+                color: "black",
+                height: "40px",
+                fontSize: "20px",
+                fontWeight: 500,
+                borderRadius: "10px",
+                border: "none",
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlineIcon sx={{ color: "primary.main" }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            required
+            fullWidth
+            style={{
+              borderRadius: "10px",
+              backgroundColor: "rgba(192,192,192,0.4 )",
+              border: "none",
+            }}
+            InputProps={{
+              style: {
+                color: "black",
+                height: "40px",
+                fontSize: "20px",
+                fontWeight: 500,
+                borderRadius: "10px",
+                border: "none",
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlinedIcon sx={{ color: "primary.main" }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                value="allowExtraEmails"
+                color="primary"
+                
+                sx={{
+                  "& .MuiSvgIcon-root": {
+                    borderRadius: 20,
+                  },
+                }}
+              />
+            }
+            label={
+              <>
+                <Typography
+                  variant="body1"
+                  component="span"
+                  
+                  sx={{
+                    fontSize: "17px",
+                    color: "primary.main",
+                    
                   }}
-                  InputProps={{
-                    style: {
-                      color: "#FFFF",
-                      height: "88px",
-                      fontSize: "25px",
-                      fontWeight: 500,
-                      borderRadius: "15px",
-                      borderColor: "white",
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Person style={{ color: "rgba(255, 255, 255, 0.9)" }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  name="email"
-                  placeholder="Correo electronico"
-                  required
-                  style={{
-                    width: "500px",
-                    borderColor: "white",
-                    borderRadius: "10px",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: "#FFFF",
-                      height: "88px",
-                      fontSize: "25px",
-                      fontWeight: 500,
-                      borderRadius: "15px",
-                      borderColor: "white",
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <MailOutlineIcon
-                          style={{ color: "rgba(255, 255, 255, 0.9)" }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                >
+                  Acepto los términos y condiciones
+                </Typography>
+              </>
+            }
+          />
 
-                <TextField
-                  name="password"
-                  type="password"
-                  placeholder="Contraseña"
-                  required
-                  fullWidth
-                  style={{
-                    width: "500px",
-                    color: "#FFFF",
-                    borderColor: "white",
-                    borderRadius: "10px",
-                  }}
-                  InputProps={{
-                    style: {
-                      color: "#FFFF",
-
-                      fontWeight: 500,
-                      fontSize: "25px",
-
-                      height: "88px",
-                      borderRadius: "15px",
-                      borderColor: "white",
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOutlinedIcon
-                          style={{ color: "rgba(255, 255, 255, 0.9)" }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <FormControlLabel
-                  sx={{ gap: 1 }}
-                  control={
-                    <Checkbox
-                      value="allowExtraEmails"
-                      color="primary"
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          borderRadius: 20,
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <>
-                      <Typography
-                        variant="body1"
-                        component="span"
-                        sx={{
-                          fontSize: "23px",
-                          color: "primary",
-                        }}
-                      >
-                        He leído y Acepto los términos y condiciones
-                      </Typography>
-                    </>
-                  }
-                />
-              </Grid>
-            </Box>
-          </Grid>
-          <Grid display="flex" flexDirection="column" alignItems="center">
-            <Button
-              color="secondary"
-              sx={{
-                width: "472.01px",
-                height: "57.63px",
+          <Button
+            color="secondary"
+            fullWidth
+            sx={{
+              backgroundImage: "linear-gradient(to top, #7DCF43, #60A033)",
+              fontSize: "25px",
+              textTransform: "none",
+              "&:hover": {
                 backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
-                fontSize: "25px",
-                textTransform: "none", 
-                "&:hover": {
-                  backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
-                },
-              }}
-              fullWidth
-              onClick={() => route("/home")}
-            >
-              Inscribirse
-            </Button>
-          </Grid>
+              },
+            }}
+            onClick={() => route("/home")}
+          >
+            Iniciar sesión
+          </Button>
           <Grid
             display="flex"
             flexDirection="column"
@@ -222,53 +222,27 @@ function Signup() {
             justifyContent="center"
             gap={1}
           >
-            <Link
-              component={RouterLink}
-              to="/signin"
-              onClick={() => setIsClicked(!isClicked)}
-              sx={{
-                cursor: "pointer",
-                color: isClicked ? "#FFFF" : "#67AA36",
-                fontSize: "25px",
-                transition: "color 0.2s ease-in-out",
-                textDecoration: "none",
-                "&:hover": {
-                  color: "#FFFF", // Cambia el color al puntero estar encima del enlace
-                },
-              }}
-            >
-              ¿Ya tienes una cuenta?
-            </Link>
+          
             <Link
               component={RouterLink}
               to="/signup"
-              onClick={() => setPasswordClic(!PasswordClic)}
+              onClick={() => setIsClicked(true)}
               sx={{
                 cursor: "pointer",
-                color: PasswordClic ? "#FFFF" : "#67AA36",
-                fontSize: "25px",
+                color: isClicked ? "#FFFF" : "#67AA36",
+                fontSize: "17px",
                 transition: "color 0.2s ease-in-out",
                 textDecoration: "none",
                 "&:hover": {
-                  color: "#FFFF", // Cambia el color al puntero estar encima del enlace
+                  color: "#FFFF",
                 },
               }}
             >
-              No tengo cuenta registrame
+              ¿Has olvidado tu contraseña?
             </Link>
-          </Grid>
-        </Box>
-      </Grid>
-      <Grid>
-        <img
-          src={BackgroundPhoto}
-          style={{
-            position: "relative",
-            backgroundColor: "rgba(96, 160, 51, 0.9)", // Utiliza un color verde con opacidad
-          }}
-          alt="photo"
-        />
-      </Grid>
+            </Grid>
+        </Grid>
+      </Box>
     </Grid>
   );
 }

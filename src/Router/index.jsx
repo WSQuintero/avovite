@@ -1,14 +1,14 @@
 import { useRoutes } from "react-router-dom";
 import Signup from "../Pages/Signup";
 import Signin from "../Pages/Signin";
-import Welcome from "../Pages/Welcome";
+import Home from "../Pages/Home";
 
 
 function Router() {
   return useRoutes([
     {
       path: "/",
-      element: <Welcome />,
+      element: <Home />,
     },
     {
       path:"/signin",

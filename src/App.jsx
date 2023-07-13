@@ -11,7 +11,12 @@ const theme = createTheme({
       main: "#67AA36",
     },
     secondary: {
-      main: "#FDFDFD",
+      main: "#D9D9D9",
+      body: "#FFFFFF",
+
+    },
+    filter:{
+      main: '#5D9B31'
     },
     text: {
       primary: "#FFFFFF",
@@ -38,6 +43,9 @@ const theme = createTheme({
       fontSize: 32,
     },
   },
+  shape:{
+    borderRadius: 10
+  },
   components: {
     MuiPaper: {
       defaultProps: {
@@ -47,9 +55,18 @@ const theme = createTheme({
       },
     },
     MuiButton: {
+       styleOverrides:{
+        outlined:{
+          borderWidth:2,
+          "&:hover":{
+            borderWidth:2
+          }
+        },
+       },
       defaultProps: {
-        style: {
-          borderRadius: 12,
+        sx: {
+          paddingX: 2.5,
+          paddingY: 1.5,
         },
       },
     },
