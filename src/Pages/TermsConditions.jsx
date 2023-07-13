@@ -23,8 +23,9 @@ import {
 
 import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
 import logo from "../assets/img/logo.svg";
-import menuSidebar from "../assets/img/header menu copy.svg";
+
 import { useTheme } from "@emotion/react";
+import Header from "../Components/Header/Header";
 
 function TermsConditions() {
   const theme = useTheme();
@@ -59,31 +60,9 @@ function TermsConditions() {
   return (
     <Grid display="flex" flexDirection="column">
       <Box position='relative' height="10vh" display="flex" flexDirection="column">
-        <Box
-          left={0}
-          top={0}
-          width="100%"
-          height={40}
-          bgcolor="#214820"
-          display="flex"
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Button
-            sx={{
-              marginLeft: 1,
-              color: "secondary.body",
-              textTransform: "none",
-            }}
-            startIcon={
-              <img src={menuSidebar} width={20} height={20} alt="menuSidebar" />
-            }
-          />
-          <Typography>Avovite App</Typography>
 
-          <Button endIcon={<MoreVertIcon style={{ color: "white" }} />} />
-        </Box>
+        <Header/>
+
         <Box width="100%" height={40} bgcolor="#67AA36">
           <Button
             sx={{
@@ -101,7 +80,7 @@ function TermsConditions() {
 
         {/* the filter of image */}
 
-        <Grid paddingX={4} paddingY={2} display="flex" flexDirection="column">
+        <Grid paddingX={5} paddingY={2} display="flex" flexDirection="column">
           <Box>
             <Grid
               display="flex"
@@ -109,14 +88,14 @@ function TermsConditions() {
               justifyContent="center"
              
             >
-              <Typography color="primary.main" textAlign="center">
+              <Typography color="primary.main" textAlign="center" sx={{fontSize:'25px', fontWeight:600}}>
                 Términos y Condiciones
               </Typography>
               <Typography
                 color="black"
-                textAlign="center"
                 ref={typographyRef}
-                
+                textAlign='justify'
+                lineHeight={2}
                 style={{
                   maxHeight: "500px", // Ajusta la altura máxima deseada
                   overflowY: "scroll",
