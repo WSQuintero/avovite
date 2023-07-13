@@ -17,6 +17,7 @@ import {
   LockOutlined as LockOutlinedIcon,
   MailOutline as MailOutlineIcon,
   Person,
+  KeyboardBackspace as KeyboardBackspaceIcon,
 } from "@mui/icons-material";
 
 import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
@@ -48,6 +49,28 @@ function Signup() {
             objectPosition: "center",
           }}
         />
+        <Box
+          position="absolute"
+          left={0}
+          top={0}
+          width="100%"
+          height={40}
+          bgcolor="#214820"
+        >
+          <Button
+            sx={{
+              marginLeft: 1,
+              color: "secondary.body",
+              textTransform: "none",
+            }}
+            startIcon={
+              <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
+            }
+          >
+            Registro
+          </Button>
+        </Box>
+
         {/* the filter of image */}
         <Box
           position="absolute"
@@ -87,10 +110,9 @@ function Signup() {
           paddingY={2}
           display="flex"
           flexDirection="column"
-          
           gap={1}
         >
-          <Box height={40}></Box>
+          <Box height={60}></Box>
 
           <TextField
             name="email"
@@ -174,7 +196,6 @@ function Signup() {
               <Checkbox
                 value="allowExtraEmails"
                 color="primary"
-                
                 sx={{
                   "& .MuiSvgIcon-root": {
                     borderRadius: 20,
@@ -184,18 +205,23 @@ function Signup() {
             }
             label={
               <>
-                <Typography
-                  variant="body1"
-                  component="span"
-                  
+                <Link
+                  component={RouterLink}
+                  to="/termsandConditions"
+                  onClick={() => setPasswordClic(!PasswordClic)}
                   sx={{
-                    fontSize: "17px",
-                    color: "primary.main",
-                    
+                    cursor: "pointer",
+                    color: PasswordClic ? "secondary.main" : "#67AA36",
+                    fontSize: "18px",
+                    transition: "color 0.2s ease-in-out",
+                    textDecoration: "none",
+                    "&:hover": {
+                      color: "secondary.main", // Cambia el color al puntero estar encima del enlace
+                    },
                   }}
                 >
                   Acepto los términos y condiciones
-                </Typography>
+                </Link>
               </>
             }
           />
@@ -222,7 +248,6 @@ function Signup() {
             justifyContent="center"
             gap={1}
           >
-          
             <Link
               component={RouterLink}
               to="/signup"
@@ -240,7 +265,7 @@ function Signup() {
             >
               ¿Has olvidado tu contraseña?
             </Link>
-            </Grid>
+          </Grid>
         </Grid>
       </Box>
     </Grid>
