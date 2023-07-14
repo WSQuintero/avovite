@@ -15,44 +15,13 @@ export const useFinalContext = ()=>{
 
 // Proveedor del contexto
  const FinalContextProvider = ({ children }) => {
-  const projects = [
-    { id: 1, name: "Project 1", status: "completed" },
-    { id: 2, name: "Project 2", status: "in-progress" },
-    { id: 3, name: "Project 3", status: "medium" },
-  ];
-
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [importSelect, setImportSelect]= useState(null)
-  const [Flow, setFlow]=useState(null)
-  const [searchBarView, setSearchBarView]= useState(null)
-  const [HeaderWithouLogin, setHeaderWithoutLogin]=useState(null)
-  const [shareModal, setModalShare] = useState(false);
-  const [modalNewMember, setModalNewMember] = useState(false);
-  const [modalMember, setModalMember] = useState(false);
+const [modalCheck, setModalCheck]=useState(null)
 
 
   return (
     <FinalContext.Provider value={{ 
-      setModalMember,
-      modalMember,
-      setModalNewMember,
-      modalNewMember,
-      projects, 
-      selectedProjectId, 
-      setSelectedProjectId, 
-      importedFolderCards,
-      importSelect,
-      setImportSelect,
-      Flow,
-      setFlow,
-      searchBarView,
-      setSearchBarView,
-      projectsVarios,
-      HeaderWithouLogin,
-      setHeaderWithoutLogin,
-      shareModal,
-      setModalShare
-      
+      modalCheck,
+      setModalCheck
       }}>
       {children}
     </FinalContext.Provider>

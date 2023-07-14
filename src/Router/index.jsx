@@ -4,6 +4,8 @@ import Signin from "../Pages/Signin";
 import Home from "../Pages/Home";
 import TermsConditions from "../Pages/TermsConditions";
 import FormInscription from "../Pages/FormInscription";
+import Profile from "../Pages/Profile";
+import Menu from "../Pages/Menu";
 
 
 function Router() {
@@ -28,6 +30,14 @@ function Router() {
     {
       path: '/inscription',
       element:<FormInscription/>
+    },
+    {
+      path:'/menu',
+      element:<Menu/>
+    },
+    {
+      path:'/profile',
+      element:<Profile/>
     }
     
   ]);

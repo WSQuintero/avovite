@@ -39,7 +39,7 @@ const theme = createTheme({
   typography: {
     fontFamily: "'Poppins', sans-serif",
     h2: {
-      fontWeight: 600,
+      fontWeight: 400,
       fontSize: 32,
     },
   },

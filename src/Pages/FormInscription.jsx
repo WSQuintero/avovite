@@ -24,20 +24,27 @@ import {
 import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
 import logo from "../assets/img/logo.svg";
 
+
+
 import { useTheme } from "@emotion/react";
 import Header from "../Components/Header/Header";
-
+import { useFinalContext } from "../Context/FinalContext";
+import ModalCheckout from "../Components/Modals/ModalCheckout";
 function FormInscription() {
   const theme = useTheme();
-
-  const [isClicked, setIsClicked] = useState(false);
-  const [PasswordClic, setPasswordClic] = useState(false);
-
+  const {
+    modalCheck,
+    setModalCheck
+  } = useFinalContext();
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log(data);
   };
+
+  const handleModalCheck=()=>{
+    setModalCheck(true);
+  }
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -280,13 +287,20 @@ function FormInscription() {
         </Grid>
 
           <Grid paddingX={4} display="flex" gap={2}>
-            <Button variant="contained" fullWidth sx={{ color: "white" }}>
+            <Button variant="contained" onClick={handleModalCheck} fullWidth sx={{ color: "white" }}>
               Inscripción
             </Button>
             
           </Grid>
         </Grid>
       </Box>
+      {
+        modalCheck && (
+          <Grid>
+            <ModalCheckout onCloseModal={()=>setModalCheck(false)}/>
+          </Grid>
+        )
+      }
     </Grid>
   );
 }
