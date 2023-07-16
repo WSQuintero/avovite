@@ -22,6 +22,7 @@ const theme = createTheme({
       primary: "#FFFFFF",
       secondary: "#5D9B31",
       disabled: "#C0C0C0",
+      cards:"#757575"
     },
     background: {
       paper: "#E8E8E8",
@@ -53,6 +54,13 @@ const theme = createTheme({
           bgcolor: "#F5F7F9",
         },
       },
+    },
+    MuiCard:{
+      defaultProps:{
+        sx:{
+          bgcolor:"#FFFFFF"
+        }
+      }
     },
     MuiButton: {
        styleOverrides:{

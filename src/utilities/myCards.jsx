@@ -1,169 +1,202 @@
-export const Cards = [
-  { 
+export const vites = [
+  {
     id: 1,
-    title: 'Onboarding Flow',
-    text: 'Curabitur morbi molestie pellentesque nisi ac. Nunc in quam pellentesque nisi rhoncus.',
-    date: "Edited 2 Days Ago",
-    state: "Fully Approved!",
-    pages:"14 Pages",
+    numeral: "N-327-647",
+    estado: "óptimo",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "01-06-2023",
+    dateAlistamiento: "15-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
     id: 2,
-    title: 'Settings Flow',
-    text: 'Curabitur morbi molestie pellentesque nisi ac. Nunc in quam pellentesque nisi rhoncus.',
-    date: "Edited 2 Days Ago",
-    state: "Pending Approval",
-    pages:"14 Pages",
+    numeral: "N-327-648",
+    estado: "crecimiento",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "02-06-2023",
+    dateAlistamiento: "16-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
     id: 3,
-    title: 'Sign-up Flow',
-    text: 'Curabitur morbi molestie pellentesque nisi ac. Nunc in quam pellentesque nisi rhoncus.',
-    date: "Edited 2 Days Ago",
-    state: "Fully Approved!",
-    pages:"14 Pages",
+    numeral: "N-327-649",
+    estado: "maduro",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "03-06-2023",
+    dateAlistamiento: "17-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
     id: 4,
-    title: 'Log-in Flow',
-    text: 'Curabitur morbi molestie pellentesque nisi ac. Nunc in quam pellentesque nisi rhoncus.',
-    date: "Edited 2 Days Ago",
-    state: "Work In Progress",
-    pages:"14 Pages",
-  },
- 
-]
-
-export const importedFolderCards = [
-  {
-    id:1,
-    title: 'Sign-up Main'
+    numeral: "N-327-650",
+    estado: "plantación",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "04-06-2023",
+    dateAlistamiento: "18-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id:2,
-    title: 'Sign-up Confirm...'
+    id: 5,
+    numeral: "N-327-651",
+    estado: "óptimo",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "05-06-2023",
+    dateAlistamiento: "19-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id:3,
-    title: 'Sign-up Third'
-  },
-
-]
-
-export const members =[
-  {
-    image:'../../assets/img/alex',
-    name: 'Alex Legend',
-    email: 'omar@villa.com',
+    id: 6,
+    numeral: "N-327-652",
+    estado: "crecimiento",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "06-06-2023",
+    dateAlistamiento: "20-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    image:'../../assets/img/alex',
-    name: 'Alex Legend',
-    email: 'omar@villa.com',
+    id: 7,
+    numeral: "N-327-653",
+    estado: "maduro",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "07-06-2023",
+    dateAlistamiento: "21-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    image:'../../assets/img/alex',
-    name: 'Alex Legend',
-    email: 'omar@villa.com',
-  },
-]
-
-export const projectsVarios = [
-  { id: 1, name: "Project 1", status: "completed" },
-    { id: 2, name: "Project 2", status: "in-progress" },
-    { id: 3, name: "Project 3", status: "medium" },
-    { id: 4, name: "Project 1", status: "completed" },
-    { id: 5, name: "Project 2", status: "in-progress" },
-    { id: 6, name: "Project 3", status: "medium" },
- 
-]
-
-export const notifications = [
-  {
-    id: 1,
-     name:'Brad Pitt',
-     date: 'June 24, 2023',
-     text: 'Morbi viverra massa pellentesque elit habitasse est feugiat. Commodo sem sed amet egestas mauris sed viverra id. Suscipit consequat lobortis in commodo arcu.'
+    id: 8,
+    numeral: "N-327-654",
+    estado: "plantación",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "08-06-2023",
+    dateAlistamiento: "22-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id: 2,
-     name:'Leonardo DiCaprio',
-     date: 'June 24, 2023',
-     text: 'Morbi viverra massa pellentesque elit habitasse est feugiat. Commodo sem sed amet egestas mauris sed viverra id. Suscipit consequat lobortis in commodo arcu.'
+    id: 9,
+    numeral: "N-327-655",
+    estado: "óptimo",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "09-06-2023",
+    dateAlistamiento: "23-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id: 3,
-     name:'Alfred Genzin',
-     date: 'June 24, 2023',
-     text: 'Morbi viverra massa pellentesque elit habitasse est feugiat. Commodo sem sed amet egestas mauris sed viverra id. Suscipit consequat lobortis in commodo arcu.'
-  },
- 
-]
-
-export const accordionData = [
-  {
-    id:1,
-    title: "Neutral States",
-    description: "Main Designs that include Data and Components",
-    cards: [
-      {
-        title: "Sign-up",
-      },
-      {
-        title: "Confirmation",
-      },
-    ],
+    id: 10,
+    numeral: "N-327-656",
+    estado: "crecimiento",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "10-06-2023",
+    dateAlistamiento: "24-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id:2,
-    title: "Success States",
-    description: "Pages that confirm that the action is approved",
-    cards: [
-      {
-        title: "Sign-up",
-      },
-      {
-        title: "Confirmation",
-      },
-    ],
+    id: 11,
+    numeral: "N-327-657",
+    estado: "maduro",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "11-06-2023",
+    dateAlistamiento: "25-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id:3,
-    title: "Blank States",
-    description: "Main Designs without the Live Data",
-    cards: [
-      {
-        title: "Sign-up",
-      },
-      {
-        title: "Confirmation",
-      },
-    ],
+    id: 12,
+    numeral: "N-327-658",
+    estado: "plantación",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "12-06-2023",
+    dateAlistamiento: "26-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id:4,
-    title: "Error States",
-    description: "Pages that confirm that the action is NOT approved",
-    cards: [
-      {
-        title: "Sign-up",
-      },
-      {
-        title: "Confirmation",
-      },
-    ],
+    id: 13,
+    numeral: "N-327-659",
+    estado: "óptimo",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "13-06-2023",
+    dateAlistamiento: "27-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
   {
-    id:5,
-    title: "Loading States",
-    description: "Loading Screens that show up while the rest is charging",
-    cards: [
-      {
-        title: "Sign-up",
-      },
-      {
-        title: "Confirmation",
-      },
-    ],
+    id: 14,
+    numeral: "N-327-660",
+    estado: "crecimiento",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "14-06-2023",
+    dateAlistamiento: "28-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
+  },
+  {
+    id: 15,
+    numeral: "N-327-661",
+    estado: "maduro",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "15-06-2023",
+    dateAlistamiento: "29-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
+  },
+  {
+    id: 16,
+    numeral: "N-327-662",
+    estado: "plantación",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "16-06-2023",
+    dateAlistamiento: "30-06-2023",
+    statusAlistamiento: "Vite en alistamiento",
+  },
+  {
+    id: 17,
+    numeral: "N-327-663",
+    estado: "óptimo",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "17-06-2023",
+    dateAlistamiento: "01-07-2023",
+    statusAlistamiento: "Vite en alistamiento",
+  },
+  {
+    id: 18,
+    numeral: "N-327-664",
+    estado: "crecimiento",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "18-06-2023",
+    dateAlistamiento: "02-07-2023",
+    statusAlistamiento: "Vite en alistamiento",
+  },
+  {
+    id: 19,
+    numeral: "N-327-665",
+    estado: "maduro",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "19-06-2023",
+    dateAlistamiento: "03-07-2023",
+    statusAlistamiento: "Vite en alistamiento",
+  },
+  {
+    id: 20,
+    numeral: "N-327-666",
+    estado: "plantación",
+    download: "Descarga el certificado de propiedad",
+    lote: "Sembrado en el lote N. 45-C",
+    siembra: "20-06-2023",
+    dateAlistamiento: "04-07-2023",
+    statusAlistamiento: "Vite en alistamiento",
   },
 ];

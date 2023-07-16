@@ -122,6 +122,7 @@ function Menu() {
               style={{ width: "80%", height: "80%" }}
             />
             <Button
+              onClick={()=>route('/editPerfil')}
               sx={{
                 bottom: 20,
                 textTransform: "none",
@@ -143,6 +144,7 @@ function Menu() {
           <Button
             variant="contained"
             fullWidth
+            onClick={()=>route('/vites')}
             sx={{
               color: "white",
               justifyContent: "flex-start",

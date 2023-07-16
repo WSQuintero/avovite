@@ -6,6 +6,10 @@ import TermsConditions from "../Pages/TermsConditions";
 import FormInscription from "../Pages/FormInscription";
 import Profile from "../Pages/Profile";
 import Menu from "../Pages/Menu";
+import EditProfile from "../Pages/EditProfile";
+import Vites from "../Pages/Vites";
+import Informaicion from "../Pages/Informaicion";
+import DatePlantation from "../Pages/DatePlantation";
 
 
 function Router() {
@@ -38,6 +42,22 @@ function Router() {
     {
       path:'/profile',
       element:<Profile/>
+    },
+    {
+      path:'/editPerfil',
+      element:<EditProfile/>
+    },
+    {
+      path:'/vites',
+      element:<Vites/>
+    },
+    {
+      path:'/informacion',
+      element: <Informaicion/>
+    },
+    {
+      path:'informacion/vite/:id',
+      element: <DatePlantation/>
     }
     
   ]);

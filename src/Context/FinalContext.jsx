@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
-import { importedFolderCards } from "../utilities/myCards";
-import { projectsVarios } from "../utilities/myCards";
+import { vites } from "../utilities/myCards";
+
 // Creación del contexto
 export const FinalContext = createContext();
 
@@ -15,13 +15,17 @@ export const useFinalContext = ()=>{
 
 // Proveedor del contexto
  const FinalContextProvider = ({ children }) => {
-const [modalCheck, setModalCheck]=useState(null)
+const [modalCheck, setModalCheck]=useState(null);
+const [datePlantationId, setDatePlantationId]= useState(null)
 
 
   return (
     <FinalContext.Provider value={{ 
       modalCheck,
-      setModalCheck
+      setModalCheck,
+      vites,
+      datePlantationId, 
+      setDatePlantationId,
       }}>
       {children}
     </FinalContext.Provider>
