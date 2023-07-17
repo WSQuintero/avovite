@@ -252,3 +252,26 @@ export const certifcates= [
   },
 
 ]
+
+export const bancos = [
+  {
+    id:0,
+    banco:'Bancolombia',
+  },
+  {
+    id:1,
+    banco:'Davivienda',
+  },
+  {
+    id:2,
+    banco:'BBVA',
+  },
+  {
+    id:3,
+    banco:'Bancamia',
+  },
+  {
+    id:4,
+    banco:'Bancolombia',
+  },
+]

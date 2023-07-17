@@ -17,8 +17,8 @@ export const useFinalContext = ()=>{
  const FinalContextProvider = ({ children }) => {
 const [modalCheck, setModalCheck]=useState(null);
 const [datePlantationId, setDatePlantationId]= useState(null)
-
-
+const [formBanck, setformBanck]=useState(null)
+const [DetailTransaction, setDetailTransaction]=useState(null)
   return (
     <FinalContext.Provider value={{ 
       modalCheck,
@@ -26,6 +26,10 @@ const [datePlantationId, setDatePlantationId]= useState(null)
       vites,
       datePlantationId, 
       setDatePlantationId,
+      formBanck, 
+      setformBanck,
+      DetailTransaction,
+      setDetailTransaction
       }}>
       {children}
     </FinalContext.Provider>

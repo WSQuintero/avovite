@@ -157,6 +157,7 @@ function Menu() {
           <Button
             variant="contained"
             fullWidth
+            onClick={()=>route('/wallet')}
             sx={{
               color: "white",
               justifyContent: "flex-start",
