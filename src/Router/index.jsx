@@ -10,6 +10,12 @@ import EditProfile from "../Pages/EditProfile";
 import Vites from "../Pages/Vites";
 import Informaicion from "../Pages/Informaicion";
 import DatePlantation from "../Pages/DatePlantation";
+import Cosechas from "../Pages/Cosechas";
+import CosechaDetail from "../Pages/CosechaDetail";
+import DineroDetail from "../Pages/DineroDetail";
+import AnotherDatas from "../Pages/AnotherDatas";
+import OtherDataOptions from "../Pages/OtherDataOptions";
+import Certificate from "../Pages/Certificate";
 
 
 function Router() {
@@ -56,8 +62,32 @@ function Router() {
       element: <Informaicion/>
     },
     {
-      path:'informacion/vite/:id',
+      path:'/informacion/vite/:id',
       element: <DatePlantation/>
+    },
+    {
+      path:'/cosechas',
+      element:<Cosechas/>
+    },
+    {
+      path:'/cosechaDetail',
+      element:<CosechaDetail/>
+    },
+    {
+      path:'/dineroDetail',
+      element:<DineroDetail/>
+    }, 
+    {
+      path:'/anotherDatas',
+      element:<AnotherDatas/>
+    },
+    {
+      path:'/anotherData/:id',
+      element:<OtherDataOptions/>
+    },
+    {
+      path:'/certificados',
+      element:<Certificate/>
     }
     
   ]);

@@ -200,3 +200,55 @@ export const vites = [
     statusAlistamiento: "Vite en alistamiento",
   },
 ];
+
+
+export const otherData = [
+  {
+    id:1,
+    title:'Valoración de terrenos',
+    text:' Nuestro negocio cuenta con expertos en la valoración de terrenos de aguacates. Utilizamos criterios como la ubicación, el acceso a recursos hídricos, el estado del suelo, la topografía y la infraestructura existente para determinar el valor de los terrenos. Así podemos ofrecer precios justos y competitivos a los propietarios interesados en vender.'
+  },
+  {
+    id:2,
+    title:'Potencial de diversificación',
+    text:' La compra de terrenos de aguacates puede ofrecer la oportunidad de diversificar las fuentes de ingresos. Además de la venta de la fruta en fresco, también es posible explorar otros mercados, como la producción de productos derivados del aguacate, como aceites, salsas o productos cosméticos.'
+  },
+  {
+    id:3,
+    title:'Perspectivas de inversión',
+    text:'Si estás considerando vender tu terreno de aguacates, puedes aprovechar la oportunidad de obtener un retorno significativo de tu inversión. El creciente mercado de aguacates y la alta demanda tanto nacional como internacional hacen de esta venta una opción atractiva para quienes buscan maximizar su capital.'
+  },
+  {
+    id:4,
+    title:'Requisitos de cultivos',
+    text:' El aguacate requiere ciertas condiciones climáticas y del suelo para crecer de manera óptima. Por lo general, prefiere climas cálidos o subtropicales y suelos bien drenados. Antes de adquirir un terreno, es importante evaluar si cumple con los requisitos necesarios para cultivar aguacates con éxito.'
+  }
+]
+
+
+export const certifcates= [
+  {
+    id:0,
+    title: 'Contrato - AV125K',
+    text:'Descarga aquí tu contrato que te acredita como comprador del Vite',
+    link:'Descarga Contrato',
+    image:'contrato',
+  },
+  {
+    id:1,
+    title: 'Certificado - AV125K',
+    text:'Descarga aquí tu contrato que te acredita como comprador del Vite',
+    link:'Descarga Certificado',
+    image:'certificate',
+
+  },
+  {
+    id:2,
+    title: 'Recivo de compra - AV125K',
+    text:'Descarga aquí tu contrato que te acredita como comprador del Vite',
+    link:'Descarga Compra',
+    image:'recivo',
+
+  },
+
+]
