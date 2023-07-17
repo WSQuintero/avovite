@@ -18,6 +18,8 @@ import OtherDataOptions from "../Pages/OtherDataOptions";
 import Certificate from "../Pages/Certificate";
 import Wallet from "../Pages/Wallet";
 import PasarDinero from "../Pages/PasarDinero";
+import Products from "../Pages/Products";
+import ProductDetail from "../Pages/ProductDetail";
 
 
 function Router() {
@@ -98,6 +100,14 @@ function Router() {
     {
       path:'/passmoney',
       element:<PasarDinero/>
+    },
+    {
+      path:'/products',
+      element:<Products/>
+    },
+    {
+      path:'/productDetail',
+      element:<ProductDetail/>
     }
     
   ]);

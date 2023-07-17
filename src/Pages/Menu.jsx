@@ -194,6 +194,7 @@ function Menu() {
           <Button
             variant="contained"
             fullWidth
+            onClick={()=>route('/products')}
             sx={{
               color: "white",
               justifyContent: "flex-start",
