@@ -73,6 +73,8 @@ function DatePlantation() {
             Vite {filterViteId.numeral}
           </Button>
           <Button
+          
+          onClick={()=>route('/checkout')}
             variant="contained"
             sx={{ height: "80%", bgcolor: "#498A19" }}
           >

@@ -71,6 +71,7 @@ function DineroDetail() {
             Detalles
           </Button>
           <Button
+            onClick={() => route("/checkout")}
             variant="contained"
             sx={{ height: "100%", bgcolor: "#498A19" }}
           >
@@ -81,13 +82,11 @@ function DineroDetail() {
         {/* the filter of image */}
 
         <Grid
-          
           paddingY={2}
           display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          
         >
           <Box
             bgcolor="primary.main"
@@ -112,7 +111,7 @@ function DineroDetail() {
             color="text.disabled"
             sx={{ fontSize: 20, fontWeight: 600 }}
           >
-           Fecha de Recolección
+            Fecha de Recolección
           </Typography>
           <Typography
             color="primary.main"
@@ -122,26 +121,25 @@ function DineroDetail() {
           </Typography>
 
           <Grid paddingY={10} marginRight={15}>
-        <Typography  sx={{color:'text.secondary', fontSize:23}}>
-            Fecha de venta
-          </Typography> 
-          <Typography sx={{color:'text.disabled', fontSize:18}}>
-            23 de Noviembre del 2023
-          </Typography> 
-          <Typography sx={{color:'text.secondary', fontSize:23}}>
-           Valor de venta
-          </Typography> 
-          <Typography sx={{color:'text.disabled', fontSize:18}}>
-          $1.500.000
-          </Typography>
-          <Typography sx={{color:'text.secondary', fontSize:23}}>
-           Poliza de seguro
-          </Typography> 
-          <Typography sx={{color:'text.disabled', fontSize:18}}>
-            -$500.000
-          </Typography>
-          
-        </Grid>
+            <Typography sx={{ color: "text.secondary", fontSize: 23 }}>
+              Fecha de venta
+            </Typography>
+            <Typography sx={{ color: "text.disabled", fontSize: 18 }}>
+              23 de Noviembre del 2023
+            </Typography>
+            <Typography sx={{ color: "text.secondary", fontSize: 23 }}>
+              Valor de venta
+            </Typography>
+            <Typography sx={{ color: "text.disabled", fontSize: 18 }}>
+              $1.500.000
+            </Typography>
+            <Typography sx={{ color: "text.secondary", fontSize: 23 }}>
+              Poliza de seguro
+            </Typography>
+            <Typography sx={{ color: "text.disabled", fontSize: 18 }}>
+              -$500.000
+            </Typography>
+          </Grid>
         </Grid>
       </Box>
       <Box
@@ -169,4 +167,4 @@ function DineroDetail() {
 
 export default DineroDetail;
 
-DineroDetail
+DineroDetail;

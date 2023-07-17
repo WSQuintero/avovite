@@ -71,6 +71,8 @@ function CosechaDetail() {
             Detalles
           </Button>
           <Button
+          onClick={()=>route('/checkout')}
+
             variant="contained"
             sx={{ height: "100%", bgcolor: "#498A19" }}
           >

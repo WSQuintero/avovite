@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, Link as RouterLink, Route } from "react-router-dom";
+import { useNavigate, Link as RouterLink, Route, useParams } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -19,6 +19,7 @@ import {
   Person,
   KeyboardBackspace as KeyboardBackspaceIcon,
   MoreVert as MoreVertIcon,
+  ShoppingCart as ShoppingCartIcon,
 } from "@mui/icons-material";
 
 import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
@@ -37,10 +38,12 @@ import cosechaMaxima from '../assets/img/products/cosechaMaxima.svg'
 
 
 import { paquages } from "../utilities/myCards";
+import DetailCosecha from "../Components/DetailCosecha";
 
 function ProductDetail() {
   const theme = useTheme();
-  const { productoViteId, setProductoViteId } = useFinalContext();
+  const {id} = useParams();
+  const { productoViteId, setProductoViteId, setCosechaMinimaDetail, cosechaMinimaDetail } = useFinalContext();
   const route = useNavigate();
   //   const handleSubmit = (event) => {
   //     event.preventDefault();
@@ -53,8 +56,18 @@ function ProductDetail() {
   };
   const handleCloseForm = () => {
     setProductoViteId(null);
+    route('/products')
   };
-  const filterBanck = paquages.find((e) => e.id == productoViteId);
+
+  const handleDetailCosechaMinima = ()=>{
+    setCosechaMinimaDetail(true);
+  }
+
+  const handleChecout = ()=>{
+    route('/checkout')
+  }
+  const filterBanck = paquages.find((e) => e.id == id);
+
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -70,7 +83,14 @@ function ProductDetail() {
     >
       <Header />
 
-      <Box width="100%" height={40} bgcolor="#67AA36">
+      <Box width="100%"
+          paddingX={1}
+          height={40}
+          bgcolor="primary.main"
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center">
         <Button
           onClick={() => handleCloseForm()}
           sx={{
@@ -82,6 +102,13 @@ function ProductDetail() {
         >
           Produccion del pauete
         </Button>
+        <Button
+            onClick={handleChecout}
+            variant="contained"
+            sx={{ height: "80%", bgcolor: "#498A19" }}
+          >
+            <ShoppingCartIcon sx={{ color: "secondary.body" }} />
+          </Button>
       </Box>
 
       {/* the filter of image */}
@@ -110,13 +137,18 @@ function ProductDetail() {
             </Grid>
           </Grid>
           <Box width='100%'  bgcolor='text.disabled' border={1}></Box>
-          <img src={cosechaMinima} alt='photo'/>
+          <img src={cosechaMinima} onClick={handleDetailCosechaMinima}alt='photo'/>
           <img src={cosechaMaxima} alt='photo'/>
         </Grid>
 
        
       
     </Box>
+    {
+      cosechaMinimaDetail !== null && (
+        <DetailCosecha/>
+      )
+    }
     </Grid>
   );
 }

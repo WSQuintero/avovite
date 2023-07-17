@@ -35,7 +35,7 @@ import truck from "../assets/img/vites/truck.svg";
 
 function Vites() {
   const theme = useTheme();
-  const route = useNavigate()
+  const route = useNavigate();
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -58,7 +58,7 @@ function Vites() {
           alignItems="center"
         >
           <Button
-          onClick={()=>route('/menu')}
+            onClick={() => route("/menu")}
             sx={{
               marginLeft: 1,
               color: "primary.main",
@@ -68,7 +68,11 @@ function Vites() {
           >
             Vites
           </Button>
-          <Button variant="contained" sx={{ height: "100%" }}>
+          <Button
+            onClick={() => route("/checkout")}
+            variant="contained"
+            sx={{ height: "100%" }}
+          >
             <ShoppingCartIcon sx={{ color: "secondary.body" }} />
           </Button>
         </Box>
@@ -109,9 +113,8 @@ function Vites() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick = {()=>route('/informacion')}
-
-                sx={{cursor:'pointer'}}
+                onClick={() => route("/informacion")}
+                sx={{ cursor: "pointer" }}
               >
                 <img width="30%" height="30%" src={book} />
                 <Typography>Información</Typography>
@@ -125,8 +128,8 @@ function Vites() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick={()=>route('/cosechas')}
-                sx={{cursor:'pointer'}}
+                onClick={() => route("/cosechas")}
+                sx={{ cursor: "pointer" }}
               >
                 <img width="30%" height="30%" src={truck} />
                 <Typography>Cosechas</Typography>
@@ -143,7 +146,7 @@ function Vites() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick={()=>route('/anotherDatas')}
+                onClick={() => route("/anotherDatas")}
               >
                 <LightbulbOutlinedIcon sx={{ width: 40, height: 40 }} />
                 <Typography>Otros Datos</Typography>
@@ -154,7 +157,7 @@ function Vites() {
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
-                onClick={()=>route('/certificados')}
+                onClick={() => route("/certificados")}
                 width={140}
                 height={90}
                 borderRadius={2}
@@ -166,7 +169,7 @@ function Vites() {
           </Grid>
           <Box
             paddingY={3}
-            marginLeft='80%'
+            marginLeft="80%"
             bgcolor="secondary.body"
             border={1}
             borderRadius="50%"
@@ -180,7 +183,9 @@ function Vites() {
               boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
             }}
           >
-            <WhatsAppIcon sx={{ color: "primary.main", width:35, height:35 }} />
+            <WhatsAppIcon
+              sx={{ color: "primary.main", width: 35, height: 35 }}
+            />
           </Box>
         </Grid>
       </Box>

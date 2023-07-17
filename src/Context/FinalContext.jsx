@@ -19,7 +19,9 @@ const [modalCheck, setModalCheck]=useState(null);
 const [datePlantationId, setDatePlantationId]= useState(null)
 const [formBanck, setformBanck]=useState(null)
 const [DetailTransaction, setDetailTransaction]=useState(null)
-const [productoViteId, setProductoViteId]= useState(null)  
+const [productoViteId, setProductoViteId]= useState(null) 
+const [cosechaMinimaDetail, setCosechaMinimaDetail] =useState(null) 
+const [PagarComponent, setPagarComponent] = useState(null)
 return (
     <FinalContext.Provider value={{ 
       modalCheck,
@@ -32,7 +34,11 @@ return (
       DetailTransaction,
       setDetailTransaction,
       productoViteId, 
-      setProductoViteId
+      setProductoViteId,
+      cosechaMinimaDetail, 
+      setCosechaMinimaDetail,
+      PagarComponent, 
+      setPagarComponent
       }}>
       {children}
     </FinalContext.Provider>

@@ -93,6 +93,8 @@ function OtherDataOptions() {
             Detalles
           </Button>
           <Button
+          
+            onClick={()=>route('/checkout')}
             variant="contained"
             sx={{ height: "80%", bgcolor: "#498A19" }}
           >

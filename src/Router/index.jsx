@@ -20,6 +20,7 @@ import Wallet from "../Pages/Wallet";
 import PasarDinero from "../Pages/PasarDinero";
 import Products from "../Pages/Products";
 import ProductDetail from "../Pages/ProductDetail";
+import Checkout from "../Pages/Checkout";
 
 
 function Router() {
@@ -106,8 +107,12 @@ function Router() {
       element:<Products/>
     },
     {
-      path:'/productDetail',
+      path:'/productDetail/:id',
       element:<ProductDetail/>
+    },
+    {
+      path:'/checkout',
+      element: <Checkout/>
     }
     
   ]);

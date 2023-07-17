@@ -68,7 +68,10 @@ function Cosechas() {
           >
            Cosechas
           </Button>
-          <Button variant="contained" sx={{ height: "100%", bgcolor:'#498A19' }}>
+          <Button
+          onClick={()=>route('/checkout')}
+          
+          variant="contained" sx={{ height: "100%", bgcolor:'#498A19' }}>
             <ShoppingCartIcon sx={{ color: "secondary.body" }} />
           </Button>
         </Box>
