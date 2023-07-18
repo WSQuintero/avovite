@@ -22,6 +22,12 @@ const [DetailTransaction, setDetailTransaction]=useState(null)
 const [productoViteId, setProductoViteId]= useState(null) 
 const [cosechaMinimaDetail, setCosechaMinimaDetail] =useState(null) 
 const [PagarComponent, setPagarComponent] = useState(null)
+const [transaction,setTransaction]=useState(null)
+const [ asesorComponent, setAsesorComponent] = useState(null)
+const [cosechasList, setCosechasList] = useState(null)
+const [gananciaList, setGananciaList] = useState(null)
+const [totalGananciaId, setTotalGananciaId] = useState(null)
+const [ComponentCargaCuenta, setComponentCargaCuenta]=useState(null)
 return (
     <FinalContext.Provider value={{ 
       modalCheck,
@@ -38,7 +44,19 @@ return (
       cosechaMinimaDetail, 
       setCosechaMinimaDetail,
       PagarComponent, 
-      setPagarComponent
+      setPagarComponent,
+      transaction,
+      setTransaction,
+      asesorComponent, 
+      setAsesorComponent,
+      cosechasList, 
+      setCosechasList,
+      gananciaList, 
+      setGananciaList,
+      totalGananciaId, 
+      setTotalGananciaId,
+      ComponentCargaCuenta, 
+      setComponentCargaCuenta
       }}>
       {children}
     </FinalContext.Provider>

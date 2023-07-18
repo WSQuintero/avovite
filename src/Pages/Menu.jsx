@@ -20,10 +20,7 @@ import {
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 
-import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
-import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";
-import Header from "../Components/Header/Header";
 import menuSidebar from "../assets/img/header menu copy.svg";
 import imageProfile from "../assets/img/imageProfile.svg";
 import photoDefault from "../assets/img/photoDefault.svg";
@@ -33,10 +30,24 @@ import compras from "../assets/img/profile/compras.svg";
 import cosecha from "../assets/img/profile/cosecha.svg";
 import ganancias from "../assets/img/profile/ganancias.svg";
 import perfil from "../assets/img/profile/perfil.svg";
+import { useFinalContext } from "../Context/FinalContext";
+import CosechasList from "../Components/CosechasList";
+import GanaciaList from "../Components/GanaciaList";
+import GananciaTotalId from "../Components/GananciaTotalId";
+import CargaCuenta from "../Components/CargaCuenta";
 function Menu() {
   const theme = useTheme();
   const route= useNavigate()
   const [isClicked, setIsClicked] = useState(false);
+  const {cosechasList, setCosechasList, gananciaList, setGananciaList,  totalGananciaId, ComponentCargaCuenta} = useFinalContext()
+
+  const hanldeClickCosechas = ()=>{
+    setCosechasList(true)
+  }
+
+  const handleClickGanancias = ()=>{
+    setGananciaList(true)
+  }
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -168,6 +179,7 @@ function Menu() {
             Billetera
           </Button>
           <Button
+            onClick={()=>hanldeClickCosechas()}
             variant="contained"
             fullWidth
             sx={{
@@ -180,6 +192,7 @@ function Menu() {
             Cosechas
           </Button>
           <Button
+            onClick={()=>handleClickGanancias()}
             variant="contained"
             fullWidth
             sx={{
@@ -219,6 +232,27 @@ function Menu() {
           </Button>
         </Grid>
       </Box>
+      {
+        cosechasList && (
+          <CosechasList/>
+        )
+      }
+
+      {
+        gananciaList && (
+          <GanaciaList/>
+        )
+      }
+       {
+          totalGananciaId!==null && (
+            <GananciaTotalId/>
+          )
+        }
+      {
+        ComponentCargaCuenta !==null && (
+          <CargaCuenta/>
+        )
+      }
     </Grid>
   );
 }

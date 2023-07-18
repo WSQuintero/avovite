@@ -426,3 +426,152 @@ export const paquages= [
     precio: '6.700.000',
   },
 ]
+
+export const transacciones = [
+  {
+    id: 0,
+    name: "Compra de Paquete Sencillo",
+    valor: "2.200.000",
+    cantidad: 1,
+    date: "23-04-2023",
+  },
+  {
+    id: 1,
+    name: "Recarga de Billetera",
+    valor: "1.500.000",
+    cantidad: 1,
+    date: "10-05-2023",
+  },
+  {
+    id: 2,
+    name: "Venta de Cosecha",
+    valor: "3.750.000",
+    cantidad: 1,
+    date: "18-06-2023",
+  },
+  {
+    id: 3,
+    name: "Retiro de Dinero",
+    valor: "500.000",
+    cantidad: 1,
+    date: "29-07-2023",
+  },
+  {
+    id: 4,
+    name: "Compra de Paquete Sencillo",
+    valor: "2.000.000",
+    cantidad: 2,
+    date: "05-08-2023",
+  },
+  {
+    id: 5,
+    name: "Recarga de Billetera",
+    valor: "1.250.000",
+    cantidad: 3,
+    date: "12-09-2023",
+  },
+  {
+    id: 6,
+    name: "Venta de Cosecha",
+    valor: "4.500.000",
+    cantidad: 4,
+    date: "21-10-2023",
+  },
+  {
+    id: 7,
+    name: "Retiro de Dinero",
+    valor: "750.000",
+    cantidad: 5,
+    date: "28-11-2023",
+  },
+  {
+    id: 8,
+    name: "Compra de Paquete Sencillo",
+    valor: "2.400.000",
+    cantidad: 1,
+    date: "07-12-2023",
+  },
+  {
+    id: 9,
+    name: "Recarga de Billetera",
+    valor: "1.750.000",
+    cantidad: 1,
+    date: "14-01-2024",
+  },
+  {
+    id: 10,
+    name: "Venta de Cosecha",
+    valor: "3.250.000",
+    cantidad: 1,
+    date: "23-02-2024",
+  },
+  {
+    id: 11,
+    name: "Retiro de Dinero",
+    valor: "1.000.000",
+    cantidad: 3,
+    date: "02-04-2024",
+  },
+  {
+    id: 12,
+    name: "Compra de Paquete Sencillo",
+    valor: "2.800.000",
+    cantidad: 6,
+    date: "11-05-2024",
+  },
+  {
+    id: 13,
+    name: "Recarga de Billetera",
+    valor: "1.000.000",
+    cantidad: 6,
+    date: "20-06-2024",
+  },
+  {
+    id: 14,
+    name: "Venta de Cosecha",
+    valor: "3.000.000",
+    cantidad: 1,
+    date: "29-07-2024",
+  },
+  {
+    id: 15,
+    name: "Retiro de Dinero",
+    valor: "1.500.000",
+    cantidad: 1,
+    date: "07-09-2024",
+  },
+  {
+    id: 16,
+    name: "Compra de Paquete Sencillo",
+    valor: "2.600.000",
+    cantidad: 1,
+    date: "16-10-2024",
+  },
+  {
+    id: 17,
+    name: "Recarga de Billetera",
+    valor: "1.250.000",
+    cantidad: 1,
+    date: "25-11-2024",
+  },
+  {
+    id: 18,
+    name: "Venta de Cosecha",
+    valor: "3.500.000",
+    cantidad: 1,
+    date: "04-01-2025",
+  },
+  {
+    id: 19,
+    name: "Retiro de Dinero",
+    valor: "2.000.000",
+    cantidad: 1,
+    date: "13-02-2025",
+  },
+]
+
+export const cosechas = [
+  {
+    
+  }
+]

@@ -34,10 +34,20 @@ import pasar from '../assets/img/wallet/pasar.svg'
 import comprar from '../assets/img/wallet/comprar.svg'
 import transactions from '../assets/img/wallet/transactions.svg'
 import asesor from '../assets/img/wallet/asesor.svg'
+import { useFinalContext } from "../Context/FinalContext";
+import TransactionList from "../Components/TransactionList";
+import Asesor from "../Components/Asesor";
 function Wallet() {
   const theme = useTheme();
   const route= useNavigate()
   const [isClicked, setIsClicked] = useState(false);
+  const {transaction,setTransaction, asesorComponent, setAsesorComponent} = useFinalContext()
+  const handleTransaction = ()=>{
+    setTransaction(true)
+  }
+  const handleAsesorComponent = ()=>{
+    setAsesorComponent(true)
+  }
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -162,7 +172,7 @@ function Wallet() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick={()=>route('/cosechas')}
+                onClick={()=>handleTransaction()}
                 sx={{cursor:'pointer'}}
               >
                 <img width="30%" height="30%" src={transactions} />
@@ -192,7 +202,7 @@ function Wallet() {
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
-                onClick={()=>route('/certificados')}
+                onClick={()=>handleAsesorComponent()}
                 width={140}
                 height={90}
                 borderRadius={2}
@@ -222,6 +232,16 @@ function Wallet() {
           </Box>
         </Grid>
       </Box>
+      {
+        transaction && (
+          <TransactionList/>
+        )
+      }
+      {
+        asesorComponent && (
+          <Asesor/>
+        )
+      }
     </Grid>
   );
 }
