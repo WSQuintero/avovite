@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate, Link as RouterLink, Route } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -29,7 +29,7 @@ import Header from "../Components/Header/Header";
 
 function TermsConditions() {
   const theme = useTheme();
-
+  const route = useNavigate()
   const [isClicked, setIsClicked] = useState(false);
   const [PasswordClic, setPasswordClic] = useState(false);
   const typographyRef = useRef(null);
@@ -65,6 +65,7 @@ function TermsConditions() {
 
         <Box width="100%" height={40} bgcolor="#67AA36">
           <Button
+          onClick={()=>route('/signin')}
             sx={{
               marginLeft: 1,
               color: "secondary.body",
@@ -128,10 +129,10 @@ function TermsConditions() {
 
          
           <Grid display="flex" gap={2}>
-            <Button variant="contained" fullWidth sx={{ color: "white" }}>
+            <Button onClick={()=>route('/inscription')}variant="contained" fullWidth sx={{ color: "white" }}>
               Aceptar
             </Button>
-            <Button variant="contained" fullWidth sx={{ color: "white" }}>
+            <Button onClick={()=>route('/signin')}variant="contained" fullWidth sx={{ color: "white" }}>
               Cancelar
             </Button>
           </Grid>

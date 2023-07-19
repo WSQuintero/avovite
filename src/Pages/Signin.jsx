@@ -26,7 +26,7 @@ import { useTheme } from "@emotion/react";
 
 function Signin() {
   const theme = useTheme();
-
+  const route = useNavigate()
   const [isClicked, setIsClicked] = useState(false);
 
   const handleSubmit = (event) => {
@@ -60,7 +60,7 @@ function Signin() {
         
         >
         <Button
-        
+        onClick={()=>route('/')}
         sx={{
           marginLeft:1,
           color:"secondary.body",
@@ -76,9 +76,9 @@ function Signin() {
         <Box
           position="absolute"
           left={0}
-          top={0}
+          top={40}
           width="100%"
-          height="100%"
+          height="90%"
           bgcolor="filter.main"
           sx={{ opacity: 0.25 }}
         ></Box>
@@ -119,14 +119,16 @@ function Signin() {
             fullWidth
             style={{
               borderRadius: "10px",
+              backgroundColor: "rgba(192,192,192,0.4 )",
+              border: "none",
             }}
             InputProps={{
               style: {
                 color: "black",
-                fontSize: "25px",
+                height: "40px",
+                fontSize: "20px",
                 fontWeight: 500,
-                borderRadius: "15px",
-                borderColor: "primary.main",
+                borderRadius: "10px",
               },
               startAdornment: (
                 <InputAdornment position="start">
@@ -144,14 +146,16 @@ function Signin() {
             fullWidth
             style={{
               borderRadius: "10px",
+              backgroundColor: "rgba(192,192,192,0.4 )",
+              border: "none",
             }}
             InputProps={{
               style: {
                 color: "black",
-                fontSize: "25px",
+                height: "40px",
+                fontSize: "20px",
                 fontWeight: 500,
-                borderRadius: "15px",
-                borderColor: "primary.main",
+                borderRadius: "10px",
               },
               startAdornment: (
                 <InputAdornment position="start">
@@ -173,7 +177,7 @@ function Signin() {
                   backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
                 },
               }}
-              onClick={() => route("/home")}
+              onClick={() => route("/termsandConditions")}
             >
               Iniciar sesión
             </Button>

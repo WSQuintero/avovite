@@ -88,8 +88,8 @@ function Home() {
           Las ganancias del aguacate HASS Colombiano son para todos
         </Typography>
         <Grid display='flex' gap={2}>
-          <Button variant="contained"  fullWidth sx={{color:'white'}}>Iniciar sesión</Button>
-          <Button variant="outlined" fullWidth>Inscribirse</Button>
+          <Button onClick={()=>route('/signin')}variant="contained"  fullWidth sx={{color:'white'}}>Iniciar sesión</Button>
+          <Button onClick={()=>route('/signup')} variant="outlined" fullWidth>Inscribirse</Button>
         </Grid>
       </Grid>
     </Grid>

@@ -32,6 +32,8 @@ import { useFinalContext } from "../Context/FinalContext";
 import ModalCheckout from "../Components/Modals/ModalCheckout";
 function FormInscription() {
   const theme = useTheme();
+  const route = useNavigate()
+
   const {
     modalCheck,
     setModalCheck
@@ -287,7 +289,9 @@ function FormInscription() {
         </Grid>
 
           <Grid paddingX={4} display="flex" gap={2}>
-            <Button variant="contained" onClick={handleModalCheck} fullWidth sx={{ color: "white" }}>
+            <Button 
+            
+            variant="contained" onClick={handleModalCheck} fullWidth sx={{ color: "white" }}>
               Inscripción
             </Button>
             

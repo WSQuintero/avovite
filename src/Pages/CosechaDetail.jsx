@@ -59,6 +59,7 @@ function CosechaDetail() {
           alignItems="center"
         >
           <Button
+          onClick={()=>route('/cosechas')}
             sx={{
               marginLeft: 1,
               color: "secondary.body",

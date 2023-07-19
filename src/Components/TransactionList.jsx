@@ -93,7 +93,7 @@ function TransactionList() {
         >
         { transacciones.map((e)=>(
             <>
-          <Grid key={e.id} display='flex' alignItems='center'  width='100%'  onClick={()=>route(`vite/${e.id}`)} >
+          <Grid key={e.id} display='flex' alignItems='center'  width='100%' >
             <Box
              bgcolor='primary.main'
              borderRadius='50%'

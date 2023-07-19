@@ -60,9 +60,9 @@ function Certificate() {
           flexDirection="row"
           justifyContent="space-between"
           alignItems="center"
-          onClick={() => route("/vites")}
-        >
+          >
           <Button
+          onClick={() => route("/vites")}
             sx={{
               marginLeft: 1,
               color: "secondary.body",
@@ -102,7 +102,7 @@ function Certificate() {
                 justifyContent="space-between"
                 width="100%"
                 paddingLeft={2}
-                onClick={() => route(`vite/${e.id}`)}
+                // onClick={() => route(`vite/${e.id}`)}
               >
                 <Box
                   bgcolor="primary.main"

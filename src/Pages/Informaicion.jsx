@@ -57,6 +57,8 @@ function Informaicion() {
           alignItems="center"
         >
           <Button
+              onClick={()=>route('/informacion')}
+
             sx={{
               marginLeft: 1,
               color: "secondary.body",
@@ -87,7 +89,7 @@ function Informaicion() {
         >
         { vites.map((e)=>(
             <>
-          <Grid display='flex' alignItems='center' justifyContent='space-between' width='100%' paddingLeft={2} onClick={()=>route(`vite/${e.id}`)} >
+          <Grid key={e.id} display='flex' alignItems='center' justifyContent='space-between' width='100%' paddingLeft={2} onClick={()=>route(`vite/${e.id}`)} >
             <Box
              bgcolor='primary.main'
              borderRadius='50%'

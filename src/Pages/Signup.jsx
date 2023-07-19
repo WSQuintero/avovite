@@ -26,7 +26,7 @@ import { useTheme } from "@emotion/react";
 
 function Signup() {
   const theme = useTheme();
-
+  const route= useNavigate()
   const [isClicked, setIsClicked] = useState(false);
   const [PasswordClic, setPasswordClic] = useState(false);
 
@@ -38,7 +38,7 @@ function Signup() {
 
   return (
     <Grid display="flex" flexDirection="column">
-      <Box position="relative" height="50vh">
+      <Box display='flex' flexDirection='column' position="relative" height="50vh">
         <img
           src={BackgroundPhoto}
           alt="photo"
@@ -50,7 +50,8 @@ function Signup() {
           }}
         />
         <Box
-          position="absolute"
+       
+       position="absolute"
           left={0}
           top={0}
           width="100%"
@@ -58,13 +59,16 @@ function Signup() {
           bgcolor="#214820"
         >
           <Button
+
+            onClick={() =>route("/")}
             sx={{
               marginLeft: 1,
               color: "secondary.body",
               textTransform: "none",
+              cursor:'poinet'
             }}
             startIcon={
-              <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
+              <KeyboardBackspaceIcon  sx={{ color: "secondary.body" }} />
             }
           >
             Registro
@@ -73,11 +77,11 @@ function Signup() {
 
         {/* the filter of image */}
         <Box
-          position="absolute"
+          position='absolute'
           left={0}
-          top={0}
+          top={40}
           width="100%"
-          height="100%"
+          height="90%"
           bgcolor="filter.main"
           sx={{ opacity: 0.25 }}
         ></Box>
@@ -237,7 +241,7 @@ function Signup() {
                 backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
               },
             }}
-            onClick={() => route("/home")}
+            onClick={() => route("/termsandConditions")}
           >
             Iniciar sesión
           </Button>

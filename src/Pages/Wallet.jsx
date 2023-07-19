@@ -19,7 +19,7 @@ import {
   KeyboardBackspace as KeyboardBackspaceIcon,
   MoreVert as MoreVertIcon,
   WhatsApp as WhatsAppIcon,
-
+  ShoppingCart as ShoppingCartIcon,
 } from "@mui/icons-material";
 
 import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
@@ -29,25 +29,26 @@ import Header from "../Components/Header/Header";
 import menuSidebar from "../assets/img/header menu copy.svg";
 import imageProfile from "../assets/img/imageProfile.svg";
 import photoDefault from "../assets/img/photoDefault.svg";
-import background from '../assets/img/wallet/background.svg'
-import pasar from '../assets/img/wallet/pasar.svg'
-import comprar from '../assets/img/wallet/comprar.svg'
-import transactions from '../assets/img/wallet/transactions.svg'
-import asesor from '../assets/img/wallet/asesor.svg'
+import background from "../assets/img/wallet/background.svg";
+import pasar from "../assets/img/wallet/pasar.svg";
+import comprar from "../assets/img/wallet/comprar.svg";
+import transactions from "../assets/img/wallet/transactions.svg";
+import asesor from "../assets/img/wallet/asesor.svg";
 import { useFinalContext } from "../Context/FinalContext";
 import TransactionList from "../Components/TransactionList";
 import Asesor from "../Components/Asesor";
 function Wallet() {
   const theme = useTheme();
-  const route= useNavigate()
+  const route = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
-  const {transaction,setTransaction, asesorComponent, setAsesorComponent} = useFinalContext()
-  const handleTransaction = ()=>{
-    setTransaction(true)
-  }
-  const handleAsesorComponent = ()=>{
-    setAsesorComponent(true)
-  }
+  const { transaction, setTransaction, asesorComponent, setAsesorComponent } =
+    useFinalContext();
+  const handleTransaction = () => {
+    setTransaction(true);
+  };
+  const handleAsesorComponent = () => {
+    setAsesorComponent(true);
+  };
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -101,32 +102,62 @@ function Wallet() {
           flexDirection="row"
           position="absolute"
           justifyContent="space-between"
+          width="100%"
           alignItems="center"
-        marginRight={20}
           bottom={0}
           top={0}
           gap={8}
-         
         >
-           
-            <img
-              src={photoDefault}
-              alt="logos"
-              style={{ width:"80%", height:"80%" }}
-            />
-            
-         
-          <Grid display="flex" flexDirection="column"  >
-            <Typography sx={{ color: "white", fontSize:15 }}>
-            Tu Dinero
-            </Typography>
-            <Typography marginRight={10} width='100%' sx={{ color: "secondary.body", fontSize: 18, fontWeight:600 }}>
-            $ 5.000.000
-            </Typography>
-            
-          </Grid>
+          <Box
+            position="absolute"
+            width="100%"
+            top={50}
+            height={40}
+            bgcolor="primary.main"
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Button
+              onClick={() => route("/menu")}
+              sx={{
+                marginLeft: 1,
+                color: "secondary.body",
+                textTransform: "none",
+              }}
+              startIcon={
+                <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
+              }
+            >
+              Mis VITES
+            </Button>
+            <Button
+              onClick={() => route("/checkout")}
+              variant="contained"
+              sx={{ height: "100%", bgcolor: "#498A19" }}
+            >
+              <ShoppingCartIcon sx={{ color: "secondary.body" }} />
+            </Button>
+          </Box>
+          <img
+            src={photoDefault}
+            alt="logos"
+            style={{ width: "50%", height: "50%" }}
+          />
 
-          
+          <Grid display="flex" flexDirection="column">
+            <Typography sx={{ color: "white", fontSize: 15 }}>
+              Tu Dinero
+            </Typography>
+            <Typography
+              marginRight={10}
+              width="100%"
+              sx={{ color: "secondary.body", fontSize: 18, fontWeight: 600 }}
+            >
+              $ 5.000.000
+            </Typography>
+          </Grid>
         </Box>
 
         <Grid
@@ -136,8 +167,6 @@ function Wallet() {
           flexDirection="column"
           alignItems="center"
         >
-        
-
           <Grid
             display="flex"
             paddingY={9}
@@ -156,9 +185,8 @@ function Wallet() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick = {()=>route('/passmoney')}
-
-                sx={{cursor:'pointer'}}
+                onClick={() => route("/passmoney")}
+                sx={{ cursor: "pointer" }}
               >
                 <img width="30%" height="30%" src={pasar} />
                 <Typography>Pasar dinero</Typography>
@@ -172,8 +200,8 @@ function Wallet() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick={()=>handleTransaction()}
-                sx={{cursor:'pointer'}}
+                onClick={() => handleTransaction()}
+                sx={{ cursor: "pointer" }}
               >
                 <img width="30%" height="30%" src={transactions} />
                 <Typography>Transacciones</Typography>
@@ -190,10 +218,10 @@ function Wallet() {
                 width={140}
                 height={90}
                 borderRadius={2}
-                onClick={()=>route('/anotherDatas')}
+                onClick={() => route("/anotherDatas")}
               >
-                 <img width="30%" height="30%" src={comprar} />
-                
+                <img width="30%" height="30%" src={comprar} />
+
                 <Typography>Comprar VITES</Typography>
               </Box>
               <Box
@@ -202,7 +230,7 @@ function Wallet() {
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
-                onClick={()=>handleAsesorComponent()}
+                onClick={() => handleAsesorComponent()}
                 width={140}
                 height={90}
                 borderRadius={2}
@@ -214,7 +242,7 @@ function Wallet() {
           </Grid>
           <Box
             paddingY={3}
-            marginLeft='80%'
+            marginLeft="80%"
             bgcolor="secondary.body"
             border={1}
             borderRadius="50%"
@@ -228,20 +256,14 @@ function Wallet() {
               boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
             }}
           >
-            <WhatsAppIcon sx={{ color: "primary.main", width:35, height:35 }} />
+            <WhatsAppIcon
+              sx={{ color: "primary.main", width: 35, height: 35 }}
+            />
           </Box>
         </Grid>
       </Box>
-      {
-        transaction && (
-          <TransactionList/>
-        )
-      }
-      {
-        asesorComponent && (
-          <Asesor/>
-        )
-      }
+      {transaction && <TransactionList />}
+      {asesorComponent && <Asesor />}
     </Grid>
   );
 }

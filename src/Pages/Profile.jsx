@@ -27,6 +27,8 @@ import photoDefault from "../assets/img/photoDefault.svg";
 
 function TermsConditions() {
   const theme = useTheme();
+  const route = useNavigate()
+
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -40,6 +42,7 @@ function TermsConditions() {
 
         <Box width="100%" height={40} bgcolor="#67AA36">
           <Button
+              onClick={()=>route('/menu')}
             sx={{
               marginLeft: 1,
               color: "secondary.body",
