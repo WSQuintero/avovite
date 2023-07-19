@@ -143,7 +143,7 @@ function Signin() {
               width: "20vh",
               height: "20vh",
               left: "-50%",
-              top: 0,
+              top:-20,
             },
           })}
         >
@@ -157,7 +157,7 @@ function Signin() {
       <Grid
         flexGrow={1}
         paddingX={4}
-        paddingY={2}
+        paddingY={1}
         display="flex"
         flexDirection="column"
         gap={2}
@@ -165,10 +165,19 @@ function Signin() {
           [theme.breakpoints.up("lg")]: {
             order: 0,
             paddingX: 8,
+            marginTop:-20
           },
         })}
       >
-        <Box height={40}></Box>
+        <Box  
+        sx={(theme) => ({
+          height:40,
+          [theme.breakpoints.up("lg")]: {
+            height:0
+          },
+        })}
+        
+        ></Box>
 
         <Typography
           display="none"
@@ -190,7 +199,6 @@ function Signin() {
             [theme.breakpoints.up("lg")]: {
               display: "flex",
               color: "text.disabled",
-              
             },
           })}
         >
@@ -210,7 +218,7 @@ function Signin() {
             style: {
               color: "black",
               height: "40px",
-              
+
               borderRadius: "10px",
             },
             startAdornment: (
@@ -221,7 +229,6 @@ function Signin() {
           }}
         />
         <Typography
-        
           display="none"
           sx={(theme) => ({
             [theme.breakpoints.up("lg")]: {
@@ -249,7 +256,7 @@ function Signin() {
             style: {
               color: "black",
               height: "40px",
-             
+
               borderRadius: "10px",
             },
             startAdornment: (
@@ -260,37 +267,35 @@ function Signin() {
           }}
         />
 
-
         <Grid display="flex" flexDirection="column" alignItems="center" gap={2}>
-        <Link
-          component={RouterLink}
-          to="/signup"
-          onClick={() => setIsClicked(true)}
-          sx={(theme) => ({
-            display: "none",
-           
-           
-            [theme.breakpoints.up("lg")]: {
-              display: "flex",
-              cursor: "pointer",
-              color: isClicked ? "#FFFF" : "#67AA36",
-             
-              transition: "color 0.2s ease-in-out",
-              textDecoration: "none",
-              "&:hover": {
-                color: "#FFFF",
+          <Link
+            component={RouterLink}
+            to="/signup"
+            onClick={() => setIsClicked(true)}
+            sx={(theme) => ({
+              display: "none",
+
+              [theme.breakpoints.up("lg")]: {
+                display: "flex",
+                cursor: "pointer",
+                color: isClicked ? "#67AA36" : "#7DCF43",
+
+                transition: "color 0.2s ease-in-out",
+                textDecoration: "none",
+                "&:hover": {
+                  color: "#67AA36",
+                },
               },
-            },
-          })}
-        >
-          ¿Has olvidado tu contraseña?
-        </Link>
+            })}
+          >
+            ¿Has olvidado tu contraseña?
+          </Link>
           <Button
             fullWidth
             sx={{
-              color:'secondary.body',
+              color: "secondary.body",
               backgroundImage: "linear-gradient(to top, #7DCF43, #60A033)",
-            
+
               textTransform: "none",
               "&:hover": {
                 backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
@@ -314,12 +319,12 @@ function Signin() {
             onClick={() => setIsClicked(true)}
             sx={{
               cursor: "pointer",
-              color: isClicked ? "#FFFF" : "#67AA36",
-            
+              color: isClicked ? "#67AA36" : "#7DCF43",
+
               transition: "color 0.2s ease-in-out",
               textDecoration: "none",
               "&:hover": {
-                color: "#FFFF",
+                color: "#67AA36",
               },
             }}
           >
