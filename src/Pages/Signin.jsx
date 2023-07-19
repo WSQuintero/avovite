@@ -16,17 +16,16 @@ import {
   Https as HttpsIcon,
   LockOutlined as LockOutlinedIcon,
   MailOutline as MailOutlineIcon,
-  KeyboardBackspace as KeyboardBackspaceIcon
+  KeyboardBackspace as KeyboardBackspaceIcon,
 } from "@mui/icons-material";
 
-
-import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
+import home from "../assets/img/backgroundOfLogin/Home.svg";
 import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";
 
 function Signin() {
   const theme = useTheme();
-  const route = useNavigate()
+  const route = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
 
   const handleSubmit = (event) => {
@@ -36,52 +35,95 @@ function Signin() {
   };
 
   return (
-    <Grid display="flex" flexDirection="column">
-      <Box position="relative" height="50vh">
-        <img
-          src={BackgroundPhoto}
-          alt="photo"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-        />
+    <Grid
+      display="flex"
+      flexDirection="column"
+      sx={(theme) => ({
+        [theme.breakpoints.up("lg")]: {
+          position: "relative",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        },
+      })}
+    >
+      <Box
+        position="relative"
+        height="50vh"
+        sx={(theme) => ({
+          [theme.breakpoints.up("lg")]: {
+            order: 1,
+            height: "50%",
+            width: "50%",
+          },
+        })}
+      >
         <Box
-        position='absolute'
-        left={0}
-        top={0}
-        width='100%'
-       
-        height={40}
-        bgcolor='#214820'
-      
-        
+          sx={(theme) => ({
+            height: "55vh",
+            [theme.breakpoints.up("lg")]: {
+              height: "50%",
+            },
+          })}
         >
-        <Button
-        onClick={()=>route('/')}
-        sx={{
-          marginLeft:1,
-          color:"secondary.body",
-          textTransform: "none",
-        }}
-        
-        startIcon={<KeyboardBackspaceIcon sx={{color:'secondary.body'}}/>}
-        >Ingreso</Button>
+          <img
+            src={home}
+            alt="photo"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+          />
         </Box>
-
-        {/* the filter of imge */}
-          
         <Box
           position="absolute"
           left={0}
-          top={40}
+          top={0}
           width="100%"
-          height="90%"
-          bgcolor="filter.main"
-          sx={{ opacity: 0.25 }}
-        ></Box>
+          height={40}
+          bgcolor="#214820"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              height: 0,
+              display: "none",
+            },
+          })}
+        >
+          <Button
+            onClick={() => route("/")}
+            sx={{
+              marginLeft: 1,
+              color: "secondary.body",
+              textTransform: "none",
+            }}
+            startIcon={
+              <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
+            }
+          >
+            Ingreso
+          </Button>
+        </Box>
+
+        {/* the filter of imge */}
+
+        {/* <Box
+            position="absolute"
+            left={0}
+            top={40}
+            width="100%"
+            height="calc(100%-40px)"
+            bgcolor="filter.main"
+            sx={(theme)=>({
+              opacity: 0.25,
+              [theme.breakpoints.up('lg')]:{
+               height:'100%',
+                top:0,
+                borderRadius:4,
+              }
+            })}
+          ></Box> */}
         <Box
           display="flex"
           justifyContent="center"
@@ -95,7 +137,15 @@ function Signin() {
           width={160}
           height={160}
           padding={2}
-          sx={{ transform: "translate(-50%,50%)" }}
+          sx={(theme) => ({
+            transform: "translate(-50%,50%)",
+            [theme.breakpoints.up("lg")]: {
+              width: "20vh",
+              height: "20vh",
+              left: "-50%",
+              top: 0,
+            },
+          })}
         >
           <img
             src={logo}
@@ -103,129 +153,204 @@ function Signin() {
             style={{ width: "100%", height: "100%" }}
           />
         </Box>
+      </Box>
+      <Grid
+        flexGrow={1}
+        paddingX={4}
+        paddingY={2}
+        display="flex"
+        flexDirection="column"
+        gap={2}
+        sx={(theme) => ({
+          [theme.breakpoints.up("lg")]: {
+            order: 0,
+            paddingX: 8,
+          },
+        })}
+      >
+        <Box height={40}></Box>
+
+        <Typography
+          display="none"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "flex",
+              color: "primary.main",
+              fontSize: 24,
+              fontWeight: 650,
+            },
+          })}
+        >
+          Ingresar
+        </Typography>
+        <Box height={20}></Box>
+        <Typography
+          display="none"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "flex",
+              color: "text.disabled",
+              
+            },
+          })}
+        >
+          Correo Electrónico
+        </Typography>
+        <TextField
+          name="email"
+          placeholder="Correo electronico"
+          required
+          fullWidth
+          style={{
+            borderRadius: "10px",
+            backgroundColor: "rgba(192,192,192,0.4 )",
+            border: "none",
+          }}
+          InputProps={{
+            style: {
+              color: "black",
+              height: "40px",
+              
+              borderRadius: "10px",
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <MailOutlineIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Typography
+        
+          display="none"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "flex",
+              color: "text.disabled",
+              // fontSize: 12,
+              // fontWeight: 650,
+            },
+          })}
+        >
+          Contraseña
+        </Typography>
+        <TextField
+          name="password"
+          type="password"
+          placeholder="Contraseña"
+          required
+          fullWidth
+          style={{
+            borderRadius: "10px",
+            backgroundColor: "rgba(192,192,192,0.4 )",
+            border: "none",
+          }}
+          InputProps={{
+            style: {
+              color: "black",
+              height: "40px",
+             
+              borderRadius: "10px",
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <LockOutlinedIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+
+        <Grid display="flex" flexDirection="column" alignItems="center" gap={2}>
+        <Link
+          component={RouterLink}
+          to="/signup"
+          onClick={() => setIsClicked(true)}
+          sx={(theme) => ({
+            display: "none",
+           
+           
+            [theme.breakpoints.up("lg")]: {
+              display: "flex",
+              cursor: "pointer",
+              color: isClicked ? "#FFFF" : "#67AA36",
+             
+              transition: "color 0.2s ease-in-out",
+              textDecoration: "none",
+              "&:hover": {
+                color: "#FFFF",
+              },
+            },
+          })}
+        >
+          ¿Has olvidado tu contraseña?
+        </Link>
+          <Button
+            fullWidth
+            sx={{
+              color:'secondary.body',
+              backgroundImage: "linear-gradient(to top, #7DCF43, #60A033)",
+            
+              textTransform: "none",
+              "&:hover": {
+                backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
+              },
+            }}
+            onClick={() => route("/termsandConditions")}
+          >
+            Iniciar sesión
+          </Button>
+        </Grid>
         <Grid
-          flexGrow={1}
-          paddingX={4}
-          paddingY={2}
           display="flex"
           flexDirection="column"
-          gap={2}
+          alignItems="center"
+          justifyContent="center"
+          gap={1}
         >
-          <Box height={40}></Box>
-          <TextField
-            name="email"
-            placeholder="Correo electronico"
-            required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
+          <Link
+            component={RouterLink}
+            to="/signup"
+            onClick={() => setIsClicked(true)}
+            sx={{
+              cursor: "pointer",
+              color: isClicked ? "#FFFF" : "#67AA36",
+            
+              transition: "color 0.2s ease-in-out",
+              textDecoration: "none",
+              "&:hover": {
+                color: "#FFFF",
               },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <MailOutlineIcon />
-                </InputAdornment>
-              ),
             }}
-          />
-
-          <TextField
-            name="password"
-            type="password"
-            placeholder="Contraseña"
-            required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-              },
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockOutlinedIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          <Grid display="flex" flexDirection="column" alignItems="center">
-            <Button
-              color="secondary"
-              fullWidth
-              sx={{
-                backgroundImage: "linear-gradient(to top, #7DCF43, #60A033)",
-                fontSize: "25px",
-                textTransform: "none", 
-                "&:hover": {
-                  backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
-                },
-              }}
-              onClick={() => route("/termsandConditions")}
-            >
-              Iniciar sesión
-            </Button>
-          </Grid>
-          <Grid
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            gap={1}
           >
-            <Link
-              component={RouterLink}
-              to="/signup"
-              onClick={() => setIsClicked(true)}
-              sx={{
-                cursor: "pointer",
-                color: isClicked ? "#FFFF" : "#67AA36",
-                fontSize: "23px",
-                transition: "color 0.2s ease-in-out",
-                textDecoration: "none",
-                "&:hover": {
-                  color: "#FFFF", 
-                },
-              }}
-            >
-              Inscribite en Avovite
-            </Link>
-            <Link
-              component={RouterLink}
-              to="/signup"
-              onClick={() => setIsClicked(true)}
-              sx={{
-                cursor: "pointer",
-                color: isClicked ? "#FFFF" : "#67AA36",
-                fontSize: "23px",
-                transition: "color 0.2s ease-in-out",
-                textDecoration: "none",
-                "&:hover": {
-                  color: "#FFFF", 
-                },
-              }}
-            >
-              ¿Has olvidado tu contraseña?
-            </Link>
-          </Grid>
+            Inscribite en Avovite
+          </Link>
+          <Link
+            component={RouterLink}
+            to="/signup"
+            onClick={() => setIsClicked(true)}
+            sx={(theme) => ({
+              display: "flex",
+              cursor: "pointer",
+              color: isClicked ? "#FFFF" : "#67AA36",
+              fontSize: "23px",
+              transition: "color 0.2s ease-in-out",
+              textDecoration: "none",
+              "&:hover": {
+                color: "#FFFF",
+              },
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+                color: "text.disabled",
+                fontSize: 12,
+                fontWeight: 650,
+              },
+            })}
+          >
+            ¿Has olvidado tu contraseña?
+          </Link>
         </Grid>
-      </Box>
+      </Grid>
     </Grid>
   );
 }

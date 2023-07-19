@@ -39,6 +39,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Poppins', sans-serif",
+  
     h2: {
       fontWeight: 400,
       fontSize: 32,
@@ -47,6 +48,7 @@ const theme = createTheme({
   shape:{
     borderRadius: 10
   },
+  
   components: {
     MuiPaper: {
       defaultProps: {
@@ -55,6 +57,7 @@ const theme = createTheme({
         },
       },
     },
+    
     MuiCard:{
       defaultProps:{
         sx:{

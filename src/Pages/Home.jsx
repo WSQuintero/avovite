@@ -32,12 +32,39 @@ function Home() {
   };
 
   return (
-    <Grid display="flex" flexDirection="column">
-      <Box position="relative" height="50vh">
+    <Grid
+     
+      sx={(theme) => ({
+        display:"flex",
+        flexDirection:"column",
+        [theme.breakpoints.up('lg')]: {
+          position:'relative',
+          flexDirection:'row',
+          justifyContent:'space-between',
+          alignItems:'center'
+        },
+      })}
+    >
+      <Box position="relative" height="50vh" sx={(theme)=>({
+        [theme.breakpoints.up('lg')]:{
+          
+          order: 1 ,
+          height:'50%',
+          width:'50%',
+          
+        }
+      })}>
         <img
           src={BackgroundPhoto}
           alt="photo"
-          style={{ width: "100%", height: "100%", objectFit: "cover" , objectPosition:'center'}}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            borderRadius:29
+
+          }}
         />
         <Box
           position="absolute"
@@ -46,7 +73,12 @@ function Home() {
           width="100%"
           height="100%"
           bgcolor="filter.main"
-          sx={{ opacity: 0.25 }}
+          sx={(theme)=>({
+            opacity: 0.25, 
+            [theme.breakpoints.up('lg')]:{
+              borderRadius:4,
+            }
+          })}
         ></Box>
         <Box
           display="flex"
@@ -61,7 +93,12 @@ function Home() {
           width={160}
           height={160}
           padding={2}
-          sx={{ transform: "translate(-50%,50%)" }}
+          sx={(theme)=>({
+            transform: "translate(-50%,50%)" ,
+            [theme.breakpoints.up('lg')]:{
+              left:'-50%',
+              top:'5%'            }
+          })}
         >
           <img
             src={logo}
@@ -77,19 +114,46 @@ function Home() {
         display="flex"
         flexDirection="column"
         gap={4}
+        sx={(theme)=>({
+          [theme.breakpoints.up('lg')]:{
+            order: 0 ,
+            paddingY:0,
+            paddingX:10,
+            gap:1
+          }
+        })}
       >
-        <Box height={80}></Box>
+        <Box height={80} 
+        sx={(theme)=>({
+          [theme.breakpoints.up('lg')]:{
+            height:0,
+            marginTop:-5
+          }
+        })}
+        
+        
+        ></Box>
         <Typography
           color="primary"
           textAlign="center"
           width="75%"
           marginX="auto"
+          
         >
           Las ganancias del aguacate HASS Colombiano son para todos
         </Typography>
-        <Grid display='flex' gap={2}>
-          <Button onClick={()=>route('/signin')}variant="contained"  fullWidth sx={{color:'white'}}>Iniciar sesión</Button>
-          <Button onClick={()=>route('/signup')} variant="outlined" fullWidth>Inscribirse</Button>
+        <Grid display="flex" gap={2}>
+          <Button
+            onClick={() => route("/signin")}
+            variant="contained"
+            fullWidth
+            sx={{ color: "white" }}
+          >
+            Iniciar sesión
+          </Button>
+          <Button onClick={() => route("/signup")} variant="outlined" fullWidth>
+            Inscribirse
+          </Button>
         </Grid>
       </Grid>
     </Grid>
