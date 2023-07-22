@@ -35,19 +35,33 @@ import CosechasList from "../Components/CosechasList";
 import GanaciaList from "../Components/GanaciaList";
 import GananciaTotalId from "../Components/GananciaTotalId";
 import CargaCuenta from "../Components/CargaCuenta";
+import MenuVites from "../Components/MenuVites";
+import logoInformacion from "../assets/img/informacion/logoInformacion.svg";
+import logoInfo from "../assets/img/MenuDesktop/info.svg";
+import grafo1 from "../assets/img/MenuDesktop/Grafico1.svg";
+import grafo2 from "../assets/img/MenuDesktop/Grafico 2.svg";
+import MenuCountVites from "../Components/MenuCountVites";
+
 function Menu() {
   const theme = useTheme();
-  const route= useNavigate()
+  const route = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
-  const {cosechasList, setCosechasList, gananciaList, setGananciaList,  totalGananciaId, ComponentCargaCuenta} = useFinalContext()
+  const {
+    cosechasList,
+    setCosechasList,
+    gananciaList,
+    setGananciaList,
+    totalGananciaId,
+    ComponentCargaCuenta,
+  } = useFinalContext();
 
-  const hanldeClickCosechas = ()=>{
-    setCosechasList(true)
-  }
+  const hanldeClickCosechas = () => {
+    setCosechasList(true);
+  };
 
-  const handleClickGanancias = ()=>{
-    setGananciaList(true)
-  }
+  const handleClickGanancias = () => {
+    setGananciaList(true);
+  };
 
   return (
     <Grid display="flex" flexDirection="column">
@@ -57,17 +71,33 @@ function Menu() {
         display="flex"
         flexDirection="column"
         alignItems="center"
+        sx={(theme) => ({
+          [theme.breakpoints.up("lg")]: {
+            display: "flex",
+            
+            gap:0,
+          },
+        })}
       >
-        <img
-          src={imageProfile}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-          alt="photo"
-        />
+        <Box
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+             
+            },
+          })}
+        >
+          <img
+            src={imageProfile}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+            alt="photo"
+          />
+        </Box>
         <Box
           position="absolute"
           left={0}
@@ -79,6 +109,11 @@ function Menu() {
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
         >
           <Button
             sx={{
@@ -94,8 +129,6 @@ function Menu() {
 
           <Button endIcon={<MoreVertIcon style={{ color: "white" }} />} />
         </Box>
-
-        {/* the filter of image */}
         <Box
           display="flex"
           flexDirection="row"
@@ -107,8 +140,21 @@ function Menu() {
           bottom={0}
           top={0}
           gap={10}
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
         >
-          <Grid display="flex" flexDirection="column">
+          <Grid
+            display="flex"
+            flexDirection="column"
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+              },
+            })}
+          >
             <Typography variant="h2" sx={{ color: "white" }}>
               Nombre
             </Typography>
@@ -126,6 +172,11 @@ function Menu() {
             justifyContent="center"
             alignItems="center"
             marginBottom={5}
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+              },
+            })}
           >
             <img
               src={photoDefault}
@@ -133,7 +184,7 @@ function Menu() {
               style={{ width: "80%", height: "80%" }}
             />
             <Button
-              onClick={()=>route('/editPerfil')}
+              onClick={() => route("/editPerfil")}
               sx={{
                 bottom: 20,
                 textTransform: "none",
@@ -145,114 +196,157 @@ function Menu() {
           </Grid>
         </Box>
 
-        <Grid
-          paddingY={3}
-          display="flex"
-          width="90%"
-          flexDirection="column"
-          gap={2}
+        {/*component Desktop */}
+        <Box
+          sx={(theme) => ({
+            display:'none',
+            [theme.breakpoints.up("lg")]: {
+              marginTop: 10,
+              display: "flex",
+              gap: 1,
+            },
+          })}
         >
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={()=>route('/vites')}
-            sx={{
-              color: "white",
-              justifyContent: "flex-start",
-              textTransform: "none",
-            }}
-            startIcon={<img src={vite} width="50%" height="50%" />}
-          >
-            Vites
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={()=>route('/wallet')}
-            sx={{
-              color: "white",
-              justifyContent: "flex-start",
-              textTransform: "none",
-            }}
-            startIcon={<img src={billetera} width="50%" height="50%" />}
-          >
-            Billetera
-          </Button>
-          <Button
-            onClick={()=>hanldeClickCosechas()}
-            variant="contained"
-            fullWidth
-            sx={{
-              color: "white",
-              justifyContent: "flex-start",
-              textTransform: "none",
-            }}
-            startIcon={<img src={cosecha} width="50%" height="50%" />}
-          >
-            Cosechas
-          </Button>
-          <Button
-            onClick={()=>handleClickGanancias()}
-            variant="contained"
-            fullWidth
-            sx={{
-              color: "white",
-              justifyContent: "flex-start",
-              textTransform: "none",
-            }}
-            startIcon={<img src={ganancias} width="50%" height="50%" />}
-          >
-            Ganancias
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={()=>route('/products')}
-            sx={{
-              color: "white",
-              justifyContent: "flex-start",
-              textTransform: "none",
-            }}
-            startIcon={<img src={compras} width="50%" height="50%" />}
-          >
-            Comprar VITES
-          </Button>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={()=>route('/profile')}
-            sx={{
-              color: "white",
-              justifyContent: "flex-start",
-              textTransform: "none",
-            }}
-            startIcon={<img src={perfil} width="50%" height="50%" />}
-          >
-            Perfil
-          </Button>
-        </Grid>
+          <MenuVites />
+          <Box borderRadius={2} bgcolor="#344B2C" width={536} height={333}>
+            <img src={grafo1} />
+          </Box>
+        </Box>
+        <Box
+          sx={(theme) => ({
+            display:'none',
+            [theme.breakpoints.up("lg")]: {
+              marginTop: 2,
+              display: "flex",
+              gap: 1,
+            },
+          })}
+        >
+        <Box borderRadius={2} border={1} borderColor='primary.main' bgcolor="white" width={536} height={333} display='flex' justifyContent='center' alignItems='center'>
+        <img  width="90%" height="90%" src={grafo2} />
       </Box>
-      {
-        cosechasList && (
-          <CosechasList/>
-        )
-      }
+      <MenuCountVites/>
+      </Box>
 
-      {
-        gananciaList && (
-          <GanaciaList/>
-        )
-      }
-       {
-          totalGananciaId!==null && (
-            <GananciaTotalId/>
-          )
-        }
-      {
-        ComponentCargaCuenta !==null && (
-          <CargaCuenta/>
-        )
-      }
+      </Box>
+
+      <Grid
+        paddingY={3}
+        paddingX={5}
+        display="flex"
+        width="100%"
+        flexDirection="column"
+        gap={2}
+      >
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => route("/vites")}
+          sx={(theme) => ({
+            color: "white",
+            justifyContent: "flex-start",
+            textTransform: "none",
+
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+          startIcon={<img src={vite} width="50%" height="50%" />}
+        >
+          Vites
+        </Button>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => route("/wallet")}
+          sx={(theme) => ({
+            color: "white",
+            justifyContent: "flex-start",
+            textTransform: "none",
+
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+          startIcon={<img src={billetera} width="50%" height="50%" />}
+        >
+          Billetera
+        </Button>
+        <Button
+          onClick={() => hanldeClickCosechas()}
+          variant="contained"
+          fullWidth
+          sx={(theme) => ({
+            color: "white",
+            justifyContent: "flex-start",
+            textTransform: "none",
+
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+          startIcon={<img src={cosecha} width="50%" height="50%" />}
+        >
+          Cosechas
+        </Button>
+        <Button
+          onClick={() => handleClickGanancias()}
+          variant="contained"
+          fullWidth
+          sx={(theme) => ({
+            color: "white",
+            justifyContent: "flex-start",
+            textTransform: "none",
+
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+          startIcon={<img src={ganancias} width="50%" height="50%" />}
+        >
+          Ganancias
+        </Button>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => route("/products")}
+          sx={(theme) => ({
+            color: "white",
+            justifyContent: "flex-start",
+            textTransform: "none",
+
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+          startIcon={<img src={compras} width="50%" height="50%" />}
+        >
+          Comprar VITES
+        </Button>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => route("/profile")}
+          sx={(theme) => ({
+            color: "white",
+            justifyContent: "flex-start",
+            textTransform: "none",
+
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+          startIcon={<img src={perfil} width="50%" height="50%" />}
+        >
+          Perfil
+        </Button>
+      </Grid>
+
+      {cosechasList && <CosechasList />}
+
+      {gananciaList && <GanaciaList />}
+      {totalGananciaId !== null && <GananciaTotalId />}
+      {ComponentCargaCuenta !== null && <CargaCuenta />}
     </Grid>
   );
 }

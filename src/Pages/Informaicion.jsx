@@ -44,7 +44,7 @@ function Informaicion() {
         display="flex"
         flexDirection="column"
       >
-        <Header />
+        <Header  />
 
         <Box
           width="100%"

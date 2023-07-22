@@ -4,6 +4,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./assets/css/_default.css";
 import FinalContextProvider from "./Context/FinalContext";
+import Sidebar from "./Components/Sidebar";
+import { useState } from "react";
+import { Grid } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -13,16 +16,15 @@ const theme = createTheme({
     secondary: {
       main: "#D9D9D9",
       body: "#FFFFFF",
-
     },
-    filter:{
-      main: '#5D9B31'
+    filter: {
+      main: "#5D9B31",
     },
     text: {
       primary: "#FFFFFF",
       secondary: "#5D9B31",
       disabled: "#C0C0C0",
-      cards:"#757575"
+      cards: "#757575",
     },
     background: {
       paper: "#E8E8E8",
@@ -39,16 +41,16 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Poppins', sans-serif",
-  
+
     h2: {
       fontWeight: 400,
       fontSize: 32,
     },
   },
-  shape:{
-    borderRadius: 10
+  shape: {
+    borderRadius: 10,
   },
-  
+
   components: {
     MuiPaper: {
       defaultProps: {
@@ -57,23 +59,23 @@ const theme = createTheme({
         },
       },
     },
-    
-    MuiCard:{
-      defaultProps:{
-        sx:{
-          bgcolor:"#FFFFFF"
-        }
-      }
+
+    MuiCard: {
+      defaultProps: {
+        sx: {
+          bgcolor: "#FFFFFF",
+        },
+      },
     },
     MuiButton: {
-       styleOverrides:{
-        outlined:{
-          borderWidth:2,
-          "&:hover":{
-            borderWidth:2
-          }
+      styleOverrides: {
+        outlined: {
+          borderWidth: 2,
+          "&:hover": {
+            borderWidth: 2,
+          },
         },
-       },
+      },
       defaultProps: {
         sx: {
           paddingX: 2.5,
@@ -130,15 +132,28 @@ const theme = createTheme({
 });
 
 function App() {
+  const [open, setOpen] = useState(false);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <FinalContextProvider>
-        {" "}
-        {/* Usar FinalContextProvider como proveedor del contexto */}
-        <BrowserRouter>
+        <Grid sx={{display:'flex', justifyContent:'end'}}>
+
+
+        <Grid sx={{width: open? "15%": "0%" , 
+         }}>
+
+          <Sidebar setOpen={setOpen} open={open}/>
+        </Grid>
+          
+          <Grid sx={{width: open? "75%": "100%" , 
+         }}>
+
           <Router />
-        </BrowserRouter>
+          </Grid>
+        </Grid>
+        
       </FinalContextProvider>
     </ThemeProvider>
   );

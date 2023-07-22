@@ -53,8 +53,11 @@ function Signin() {
         sx={(theme) => ({
           [theme.breakpoints.up("lg")]: {
             order: 1,
+
             height: "50%",
             width: "50%",
+            borderRadius:'50%'
+
           },
         })}
       >
@@ -62,7 +65,9 @@ function Signin() {
           sx={(theme) => ({
             height: "55vh",
             [theme.breakpoints.up("lg")]: {
-              height: "50%",
+              height:"100%",
+
+              borderRadius:'50%'
             },
           })}
         >

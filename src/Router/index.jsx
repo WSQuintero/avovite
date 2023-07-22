@@ -21,6 +21,7 @@ import PasarDinero from "../Pages/PasarDinero";
 import Products from "../Pages/Products";
 import ProductDetail from "../Pages/ProductDetail";
 import Checkout from "../Pages/Checkout";
+import Formulario from "../Pages/Formulario";
 
 
 function Router() {
@@ -113,6 +114,10 @@ function Router() {
     {
       path:'/checkout',
       element: <Checkout/>
+    },
+    {
+      path:'/form',
+      element:<Formulario/>
     }
     
   ]);

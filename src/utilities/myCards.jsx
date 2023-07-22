@@ -570,8 +570,6 @@ export const transacciones = [
   },
 ]
 
-export const cosechas = [
-  {
-    
-  }
+export const MenuVites = [
+ 
 ]
