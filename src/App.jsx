@@ -22,7 +22,7 @@ const theme = createTheme({
       main: "#5D9B31",
     },
     text: {
-      primary: "#FFFFFF",
+      primary: "#757575",
       secondary: "#5D9B31",
       disabled: "#C0C0C0",
       cards: "#757575",
@@ -129,9 +129,9 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          backgroundColor: "#C0C0C0", // Cambia el color de fondo según tus preferencias
+          backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
           border: "none",
-          color: "#c0c0c0", // Cambia el color del texto según tus preferencias
+          color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
           fontWeight: 500,
           width:350
@@ -139,43 +139,56 @@ const theme = createTheme({
       },
       defaultProps: {
         inputProps: {
-          color: "#c0c0c0",
+          color: "#757575",
 
         },
       },
     },
-    MuiMenuItem:{
-      styleOverrides:{
-        root:{
-          backgroundColor:'#C0C0C0',
-          color:'white',
-          fontSize:18,
-          "&:hover":{
-            borderWidth:3
-          }
-        }
-      }
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'white',
+          color: '#757575',
+          fontSize: 18,
+          '&:hover': {
+            borderWidth: 3,
+            backgroundColor: '#EEEEEE',
+          },
+        },
+        selected: {
+          backgroundColor: '#C0C0C0', // Color de fondo cuando está seleccionado
+          color: 'black', // Color del texto cuando está seleccionado
+        },
+      },
     },
     MuiSelect:{
       styleOverrides:{
         root:{
           borderRadius: 12,
-          backgroundColor: "#C0C0C0", // Cambia el color de fondo según tus preferencias
+          backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
           border: "none",
-          color: "white", // Cambia el color del texto según tus preferencias
+          color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
           fontWeight: 500,
-          width:350
-        }
+          width:350,
+          "&:hover":{
+            borderWidth:3,
+           
+          },
+        },
+       
+        
       },
       defaultProps:{
         inputProps:{
-          color:'white'
+          color:'#C0C0C0'
         }
-      }
-    }
+      },
+      
+    },
+    
   },
-
+  
   breakpoints: {
     values: {
       sm: 576,
