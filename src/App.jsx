@@ -7,6 +7,7 @@ import FinalContextProvider from "./Context/FinalContext";
 import Sidebar from "./Components/Sidebar";
 import { useState } from "react";
 import { Grid } from "@mui/material";
+import { Height } from "@mui/icons-material";
 
 const theme = createTheme({
   palette: {
@@ -41,10 +42,15 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Poppins', sans-serif",
-
-    h2: {
+    h3: {
       fontWeight: 400,
+      fontSize: 18,
+      color: "#67AA36",
+    },
+    h2: {
+      fontWeight: 600,
       fontSize: 32,
+      color: "#67AA36",
     },
   },
   shape: {
@@ -119,7 +125,57 @@ const theme = createTheme({
         },
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          backgroundColor: "#C0C0C0", // Cambia el color de fondo según tus preferencias
+          border: "none",
+          color: "#c0c0c0", // Cambia el color del texto según tus preferencias
+          fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
+          fontWeight: 500,
+          width:350
+        },
+      },
+      defaultProps: {
+        inputProps: {
+          color: "#c0c0c0",
+
+        },
+      },
+    },
+    MuiMenuItem:{
+      styleOverrides:{
+        root:{
+          backgroundColor:'#C0C0C0',
+          color:'white',
+          fontSize:18,
+          "&:hover":{
+            borderWidth:3
+          }
+        }
+      }
+    },
+    MuiSelect:{
+      styleOverrides:{
+        root:{
+          borderRadius: 12,
+          backgroundColor: "#C0C0C0", // Cambia el color de fondo según tus preferencias
+          border: "none",
+          color: "white", // Cambia el color del texto según tus preferencias
+          fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
+          fontWeight: 500,
+          width:350
+        }
+      },
+      defaultProps:{
+        inputProps:{
+          color:'white'
+        }
+      }
+    }
   },
+
   breakpoints: {
     values: {
       sm: 576,
@@ -138,22 +194,32 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <FinalContextProvider>
-        <Grid sx={{display:'flex', justifyContent:'end'}}>
+        <Grid sx={(theme)=>({
+          [theme.breakpoints.up('lg')]:{
+            display: "flex", 
+            justifyContent: "end" 
+          }
+         })}>
+          <Grid sx={(theme)=>({
+            [theme.breakpoints.up('lg')]:{
+             
+              width:"15%"
+            }
+           })}
+          >
+            <Sidebar setOpen={setOpen} open={open} />
+          </Grid>
 
-
-        <Grid sx={{width: open? "15%": "0%" , 
-         }}>
-
-          <Sidebar setOpen={setOpen} open={open}/>
-        </Grid>
-          
-          <Grid sx={{width: open? "75%": "100%" , 
-         }}>
-
-          <Router />
+          <Grid sx={(theme)=>({
+            [theme.breakpoints.up('lg')]:{
+             
+              width:"75%"
+            }
+           })}
+          >
+            <Router />
           </Grid>
         </Grid>
-        
       </FinalContextProvider>
     </ThemeProvider>
   );

@@ -6,11 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
-import {
- 
-  
-  MoreVert as MoreVertIcon,
-} from "@mui/icons-material";
+import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -26,9 +22,25 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import menuSidebar from "../assets/img/header menu copy.svg";
 
+import {
+  Search as SearchIcon,
+  MailOutline as MailOutlineIcon,
+  ShoppingCartOutlined as ShoppingCartOutlinedIcon,
+} from "@mui/icons-material";
+import { InputAdornment } from "@mui/material";
 
 import { useState } from "react";
-import { Button } from "@mui/material";
+import bomb from "../assets/img/Sidebar/Bomb.svg";
+import profile from "../assets/img/Sidebar/profile default.svg";
+import icon from "../assets/img/Sidebar/icon.svg";
+import vites from "../assets/img/Sidebar/vites.svg";
+import Billetera from "../assets/img/Sidebar/Billetera.svg";
+import Cosechas from "../assets/img/Sidebar/Cosechas.svg";
+import Ganancias from "../assets/img/Sidebar/Ganancias.svg";
+import ComprarVites from "../assets/img/Sidebar/ComprarVites.svg";
+import Perfil from "../assets/img/Sidebar/Perfil.svg";
+import vector from '../assets/img/Sidebar/vector.svg'
+import { Button, Grid, TextField } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -77,6 +89,20 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+// Función para obtener la imagen correspondiente al nombre del elemento
+const getIconByName = (name) => {
+  const iconMap = {
+    vites: vites,
+    Billetera: Billetera,
+    Cosechas: Cosechas,
+    Ganancias: Ganancias,
+    "Comprar Vites": ComprarVites,
+    Perfil: Perfil,
+  };
+
+  return iconMap[name] || icon; // Devuelve el icono correspondiente o el icono por defecto si no encuentra una imagen para el nombre dado
+};
+
 export default function Sidebar({ setOpen, open }) {
   const theme = useTheme();
   // const [open, setOpen] = useState(false);
@@ -90,14 +116,23 @@ export default function Sidebar({ setOpen, open }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={(theme)=>({
+      display:'none',
+      [theme.breakpoints.up('lg')]:{
+        display: "flex"
+      }
+       })}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar
+        position="fixed"
+        open={open}
+        elevation={0}
+        sx={{ border: "none", borderColor: "white" }}
+      >
         <Toolbar
           sx={{
             width: "100%",
-          
-            bgcolor: "#214820",
+            bgcolor: "white",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -106,20 +141,85 @@ export default function Sidebar({ setOpen, open }) {
         >
           <Button
             onClick={handleDrawerOpen}
-            sx={{
-              paddingLeft: 1,
-              color: "secondary.body",
-              textTransform: "none",
-              mr: 2,
-              ...(open && { display: "none" }),
-            }}
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+                paddingLeft: 100,
+                color: "secondary.body",
+                textTransform: "none",
+                mr: 2,
+                ...(open && { display: "none" }),
+              },
+            })}
             // Open the sidebar when this button is clicked
             startIcon={
               <img src={menuSidebar} width={20} height={20} alt="menuSidebar" />
             }
           />
-          <Typography>Avovite App</Typography>
-          <Button endIcon={<MoreVertIcon style={{ color: "white" }} />} />
+          <Grid
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            paddingLeft={30}
+            gap={2}
+          >
+            <Typography variant="h3">Avovite App</Typography>
+            <TextField
+              fullWidth
+              sx={{ bgcolor: "transparent" }}
+              placeholder="typr to sdearch"
+              InputProps={{
+                style: {
+                  color: "black",
+                  height: "40px",
+                  width: "80%",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  borderRadius: "10px",
+                  border: "none",
+                },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <img src={bomb} alt="bomb" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 2,
+              },
+            })}
+          >
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "primary.main" }}
+              startIcon={<ShoppingCartOutlinedIcon sx={{ color: "white" }} />}
+            ></Button>
+            <Box border={1} borderColor="text.disabled" height={40}></Box>
+            <img src={profile} alt="profile" />
+            <Grid display="flex" flexDirection="column">
+              <Typography variant="h3" color="text.cards">
+                Jhonatan
+              </Typography>
+              <Typography variant="h3" color="text.disabled">
+                Admin
+              </Typography>
+            </Grid>
+          </Grid>
+          <Button
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+              },
+            })}
+            endIcon={<MoreVertIcon style={{ color: "white" }} />}
+          />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -131,47 +231,50 @@ export default function Sidebar({ setOpen, open }) {
             boxSizing: "border-box",
           },
         }}
-        variant="persistent"
+        variant="permanent"
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
+        <DrawerHeader
+          sx={{
+            bgcolor: "primary.main",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            height: 340,
+          }}
+        >
+          <img style={{ marginRight: 90 }} src={icon} alt="icon" />
+          <Typography sx={{ marginTop: 2, marginRight: 15 }}>
+            Navigation
+          </Typography>
         </DrawerHeader>
-        <Divider />
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+
+        <List sx={{ bgcolor: "primary.main" , paddingX:2}}>
+          {[
+            "vites",
+            "Billetera",
+            "Cosechas",
+            "Ganancias",
+            "Comprar Vites",
+            "Perfil",
+          ].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <img src={getIconByName(text)} alt={text} />
                 </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItemButton>
+              <img src={vector} alt="Vector" />
             </ListItem>
           ))}
         </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+
+        <Box height="100%" bgcolor="primary.main"></Box>
       </Drawer>
-      <Box height={64}></Box>
     </Box>
   );
 }

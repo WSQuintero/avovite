@@ -22,6 +22,8 @@ import Products from "../Pages/Products";
 import ProductDetail from "../Pages/ProductDetail";
 import Checkout from "../Pages/Checkout";
 import Formulario from "../Pages/Formulario";
+import Dataset from "../Pages/Dataset";
+
 
 
 function Router() {
@@ -118,6 +120,10 @@ function Router() {
     {
       path:'/form',
       element:<Formulario/>
+    },
+    {
+      path:'/dashTable',
+      element:<Dataset/>
     }
     
   ]);

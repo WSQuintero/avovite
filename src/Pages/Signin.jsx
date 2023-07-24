@@ -306,7 +306,7 @@ function Signin() {
                 backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
               },
             }}
-            onClick={() => route("/termsandConditions")}
+            onClick={() => route("/dashTable")}
           >
             Iniciar sesión
           </Button>
