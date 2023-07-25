@@ -29,7 +29,7 @@ import Header from "../Components/Header/Header";
 
 function TermsConditions() {
   const theme = useTheme();
-  const route = useNavigate()
+  const route = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
   const [PasswordClic, setPasswordClic] = useState(false);
   const typographyRef = useRef(null);
@@ -58,19 +58,43 @@ function TermsConditions() {
   }, []);
 
   return (
-    <Grid display="flex" flexDirection="column">
-      <Box position='relative' height="10vh" display="flex" flexDirection="column">
+    <Grid
+      display="flex"
+      flexDirection="column"
+      sx={(theme) => ({
+        [theme.breakpoints.up("lg")]: {
+          marginTop: 10,
+        },
+      })}
+    >
+      <Box
+        position="relative"
+        height="10vh"
+        display="flex"
+        flexDirection="column"
+      >
+        <Header />
 
-        <Header/>
-
-        <Box width="100%" height={40} bgcolor="#67AA36">
+        <Box
+          width="100%"
+          height={40}
+          bgcolor="#67AA36"
+          x={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+        >
           <Button
-          onClick={()=>route('/signin')}
-            sx={{
+            onClick={() => route("/signin")}
+            sx={(theme) => ({
               marginLeft: 1,
               color: "secondary.body",
               textTransform: "none",
-            }}
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+              },
+            })}
             startIcon={
               <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
             }
@@ -81,28 +105,43 @@ function TermsConditions() {
 
         {/* the filter of image */}
 
-        <Grid paddingX={5} paddingY={2} display="flex" flexDirection="column">
+        <Grid display="flex" flexDirection="column"
+        sx={(theme)=>({
+          paddingX:5,
+            paddingY:2,
+          [theme.breakpoints.up('lg')]:{
+            paddingX:30,
+            paddingY:6,
+          }
+        })}
+        >
           <Box>
-            <Grid
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-             
-            >
-              <Typography color="primary.main" textAlign="center" sx={{fontSize:'25px', fontWeight:600}}>
+            <Grid display="flex" flexDirection="column" justifyContent="center">
+              <Typography
+                color="primary.main"
+                textAlign="center"
+                sx={{ fontSize: "25px", fontWeight: 600 }}
+              >
                 Términos y Condiciones
               </Typography>
               <Typography
-                color="black"
+                color="text.cards"
                 ref={typographyRef}
-                textAlign='justify'
+                textAlign="justify"
                 lineHeight={2}
-                style={{
+                sx={(theme)=>({
                   maxHeight: "500px", // Ajusta la altura máxima deseada
                   overflowY: "scroll",
                   scrollbarWidth: "thin",
                   padding: "20px",
-                }}
+                  [theme.breakpoints.up('lg')]:{
+                    maxHeight: 500, // Ajusta la altura máxima deseada
+                  overflowY: "scroll",
+                  
+                  scrollbarWidth: "thin",
+                  padding: 4,
+                  }
+                })}
               >
                 Términos y Condiciones de Uso de la Aplicación Avovite app Por
                 favor, lea detenidamente los siguientes términos y condiciones
@@ -121,18 +160,27 @@ function TermsConditions() {
                 utilice la Aplicación.{" "}
               </Typography>
 
-              <div style={{ textAlign: "center" }}>
+              {/* <div style={{ textAlign: "center" }}>
                 Porcentaje de desplazamiento: {scrollPercentage.toFixed(2)}%
-              </div>
+              </div> */}
             </Grid>
           </Box>
 
-         
           <Grid display="flex" gap={2}>
-            <Button onClick={()=>route('/inscription')}variant="contained" fullWidth sx={{ color: "white" }}>
+            <Button
+              onClick={() => route("/inscription")}
+              variant="contained"
+              fullWidth
+              sx={{ color: "white" }}
+            >
               Aceptar
             </Button>
-            <Button onClick={()=>route('/signin')}variant="contained" fullWidth sx={{ color: "white" }}>
+            <Button
+              onClick={() => route("/signin")}
+              variant="contained"
+              fullWidth
+              sx={{ color: "white" }}
+            >
               Cancelar
             </Button>
           </Grid>
