@@ -4,22 +4,15 @@ import {
   Box,
   Grid,
   Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
+  
   Typography,
-  InputAdornment,
-  Link,
-  Paper,
+ 
   Card,
   CardActionArea,
-  Divider,
+ 
 } from "@mui/material";
 import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-  Person,
+  
   KeyboardBackspace as KeyboardBackspaceIcon,
   MoreVert as MoreVertIcon,
   ShoppingCart as ShoppingCartIcon,
@@ -30,6 +23,7 @@ import { useTheme } from "@emotion/react";
 import Header from "../Components/Header/Header";
 import logoInformacion from '../assets/img/informacion/logoInformacion.svg'
 import { useFinalContext } from "../Context/FinalContext";
+import TableInformation from "../Components/TableInformation";
 
 function Informaicion() {
   const theme = useTheme();
@@ -39,10 +33,16 @@ function Informaicion() {
   return (
     <Grid display="flex" flexDirection="column">
       <Box
-        position="relative"
-        height="10vh"
+        
         display="flex"
         flexDirection="column"
+        sx={(theme)=>({
+          position:"relative",
+          height:"10vh",
+          [theme.breakpoints.up('lg')]:{
+            display:'none'
+          }
+        })}
       >
         <Header  />
 
@@ -76,7 +76,7 @@ function Informaicion() {
           </Button>
         </Box>
 
-
+        </Box>
         {/* the filter of image */}
 
         <Grid
@@ -89,7 +89,17 @@ function Informaicion() {
         >
         { vites.map((e)=>(
             <>
-          <Grid key={e.id} display='flex' alignItems='center' justifyContent='space-between' width='100%' paddingLeft={2} onClick={()=>route(`vite/${e.id}`)} >
+          <Grid key={e.id}  width='100%' paddingLeft={2} onClick={()=>route(`vite/${e.id}`)} 
+          
+          sx={(theme)=>({
+            display:'flex',
+            alignItems:'center',
+            justifyContent:'space-between',
+            [theme.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
+          >
             <Box
              bgcolor='primary.main'
              borderRadius='50%'
@@ -128,12 +138,24 @@ function Informaicion() {
             </Card>
           </Grid>
 
-          <Box width='100%' height={1} bgcolor='text.disabled' border={1}></Box>
+          <Box width='100%' height={1} bgcolor='text.disabled' border={1} 
+           sx={(theme)=>({
+            height:1,
+            border:1,
+            bgcolor:'text.disabled',
+            [theme.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
+          
+          ></Box>
+        
         </>
         ))
     }
+        <TableInformation/>
         </Grid>
-      </Box>
+      
     </Grid>
   );
 }

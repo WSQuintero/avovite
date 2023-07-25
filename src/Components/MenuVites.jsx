@@ -12,8 +12,9 @@ import {
 } from "@mui/icons-material";
 
 import React from 'react'
-
+import { useNavigate } from 'react-router-dom'
 function MenuVites() {
+  const Navigate = useNavigate()
   return (
     <Box
         sx={(theme)=>({
@@ -35,7 +36,7 @@ function MenuVites() {
                 width={258}
                 height={176}
                 borderRadius={2}
-                onClick={() => route("/informacion")}
+                onClick={() => Navigate("/informacion")}
                 sx={{ cursor: "pointer" }}
               >
                 <Grid marginRight={18} marginTop={1} >
@@ -67,7 +68,7 @@ function MenuVites() {
                width={258}
                height={176}
                borderRadius={2}
-               onClick={() => route("/informacion")}
+               onClick={() => Navigate("/informacion")}
                sx={{ cursor: "pointer" }}
               >
                  <Grid marginRight={18} marginTop={1} >
@@ -102,7 +103,7 @@ function MenuVites() {
                 width={258}
                 height={176}
                 borderRadius={2}
-                onClick={() => route("/informacion")}
+                onClick={() => Navigate("/informacion")}
                 sx={{ cursor: "pointer" }}
               >
                 <Grid marginRight={18} marginTop={1} >
@@ -134,7 +135,7 @@ function MenuVites() {
                 width={258}
                 height={176}
                 borderRadius={2}
-                onClick={() => route("/informacion")}
+                onClick={() => Navigate("/informacion")}
                 sx={{ cursor: "pointer" }}
               >
                  <Grid marginRight={18} marginTop={1} >

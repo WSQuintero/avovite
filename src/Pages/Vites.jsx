@@ -4,21 +4,14 @@ import {
   Box,
   Grid,
   Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
+ 
   Typography,
-  InputAdornment,
-  Link,
-  Paper,
+  
 } from "@mui/material";
 import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-  Person,
+ 
   KeyboardBackspace as KeyboardBackspaceIcon,
-  MoreVert as MoreVertIcon,
+  
   ShoppingCart as ShoppingCartIcon,
   LightbulbOutlined as LightbulbOutlinedIcon,
   WhatsApp as WhatsAppIcon,
@@ -26,11 +19,9 @@ import {
 
 import { useTheme } from "@emotion/react";
 import Header from "../Components/Header/Header";
-import photoDefault from "../assets/img/photoDefault.svg";
 import viteplant from "../assets/img/viteplant.svg";
 import book from "../assets/img/vites/book.svg";
 import Annual from "../assets/img/vites/Annual.svg";
-import idea from "../assets/img/vites/Idea.svg";
 import truck from "../assets/img/vites/truck.svg";
 
 function Vites() {

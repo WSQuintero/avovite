@@ -129,7 +129,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
+          backgroundColor: "#EEEEE", // Cambia el color de fondo según tus preferencias
           border: "none",
           color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
@@ -187,6 +187,51 @@ const theme = createTheme({
       },
       
     },
+    MuiTable:{
+      styleOverrides:{
+        root:{
+          backgroundColor:'#FFFFFF',
+          
+        }
+      },
+    
+    },
+    MuiTableHead:{
+      styleOverrides:{
+        root:{
+          color:'#67AA36',
+          backgroundColor:'#67AA36'
+        
+        }
+      }
+    },
+    MuiTableBody:{
+      styleOverrides:{
+        root:{
+          border:'none'
+        }
+      }
+    },
+    MuiTableCell:{
+      styleOverrides:{
+        root:{
+         
+          color:'#67AA36',
+          textAlign:'center'
+         
+        }
+      }
+    },
+    MuiTableContainer:{
+      styleOverrides:{
+        root:{
+          display:'flex',
+          color:'#67AA36',
+          
+          alignItems:'center'
+        }
+      }
+    }
     
   },
   
