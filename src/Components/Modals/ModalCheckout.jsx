@@ -24,22 +24,42 @@ import {
 import { useTheme } from "@emotion/react";
 import logoCheck from "../../assets/img/logoChecktou.svg";
 
- function ModalCheckout({ onCloseModal }) {
+function ModalCheckout({ onCloseModal }) {
   const theme = useTheme();
-  const route = useNavigate()
+  const route = useNavigate();
   console.log(onCloseModal);
 
   const handleCoseModal = () => {
     onCloseModal();
-    
-    route('/menu')
+
+    route("/menu");
   };
 
   return (
-    <Grid display="flex" flexDirection="column">
-      <Box position="absolute" height="100%" sx={{ backgroundColor: "white" }}>
-        {/* the filter of image */}
-
+    <Grid display="flex" flexDirection="column"
+    sx={(theme) => ({ 
+      marginTop:-5,
+    [theme.breakpoints.up('lg')]:{
+      position:'relative',
+      height:'120vh',
+      width:'50vw',
+      marginTop:-50,
+    }
+    })}
+    >
+      <Box
+        
+        sx={(theme) => ({ 
+          position:"absolute",
+          height:"100%",
+          backgroundColor: "white",
+        [theme.breakpoints.up('lg')]:{
+          paddingY:4,
+          position:'absolute',
+          height:'100%'
+        }
+        })}
+      >
         <Grid
           paddingX={5}
           paddingY={7}
@@ -65,33 +85,28 @@ import logoCheck from "../../assets/img/logoChecktou.svg";
               </Typography>
 
               <Typography
-               color="text.disabled"
-               textAlign="center"
-               paddingX={5}
-               sx={{ fontSize: "18px", fontWeight: 400 }}
+                color="text.disabled"
+                textAlign="center"
+                paddingX={5}
+                sx={{ fontSize: "18px", fontWeight: 400 }}
               >
                 Gracias por inscribirse a Avovite te confirmamos que hemos
                 recibido correctamente tu inscripción
               </Typography>
               <Button
-              variant="contained"
-              onClick={handleCoseModal}
-              fullWidth
-              sx={{ color: "white" }}
-            >
-              Cerrar
-            </Button>
+                variant="contained"
+                onClick={handleCoseModal}
+                fullWidth
+                sx={{ color: "white" }}
+              >
+                Cerrar
+              </Button>
             </Grid>
           </Box>
-
-         
-           
-         
         </Grid>
       </Box>
     </Grid>
   );
 }
 
-
-export default ModalCheckout
+export default ModalCheckout;
