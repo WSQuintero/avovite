@@ -133,6 +133,7 @@ const theme = createTheme({
           border: "none",
           color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
+          
           fontWeight: 500,
           width:350
         },
@@ -170,7 +171,7 @@ const theme = createTheme({
           color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
           fontWeight: 500,
-          width:350,
+         
           "&:hover":{
             borderWidth:3,
            
