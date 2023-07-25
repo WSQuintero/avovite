@@ -20,12 +20,6 @@ import {
   KeyboardBackspace as KeyboardBackspaceIcon,
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
-
-import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
-import logo from "../assets/img/logo.svg";
-
-
-
 import { useTheme } from "@emotion/react";
 import Header from "../Components/Header/Header";
 import { useFinalContext } from "../Context/FinalContext";
@@ -49,22 +43,37 @@ function FormInscription() {
   }
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex" flexDirection="column" sx={(theme)=>({
+      [theme.breakpoints.up('lg')]:{
+        alignItems:'center',
+        justifyContent:'center'
+      }
+    })}>
       <Box
         position="relative"
         height="10vh"
         display="flex"
         flexDirection="column"
+        sx={(theme)=>({
+          [theme.breakpoints.up('lg')]:{
+            marginTop:50,
+            alignItems:'center',
+            justifyContent:'center'
+          }
+        })}
       >
         <Header />
 
         <Box width="100%" height={40} bgcolor="#67AA36">
           <Button
-            sx={{
+            sx={(theme) => ({
               marginLeft: 1,
               color: "secondary.body",
               textTransform: "none",
-            }}
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+              },
+            })}
             startIcon={
               <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
             }
@@ -77,212 +86,140 @@ function FormInscription() {
 
         <Grid  display="flex" flexDirection="column">
         <Grid
-          flexGrow={1}
-          paddingX={4}
-          paddingY={4}
+          
           display="flex"
           flexDirection="column"
           gap={2}
+          sx={(theme) => ({
+            alignItems:'center',
+            paddingX:4,
+            paddingY:3,
+            [theme.breakpoints.up("lg")]: {
+              width:'50vw'
+            },
+          })}
         >
+        <Typography variant="h2">INSCRIPCIÓN</Typography>
           
 
           <TextField
             name="nombreyapellido"
             placeholder="Nombre Y Apellido"
+            
             required
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
               }
-            }}
+            })}
+            
           />
           <TextField
             name="Cedula"
             placeholder="Cedula"
             required
             fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
               }
-            }}
+            })}
           />
           <TextField
             name="compañia"
             type="text"
             placeholder="Nombre de la compaña (opcional)"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-            }}
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
+              }
+            })}
           />
           <TextField
             name="pais"
             type="Pais"
             placeholder="Pais"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
               }
-            }}
+            })}
           />
           <TextField
             name="ciudad"
             type="text"
             placeholder="ciudad"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-              
-            }}
+            
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
+              }
+            })}
           />
           <TextField
             name="codePostal"
             type="text"
             placeholder="Codigo postal"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-              
-            }}
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
+              }
+            })}
           />
           <TextField
             name="direccion"
             type="text"
             placeholder="Dirección"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
               }
-            }}
+            })}
           />
           <TextField
             name="Telefono"
             type="number"
             placeholder="Telefono"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-             
-            }}
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
+              }
+            })}
           />
           <TextField
             name="cuentaBancaria"
             type="number"
             placeholder="Cuenta bancaria"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-              
-            }}
+            sx={(theme)=>({
+              width:'100%',
+              [theme.breakpoints.up('lg')]:{
+
+                width:'100%'
+              }
+            })}
           />
          
           

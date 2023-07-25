@@ -79,7 +79,7 @@ function TermsConditions() {
           width="100%"
           height={40}
           bgcolor="#67AA36"
-          x={(theme) => ({
+          sx={(theme) => ({
             [theme.breakpoints.up("lg")]: {
               display: "none",
             },
