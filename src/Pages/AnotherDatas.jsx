@@ -32,6 +32,7 @@ import perspective from '../assets/img/anotherdata/perspective.svg'
 import requisito from '../assets/img/anotherdata/requisito.svg'
 import valoracion from '../assets/img/anotherdata/valoracion.svg'
 import potencial from '../assets/img/anotherdata/potencial.svg'
+import AnotherData from "../Components/AnotherData";
 
 
 function AnotherDatas() {
@@ -39,7 +40,13 @@ function AnotherDatas() {
   const route = useNavigate()
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex" flexDirection="column" sx={(t)=>({
+      [t.breakpoints.up('lg')]:{
+        gap:2,
+        marginLeft:-10,
+        marginTop:2,
+      }
+    })}>
       <Box
         position="relative"
         height="10vh"
@@ -57,6 +64,14 @@ function AnotherDatas() {
           flexDirection="row"
           justifyContent="space-between"
           alignItems="center"
+          sx={(theme)=>({
+            marginTop:20,
+
+            [theme.breakpoints.up('lg')]:{
+              display:'none',
+              marginTop:20,
+            }
+          })}
         >
           <Button
           onClick={()=>route('/vites')}
@@ -78,13 +93,30 @@ function AnotherDatas() {
         </Box>
 
         {/* the filter of image */}
-
+        </Box>
         <Grid
-          paddingX={2}
-          paddingY={2}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
+        display="flex"
+          
+          sx={(theme)=>({
+            paddingX:2,
+          paddingY:2,
+          
+          flexDirection:"column",
+          alignItems:"center",
+            [theme.breakpoints.up('lg')]:{
+              flexDirection:"column",
+             
+              alignItems:"none",
+              paddingX:4,
+              padding:0,
+              width:'100%',
+             
+              marginLeft:-1,
+              
+              gap:3
+            }
+          })}
+
         >
         
           <Grid
@@ -94,6 +126,14 @@ function AnotherDatas() {
             alignItems="center"
             justifyContent="center"
             gap={2}
+            sx={(theme)=>({
+           display:'flex',
+  
+              [theme.breakpoints.up('lg')]:{
+                display:'none',
+               
+              }
+            })}
           >
             <Grid display="flex" gap={2}>
               <Box
@@ -178,14 +218,26 @@ function AnotherDatas() {
             alignItems="center"
             width={50}
             height={50}
-            sx={{
+           
+            sx={(theme)=>({
+            
               boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-            }}
+              [theme.breakpoints.up('lg')]:{
+                display:'none',
+               
+              }
+            })}
           >
             <WhatsAppIcon sx={{ color: "primary.main", width:35, height:35 }} />
           </Box>
         </Grid>
-      </Box>
+          <Typography variant="h3" sx={(theme)=>({
+            [theme.breakpoints.up('lg')]:{
+              paddingLeft:3
+            }
+          })}>Otros Datos</Typography>
+          <AnotherData/>  
+    
     </Grid>
   );
 }

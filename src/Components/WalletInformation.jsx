@@ -37,9 +37,9 @@ const handleAsesorComponent = () => {
             display:'flex',
             
             flexWrap:"wrap",
-            width:'60vw',
+            width:'70vw',
             height:'50vh',
-            marginRight:50,
+            marginRight:10,
             gap:6
            
           }
@@ -128,7 +128,7 @@ const handleAsesorComponent = () => {
                 width={258}
                 height={176}
                 borderRadius={2}
-                onClick={() => route("/anotherDatas")}
+                onClick={() => Navigate("/anotherDatas")}
                 sx={{ cursor: "pointer" }}
               >
                 <Grid marginRight={14} marginTop={1} >
@@ -140,7 +140,9 @@ const handleAsesorComponent = () => {
                  borderRadius={1}
                  display='flex'
                  justifyContent='center'
-                 alignItems='center'>
+                 alignItems='center'
+                
+                 >
 
 
                 <img width="60%" height="60%" src={comprar} />  

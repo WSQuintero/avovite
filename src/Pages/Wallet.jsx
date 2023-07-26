@@ -168,10 +168,12 @@ function Wallet() {
               <ShoppingCartIcon sx={{ color: "secondary.body" }} />
             </Button>
           </Box>
+        </Box>
+      </Box>
           <Typography variant="h2" sx={(theme)=>({
             [theme.breakpoints.up('lg')]:{
-              marginLeft:-108,
-              marginTop:10,
+              
+              
             }
           })}>Billetera</Typography>
           <Box sx={(theme)=>({
@@ -233,8 +235,6 @@ function Wallet() {
             </Typography>
           </Grid>
           </Box>
-        </Box>
-      </Box>
       <Grid
         paddingX={2}
         paddingY={2}
@@ -341,8 +341,8 @@ function Wallet() {
         >
           <WhatsAppIcon sx={{ color: "primary.main", width: 35, height: 35 }} />
         </Box>
-        <WalletInformation/>
       </Grid>
+        <WalletInformation/>
 
       {transaction && <TransactionList />}
       {asesorComponent && <Asesor />}
