@@ -28,7 +28,7 @@ import {
   ShoppingCartOutlined as ShoppingCartOutlinedIcon,
 } from "@mui/icons-material";
 import { InputAdornment } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import bomb from "../assets/img/Sidebar/Bomb.svg";
 import profile from "../assets/img/Sidebar/profile default.svg";
@@ -105,7 +105,8 @@ const getIconByName = (name) => {
 
 export default function Sidebar({ setOpen, open }) {
   const theme = useTheme();
-  // const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const [selectedItem, setSelectedItem] = useState(-1);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -114,7 +115,23 @@ export default function Sidebar({ setOpen, open }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  const handleNavigation = (route, index) => {
+    setSelectedItem(index); // Actualizamos el índice del elemento seleccionado
+    switch (route) {
+      case "vites":
+        navigate("/informacion");
+        break;
+      case "Billetera":
+        navigate("/wallet");
+        break;
+      case "Cosechas":
+        setCosechasList(true);
+        break;
+      // Agrega más casos para otras opciones del sidebar si es necesario
+      default:
+        break;
+    }
+  };
   return (
     <Box sx={(theme)=>({
       display:'none',
@@ -127,7 +144,7 @@ export default function Sidebar({ setOpen, open }) {
         position="fixed"
         open={open}
         elevation={0}
-        sx={{ border: "none", borderColor: "white" }}
+        sx={{ border: "none", borderColor: "white"}}
       >
         <Toolbar
           sx={{
@@ -252,7 +269,7 @@ export default function Sidebar({ setOpen, open }) {
           </Typography>
         </DrawerHeader>
 
-        <List sx={{ bgcolor: "primary.main" , paddingX:2}}>
+        <List sx={{ bgcolor: "primary.main", paddingX: 2 }}>
           {[
             "vites",
             "Billetera",
@@ -261,18 +278,18 @@ export default function Sidebar({ setOpen, open }) {
             "Comprar Vites",
             "Perfil",
           ].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
+            <ListItem key={text} disablePadding sx={{ width: "17vw" }}>
+              <ListItemButton onClick={() => handleNavigation(text, index)}>
                 <ListItemIcon>
                   <img src={getIconByName(text)} alt={text} />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                {/* Aplicamos el color blanco (#FFFFFF) al texto cuando el índice coincide con el elemento seleccionado */}
+                <ListItemText primary={text} sx={{ color: index === selectedItem ? "#FFFFFF" : "inherit" }} />
+                <img src={vector} alt="Vector" />
               </ListItemButton>
-              <img src={vector} alt="Vector" />
             </ListItem>
           ))}
         </List>
-
         <Box height="100%" bgcolor="primary.main"></Box>
       </Drawer>
     </Box>

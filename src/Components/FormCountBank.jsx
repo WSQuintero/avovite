@@ -59,17 +59,36 @@ function FormCountBank() {
    
       <Box
         position="absolute"
-        height="100%"
-        width='100%'
+       
         display="flex"
         flexDirection="column"
-        sx={{
-            backgroundColor:'white'
-        }}
+        sx={(theme)=>({
+            backgroundColor:'white',
+            height:"100%",
+            width:360,
+            [theme.breakpoints.up('lg')]:{
+              backgroundColor:'#FFFFFF',
+              
+              height:'2000vh',
+              width:'200vh',
+             marginLeft:-20,
+              marginTop:10,
+            }
+        })}
       >
         <Header />
 
-        <Box width="100%" height={40} bgcolor="#67AA36">
+        <Box   bgcolor="#67AA36" sx={(theme)=>({
+              display:'flex',
+              width:'100%',
+              height:40,
+              marginTop:7,
+              [theme.breakpoints.up('lg')]:{
+                display:'none'
+
+              }
+          
+        })}>
           <Button
           onClick={()=>setformBanck(null)}
             sx={{
@@ -86,15 +105,35 @@ function FormCountBank() {
         </Box>
 
         {/* the filter of image */}
-
-        <Grid  display="flex" flexDirection="column">
+            <Typography variant='h3' sx={(theme)=>({
+              display:'none',
+              [theme.breakpoints.up('lg')]:{
+                display:'flex',
+                marginLeft:15,
+                marginTop:10,
+                
+              }
+          
+        })}>{filterBanck.banco}</Typography>
+        <Grid  display="flex" flexDirection="column" sx={(theme)=>({
+          justifyContent:'center',
+          alignItems:'center',
+          
+        })}>
         <Grid
           flexGrow={1}
-          paddingX={4}
+          paddingX={0}
           paddingY={4}
           display="flex"
           flexDirection="column"
           gap={2}
+          sx={(theme)=>({
+            alignItems:'center',
+            justifyContent:'center',
+            [theme.breakpoints.up('lg')]:{
+              marginTop:10,
+            }
+          })}
         >
             <Typography variant="h2" color='primary.main' fontWeight={549}>Datos de trasferencia </Typography>
           
@@ -103,41 +142,25 @@ function FormCountBank() {
             name="nombreyapellido"
             placeholder="Nombre Completo"
             required
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
+            sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
               }
-            }}
+            })}
+           
           />
           <TextField
             name="Compañia"
             placeholder="Nombre de Compañia (opcional)"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
               }
-            }}
+            })}
+           
           />
          
           <TextField
@@ -145,68 +168,42 @@ function FormCountBank() {
             type="Pais"
             placeholder="Pais"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
+           
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
               }
-            }}
+            })}
+           
           />
           <TextField
             name="valorTransferencia"
             type="text"
             placeholder="Valor de Transferencia"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-              
-            }}
+           
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
+              }
+            })}
+           
           />
           <TextField
             name="CuentaBancaria"
             type="text"
             placeholder="Cuenta Bancaria"
             required
-            fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-              
-            }}
+           
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
+              }
+            })}
+           
           />
           <TextField
             name="Detalles"
@@ -214,21 +211,13 @@ function FormCountBank() {
             placeholder="Detalles"
             required
             fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
               }
-            }}
+            })}
+           
           />
           <TextField
             name="Telefono"
@@ -236,22 +225,13 @@ function FormCountBank() {
             placeholder="Telefono"
             required
             fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-             
-            }}
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
+              }
+            })}
+           
           />
           <TextField
             name="cuentaBancaria"
@@ -259,29 +239,27 @@ function FormCountBank() {
             placeholder="Cuenta bancaria"
             required
             fullWidth
-            style={{
-              borderRadius: "10px",
-              backgroundColor: "rgba(192,192,192,0.4 )",
-              border: "none",
-            }}
-            InputProps={{
-              style: {
-                color: "black",
-                height: "40px",
-                fontSize: "20px",
-                fontWeight: 500,
-                borderRadius: "10px",
-                border: "none",
-              },
-              
-            }}
+             sx={(theme)=>({
+              width:'90vw',
+              [theme.breakpoints.up('lg')]:{
+                width:'35vw'
+              }
+            })}
+           
           />
          
           
         </Grid>
 
           <Grid paddingX={4} display="flex" gap={2}>
-            <Button variant="contained" onClick={handleModalCheck} fullWidth sx={{ color: "white" }}>
+            <Button variant="contained" sx={(theme)=>({
+              color:'white',
+              [theme.breakpoints.up('lg')]:{
+                color:'white',
+                width:'45vw',
+                height:50,
+              }
+            })} onClick={handleModalCheck} fullWidth >
               Aceptar
             </Button>
             

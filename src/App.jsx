@@ -129,7 +129,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          backgroundColor: "#EEEEE", // Cambia el color de fondo según tus preferencias
+          backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
           border: "none",
           color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades

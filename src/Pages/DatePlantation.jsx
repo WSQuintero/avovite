@@ -41,12 +41,26 @@ function DatePlantation() {
   // console.log(filterViteId)
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex" flexDirection="column" sx={(theme)=>({
+      [theme.breakpoints.up('lg')]:{
+        marginTop:5,
+        marginLeft:24,
+        justifyContent:'center',
+        alignItems:'center',
+        width:'40vw'
+      }
+    })}>
       <Box
         position="relative"
         height="10vh"
         display="flex"
         flexDirection="column"
+        sx={(theme)=>({
+          [theme.breakpoints.up('lg')]:{
+            
+           display:'none'
+          }
+        })}
       >
         <Header />
 
@@ -84,14 +98,24 @@ function DatePlantation() {
         </Box>
 
         {/* the filter of image */}
-
+        </Box>
         <Grid
-          paddingX={2}
-          paddingY={2}
+          
           display="flex"
           flexDirection="column"
           alignItems="center"
-         
+         sx={(theme)=>({
+          paddingX:2,
+          paddingY:2,
+          [theme.breakpoints.up('lg')]:{
+            paddingX:0,
+            marginTop:10,
+            border:1,
+            borderRadius:5,
+            borderColor:'primary.main',
+            width:'80%'
+          }
+         })}
         >
           <Box
             bgcolor="primary.main"
@@ -99,10 +123,11 @@ function DatePlantation() {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            sx={{
+            sx={(theme)=>({
               width: 60,
               height: 60,
-            }}
+          
+            })}
           >
             <img src={logoInformacion} alt="logo" />
           </Box>
@@ -149,9 +174,13 @@ function DatePlantation() {
             alignItems="center"
             width={50}
             height={50}
-            sx={{
+            sx={(theme)=>({
+              
               boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-            }}
+              [theme.breakpoints.up('lg')]:{
+                display:'none',
+              }
+            })}
           >
             <WhatsAppIcon
               sx={{ color: "primary.main", width: 35, height: 35 }}
@@ -159,7 +188,7 @@ function DatePlantation() {
           </Box>
       
         </Grid>
-      </Box>
+      
     </Grid>
   );
 }

@@ -37,6 +37,7 @@ import asesor from "../assets/img/wallet/asesor.svg";
 import { useFinalContext } from "../Context/FinalContext";
 import TransactionList from "../Components/TransactionList";
 import Asesor from "../Components/Asesor";
+import WalletInformation from "../Components/WalletInformation";
 function Wallet() {
   const theme = useTheme();
   const route = useNavigate();
@@ -59,16 +60,24 @@ function Wallet() {
         flexDirection="column"
         alignItems="center"
       >
-        <img
-          src={background}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-          alt="photo"
-        />
+        <Box
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+        >
+          <img
+            src={background}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+            }}
+            alt="photo"
+          />
+        </Box>
         <Box
           position="absolute"
           left={0}
@@ -80,6 +89,11 @@ function Wallet() {
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
         >
           <Button
             sx={{
@@ -99,14 +113,23 @@ function Wallet() {
         {/* the filter of image */}
         <Box
           display="flex"
-          flexDirection="row"
-          position="absolute"
-          justifyContent="space-between"
-          width="100%"
-          alignItems="center"
-          bottom={0}
-          top={0}
-          gap={8}
+          sx={(theme) => ({
+            position: "absolute",
+            justifyContent: "space-between",
+            width: "100%",
+            alignItems: "center",
+            bottom: 0,
+            top: 0,
+            gap: 8,
+            [theme.breakpoints.up("lg")]: {
+              marginTop: 10,
+              flexDirection:'column',
+              alignItems:'center',
+              marginRight:20,
+              width:'100%',
+              gap:0,
+            },
+          })}
         >
           <Box
             position="absolute"
@@ -118,6 +141,11 @@ function Wallet() {
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+                display: "none",
+              },
+            })}
           >
             <Button
               onClick={() => route("/menu")}
@@ -140,128 +168,182 @@ function Wallet() {
               <ShoppingCartIcon sx={{ color: "secondary.body" }} />
             </Button>
           </Box>
-          <img
-            src={photoDefault}
-            alt="logos"
-            style={{ width: "50%", height: "50%" }}
-          />
+          <Typography variant="h2" sx={(theme)=>({
+            [theme.breakpoints.up('lg')]:{
+              marginLeft:-108,
+              marginTop:10,
+            }
+          })}>Billetera</Typography>
+          <Box sx={(theme)=>({
+            [theme.breakpoints.up('lg')]:{
+              display:'flex',
+              justifyContent:'flex-start',
+              alignItems:'center',
+              width:'100%',
+              
+            }
+          })}>
+          <Box
+            sx={(theme) => ({
+              [theme.breakpoints.up("lg")]: {
+              
+              },
+            })}
+          >
+            <img
+              src={photoDefault}
+              alt="logos"
+              style={{ width: "40%", height: "40%" }}
+            />
+          </Box>
 
-          <Grid display="flex" flexDirection="column">
-            <Typography sx={{ color: "white", fontSize: 15 }}>
+          <Grid display="flex" flexDirection="column" sx={(theme)=>({
+            [theme.breakpoints.up('lg')]:{
+             marginLeft:-20,
+            }
+          })}>
+            <Typography
+              sx={(theme) => ({
+                color: "white",
+                fontSize: 15,
+                [theme.breakpoints.up("lg")]: {
+                  color: "primary.main",
+                  fontSize: 19,
+                  fontWeight: 200,
+                },
+              })}
+            >
               Tu Dinero
             </Typography>
             <Typography
               marginRight={10}
               width="100%"
-              sx={{ color: "secondary.body", fontSize: 18, fontWeight: 600 }}
+              sx={(theme) => ({
+                color: "secondary.body",
+                fontSize: 18,
+                fontWeight: 600,
+                [theme.breakpoints.up("lg")]: {
+                  color: "primary.main",
+                  fontSize: 19,
+                  fontWeight: 600,
+                },
+              })}
             >
               $ 5.000.000
             </Typography>
           </Grid>
+          </Box>
         </Box>
-
+      </Box>
+      <Grid
+        paddingX={2}
+        paddingY={2}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+      >
         <Grid
-          paddingX={2}
-          paddingY={2}
           display="flex"
+          paddingY={9}
           flexDirection="column"
           alignItems="center"
+          justifyContent="center"
+          gap={2}
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
         >
-          <Grid
-            display="flex"
-            paddingY={9}
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            gap={2}
-          >
-            <Grid display="flex" gap={2}>
-              <Box
-                bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                width={140}
-                height={90}
-                borderRadius={2}
-                onClick={() => route("/passmoney")}
-                sx={{ cursor: "pointer" }}
-              >
-                <img width="30%" height="30%" src={pasar} />
-                <Typography>Pasar dinero</Typography>
-              </Box>
-              <Box
-                bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                width={140}
-                height={90}
-                borderRadius={2}
-                onClick={() => handleTransaction()}
-                sx={{ cursor: "pointer" }}
-              >
-                <img width="30%" height="30%" src={transactions} />
-                <Typography>Transacciones</Typography>
-              </Box>
-            </Grid>
-
-            <Grid display="flex" gap={2}>
-              <Box
-                bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                width={140}
-                height={90}
-                borderRadius={2}
-                onClick={() => route("/anotherDatas")}
-              >
-                <img width="30%" height="30%" src={comprar} />
-
-                <Typography>Comprar VITES</Typography>
-              </Box>
-              <Box
-                bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                onClick={() => handleAsesorComponent()}
-                width={140}
-                height={90}
-                borderRadius={2}
-              >
-                <img width="30%" height="30%" src={asesor} />
-                <Typography>Hablar con asesor</Typography>
-              </Box>
-            </Grid>
+          <Grid display="flex" gap={2}>
+            <Box
+              bgcolor="primary.main"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              width={140}
+              height={90}
+              borderRadius={2}
+              onClick={() => route("/passmoney")}
+              sx={{ cursor: "pointer" }}
+            >
+              <img width="30%" height="30%" src={pasar} />
+              <Typography>Pasar dinero</Typography>
+            </Box>
+            <Box
+              bgcolor="primary.main"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              width={140}
+              height={90}
+              borderRadius={2}
+              onClick={() => handleTransaction()}
+              sx={{ cursor: "pointer" }}
+            >
+              <img width="30%" height="30%" src={transactions} />
+              <Typography>Transacciones</Typography>
+            </Box>
           </Grid>
-          <Box
-            paddingY={3}
-            marginLeft="80%"
-            bgcolor="secondary.body"
-            border={1}
-            borderRadius="50%"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            width={50}
-            height={50}
-            sx={{
-              boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-            }}
-          >
-            <WhatsAppIcon
-              sx={{ color: "primary.main", width: 35, height: 35 }}
-            />
-          </Box>
+
+          <Grid display="flex" gap={2}>
+            <Box
+              bgcolor="primary.main"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              width={140}
+              height={90}
+              borderRadius={2}
+              onClick={() => route("/anotherDatas")}
+            >
+              <img width="30%" height="30%" src={comprar} />
+
+              <Typography>Comprar VITES</Typography>
+            </Box>
+            <Box
+              bgcolor="primary.main"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              onClick={() => handleAsesorComponent()}
+              width={140}
+              height={90}
+              borderRadius={2}
+            >
+              <img width="30%" height="30%" src={asesor} />
+              <Typography>Hablar con asesor</Typography>
+            </Box>
+          </Grid>
         </Grid>
-      </Box>
+        <Box
+          paddingY={3}
+          marginLeft="80%"
+          bgcolor="secondary.body"
+          border={1}
+          borderRadius="50%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          width={50}
+          height={50}
+          sx={(theme)=>({
+            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+          [theme.breakpoints.up('lg')]:{
+            display:'none'
+          }
+          })}
+        >
+          <WhatsAppIcon sx={{ color: "primary.main", width: 35, height: 35 }} />
+        </Box>
+        <WalletInformation/>
+      </Grid>
+
       {transaction && <TransactionList />}
       {asesorComponent && <Asesor />}
     </Grid>
