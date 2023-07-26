@@ -41,6 +41,7 @@ import ComprarVites from "../assets/img/Sidebar/ComprarVites.svg";
 import Perfil from "../assets/img/Sidebar/Perfil.svg";
 import vector from '../assets/img/Sidebar/vector.svg'
 import { Button, Grid, TextField } from "@mui/material";
+import { useFinalContext } from "../Context/FinalContext";
 
 const drawerWidth = 240;
 
@@ -107,7 +108,8 @@ export default function Sidebar({ setOpen, open }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState(-1);
-
+  const { transaction, setTransaction, asesorComponent, setAsesorComponent } =
+  useFinalContext();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -123,6 +125,7 @@ export default function Sidebar({ setOpen, open }) {
         break;
       case "Billetera":
         navigate("/wallet");
+        setTransaction(null)
         break;
       case "Cosechas":
         setCosechasList(true);

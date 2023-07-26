@@ -1,194 +1,132 @@
-import { Box, Button, Grid, Typography } from '@mui/material'
-import logoInformacion from '../assets/img/informacion/logoInformacion.svg'
-import logoInfo from '../assets/img/MenuDesktop/info.svg'
-import truck from '../assets/img/MenuDesktop/Group 55.svg'
-import mannual from '../assets/img/MenuDesktop/mannual.svg'
-import idea from '../assets/img/MenuDesktop/idea.svg'
-import pasar from "../assets/img/wallet/PasarG.svg";
-import comprar from "../assets/img/wallet/ComprarG.svg";
-import transactions from "../assets/img/wallet/TransactionG.svg";
-import asesor from "../assets/img/wallet/AsesorG.svg";
+import React, { useState } from 'react';
 import {
-  
-  LightbulbOutlined as LightbulbOutlinedIcon,
- 
-} from "@mui/icons-material";
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableContainer,
+  TableBody,
+  Paper,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+  InputAdornment,
+} from '@mui/material';
+import logoInformacion from '../assets/img/informacion/logoInformacion.svg'
+import { vites } from '../utilities/myCards';
+import { useNavigate } from 'react-router-dom';
+import { transacciones } from "../utilities/myCards";
+import bomb from "../assets/img/Sidebar/Bomb.svg";
 
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useFinalContext } from '../Context/FinalContext'
-
-
-function WalletInformation() {
+function BancInformation() {
   const Navigate = useNavigate()
-  const { transaction, setTransaction, asesorComponent, setAsesorComponent } =
-  useFinalContext();
-const handleTransaction = () => {
-  setTransaction(true);
-};
-const handleAsesorComponent = () => {
-  setAsesorComponent(true);
-};
+
+  const columnasVisibles = [
+    "Tipo de Transacción",
+    "Valor",
+    "Cantidad",
+    "Fecha de Transacción",
+  ];
+
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const handleRowClick = (id) => {
+    setSelectedRow(prevSelectedRow => (prevSelectedRow === id ? null : id));
+   
+  };
+
   return (
-    <Box
-        sx={(theme)=>({
-          display:'none',
-          [theme.breakpoints.up('lg')]:{
-            display:'flex',
-            
-            flexWrap:"wrap",
-            width:'60vw',
-            height:'50vh',
-            marginRight:50,
-            gap:6
-           
-          }
-        })}
-        >
-         
-              <Box
-                bgcolor="primary.main"
-                component={Button}
-                variant='contained'
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                width={258}
-                height={176}
-                borderRadius={2}
-                onClick={() => Navigate("/passmoney")}
-                sx={{ cursor: "pointer" }}
+    <Box sx={(theme) => ({
+      display:'none',
+      [theme.breakpoints.up('lg')]: {
+        display:'flex',
+        flexDirection:'column',
+        gap:2,
+        marginTop: 10,
+        width: '75vw',
+        marginRight: 10,
+      },
+    })}>
+      <Typography variant='h3'>Buscar</Typography>
+      <TextField
+              fullWidth
+              sx={{ bgcolor: "transparent" }}
+              placeholder="typr to sdearch"
+              InputProps={{
+                style: {
+                  color: "black",
+                  height: "40px",
+                  width: "80%",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  borderRadius: "10px",
+                  border: "none",
+                },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <img src={bomb} alt="bomb" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+      <TableContainer elevation={0} sx={{ borderRadius: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+                <TableCell></TableCell>
+              {columnasVisibles.map((columna, index) => (
+                <TableCell
+                  key={index}
+                  sx={{ color: 'white', textAlign: 'center', fontSize:12, }}
+                >
+                  {columna}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {transacciones.map((fila) => (
+              <TableRow
+                key={fila.id}
+                sx={{
+                  backgroundColor: selectedRow === fila.id ? '#EEEEEE' : '',
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleRowClick(fila.id)}
               >
-                <Grid marginRight={15} marginTop={1} >
+                <TableCell>
+                <Box
+             bgcolor='primary.main'
+             borderRadius='50%'
+             display='flex'
+             justifyContent='center'
+             alignItems='center'
+             sx={{
+                width:40,
+                height:40
+             }}
+            >
+                <img src={logoInformacion} width='60%' height='60%' alt="logo"/>
+            </Box>
+
+                </TableCell>
+                <TableCell>{fila.name}</TableCell>
+                <TableCell>{fila.valor}</TableCell>
+                <TableCell>{fila.cantidad}</TableCell>
+                <TableCell>{fila.date}</TableCell>
                 
-                <Box
-                 bgcolor="white"
-                 width={52}
-                 height={48}
-                 borderRadius={1}
-                 display='flex'
-                 justifyContent='center'
-                 alignItems='center'
-                >
-                <img width="60%" height="60%" src={pasar} />
-
-                </Box>
-                <Box height={10}></Box>
-                <Typography color='white' sx={{textTransform:'none'}}>Pasar Dinero</Typography>
-                </Grid>
-                <img width="20%" height="20%" src={logoInformacion} style={{marginRight:-191, marginTop:-5}}/>
-
-              </Box>
-              <Box
-               bgcolor="primary.main"
-               component={Button}
-               variant='contained'
-               display="flex"
-               flexDirection="column"
-               justifyContent="center"
-               alignItems="center"
-               width={258}
-               height={176}
-               borderRadius={2}
-               onClick={() => handleTransaction()}
-               sx={{ cursor: "pointer" }}
-              >
-                 <Grid marginRight={14} marginTop={1} >
-
-                <Box
-                 bgcolor="white"
-                 width={52}
-                 height={48}
-                 borderRadius={1}
-                 display='flex'
-                 justifyContent='center'
-                 alignItems='center'
-                >
-
-                 <img width="60%" height="60%" src={transactions} />
-                </Box>
-                <Box height={10}></Box>
-                <Typography color='white'  sx={{textTransform:'none'}}>Transacciones</Typography>
-                 </Grid>
-                <img width="20%" height="20%" src={logoInformacion} style={{marginRight:-191, marginTop:-5}}/>
-
-              </Box>
-           
-
-          
-              <Box
-              component={Button}
-              variant='contained'
-                bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                width={258}
-                height={176}
-                borderRadius={2}
-                onClick={() => route("/anotherDatas")}
-                sx={{ cursor: "pointer" }}
-              >
-                <Grid marginRight={14} marginTop={1} >
-                
-                <Box
-                 bgcolor="white"
-                 width={52}
-                 height={48}
-                 borderRadius={1}
-                 display='flex'
-                 justifyContent='center'
-                 alignItems='center'>
-
-
-                <img width="60%" height="60%" src={comprar} />  
-                {/* <LightbulbOutlinedIcon sx={{ width: 40, height: 40 }} /> */}
-                 </Box>
-                <Box height={10}></Box>
-                <Typography color='white' sx={{textTransform:'none'}}>Comprar Vites</Typography>
-                </Grid>
-                <img width="20%" height="20%" src={logoInformacion} style={{marginRight:-191, marginTop:-5}}/>
-              </Box>
-              <Box
-               component={Button}
-               variant='contained'
-                bgcolor="primary.main"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                width={258}
-                height={176}
-                borderRadius={2}
-                onClick={() => handleAsesorComponent()}
-                sx={{ cursor: "pointer" }}
-              >
-                 <Grid marginRight={10} marginTop={1} >
-                 <Box
-                 bgcolor="white"
-                 width={54}
-                 height={48}
-                 borderRadius={1}
-                 display='flex'
-                 justifyContent='center'
-                 alignItems='center'
-                >
-                <img idth="60%" height="60%" src={asesor} />
-                </Box>
-                <Box height={10}></Box>
-                <Typography color='white'sx={{textTransform:'none'}}>Hablar con Asesor</Typography>
-                </Grid>
-
-                <img width="20%" height="20%" src={logoInformacion} style={{marginRight:-191, marginTop:-5}}/>
-              
-              </Box>
-           
-        </Box>
-  )
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
 }
 
-export default WalletInformation
-
-BancInformation
+export default BancInformation;

@@ -68,7 +68,7 @@ function PasarDinero() {
             marginTop: 10,
             flexDirection: "column",
             alignItems: "center",
-            marginRight: 20,
+            marginLeft: -10,
             width: "100%",
             gap: 0,
           },
@@ -113,7 +113,7 @@ function PasarDinero() {
             },
           })}
         >
-          Billetera
+          Pasar Dinero
         </Typography>
         <Box
           sx={(theme) => ({
@@ -122,6 +122,7 @@ function PasarDinero() {
               display: "flex",
               justifyContent: "flex-start",
               alignItems: "center",
+              marginTop:1,
               width: "100%",
             },
           })}

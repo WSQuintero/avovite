@@ -16,10 +16,7 @@ import {
   Divider,
 } from "@mui/material";
 import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-  Person,
+  
   KeyboardBackspace as KeyboardBackspaceIcon,
   MoreVert as MoreVertIcon,
   ShoppingCart as ShoppingCartIcon,
@@ -31,6 +28,7 @@ import Header from "../Components/Header/Header";
 import logoInformacion from '../assets/img/informacion/logoInformacion.svg'
 import { useFinalContext } from "../Context/FinalContext";
 import { transacciones } from "../utilities/myCards";
+import BancInformation from "./BancInformation";
 
 function TransactionList() {
   const theme = useTheme();
@@ -43,11 +41,25 @@ function TransactionList() {
     
       <Box
         position="absolute"
-        height="100%"
-        width='100%'
         display="flex"
         bgcolor='white'
         flexDirection="column"
+        sx={(theme)=>({
+          height:'100%',
+         width:'100%',
+
+          [theme.breakpoints.up('lg')]:{
+            height:'300vh',
+            border:1,
+            borderColor:'red',
+         width:'150vw',
+         bgcolor:'white',
+         marginLeft:-80,
+        
+        
+          }
+        })}
+        
       >
         <Header />
 
@@ -93,7 +105,17 @@ function TransactionList() {
         >
         { transacciones.map((e)=>(
             <>
-          <Grid key={e.id} display='flex' alignItems='center'  width='100%' >
+          <Grid key={e.id}
+          
+          sx={(theme)=>({
+            display:'flex',
+            alignItems:'center',
+            width:'100%',
+            [theme.breakpoints.up('lg')]:{
+              display:'none',
+            }
+          })}
+          >
             <Box
              bgcolor='primary.main'
              borderRadius='50%'
@@ -137,10 +159,21 @@ function TransactionList() {
             </Card>
           </Grid>
 
-          <Box width='100%' height={1} bgcolor='text.disabled' border={1}></Box>
+          <Box width='100%' height={1} bgcolor='text.disabled' border={1}
+          
+          sx={(theme)=>({
+            height:1,
+            border:1,
+            bgcolor:'text.disabled',
+            [theme.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
+          ></Box>
         </>
         ))
-    }
+      }
+      <BancInformation/>
         </Grid>
       </Box>
 
