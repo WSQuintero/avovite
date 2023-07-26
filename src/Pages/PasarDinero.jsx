@@ -45,14 +45,7 @@ function PasarDinero() {
   console.log(formBanck);
 
   return (
-    <Grid display="flex" flexDirection="column" sx={(theme)=>({
-     
-
-      [theme.breakpoints.up('lg')]:{
-      
-       
-      }
-    })}>
+    <Grid display="flex" flexDirection="column" >
       <Box
         height="10vh"
         display="flex"
@@ -66,6 +59,7 @@ function PasarDinero() {
           gap: 7,
           [theme.breakpoints.up("lg")]: {
             marginTop: 10,
+            display:'none',
             flexDirection: "column",
             alignItems: "center",
             marginLeft: -10,
@@ -102,14 +96,45 @@ function PasarDinero() {
         </Box>
 
         {/* the filter of image */}
+    
+      </Box>
+      <Grid
+        paddingY={2}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+      >
+        
+        <Box
+          sx={(theme) => ({
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+        >
+
+          <img src={photoDefault} width="50%" height="50%" alt="photo" />
+
+          <Typography bottom={10} color="primary.main">
+            Nombre
+          </Typography>
+          <Typography bottom={10} color="primary.main">
+            $ 5.000.000
+          </Typography>
+        </Box>
         <Typography
           variant="h2"
           sx={(theme) => ({
             display: "none",
             [theme.breakpoints.up("lg")]: {
               display: "flex",
+              marginTop:15,
               marginLeft: -108,
-              marginTop: 10,
+            
+              
             },
           })}
         >
@@ -179,33 +204,6 @@ function PasarDinero() {
             </Typography>
           </Grid>
         </Box>
-      </Box>
-      <Grid
-        paddingY={2}
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <Box
-          sx={(theme) => ({
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            [theme.breakpoints.up("lg")]: {
-              display: "none",
-            },
-          })}
-        >
-          <img src={photoDefault} width="50%" height="50%" alt="photo" />
-
-          <Typography bottom={10} color="primary.main">
-            Nombre
-          </Typography>
-          <Typography bottom={10} color="primary.main">
-            $ 5.000.000
-          </Typography>
-        </Box>
-
         <Box
           display="flex"
           sx={(theme) => ({
@@ -215,16 +213,17 @@ function PasarDinero() {
             gap: 2,
             [theme.breakpoints.up("lg")]: {
               display: "flex",
-
+              paddingY:0,
               flexWrap: "wrap",
               width: "70vw",
               height: "80vh",
-              marginTop: 30,
+             
               marginRight: 20,
               gap: 6,
             },
           })}
         >
+          
           {bancos.map((e) => (
             <>
            

@@ -130,24 +130,47 @@ function OtherDataOptions() {
             sx={{ color: "primary.main", fontSize: 25, fontWeight: 500 }}
           >
             {filterData.title}
+            
           </Typography>
           <Typography color="black"
                 ref={typographyRef}
                 textAlign='justify'
                 lineHeight={2}
-                style={{
+                sx={(t)=>({
                   maxHeight: "200px", // Ajusta la altura máxima deseada
                   overflowY: "scroll",
                   scrollbarWidth: "thin",
-                  padding: "20px",}}
+                  padding: "20px",
+                
+                  [t.breakpoints.up('lg')]:{
+                     // Estilos de la barra de scroll
+              
+             
+              maxHeight: 400, // Ajusta la altura máxima deseada
+              overflowY: "scroll",
+              scrollbarWidth: "thin",
+              width:'60%',
+              // Estilos específicos para scrollbar (Solo funcionan en navegadores que soportan los pseudo-elementos ::webkit-scrollbar)
+              "&::-webkit-scrollbar": {
+                width: "6px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "3px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: theme.palette.primary.dark,
+              },
+                  }
+                })}
                   
                   >
+           {filterData.text}<br/><br/>
+           {filterData.text}<br/><br/>
            {filterData.text}
+
           </Typography>
           
-          <div style={{ textAlign: "center" }}>
-                Porcentaje de desplazamiento: {scrollPercentage.toFixed(2)}%
-              </div>
 
           <Box
             

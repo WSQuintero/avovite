@@ -11,8 +11,8 @@ import requisitos from "../assets/img/anotherdata/requisitoG.svg";
 import { LightbulbOutlined as LightbulbOutlinedIcon } from "@mui/icons-material";
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useFinalContext } from "../Context/FinalContext";
+import { useNavigate } from "react-router-dom";
 
 function AnotherData() {
   const Navigate = useNavigate();
@@ -30,16 +30,16 @@ function AnotherData() {
         display: "none",
         [theme.breakpoints.up("lg")]: {
           display: "flex",
-
+          alignItems:'center',
+          justifyContent:'initial',
           flexWrap: "wrap",
           width: "80vw",
           height: "50vh",
-          marginRight: 20,
           gap: 6,
         },
       })}
     >
-        <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+        <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center' gap={1}>
 
       <Box
         bgcolor="primary.main"
@@ -53,7 +53,7 @@ function AnotherData() {
         height={176}
         gap={1}
         borderRadius={2}
-        onClick={() => Navigate("/passmoney")}
+        onClick = {()=>Navigate('/anotherData/1')}
         sx={{ cursor: "pointer" }}
       >
         
@@ -96,7 +96,7 @@ function AnotherData() {
         }
       })}>Nuestro negocio cuenta con expertos en la<br/>valoración de terrenos de aguacates. </Typography>
         </Grid>
-        <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+        <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center' gap={1}>
 
       <Box
         bgcolor="primary.main"
@@ -110,7 +110,7 @@ function AnotherData() {
         height={176}
         gap={1}
         borderRadius={2}
-        onClick={() => handleTransaction()}
+        onClick = {()=>Navigate('/anotherData/2')}
         sx={{ cursor: "pointer" }}
       >
        
@@ -152,9 +152,9 @@ function AnotherData() {
             textAlign:'center',
             width:"80%"
         }
-      })}>Nuestro negocio cuenta con expertos en la<br/>valoración de terrenos de aguacates. </Typography>
+      })}> La compra de terrenos de<br/>aguacatespuede ofrecer la<br/>oportunidad de diversificar las fuentes </Typography>
       </Grid>
-      <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+      <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center' gap={1}>
       <Box
         component={Button}
         variant="contained"
@@ -168,7 +168,7 @@ function AnotherData() {
         gap={1}
        
         borderRadius={2}
-        onClick={() => Navigate("/anotherDatas")}
+        onClick = {()=>Navigate('/anotherData/3')}
         sx={{ cursor: "pointer" }}
       >
         <Box
@@ -213,9 +213,9 @@ function AnotherData() {
             textAlign:'center',
             width:"80%"
         }
-      })}>Nuestro negocio cuenta con expertos en la<br/>valoración de terrenos de aguacates. </Typography>
+      })}>Si estás considerando vender tu<br/>terreno de aguacates, puedes aprovechar<br/>la oportunidad </Typography>
       </Grid>
-      <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+      <Grid display='flex' flexDirection='column' alignItems='center' justifyContent='center' gap={1} marginLeft={3}>
       <Box
         component={Button}
         variant="contained"
@@ -227,7 +227,7 @@ function AnotherData() {
         width={258}
         height={176}
         borderRadius={2}
-        onClick={() => handleAsesorComponent()}
+        onClick = {()=>Navigate('/anotherData/4')}
         sx={{ cursor: "pointer" }}
       >
         <Box
@@ -269,7 +269,7 @@ function AnotherData() {
             textAlign:'center',
             width:"80%"
         }
-      })}>Nuestro negocio cuenta con expertos en la<br/>valoración de terrenos de aguacates. </Typography>
+      })}>El aguacate requiere ciertas<br/>condiciones climáticas y del<br/>suelo </Typography>
       </Grid>
     </Box>
   );

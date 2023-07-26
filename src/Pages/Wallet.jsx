@@ -55,10 +55,15 @@ function Wallet() {
     <Grid display="flex" flexDirection="column">
       <Box
         position="relative"
-        height="50vh"
-        display="flex"
         flexDirection="column"
         alignItems="center"
+        sx={(t) => ({
+          display: "flex",
+          height: "50vh",
+          [t.breakpoints.up("lg")]: {
+            display: "none",
+          },
+        })}
       >
         <Box
           sx={(theme) => ({
@@ -123,11 +128,11 @@ function Wallet() {
             gap: 8,
             [theme.breakpoints.up("lg")]: {
               marginTop: 10,
-              flexDirection:'column',
-              alignItems:'center',
-              marginRight:20,
-              width:'100%',
-              gap:0,
+              flexDirection: "column",
+              alignItems: "center",
+              marginRight: 20,
+              width: "100%",
+              gap: 0,
             },
           })}
         >
@@ -170,71 +175,7 @@ function Wallet() {
           </Box>
         </Box>
       </Box>
-          <Typography variant="h2" sx={(theme)=>({
-            [theme.breakpoints.up('lg')]:{
-              
-              
-            }
-          })}>Billetera</Typography>
-          <Box sx={(theme)=>({
-            [theme.breakpoints.up('lg')]:{
-              display:'flex',
-              justifyContent:'flex-start',
-              alignItems:'center',
-              width:'100%',
-              
-            }
-          })}>
-          <Box
-            sx={(theme) => ({
-              [theme.breakpoints.up("lg")]: {
-              
-              },
-            })}
-          >
-            <img
-              src={photoDefault}
-              alt="logos"
-              style={{ width: "40%", height: "40%" }}
-            />
-          </Box>
 
-          <Grid display="flex" flexDirection="column" sx={(theme)=>({
-            [theme.breakpoints.up('lg')]:{
-             marginLeft:-20,
-            }
-          })}>
-            <Typography
-              sx={(theme) => ({
-                color: "white",
-                fontSize: 15,
-                [theme.breakpoints.up("lg")]: {
-                  color: "primary.main",
-                  fontSize: 19,
-                  fontWeight: 200,
-                },
-              })}
-            >
-              Tu Dinero
-            </Typography>
-            <Typography
-              marginRight={10}
-              width="100%"
-              sx={(theme) => ({
-                color: "secondary.body",
-                fontSize: 18,
-                fontWeight: 600,
-                [theme.breakpoints.up("lg")]: {
-                  color: "primary.main",
-                  fontSize: 19,
-                  fontWeight: 600,
-                },
-              })}
-            >
-              $ 5.000.000
-            </Typography>
-          </Grid>
-          </Box>
       <Grid
         paddingX={2}
         paddingY={2}
@@ -332,17 +273,91 @@ function Wallet() {
           alignItems="center"
           width={50}
           height={50}
-          sx={(theme)=>({
+          sx={(theme) => ({
             boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-          [theme.breakpoints.up('lg')]:{
-            display:'none'
-          }
+            [theme.breakpoints.up("lg")]: {
+              display: "none",
+            },
           })}
         >
           <WhatsAppIcon sx={{ color: "primary.main", width: 35, height: 35 }} />
         </Box>
       </Grid>
-        <WalletInformation/>
+      <Typography
+        variant="h2"
+        sx={(theme) => ({
+          display: "none",
+          [theme.breakpoints.up("lg")]: {
+            display: "flex",
+            marginTop:10,
+          },
+        })}
+      >
+        Billetera
+      </Typography>
+      <Box
+        sx={(theme) => ({
+          [theme.breakpoints.up("lg")]: {
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "100%",
+          },
+        })}
+      >
+        <Box
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {},
+          })}
+        >
+          <img
+            src={photoDefault}
+            alt="logos"
+            style={{ width: "40%", height: "40%" }}
+          />
+        </Box>
+
+        <Grid
+          display="flex"
+          flexDirection="column"
+          sx={(theme) => ({
+            [theme.breakpoints.up("lg")]: {
+              marginLeft: -20,
+            },
+          })}
+        >
+          <Typography
+            sx={(theme) => ({
+              color: "white",
+              fontSize: 15,
+              [theme.breakpoints.up("lg")]: {
+                color: "primary.main",
+                fontSize: 19,
+                fontWeight: 200,
+              },
+            })}
+          >
+            Tu Dinero
+          </Typography>
+          <Typography
+            marginRight={10}
+            width="100%"
+            sx={(theme) => ({
+              color: "secondary.body",
+              fontSize: 18,
+              fontWeight: 600,
+              [theme.breakpoints.up("lg")]: {
+                color: "primary.main",
+                fontSize: 19,
+                fontWeight: 600,
+              },
+            })}
+          >
+            $ 5.000.000
+          </Typography>
+        </Grid>
+      </Box>
+      <WalletInformation />
 
       {transaction && <TransactionList />}
       {asesorComponent && <Asesor />}
