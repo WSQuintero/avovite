@@ -122,13 +122,18 @@ export default function Sidebar({ setOpen, open }) {
     switch (route) {
       case "vites":
         navigate("/informacion");
+        setTransaction(null)
+        setAsesorComponent(false)
         break;
       case "Billetera":
         navigate("/wallet");
         setTransaction(null)
+        setAsesorComponent(false)
         break;
       case "Cosechas":
         setCosechasList(true);
+        setTransaction(null)
+        setAsesorComponent(false)
         break;
       // Agrega más casos para otras opciones del sidebar si es necesario
       default:

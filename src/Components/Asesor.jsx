@@ -31,6 +31,7 @@ import logoInformacion from "../assets/img/informacion/logoInformacion.svg";
 import { useFinalContext } from "../Context/FinalContext";
 import { transacciones } from "../utilities/myCards";
 import map from "../assets/img/asesor/Map.svg";
+import mapDesktop from "../assets/img/asesor/MapDesktop.svg";
 import pin from "../assets/img/asesor/Pin.svg";
 import contcat from "../assets/img/asesor/contcat.svg";
 import clock from "../assets/img/asesor/clock.svg";
@@ -42,12 +43,22 @@ function Asesor() {
 
   return (
     <Box
-      position="absolute"
-      height="100%"
-      width="100%"
       display="flex"
+      position="absolute"
       bgcolor="white"
-      flexDirection="column"
+      sx={(t) => ({
+        flexDirection: "column",
+        width: "100%",
+        height: 1000,
+        [t.breakpoints.up("lg")]: {
+          display: "flex",
+          flexDirection: "row",
+          marginTop: 10,
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+        },
+      })}
     >
       <Header />
 
@@ -60,6 +71,12 @@ function Asesor() {
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
+        sx={(t) => ({
+          marginTop: 7,
+          [t.breakpoints.up("lg")]: {
+            display: "none",
+          },
+        })}
       >
         <Button
           onClick={() => setAsesorComponent(false)}
@@ -85,6 +102,11 @@ function Asesor() {
         flexDirection="column"
         position="relative"
         alignItems="center"
+        sx={(t) => ({
+          [t.breakpoints.up("lg")]: {
+            display: "none",
+          },
+        })}
       >
         <img src={map} width="100%" height="100%" alt="photo" />
         <img
@@ -95,7 +117,26 @@ function Asesor() {
           style={{ position: "absolute" }}
         />
       </Box>
-
+      <Box
+        sx={(t) => ({
+          display: "none",
+          [t.breakpoints.up("lg")]: {
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            alignItems: "center",
+          },
+        })}
+      >
+        <img src={mapDesktop} width="100%" height="100%" alt="photo" />
+        <img
+          src={pin}
+          width="50%"
+          height="50%"
+          alt="photo"
+          style={{ position: "absolute" }}
+        />
+      </Box>
       {/* the filter of image */}
 
       <Grid
@@ -104,97 +145,174 @@ function Asesor() {
         display="flex"
         flexDirection="column"
         alignItems="center"
-        gap={4}
+        sx={(t) => ({
+          justifyContent: "center",
+          [t.breakpoints.up("lg")]: {
+            display: "flex",
+            marginTop: 4,
+            justifyContent: "center",
+            alignItems: "center",
+            width: 600,
+            gap: 2,
+          },
+        })}
       >
-        <Typography color="#214820" fontSize={25}>
+        <Typography
+          color="#214820"
+          fontSize={25}
+          sx={(t) => ({
+            [t.breakpoints.up("lg")]: {
+              width: "75%",
+              textAlign: "initial",
+              marginRight: 18,
+            },
+          })}
+        >
           Contáctenos Llamanos o escríbenos para despejar tus dudas.
         </Typography>
 
-        <Box
-          display="flex"
-          alignItems="center"
-          width="100%"
-          gap={3}
-        >
+        <Box display="flex" alignItems="center" width="100%" gap={3}>
           <Box
             bgcolor="primary.main"
             borderRadius="50%"
             display="flex"
             justifyContent="center"
             alignItems="center"
-            sx={{
-              width: 60,
-              height: 50,
-            }}
+            sx={(t) => ({
+              width: 50,
+              height: 40,
+              [t.breakpoints.up("lg")]: {
+                width: 50,
+                height: 50,
+              },
+            })}
           >
             <img src={logoInformacion} width="60%" height="60%" alt="logo" />
           </Box>
           <Grid display="flex" flexDirection="column" gap={1}>
             <Grid>
-              <Typography color="text.cards">locación</Typography>
+              <Typography
+                color="text.cards"
+                sx={(t) => ({
+                  paddingTop: 5,
+                  fontWeight: 600,
+                  [t.breakpoints.up("lg")]: {
+                    fontSize: 20,
+                    fontWeight: 600,
+                  },
+                })}
+              >
+                locación
+              </Typography>
             </Grid>
             <Grid>
-              <Typography color="text.cards">
+              <Typography
+                color="text.cards"
+                sx={(t) => ({
+                  [t.breakpoints.up("lg")]: {
+                    fontSize: 20,
+                    width: "80%",
+                  },
+                })}
+              >
                 Montebello, Antioquia Colombia Finca Las Cascadas{" "}
               </Typography>
             </Grid>
           </Grid>
         </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          width="100%"
-          gap={3}
-        >
+        <Box display="flex" alignItems="center" width="100%" gap={3}>
           <Box
             bgcolor="primary.main"
             borderRadius="50%"
             display="flex"
             justifyContent="center"
             alignItems="center"
-            sx={{
-              width: 50,
-              height: 50,
-            }}
+            sx={(t) => ({
+              width: 35,
+              height: 35,
+              [t.breakpoints.up("lg")]: {
+                width: 50,
+                height: 50,
+              },
+            })}
           >
             <img src={contcat} width="60%" height="60%" alt="logo" />
           </Box>
           <Grid display="flex" flexDirection="column" gap={1}>
             <Grid>
-              <Typography color="text.cards">locación</Typography>
+              <Typography
+                color="text.cards"
+                sx={(t) => ({
+                  paddingTop: 2,
+                  fontWeight: 600,
+                  [t.breakpoints.up("lg")]: {
+                    fontSize: 20,
+                    fontWeight: 600,
+                  },
+                })}
+              >
+                Contacto
+              </Typography>
             </Grid>
             <Grid>
-              <Typography color="text.cards">
+              <Typography
+                color="text.cards"
+                sx={(t) => ({
+                  [t.breakpoints.up("lg")]: {
+                    fontSize: 20,
+                    width: "80%",
+                  },
+                })}
+              >
                 +57 (314) 885 5345 info@avovite.co
               </Typography>
             </Grid>
           </Grid>
         </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          width="100%"
-          gap={3}
-        >
+        <Box display="flex" alignItems="center" width="100%" gap={3}>
           <Box
             bgcolor="primary.main"
             borderRadius="50%"
             display="flex"
             justifyContent="center"
             alignItems="center"
-            sx={{
-              width: 80,
-              height: 50,
-            }}
+            sx={(t) => ({
+              width: 75,
+              height: 35,
+              [t.breakpoints.up("lg")]: {
+                width: 70,
+                height: 50,
+              },
+            })}
           >
             <img src={clock} width="60%" height="60%" alt="logo" />
           </Box>
           <Grid display="flex" flexDirection="column" gap={1}>
             <Grid>
-              <Typography color="text.cards">Hours</Typography>
+              <Typography
+                color="text.cards"
+                sx={(t) => ({
+                  paddingTop: 2,
+                  fontWeight: 600,
+                  [t.breakpoints.up("lg")]: {
+                    fontSize: 20,
+                    fontWeight: 600,
+                  },
+                })}
+              >
+                Hours
+              </Typography>
             </Grid>
             <Grid>
-              <Typography color="text.cards">
+              <Typography
+                color="text.cards"
+                sx={(t) => ({
+                  [t.breakpoints.up("lg")]: {
+                    fontSize: 20,
+                    width: "70%",
+                  },
+                })}
+              >
                 Lunes A Sabado: 9:00AM to 5:00PM Domingos/ Festivos : 8:00AM to
                 12:00PM
               </Typography>
