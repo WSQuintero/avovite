@@ -55,8 +55,7 @@ function Checkout() {
     setCosechaMinimaDetail,
     cosechaMinimaDetail,
     setPagarComponent,
-    PagarComponent
-
+    PagarComponent,
   } = useFinalContext();
   const route = useNavigate();
 
@@ -76,20 +75,31 @@ function Checkout() {
     route("/checkout");
   };
 
-  const handlePagar = ()=>{
-    setPagarComponent(true)
-  }
+  const handlePagar = () => {
+    setPagarComponent(true);
+  };
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid
+      display="flex"
+      flexDirection="column"
+      sx={(t) => ({
+        [t.breakpoints.up("lg")]: {
+          marginTop: 10,
+        },
+      })}
+    >
       <Box
         position="absolute"
         width="100%"
         display="flex"
         flexDirection="column"
-        sx={{
+        sx={(t) => ({
           backgroundColor: "white",
-        }}
+          [t.breakpoints.up("lg")]: {
+            display: "none",
+          },
+        })}
       >
         <Header />
 
@@ -126,89 +136,161 @@ function Checkout() {
         </Box>
 
         {/* the filter of image */}
-
-        <Grid
-          flexGrow={1}
-          paddingX={4}
-          paddingY={4}
-          display="flex"
-          flexDirection="column"
-          gap={4}
-        >
-          <Grid display="flex" marginLeft={4} alignItems="center" gap={4}>
-            <img src={plantaEstandar} width="20%" height="20%" alt="logo" />
-            <Grid display="flex" flexDirection="column" gap={2}>
-              <Typography color="text.cards">1 Vites</Typography>
-
-              <Grid display="flex" gap={1}>
-                <Typography color="text.cards">Cantidad:</Typography>
-                <GroupedButtons />
-              </Grid>
-
-              <Typography color="primary.main">Precio: $ 4.500.000</Typography>
-            </Grid>
-          </Grid>
-          <Box width="100%" height={3} bgcolor="text.disabled" border={1}></Box>
-
-          <Box
-            position="relative"
-            sx={{
-              width: "100%",
-              height: "40px",
-              bgcolor: "#F5F7F9",
-              borderRadius: 10,
+      </Box>
+      <Grid
+        flexGrow={1}
+        paddingX={4}
+        paddingY={4}
+        display="flex"
+        flexDirection="column"
+        gap={4}
+      >
+        <Typography
+          variant="h2"
+          sx={(t) => ({
+            display: "none",
+            [t.breakpoints.up("lg")]: {
               display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Grid
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              gap={6}
-            >
-              <TextField
-                name="codigoCupon"
-                placeholder="Código de cupón"
-                style={{
-                  borderRadius: "10px",
-                  border: "none",
-                }}
-                InputProps={{
-                  style: {
-                    color: "black",
-                    height: "40px",
-                    fontSize: "20px",
-                    fontWeight: 500,
-                    borderRadius: "10px",
-                    borderColor: "transparent",
-                  },
-                }}
-              />
+            },
+          })}
+        >
+          Carrito
+        </Typography>
+        <Grid display="flex" marginLeft={4} alignItems="center" gap={4}>
+          <img src={plantaEstandar} width="20%" height="20%" alt="logo" />
+          <Grid display="flex" flexDirection="column" gap={2}>
+            <Typography color="text.cards">1 Vites</Typography>
 
-              <Typography
-                marginRight={1}
-                sx={{
-                  fontSize: "12px",
-                  color: "primary.main",
-                  width: "30%",
-                  cursor: "pointer",
-                }}
-              >
-                Aplicar Ahora
-              </Typography>
+            <Grid display="flex" gap={1}>
+              <Typography color="text.cards">Cantidad:</Typography>
+              <GroupedButtons />
             </Grid>
-          </Box>
-          <Button variant="contained" sx={{ color: "secondary.body" }}>
+
+            <Typography color="primary.main">Precio: $ 4.500.000</Typography>
+          </Grid>
+        </Grid>
+        <Box
+          width="100%"
+          height={3}
+          bgcolor="text.disabled"
+          border={1}
+          sx={(t) => ({
+            display: "flex",
+            [t.breakpoints.up("lg")]: {
+              display: "none",
+            },
+          })}
+        ></Box>
+
+        <Box
+          position="relative"
+          sx={{
+            width: "100%",
+            height: "40px",
+            bgcolor: "#F5F7F9",
+            borderRadius: 10,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Grid
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={(t) => ({
+              gap: 6,
+
+              [t.breakpoints.up("lg")]: {
+                gap: 1,
+                width: "100vw",
+              },
+            })}
+          >
+            <TextField
+              name="codigoCupon"
+              placeholder="Código de cupón"
+              sx={{
+                borderRadius: "10px",
+                border: "none",
+                width: "62vw",
+              }}
+              InputProps={{
+                style: {
+                  color: "black",
+                  height: "40px",
+                  fontSize: "20px",
+                  fontWeight: 500,
+                  borderRadius: "10px",
+                  borderColor: "transparent",
+                },
+              }}
+            />
+
+            <Typography
+              marginRight={1}
+              component={Button}
+              variant="contained"
+              sx={{
+                fontSize: "12px",
+                color: "primary.main",
+                width: "20%",
+                cursor: "pointer",
+                marginRight: 10,
+                textAlign: "center",
+                justifyContent: "center",
+              }}
+            >
+              Aplicar Ahora
+            </Typography>
+          </Grid>
+        </Box>
+        <Grid
+          sx={(t) => ({
+            color: "secondary.body",
+            [t.breakpoints.up("lg")]: {
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 3,
+            },
+          })}
+        >
+          <Button
+            variant="contained"
+            sx={(t) => ({
+              color: "secondary.body",
+              [t.breakpoints.up("lg")]: {
+                width: "50%",
+                height: 50,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: 18,
+              },
+            })}
+          >
             Actualizar Carrito
           </Button>
-          <Button variant="contained" sx={{ color: "secondary.body" }}>
+          <Button
+            variant="contained"
+            sx={(t) => ({
+              color: "secondary.body",
+              [t.breakpoints.up("lg")]: {
+                width: "50%",
+                height: 50,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: 18,
+              },
+            })}
+          >
             Vaciar Carrito
           </Button>
 
           <Box
             display="flex"
             flexDirection="column"
+            alignItems="center"
             justifyContent="space-between"
             border={1}
             paddingX={2}
@@ -216,9 +298,28 @@ function Checkout() {
             borderColor="primary.main"
             borderRadius={2}
             gap={1}
+            sx={(t) => ({
+              [t.breakpoints.up("lg")]: {
+                width: "65%",
+                height: "100%",
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: 18,
+              },
+            })}
           >
-            <Grid display="flex" justifyContent="space-between">
-              <Grid>
+            <Grid
+              display="flex"
+              justifyContent="space-between"
+              sx={(t) => ({
+                [t.breakpoints.up("lg")]: {
+                  width: "60%",
+                  height: "100%",
+                  gap: 1,
+                },
+              })}
+            >
+              <Grid display="flex" flexDirection="column" gap={1}>
                 <Typography color="text.cards" fontWeight={650}>
                   SubTotal
                 </Typography>
@@ -229,7 +330,7 @@ function Checkout() {
                   Cupon
                 </Typography>
               </Grid>
-              <Grid>
+              <Grid display="flex" flexDirection="column" gap={1}>
                 <Typography color="text.cards" fontWeight={650}>
                   $2.400.000
                 </Typography>
@@ -242,7 +343,30 @@ function Checkout() {
               </Grid>
             </Grid>
             <Divider orientation="horizontal" sx={{ color: "text.cards" }} />
-            <Grid display="flex" justifyContent="space-between">
+            <Box
+              width="100%"
+              height={3}
+              bgcolor="text.disabled"
+              border={1}
+              sx={(t) => ({
+                display: "none",
+                [t.breakpoints.up("lg")]: {
+                  display: "flex",
+                },
+              })}
+            ></Box>
+
+            <Grid
+              display="flex"
+              justifyContent="space-between"
+              sx={(t) => ({
+                [t.breakpoints.up("lg")]: {
+                  width: "60%",
+                  height: "100%",
+                  gap: 1,
+                },
+              })}
+            >
               <Typography color="text.cards" fontWeight={650}>
                 Total
               </Typography>
@@ -250,19 +374,27 @@ function Checkout() {
                 $2.400.000
               </Typography>
             </Grid>
-            <Button 
-            onClick={()=>handlePagar()} 
-            variant="contained" sx={{ color: "secondary.body" }}>
+            <Button
+              onClick={() => handlePagar()}
+              variant="contained"
+              sx={(t) => ({
+                color: "secondary.body",
+                [t.breakpoints.up("lg")]: {
+                  width: "80%",
+                  height: 50,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  fontSize: 18,
+                },
+              })}
+            >
               Proceder al pago
             </Button>
           </Box>
         </Grid>
-      </Box>
-      {
-        PagarComponent && (
-            <PayComponent/>
-        )
-      }
+      </Grid>
+
+      {PagarComponent && <PayComponent />}
     </Grid>
   );
 }

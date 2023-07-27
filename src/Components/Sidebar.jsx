@@ -135,6 +135,16 @@ export default function Sidebar({ setOpen, open }) {
         setTransaction(null)
         setAsesorComponent(false)
         break;
+      case "Comprar Vites":
+        navigate('/products')
+        setTransaction(null)
+        setAsesorComponent(false)
+        break;
+      case "Perfil":
+        navigate('/profile')
+        setTransaction(null)
+        setAsesorComponent(false)
+        break;
       // Agrega más casos para otras opciones del sidebar si es necesario
       default:
         break;
@@ -224,6 +234,7 @@ export default function Sidebar({ setOpen, open }) {
             <Button
               variant="contained"
               sx={{ bgcolor: "primary.main" }}
+              onClick={()=>navigate('/checkout')}
               startIcon={<ShoppingCartOutlinedIcon sx={{ color: "white" }} />}
             ></Button>
             <Box border={1} borderColor="text.disabled" height={40}></Box>

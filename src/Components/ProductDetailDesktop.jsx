@@ -39,9 +39,8 @@ import cosechaMaxima from '../assets/img/products/cosechaMaxima.svg'
 
 import { paquages } from "../utilities/myCards";
 import DetailCosecha from "../Components/DetailCosecha";
-import ProductDetailDesktop from "../Components/ProductDetailDesktop";
 
-function ProductDetail() {
+function ProductDetailDesktop() {
   const theme = useTheme();
   const {id} = useParams();
   const { productoViteId, setProductoViteId, setCosechaMinimaDetail, cosechaMinimaDetail } = useFinalContext();
@@ -71,83 +70,65 @@ function ProductDetail() {
 
 
   return (
-    <Grid display="flex" flexDirection="column">
-    <Box
-      position="absolute"
-      
-      width="100%"
-      display="flex"
-      flexDirection="column"
-      sx={{
-        backgroundColor: "white",
-      }}
-    >
-      <Header />
-
-      <Box width="100%"
-          paddingX={1}
-          height={40}
-          bgcolor="primary.main"
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center">
-        <Button
-          onClick={() => handleCloseForm()}
-          sx={{
-            marginLeft: 1,
-            color: "secondary.body",
-            textTransform: "none",
-          }}
-          startIcon={<KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />}
-        >
-          Produccion del pauete
-        </Button>
-        <Button
-            onClick={handleChecout}
-            variant="contained"
-            sx={{ height: "80%", bgcolor: "#498A19" }}
-          >
-            <ShoppingCartIcon sx={{ color: "secondary.body" }} />
-          </Button>
-      </Box>
-
-      {/* the filter of image */}
-      </Box>
+    <Grid display="flex" flexDirection="column" marginTop={10}>
+   
       
         <Grid
           flexGrow={1}
           paddingX={4}
           paddingY={4}
-          display="flex"
+          
           flexDirection="column"
           gap={4}
           sx={(t)=>({
+            display:'none',
             [t.breakpoints.up('lg')]:{
-              display:'none'
+                display:"flex"
             }
           })}
           
         >
-          <Grid display="flex" marginLeft={4} alignItems='center' gap={4}>
-            <img
+          <Grid display="flex" marginLeft={4} alignItems='center'justifyContent='center' gap={4}>
+            <Box
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='center'
+            width="25vw"
+            height="50vh"
+            border={1}
+            borderColor='primary.main'
+            borderRadius={2}
+            gap={4}
+
+            >
+
+            <img  width="50%"
+            height="50%"
               src={filterBanck.paquete === "Premium" ? plantaPremium : plantaEstandar}
-              width="20%"
-              height="20%"
+             
               alt="logo"
             />
-            <Grid display='flex' flexDirection='column'>
+            <Grid display='flex' flexDirection='column' alignItems='center'
+            justifyContent='center'>
 
-            <Typography color='text.disabled'>{filterBanck.cant} Vites</Typography>
-            <Typography color='primary.main'>Precio: {filterBanck.precio}</Typography>
+            <Typography color='primary.main' fontWeight={600}>{filterBanck.cant} Vites</Typography>
+            <Typography color='text.cards' fontWeight={600}>Precio: <span style={{color:'#214820', fontWeight:600}}>
+            $ {filterBanck.precio}        </span></Typography>
             </Grid>
+            </Box>
+            <Box component={Button} >
+
+          <img  width="85%"
+            height="85%"src={cosechaMinima} onClick={handleDetailCosechaMinima}alt='photo'/>
+            </Box>
           </Grid>
-          <Box width='100%'  bgcolor='text.disabled' border={1}></Box>
-          <img src={cosechaMinima} onClick={handleDetailCosechaMinima}alt='photo'/>
-          <img src={cosechaMaxima} alt='photo'/>
+         
+          <img  width="50%"
+            height="50%"src={cosechaMaxima} alt='photo'/>
         </Grid>
 
-        <ProductDetailDesktop/>
+       
       
    
     {
@@ -159,4 +140,4 @@ function ProductDetail() {
   );
 }
 
-export default ProductDetail;
+export default ProductDetailDesktop;

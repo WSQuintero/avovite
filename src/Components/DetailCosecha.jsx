@@ -11,6 +11,7 @@ import {
   InputAdornment,
   Link,
   Paper,
+  hexToRgb,
 } from "@mui/material";
 import {
   Https as HttpsIcon,
@@ -72,9 +73,17 @@ function DetailCosecha() {
       display="flex"
       flexDirection="column"
       alignItems='center'
-      sx={{
+      sx={(t)=>({
         backgroundColor: "white",
-      }}
+        width:'100%',
+        height:'100%',
+        [t.breakpoints.up('lg')]:{
+          bgcolor:'white',
+          paddingTop:20,
+          width:'70vw',
+          height:'200vh',
+        }
+      })}
     >
       <Header />
 
@@ -87,6 +96,11 @@ function DetailCosecha() {
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
+        sx={(t)=>({
+          [t.breakpoints.up('lg')]:{
+            display:'none'
+          }
+        })}
       >
         <Button
           onClick={() => handleCloseForm()}
@@ -111,12 +125,27 @@ function DetailCosecha() {
       {/* the filter of image */}
 
       <Grid
-        flexGrow={1}
-        paddingX={4}
-        paddingY={4}
+        
         display="flex"
         flexDirection="column"
-       
+        sx={(t)=>({
+          flexGrow:1,
+        paddingX:4,
+        paddingY:4,
+          maxHeight: "500px", // Ajusta la altura máxima deseada
+          
+          scrollbarWidth: "thin",
+          padding: "20px",
+          [t.breakpoints.up('lg')]:{
+           justifyContent:'center',
+           paddingX:0,
+           marginTop:-10,
+           alignItems:'center',
+           width:'60vw',
+           height:'100vh'
+          
+          }
+        })}
       >
         <Typography color="primary.main" fontWeight={600} sx={{fontSize:24, textAlign:'initial'}}>
           Cosecha Mínima
@@ -127,13 +156,42 @@ function DetailCosecha() {
           ref={typographyRef}
           textAlign="justify"
           lineHeight={2}
-          style={{
+          sx={(t)=>({
             maxHeight: "500px", // Ajusta la altura máxima deseada
             overflowY: "scroll",
             scrollbarWidth: "thin",
             padding: "20px",
-          }}
+            [t.breakpoints.up('lg')]:{
+              
+              maxHeight: 400, // Ajusta la altura máxima deseada
+              overflowY: "scroll",
+              scrollbarWidth: "thin",
+              width:'90%',
+              // Estilos específicos para scrollbar (Solo funcionan en navegadores que soportan los pseudo-elementos ::webkit-scrollbar)
+              "&::-webkit-scrollbar": {
+                width: "6px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "3px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: theme.palette.primary.dark,
+              },
+                  }
+          })}
         >
+          La cosecha mínima del Vite es una medida establecida para garantizar
+          la sostenibilidad y calidad de los cultivos. Se refiere a la cantidad
+          mínima de aguacates que se deben recolectar de un árbol antes de que
+          esté listo para la venta o consumo. Imaginemos que tienes un pequeño
+          huerto de aguacate con 50 árboles y deseas saber cuántos aguacates
+          debes recolectar como mínimo para mantener un nivel adecuado de
+          producción y aprovechamiento del cultivo. En promedio, cada árbol de
+          aguacate puede producir alrededor de 100 frutos en una temporada. Sin
+          embargo, para garantizar un buen crecimiento y desarrollo de los
+          árboles, es recomendable dejar una cantidad mínima de frutos en el
+          árbol.<br/><br/>  
           La cosecha mínima del Vite es una medida establecida para garantizar
           la sostenibilidad y calidad de los cultivos. Se refiere a la cantidad
           mínima de aguacates que se deben recolectar de un árbol antes de que
@@ -147,9 +205,8 @@ function DetailCosecha() {
           árbol.
         </Typography>
 
-        <div style={{ textAlign: "center" }}>
-          Porcentaje de desplazamiento: {scrollPercentage.toFixed(2)}%
-        </div>
+        
+      </Grid>
       <Box
            
             marginTop='2%'
@@ -171,7 +228,6 @@ function DetailCosecha() {
               sx={{ color: "primary.main", width: 35, height: 35 }}
             />
           </Box>
-      </Grid>
     </Box>
   );
 }

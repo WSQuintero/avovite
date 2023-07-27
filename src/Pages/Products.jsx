@@ -34,6 +34,7 @@ import { paquages } from "../utilities/myCards";
 import plantaEstandar from "../assets/img/products/plantaEstandar.svg";
 import plantaPremium from "../assets/img/products/plantaPremium.svg";
 import ProductDetail from "./ProductDetail";
+import ProductCardDesktop from "../Components/ProductCardDesktop";
 
 function Products() {
   const theme = useTheme();
@@ -91,11 +92,17 @@ function Products() {
         {/* the filter of image */}
 
         <Grid
-          paddingX={6}
-          paddingY={2}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
+          
+          sx={(t)=>({
+            display:'flex',
+            paddingX:6,
+            paddingY:2,
+            flexDirection:"column",
+            alignItems:"center",
+            [t.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
          
         >
           {paquages.map((e) => (
@@ -181,6 +188,7 @@ function Products() {
             </>
           ))}
         </Grid>
+          <ProductCardDesktop/>
       </Box>
       
     </Grid>
