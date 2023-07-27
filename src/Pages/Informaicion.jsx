@@ -39,6 +39,7 @@ function Informaicion() {
         sx={(theme)=>({
           position:"relative",
           height:"10vh",
+          marginTop:7,
           [theme.breakpoints.up('lg')]:{
             display:'none'
           }

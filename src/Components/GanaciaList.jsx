@@ -33,6 +33,7 @@ import icon from '../assets/img/pasarDinero/icon.svg'
 
 import { useFinalContext } from "../Context/FinalContext";
 import GananciaTotalId from "./GananciaTotalId";
+import TableGanaciaList from "./TableGanaciaList";
 
 function GanaciaList() {
   const theme = useTheme();
@@ -97,7 +98,12 @@ function GanaciaList() {
           flexDirection="column"
           alignItems="center"
           gap={1}
-        >
+          sx={(t)=>({
+            [t.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
+          >
         { vites.map((e)=>(
             <>
           <Grid key={e.id} display='flex' alignItems='center'  width='100%' onClick={()=>handleClickTotalGanancia(e.id)} >
@@ -154,8 +160,8 @@ function GanaciaList() {
         ))
     }
         </Grid>
-        
        
+        <TableGanaciaList/>
       </Box>
       
 

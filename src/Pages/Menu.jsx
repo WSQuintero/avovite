@@ -64,7 +64,7 @@ function Menu() {
   };
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex" flexDirection="column" justifyContent='center' alignItems='center'>
       <Box
         position="relative"
         height="50vh"

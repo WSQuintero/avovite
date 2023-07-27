@@ -8,6 +8,8 @@ export const vites = [
     siembra: "01-06-2023",
     dateAlistamiento: "15-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 62,
+    Cantidad: 25,
   },
   {
     id: 2,
@@ -18,6 +20,8 @@ export const vites = [
     siembra: "02-06-2023",
     dateAlistamiento: "16-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 30,
+    Cantidad: 17,
   },
   {
     id: 3,
@@ -28,6 +32,8 @@ export const vites = [
     siembra: "03-06-2023",
     dateAlistamiento: "17-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 90,
+    Cantidad: 42,
   },
   {
     id: 4,
@@ -38,6 +44,8 @@ export const vites = [
     siembra: "04-06-2023",
     dateAlistamiento: "18-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 42,
+    Cantidad: 31,
   },
   {
     id: 5,
@@ -48,6 +56,8 @@ export const vites = [
     siembra: "05-06-2023",
     dateAlistamiento: "19-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 74,
+    Cantidad: 56,
   },
   {
     id: 6,
@@ -58,6 +68,8 @@ export const vites = [
     siembra: "06-06-2023",
     dateAlistamiento: "20-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 18,
+    Cantidad: 12,
   },
   {
     id: 7,
@@ -68,6 +80,8 @@ export const vites = [
     siembra: "07-06-2023",
     dateAlistamiento: "21-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 81,
+    Cantidad: 45,
   },
   {
     id: 8,
@@ -78,6 +92,8 @@ export const vites = [
     siembra: "08-06-2023",
     dateAlistamiento: "22-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 59,
+    Cantidad: 28,
   },
   {
     id: 9,
@@ -88,6 +104,8 @@ export const vites = [
     siembra: "09-06-2023",
     dateAlistamiento: "23-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 47,
+    Cantidad: 19,
   },
   {
     id: 10,
@@ -98,6 +116,8 @@ export const vites = [
     siembra: "10-06-2023",
     dateAlistamiento: "24-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 15,
+    Cantidad: 33,
   },
   {
     id: 11,
@@ -108,6 +128,8 @@ export const vites = [
     siembra: "11-06-2023",
     dateAlistamiento: "25-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 70,
+    Cantidad: 64,
   },
   {
     id: 12,
@@ -118,6 +140,8 @@ export const vites = [
     siembra: "12-06-2023",
     dateAlistamiento: "26-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 36,
+    Cantidad: 23,
   },
   {
     id: 13,
@@ -128,6 +152,8 @@ export const vites = [
     siembra: "13-06-2023",
     dateAlistamiento: "27-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 55,
+    Cantidad: 39,
   },
   {
     id: 14,
@@ -138,6 +164,8 @@ export const vites = [
     siembra: "14-06-2023",
     dateAlistamiento: "28-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 27,
+    Cantidad: 50,
   },
   {
     id: 15,
@@ -148,6 +176,8 @@ export const vites = [
     siembra: "15-06-2023",
     dateAlistamiento: "29-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 88,
+    Cantidad: 71,
   },
   {
     id: 16,
@@ -158,6 +188,8 @@ export const vites = [
     siembra: "16-06-2023",
     dateAlistamiento: "30-06-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 53,
+    Cantidad: 60,
   },
   {
     id: 17,
@@ -168,6 +200,8 @@ export const vites = [
     siembra: "17-06-2023",
     dateAlistamiento: "01-07-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 41,
+    Cantidad: 14,
   },
   {
     id: 18,
@@ -178,6 +212,8 @@ export const vites = [
     siembra: "18-06-2023",
     dateAlistamiento: "02-07-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 22,
+    Cantidad: 37,
   },
   {
     id: 19,
@@ -188,6 +224,8 @@ export const vites = [
     siembra: "19-06-2023",
     dateAlistamiento: "03-07-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 99,
+    Cantidad: 80,
   },
   {
     id: 20,
@@ -198,8 +236,11 @@ export const vites = [
     siembra: "20-06-2023",
     dateAlistamiento: "04-07-2023",
     statusAlistamiento: "Vite en alistamiento",
+    cosechaGeneral: 84,
+    Cantidad: 63,
   },
 ];
+
 
 
 export const otherData = [

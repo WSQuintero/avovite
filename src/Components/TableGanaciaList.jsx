@@ -14,39 +14,75 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Grid,
+  Typography,
 } from '@mui/material';
 import logoInformacion from '../assets/img/informacion/logoInformacion.svg'
 import { vites } from '../utilities/myCards';
 import { useNavigate } from 'react-router-dom';
+import { useFinalContext } from '../Context/FinalContext';
 
-function TableInformation() {
+function TableGanaciaList() {
   const Navigate = useNavigate()
+  const {setTotalGananciaId} = useFinalContext()
 
   const columnasVisibles = [
     "Numero de Vite",
-    "Estado",
-    "Fecha de Sembrado",
-    "Número Documento Beneficiario",
-    "Vite en Alistamiento",
-    "Descarga de Certificado",
+    "Valor de venta",
+    
+    "Fecha de venta",
+    "Vite de recolección",
+    "Polisa de seguro",
   ];
 
   const [selectedRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (id) => {
     setSelectedRow(prevSelectedRow => (prevSelectedRow === id ? null : id));
-    Navigate(`vite/${id}`)
+    setTotalGananciaId(id)
   };
 
   return (
     <Box sx={(theme) => ({
-      display:'none',
+        display:'none',
       [theme.breakpoints.up('lg')]: {
-        marginTop: 10,
-        width: '75vw',
-        marginRight: 10,
+        bgcolor:'white',
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'center',
+        marginTop: 25,
+        width: '100vw',
+        marginLeft:-1,
+        paddingX:25,
+        gap:5
       },
     })}>
+         <Grid sx={(t)=>({
+          display:'none',
+          [t.breakpoints.up('lg')]:{
+            display:'flex',
+            alignItems:'center',
+            gap:1,
+            marginRight:100,
+          }
+        })}>
+        <Box
+             bgcolor='primary.main'
+             borderRadius='50%'
+             display='flex'
+             justifyContent='center'
+             alignItems='center'
+             sx={{
+                width:60,
+                height:60
+             }}
+            >
+                <img src={logoInformacion} width='65%' height='65%' alt="logo"/>
+            </Box>
+            <Typography variant="h2" width={20} fontSize={24} >Tu Dinero</Typography>
+
+        </Grid>
       <TableContainer elevation={0} sx={{ borderRadius: 2 }}>
         <Table>
           <TableHead>
@@ -88,16 +124,12 @@ function TableInformation() {
             </Box>
 
                 </TableCell>
-                <TableCell>{fila.numeral}</TableCell>
-                <TableCell>{fila.estado}</TableCell>
-                <TableCell>{fila.siembra}</TableCell>
-                <TableCell>{fila.id}</TableCell>
-                <TableCell>{fila.statusAlistamiento}</TableCell>
-                <TableCell>
-                  <Button variant="contained" sx={{color:'#FFFFFF'}} onClick={() => handleOpenModal(fila.id)}>
-                    Descargar
-                  </Button>
-                </TableCell>
+                <TableCell>Vite {fila.numeral}</TableCell>
+                <TableCell>$ 5.000.000</TableCell>
+                <TableCell>{fila.siembra} </TableCell>
+                <TableCell>{fila.dateAlistamiento}</TableCell>
+                <TableCell>-$ 1.500.000</TableCell>
+                
               </TableRow>
             ))}
           </TableBody>
@@ -107,4 +139,8 @@ function TableInformation() {
   );
 }
 
-export default TableInformation;
+export default TableGanaciaList;
+
+
+
+

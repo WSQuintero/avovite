@@ -88,7 +88,7 @@ function Header() {
         alignItems="center"
         justifyContent="space-between"
         sx={(theme)=>({
-          width:360,
+         
           [theme.breakpoints.up('lg')]:{
             display:'none',
             // width:10

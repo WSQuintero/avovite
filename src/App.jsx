@@ -3,11 +3,10 @@ import Router from "./Router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./assets/css/_default.css";
-import FinalContextProvider from "./Context/FinalContext";
+import FinalContextProvider, { useFinalContext } from "./Context/FinalContext";
 import Sidebar from "./Components/Sidebar";
 import { useState } from "react";
 import { Grid } from "@mui/material";
-import { Height } from "@mui/icons-material";
 
 const theme = createTheme({
   palette: {
@@ -248,7 +247,7 @@ const theme = createTheme({
 
 function App() {
   const [open, setOpen] = useState(false);
-
+ 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -277,6 +276,7 @@ function App() {
            })}
           >
             <Router />
+           
           </Grid>
         </Grid>
       </FinalContextProvider>

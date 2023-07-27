@@ -54,13 +54,22 @@ function GananciaTotalId() {
   return (
     <Box
       position="absolute"
-      height="100%"
-      width="100%"
+     
       display="flex"
       flexDirection="column"
-      sx={{
+      height="100%"
+        width="100%"
+      sx={(t)=>({
         backgroundColor: "white",
-      }}
+       
+        [t.breakpoints.up('lg')]:{
+          backgroundColor: "white",
+          height:'400vh',
+          marginTop:200,
+          paddingTop:30,
+        
+        }
+      })}
     >
       <Header />
 
@@ -73,6 +82,13 @@ function GananciaTotalId() {
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
+        sx={(t)=>({
+         
+          [t.breakpoints.up('lg')]:{
+            display:'none'
+        
+          }
+        })}
       >
         <Button
           onClick={() => handleCoseModal()}
@@ -96,13 +112,28 @@ function GananciaTotalId() {
 
       {/* the filter of image */}
 
-      <Grid display="flex" flexDirection="column">
+    
         <Grid
-          paddingX={5}
-          paddingY={7}
+         
           display="flex"
           flexDirection="column"
           justifyContent="center"
+          sx={(t)=>({
+            paddingY:7,
+
+            paddingX:5,
+            [t.breakpoints.up('lg')]:{
+              border:1,
+              borderColor:'primary.main',
+              borderRadius:4,
+            width:'40%',
+            paddingX:0,
+          justifyContent:"center",
+          alignItems:'center',
+            marginLeft:50,
+            marginTop:20,
+            }
+          })}
         >
           <Box>
             <Grid
@@ -111,6 +142,15 @@ function GananciaTotalId() {
               justifyContent="center"
               alignItems="center"
               gap={1}
+              sx={(t)=>({
+       
+                [t.breakpoints.up('lg')]:{
+                 
+                 
+                  
+                
+                }
+              })}
             >
               <Typography
                 color="primary.main"
@@ -150,15 +190,21 @@ function GananciaTotalId() {
                 variant="contained"
                 onClick={() => handleCargaCuenta()}
                 fullWidth
-                sx={{ color: "white" }}
+                sx={(t)=>({ 
+                  color: "white",
+                [t.breakpoints.up('lg')]:{
+                  width:'35vw'
+                } 
+              
+              })}
               >
                 Tu dinero
               </Button>
             </Grid>
           </Box>
         </Grid>
-        <Grid paddingX={4} display="flex" gap={2}></Grid>
-      </Grid>
+       
+      
     </Box>
   );
 }

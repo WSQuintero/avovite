@@ -30,12 +30,25 @@ function EditProfile() {
   const route = useNavigate()
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex" flexDirection="column"
+    sx={(t)=>({
+      [t.breakpoints.up('lg')]:{
+        marginTop:20,
+      }
+    })}
+    >
       <Box
         position="relative"
         height="10vh"
         display="flex"
         flexDirection="column"
+        sx={(t)=>({
+          flexDirection:'column',
+         [t.breakpoints.up('lg')]:{
+           display:'none',
+         
+         }
+        })}
       >
         <Header />
 
@@ -55,27 +68,50 @@ function EditProfile() {
            Editar Perfil 
           </Button>
         </Box>
-
+        </Box>
         {/* the filter of image */}
 
+        <Typography fontWeight={700} color='primary.main'>Editar Perfil</Typography>
+        <Typography fontWeight={700} color='primary.main' textAlign='center'>Editar Perfil</Typography>
         <Grid
           paddingX={2}
           paddingY={2}
           display="flex"
           flexDirection="column"
           alignItems="center"
+          sx={(t)=>({
+           
+            [t.breakpoints.up('lg')]:{
+             flexDirection:'row',
+            marginTop:5,
+            }
+           })}
         >
+           <Box  
+          sx={(t)=>({
+           
+           [t.breakpoints.up('lg')]:{
+            
+           display:'flex',
+           flexDirection:'column',
+           justifyContent:'center',
+           alignItems:'center',
+          marginBottom:30,
+           }
+          })}>
+
           <img src={photoDefault} width="50%" height="50%" alt="photo" />
 
           <Typography bottom={10} color="primary.main">
             Nombre
           </Typography>
+          </Box>
 
           <Grid
             display="flex"
             paddingY={2}
             flexDirection="column"
-            width="95%"
+            
             gap={2}
           >
             
@@ -197,7 +233,7 @@ function EditProfile() {
             <Button variant="contained" fullWidth sx={{color:'secondary.body', textTransform:'none', fontSize:'24px'}}>Actualizar</Button>
           </Grid>
         </Grid>
-      </Box>
+     
     </Grid>
   );
 }

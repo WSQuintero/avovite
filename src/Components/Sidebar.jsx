@@ -108,44 +108,65 @@ export default function Sidebar({ setOpen, open }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState(-1);
-  const { transaction, setTransaction, asesorComponent, setAsesorComponent } =
+  const { setGananciaList, gananciaList, setTransaction, asesorComponent, setAsesorComponent, setCosechasList, cosechasList } =
   useFinalContext();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+ 
+  
   const handleNavigation = (route, index) => {
     setSelectedItem(index); // Actualizamos el índice del elemento seleccionado
     switch (route) {
       case "vites":
         navigate("/informacion");
+        setCosechasList(false)
+        setGananciaList(false)
+
         setTransaction(null)
         setAsesorComponent(false)
         break;
       case "Billetera":
         navigate("/wallet");
+        setCosechasList(false)
+        setGananciaList(false)
+
         setTransaction(null)
         setAsesorComponent(false)
         break;
       case "Cosechas":
+        navigate('/menu')
         setCosechasList(true);
+        setGananciaList(false)
+
+        setTransaction(null)
+        setAsesorComponent(false)
+        break;
+      case "Ganancias":
+        navigate('/menu')
+        setCosechasList(false)
+
+        setGananciaList(true)
         setTransaction(null)
         setAsesorComponent(false)
         break;
       case "Comprar Vites":
         navigate('/products')
+        setGananciaList(false)
         setTransaction(null)
+        setCosechasList(false)
         setAsesorComponent(false)
         break;
       case "Perfil":
         navigate('/profile')
+        setCosechasList(false)
+        setGananciaList(false)
+
         setTransaction(null)
         setAsesorComponent(false)
         break;
-      // Agrega más casos para otras opciones del sidebar si es necesario
+    
       default:
         break;
     }
@@ -153,6 +174,7 @@ export default function Sidebar({ setOpen, open }) {
   return (
     <Box sx={(theme)=>({
       display:'none',
+     
       [theme.breakpoints.up('lg')]:{
         display: "flex"
       }
@@ -162,7 +184,7 @@ export default function Sidebar({ setOpen, open }) {
         position="fixed"
         open={open}
         elevation={0}
-        sx={{ border: "none", borderColor: "white"}}
+        sx={{ border: "none", borderColor: "white", }}
       >
         <Toolbar
           sx={{

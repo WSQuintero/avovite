@@ -14,39 +14,72 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Grid,
+  Typography,
 } from '@mui/material';
 import logoInformacion from '../assets/img/informacion/logoInformacion.svg'
 import { vites } from '../utilities/myCards';
 import { useNavigate } from 'react-router-dom';
 
-function TableInformation() {
+function TablaCosechaList() {
   const Navigate = useNavigate()
 
   const columnasVisibles = [
     "Numero de Vite",
-    "Estado",
+    "Cosecha General",
+    
+    "Cantidad de Producción",
     "Fecha de Sembrado",
-    "Número Documento Beneficiario",
-    "Vite en Alistamiento",
-    "Descarga de Certificado",
+    "Fecha de la ultima Cosecha",
   ];
 
   const [selectedRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (id) => {
     setSelectedRow(prevSelectedRow => (prevSelectedRow === id ? null : id));
-    Navigate(`vite/${id}`)
+    // Navigate(`vite/${id}`)
   };
 
   return (
     <Box sx={(theme) => ({
-      display:'none',
       [theme.breakpoints.up('lg')]: {
-        marginTop: 10,
-        width: '75vw',
-        marginRight: 10,
+        bgcolor:'white',
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'center',
+        marginTop: 30,
+        width: '100vw',
+        marginLeft:4,
+        paddingX:29,
+        gap:5
       },
     })}>
+         <Grid sx={(t)=>({
+          display:'none',
+          [t.breakpoints.up('lg')]:{
+            display:'flex',
+            alignItems:'center',
+            gap:1,
+            marginRight:113,
+          }
+        })}>
+        <Box
+             bgcolor='primary.main'
+             borderRadius='50%'
+             display='flex'
+             justifyContent='center'
+             alignItems='center'
+             sx={{
+                width:60,
+                height:60
+             }}
+            >
+                <img src={logoInformacion} width='65%' height='65%' alt="logo"/>
+            </Box>
+            <Typography variant="h2">Cosechas</Typography>
+
+        </Grid>
       <TableContainer elevation={0} sx={{ borderRadius: 2 }}>
         <Table>
           <TableHead>
@@ -88,16 +121,12 @@ function TableInformation() {
             </Box>
 
                 </TableCell>
-                <TableCell>{fila.numeral}</TableCell>
-                <TableCell>{fila.estado}</TableCell>
-                <TableCell>{fila.siembra}</TableCell>
+                <TableCell>Vite {fila.numeral}</TableCell>
+                <TableCell>{fila.cosechaGeneral} kg</TableCell>
+                <TableCell>{fila.Cantidad} Toneladas</TableCell>
                 <TableCell>{fila.id}</TableCell>
-                <TableCell>{fila.statusAlistamiento}</TableCell>
-                <TableCell>
-                  <Button variant="contained" sx={{color:'#FFFFFF'}} onClick={() => handleOpenModal(fila.id)}>
-                    Descargar
-                  </Button>
-                </TableCell>
+                <TableCell>{fila.dateAlistamiento}</TableCell>
+                
               </TableRow>
             ))}
           </TableBody>
@@ -107,4 +136,6 @@ function TableInformation() {
   );
 }
 
-export default TableInformation;
+export default TablaCosechaList;
+
+

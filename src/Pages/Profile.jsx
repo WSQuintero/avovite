@@ -31,23 +31,42 @@ function TermsConditions() {
 
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex"  
+    flexDirection='column'
+     sx={(t)=>({
+      [t.breakpoints.up('lg')]:{
+        marginTop:10,
+      }
+    })}>
       <Box
         position="relative"
         height="10vh"
         display="flex"
         flexDirection="column"
+        sx={(t)=>({
+          flexDirection:'column',
+         [t.breakpoints.up('lg')]:{
+           display:'none',
+         
+         }
+        })}
       >
         <Header />
 
-        <Box width="100%" height={40} bgcolor="#67AA36">
+        <Box width="100%" height={40} bgcolor="#67AA36" 
+       
+        >
           <Button
               onClick={()=>route('/menu')}
-            sx={{
+           
+            sx={(t)=>({
               marginLeft: 1,
               color: "secondary.body",
               textTransform: "none",
-            }}
+              [t.breakpoints.up('lg')]:{
+               
+              }
+             })}
             startIcon={
               <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
             }
@@ -55,7 +74,7 @@ function TermsConditions() {
            Tu perfil
           </Button>
         </Box>
-
+        </Box>
         {/* the filter of image */}
 
         <Grid
@@ -64,21 +83,60 @@ function TermsConditions() {
           display="flex"
           flexDirection="column"
           alignItems="center"
+          sx={(t)=>({
+           
+           [t.breakpoints.up('lg')]:{
+            flexDirection:'row',
+           
+           }
+          })}
         >
+          <Box  
+          sx={(t)=>({
+           
+           [t.breakpoints.up('lg')]:{
+            
+           display:'flex',
+           flexDirection:'column',
+           justifyContent:'center',
+           alignItems:'center',
+          
+           }
+          })}>
+
           <img src={photoDefault} width="50%" height="50%" alt="photo" />
 
-          <Typography bottom={10} color="primary.main">
+          <Typography bottom={10} color="primary.main"
+          
+          sx={(t)=>({
+           
+           [t.breakpoints.up('lg')]:{
+            display:'none',
+           
+           }
+          })} >
             Nombre
           </Typography>
-
+          <Button onClick={()=>route('/editPerfil')}
+          
+          >Editar Perfil</Button>
+          </Box>
           <Grid
             display="flex"
             paddingY={2}
             flexDirection="column"
             width="95%"
             gap={2}
+            
           >
-            <Typography variant="h2" color='primary.main'>Tu perfil</Typography>
+            <Typography variant="h2" color='primary.main' sx={(t)=>({
+           
+           [t.breakpoints.up('lg')]:{
+             marginBottom:10,
+             marginLeft:-35
+           }
+          })}
+         >Tu perfil</Typography>
             <TextField
               name="Nombre completo,"
               placeholder="Nombre completo,"
@@ -189,7 +247,7 @@ function TermsConditions() {
             
           </Grid>
         </Grid>
-      </Box>
+      
     </Grid>
   );
 }

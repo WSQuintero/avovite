@@ -32,6 +32,7 @@ import Header from "../Components/Header/Header";
 import icon from '../assets/img/pasarDinero/icon.svg'
 
 import { useFinalContext } from "../Context/FinalContext";
+import TablaCosechaList from "./TablaCosechaList";
 
 function CosechasList() {
   const theme = useTheme();
@@ -43,12 +44,12 @@ function CosechasList() {
   return (
     
       <Box
+      display="flex"
+      flexDirection="column"
         position="absolute"
         height="100%"
         width='100%'
-        display="flex"
         bgcolor='white'
-        flexDirection="column"
       >
         <Header />
 
@@ -61,6 +62,13 @@ function CosechasList() {
           flexDirection="row"
           justifyContent="space-between"
           alignItems="center"
+          sx={(t)=>({
+            display:'flex',
+            marginTop:9,
+            [t.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
         >
           <Button
             onClick={()=>setCosechasList(false)}
@@ -91,6 +99,13 @@ function CosechasList() {
           flexDirection="column"
           alignItems="center"
           gap={1}
+          sx={(t)=>({
+            display:'flex',
+           
+            [t.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
         >
             <Typography variant="h2">Cosechas</Typography>
         { vites.map((e)=>(
@@ -149,7 +164,10 @@ function CosechasList() {
         </>
         ))
     }
+
         </Grid>
+       
+       <TablaCosechaList/>
       </Box>
 
   );

@@ -33,6 +33,7 @@ import { certifcates } from "../utilities/myCards";
 import contrato from "../assets/img/certificate/contrato.svg";
 import certificate from "../assets/img/certificate/certificate.svg";
 import recivo from "../assets/img/certificate/found.svg";
+import CertificateCards from "../Components/CertificateCards";
 
 function Certificate() {
   const theme = useTheme();
@@ -42,7 +43,12 @@ function Certificate() {
   const [PasswordClic, setPasswordClic] = useState(false);
 
   return (
-    <Grid display="flex" flexDirection="column">
+    <Grid display="flex" flexDirection="column"  sx={(t)=>({
+     
+      [t.breakpoints.up('lg')]:{
+       marginTop:10,
+      }
+    })}>
       <Box
         position="relative"
         height="10vh"
@@ -60,6 +66,12 @@ function Certificate() {
           flexDirection="row"
           justifyContent="space-between"
           alignItems="center"
+          sx={(t)=>({
+            marginTop:7,
+            [t.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
           >
           <Button
           onClick={() => route("/vites")}
@@ -83,7 +95,7 @@ function Certificate() {
             <ShoppingCartIcon sx={{ color: "secondary.body" }} />
           </Button>
         </Box>
-
+        </Box>
         {/* the filter of image */}
 
         <Grid
@@ -93,6 +105,12 @@ function Certificate() {
           flexDirection="column"
           alignItems="center"
           gap={1}
+          sx={(t)=>({
+          
+            [t.breakpoints.up('lg')]:{
+              display:'none'
+            }
+          })}
         >
           {certifcates.map((e) => (
             <>
@@ -172,7 +190,8 @@ function Certificate() {
             </>
           ))}
         </Grid>
-      </Box>
+      
+      <CertificateCards/>
     </Grid>
   );
 }

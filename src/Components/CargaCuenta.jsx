@@ -42,18 +42,30 @@ function CargaCuenta() {
   return (
     <Box
       position="absolute"
-      height="100%"
-      width="100%"
+    
+    
       display="flex"
       flexDirection="column"
-      sx={{
-        backgroundColor: "white",
-      }}
+      sx={(t)=>({
+        bgcolor:'white',
+        height:'100%',
+        width:"100%",
+        alignItems:'center',
+        justifyContent:'center',
+     
+          [t.breakpoints.up('lg')]:{
+            
+             backgroundColor: "white",
+          height:'400vh',
+          marginTop:50,
+         
+          }
+        })}
     >
       <Header />
 
       <Box
-        width="100%"
+       
         paddingX={1}
         height={40}
         bgcolor="primary.main"
@@ -61,6 +73,13 @@ function CargaCuenta() {
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
+        sx={(t)=>({
+          width:"100%",
+          
+          [t.breakpoints.up('lg')]:{
+          display:'none' 
+          }
+        })}
       >
         <Button
           onClick={() => handleCargaCuentaClose()}
@@ -84,14 +103,26 @@ function CargaCuenta() {
 
       {/* the filter of image */}
 
-      <Grid display="flex" flexDirection="column">
+     
         <Grid
           paddingX={5}
           paddingY={7}
           display="flex"
           flexDirection="column"
+          alignItems='center'
           justifyContent="center"
           gap={2}
+          sx={(t)=>({
+            paddingX:0,
+            width:"80%",
+            [t.breakpoints.up('lg')]:{
+              width:'50%',
+             border:1,
+             borderColor:'primary.main',
+             borderRadius:12,
+             paddingX:10,
+            }
+          })}
         >
           <Typography color="text.cards" textAlign="center">
             Tu carga se hará a través de PSE y del portal de la entidad bancaria
@@ -102,13 +133,7 @@ function CargaCuenta() {
           <TextField
             variant="outlined"
             placeholder="Ingresa el valor a cargar"
-            InputProps={{
-              style: {
-                color: theme.palette.text.cards,
-                borderRadius:25,
-                height:40
-              },
-            }}
+            sx={{width:'96%'}}
           />
             <Typography color='primary.main'>Tipo de Persona</Typography>
           <Grid display="flex">
@@ -142,18 +167,12 @@ function CargaCuenta() {
           <TextField
             variant="outlined"
             placeholder="A continuación seleccione su banco"
-            InputProps={{
-              style: {
-                color: theme.palette.text.cards,
-                borderRadius:25,
-                height:40
-              },
-            }}
+            sx={{width:'96%'}}
           />
 
-          <Button  variant="contained" sx={{color:'white'}}>Continuar</Button>
+          <Button  variant="contained" onClick={()=>handleCargaCuentaClose()}sx={{color:'white', width:'80%'}}>Continuar</Button>
         </Grid>
-      </Grid>
+     
     </Box>
   );
 }
