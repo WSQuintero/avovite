@@ -134,108 +134,96 @@ const theme = createTheme({
           border: "none",
           color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
-          
           fontWeight: 500,
-          width:350
+          width: 350,
         },
       },
       defaultProps: {
         inputProps: {
           color: "#757575",
-
         },
       },
     },
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          backgroundColor: 'white',
-          color: '#757575',
+          backgroundColor: "white",
+          color: "#757575",
           fontSize: 18,
-          '&:hover': {
+          "&:hover": {
             borderWidth: 3,
-            backgroundColor: '#EEEEEE',
+            backgroundColor: "#EEEEEE",
           },
         },
         selected: {
-          backgroundColor: '#C0C0C0', // Color de fondo cuando está seleccionado
-          color: 'black', // Color del texto cuando está seleccionado
+          backgroundColor: "#C0C0C0", // Color de fondo cuando está seleccionado
+          color: "black", // Color del texto cuando está seleccionado
         },
       },
     },
-    MuiSelect:{
-      styleOverrides:{
-        root:{
+    MuiSelect: {
+      styleOverrides: {
+        root: {
           borderRadius: 12,
           backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
           border: "none",
           color: "#757575", // Cambia el color del texto según tus preferencias
           fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
           fontWeight: 500,
-         
-          "&:hover":{
-            borderWidth:3,
-           
+
+          "&:hover": {
+            borderWidth: 3,
           },
         },
-       
-        
       },
-      defaultProps:{
-        inputProps:{
-          color:'#C0C0C0'
-        }
+      defaultProps: {
+        inputProps: {
+          color: "#C0C0C0",
+        },
       },
-      
     },
-    MuiTable:{
-      styleOverrides:{
-        root:{
-          backgroundColor:'#FFFFFF',
-          
-        }
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#FFFFFF",
+        },
       },
-    
     },
-    MuiTableHead:{
-      styleOverrides:{
-        root:{
-          color:'#67AA36',
-          backgroundColor:'#67AA36'
-        
-        }
-      }
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          color: "#67AA36",
+          backgroundColor: "#67AA36",
+        },
+      },
     },
-    MuiTableBody:{
-      styleOverrides:{
-        root:{
-          border:'none'
-        }
-      }
+    MuiTableBody: {
+      styleOverrides: {
+        root: {
+          border: "none",
+        },
+      },
     },
-    MuiTableCell:{
-      styleOverrides:{
-        root:{
-         
-          color:'#67AA36',
-          textAlign:'center'
-         
-        }
-      }
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          color: "#67AA36",
+          textAlign: "center",
+        },
+      },
     },
-    MuiTableContainer:{
-      styleOverrides:{
-        root:{
-          display:'flex',
-          color:'#67AA36',
-          
-          alignItems:'center'
-        }
-      }
-    }
-    
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          display: "flex",
+          color: "#67AA36",
+
+          alignItems: "center",
+        },
+      },
+    },
   },
-  
+
   breakpoints: {
     values: {
       sm: 576,
@@ -249,13 +237,13 @@ const theme = createTheme({
 
 function App() {
   const [open, setOpen] = useState(false);
- 
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <FinalContextProvider>
         <Private>
-          <Router/>
+          <Router />
         </Private>
       </FinalContextProvider>
     </ThemeProvider>

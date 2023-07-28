@@ -215,7 +215,7 @@ export default function Sidebar({ setOpen, open }) {
             <TextField
               fullWidth
               sx={{ bgcolor: "transparent" }}
-              placeholder="typr to sdearch"
+              placeholder="Type to search"
               InputProps={{
                 style: {
                   color: "black",
