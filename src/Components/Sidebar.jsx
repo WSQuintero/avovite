@@ -39,30 +39,28 @@ import Cosechas from "../assets/img/Sidebar/Cosechas.svg";
 import Ganancias from "../assets/img/Sidebar/Ganancias.svg";
 import ComprarVites from "../assets/img/Sidebar/ComprarVites.svg";
 import Perfil from "../assets/img/Sidebar/Perfil.svg";
-import vector from '../assets/img/Sidebar/vector.svg'
+import vector from "../assets/img/Sidebar/vector.svg";
 import { Button, Grid, TextField } from "@mui/material";
 import { useFinalContext } from "../Context/FinalContext";
 
 const drawerWidth = 240;
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
     transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  })
-);
+    marginLeft: 0,
+  }),
+}));
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -108,84 +106,85 @@ export default function Sidebar({ setOpen, open }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState(-1);
-  const { setGananciaList, gananciaList, setTransaction, asesorComponent, setAsesorComponent, setCosechasList, cosechasList } =
-  useFinalContext();
+  const {
+    setGananciaList,
+    gananciaList,
+    setTransaction,
+    asesorComponent,
+    setAsesorComponent,
+    setCosechasList,
+    cosechasList,
+  } = useFinalContext();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
- 
-  
   const handleNavigation = (route, index) => {
     setSelectedItem(index); // Actualizamos el índice del elemento seleccionado
     switch (route) {
       case "vites":
         navigate("/informacion");
-        setCosechasList(false)
-        setGananciaList(false)
+        setCosechasList(false);
+        setGananciaList(false);
 
-        setTransaction(null)
-        setAsesorComponent(false)
+        setTransaction(null);
+        setAsesorComponent(false);
         break;
       case "Billetera":
         navigate("/wallet");
-        setCosechasList(false)
-        setGananciaList(false)
+        setCosechasList(false);
+        setGananciaList(false);
 
-        setTransaction(null)
-        setAsesorComponent(false)
+        setTransaction(null);
+        setAsesorComponent(false);
         break;
       case "Cosechas":
-        navigate('/menu')
+        navigate("/menu");
         setCosechasList(true);
-        setGananciaList(false)
+        setGananciaList(false);
 
-        setTransaction(null)
-        setAsesorComponent(false)
+        setTransaction(null);
+        setAsesorComponent(false);
         break;
       case "Ganancias":
-        navigate('/menu')
-        setCosechasList(false)
+        navigate("/menu");
+        setCosechasList(false);
 
-        setGananciaList(true)
-        setTransaction(null)
-        setAsesorComponent(false)
+        setGananciaList(true);
+        setTransaction(null);
+        setAsesorComponent(false);
         break;
       case "Comprar Vites":
-        navigate('/products')
-        setGananciaList(false)
-        setTransaction(null)
-        setCosechasList(false)
-        setAsesorComponent(false)
+        navigate("/products");
+        setGananciaList(false);
+        setTransaction(null);
+        setCosechasList(false);
+        setAsesorComponent(false);
         break;
       case "Perfil":
-        navigate('/profile')
-        setCosechasList(false)
-        setGananciaList(false)
+        navigate("/profile");
+        setCosechasList(false);
+        setGananciaList(false);
 
-        setTransaction(null)
-        setAsesorComponent(false)
+        setTransaction(null);
+        setAsesorComponent(false);
         break;
-    
+
       default:
         break;
     }
   };
   return (
-    <Box sx={(theme)=>({
-      display:'none',
-     
-      [theme.breakpoints.up('lg')]:{
-        display: "flex"
-      }
-       })}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        open={open}
-        elevation={0}
-        sx={{ border: "none", borderColor: "white", }}
-      >
+    <Box
+      sx={(theme) => ({
+        display: "none",
+
+        [theme.breakpoints.up("lg")]: {
+          display: "flex",
+        },
+      })}
+    >
+      <AppBar position="fixed" open={open} elevation={0} sx={{ border: "none", borderColor: "white" }}>
         <Toolbar
           sx={{
             width: "100%",
@@ -209,17 +208,9 @@ export default function Sidebar({ setOpen, open }) {
               },
             })}
             // Open the sidebar when this button is clicked
-            startIcon={
-              <img src={menuSidebar} width={20} height={20} alt="menuSidebar" />
-            }
+            startIcon={<img src={menuSidebar} width={20} height={20} alt="menuSidebar" />}
           />
-          <Grid
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            paddingLeft={30}
-            gap={2}
-          >
+          <Grid display="flex" justifyContent="center" alignItems="center" paddingLeft={30} gap={2}>
             <Typography variant="h3">Avovite App</Typography>
             <TextField
               fullWidth
@@ -256,7 +247,7 @@ export default function Sidebar({ setOpen, open }) {
             <Button
               variant="contained"
               sx={{ bgcolor: "primary.main" }}
-              onClick={()=>navigate('/checkout')}
+              onClick={() => navigate("/checkout")}
               startIcon={<ShoppingCartOutlinedIcon sx={{ color: "white" }} />}
             ></Button>
             <Box border={1} borderColor="text.disabled" height={40}></Box>
@@ -305,20 +296,11 @@ export default function Sidebar({ setOpen, open }) {
           }}
         >
           <img style={{ marginRight: 90 }} src={icon} alt="icon" />
-          <Typography sx={{ marginTop: 2, marginRight: 15 }}>
-            Navigation
-          </Typography>
+          <Typography sx={{ marginTop: 2, marginRight: 15 }}>Navigation</Typography>
         </DrawerHeader>
 
         <List sx={{ bgcolor: "primary.main", paddingX: 2 }}>
-          {[
-            "vites",
-            "Billetera",
-            "Cosechas",
-            "Ganancias",
-            "Comprar Vites",
-            "Perfil",
-          ].map((text, index) => (
+          {["vites", "Billetera", "Cosechas", "Ganancias", "Comprar Vites", "Perfil"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ width: "17vw" }}>
               <ListItemButton onClick={() => handleNavigation(text, index)}>
                 <ListItemIcon>

@@ -113,7 +113,7 @@ const theme = createTheme({
     MuiMenu: {
       styleOverrides: {
         paper: {
-          backgroundColor: "transparent",
+          backgroundColor: "#ffffff",
         },
         list: {
           '&[role="menu"]': {
