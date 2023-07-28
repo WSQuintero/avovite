@@ -152,18 +152,19 @@ const Dataset = () => {
 
   return (
     <Box padding={2}>
-      <TableContainer component={Paper} sx={{ margin: "auto", marginTop: 20 }}>
-        <Table stickyHeader sx={{ overflowX: "auto" }}>
+      <Typography variant="h2" color="primary" marginTop={14}>
+        Contratos
+      </Typography>
+      <TableContainer component={Paper} elevation={0} sx={{ margin: "auto", marginTop: 2 }}>
+        <Table>
           <TableHead>
             <TableRow>
               {columnasVisibles.map((columna, index) => (
                 <TableCell
                   key={index}
                   sx={{
-                    color: "green",
-                    whiteSpace: "nowrap",
-                    border: "1px solid #C0C0C0",
-                    padding: "8px",
+                    color: "white",
+                    padding: 1,
                   }}
                 >
                   {columna}
@@ -206,7 +207,7 @@ const Dataset = () => {
                     color: "#c0c0c0",
                   }}
                 >
-                  {contract.contract_amount}
+                  $<NumericFormat displayType="text" value={contract.contract_amount} thousandSeparator></NumericFormat>
                 </TableCell>
                 <TableCell
                   sx={{
@@ -215,7 +216,7 @@ const Dataset = () => {
                     color: "#c0c0c0",
                   }}
                 >
-                  {contract.percentage_discount}
+                  {contract.percentage_discount}%
                 </TableCell>
                 <TableCell
                   sx={{
@@ -224,7 +225,12 @@ const Dataset = () => {
                     color: "#c0c0c0",
                   }}
                 >
-                  {contract.contract_discount}
+                  $
+                  <NumericFormat
+                    displayType="text"
+                    value={contract.contract_discount}
+                    thousandSeparator
+                  ></NumericFormat>
                 </TableCell>
                 <TableCell
                   sx={{
@@ -233,7 +239,12 @@ const Dataset = () => {
                     color: "#c0c0c0",
                   }}
                 >
-                  {contract.total_contract_with_discount}
+                  $
+                  <NumericFormat
+                    displayType="text"
+                    value={contract.total_contract_with_discount}
+                    thousandSeparator
+                  ></NumericFormat>
                 </TableCell>
                 <TableCell
                   sx={{
@@ -242,7 +253,7 @@ const Dataset = () => {
                     color: "#c0c0c0",
                   }}
                 >
-                  {contract.total_financed}
+                  $<NumericFormat displayType="text" value={contract.total_financed} thousandSeparator></NumericFormat>
                 </TableCell>
                 <TableCell
                   sx={{
@@ -473,12 +484,14 @@ const Dataset = () => {
                       </Box>
                     </Grid>
                   ))}
-                  <Button
-                    variant="contained"
-                    onClick={() => setDues((prev) => [...prev, { id: uuid(), date: new Date(), value: 0 }])}
-                  >
-                    Agregar
-                  </Button>
+                  <Grid display="flex" justifyContent="flex-end">
+                    <Button
+                      variant="contained"
+                      onClick={() => setDues((prev) => [...prev, { id: uuid(), date: new Date(), value: 0 }])}
+                    >
+                      Agregar
+                    </Button>
+                  </Grid>
                 </Grid>
               </>
             )}

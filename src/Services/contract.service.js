@@ -1,7 +1,7 @@
 import axios from "axios";
 import { handleCall } from "../utilities";
 
-const API_URL = "http://avovite-api-dev.concilbot.com/api/v1";
+const API_URL = "https://avovite-api-dev.concilbot.com/api/v1";
 
 export default class ContractService {
   constructor(token) {
