@@ -30,4 +30,26 @@ export default class ContractService {
       }
     });
   }
+
+  async add({ body } = {}) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.post(`${this.API_URL}/contracts`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
+
+  async complete({ id, body } = {}) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(`${this.API_URL}/contracts/completeContract/${id}`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
 }

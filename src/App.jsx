@@ -255,7 +255,6 @@ function App() {
       <CssBaseline />
       <FinalContextProvider>
         <Private>
-        
           <Router/>
         </Private>
       </FinalContextProvider>

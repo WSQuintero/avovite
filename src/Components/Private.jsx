@@ -16,11 +16,25 @@ function Private({ children }) {
 
   // Renderizar la barra lateral y el contenido
   return (
-    <Grid container>
-      <Grid item>
+    <Grid display="flex">
+      <Grid
+        sx={(t) => ({
+          width: 240,
+          [t.breakpoints.down("lg")]: {
+            width: "0",
+          },
+        })}
+      >
         <Sidebar setOpen={setOpen} open={open} />
       </Grid>
-      <Grid item xs>
+      <Grid
+        sx={(t) => ({
+          width: "calc(100vw - 240px)",
+          [t.breakpoints.down("lg")]: {
+            width: "100vw",
+          },
+        })}
+      >
         {children}
       </Grid>
     </Grid>

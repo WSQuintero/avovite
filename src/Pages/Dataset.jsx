@@ -20,6 +20,8 @@ import {
   Typography,
   IconButton,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { DeleteOutlined as DeleteIcon } from "@mui/icons-material";
 import { NumericFormat } from "react-number-format";
@@ -28,129 +30,128 @@ import ContractService from "../Services/contract.service";
 
 const columnasVisibles = [
   "Contrato",
-  "Fecha de Pago",
-  "Nombre Beneficiario",
-  "Tipo Documento Beneficiario",
-  "Número Documento Beneficiario",
-  "Lugar de Expedición del Documento Beneficiario",
-  "Ciudad y País de Residencia Beneficiario",
-  "Correo Electrónico Beneficiario",
-  "Teléfono de Contacto Beneficiario",
-  "Banco Beneficiario",
-  "Tipo de Cuenta Beneficiario",
-  "Número de Cuenta Beneficiario",
-  "Nombre Pagador",
-  "Tipo Documento Pagador",
-  "Número Documento Pagador",
-  "Lugar de Expedición del Documento Pagador",
-];
-
-const datosFalsos = [
-  [
-    "2023-07-01",
-    "John Doe",
-    "DNI",
-    "12345678",
-    "Ciudad1",
-    "País1",
-    "john.doe@example.com",
-    "123456789",
-    "Banco1",
-    "Cuenta1",
-    "987654321",
-    "John Smith",
-    "DNI",
-    "87654321",
-    "Ciudad2",
-  ],
-  [
-    "2023-07-02",
-    "Jane Doe",
-    "Pasaporte",
-    "ABC123",
-    "Ciudad3",
-    "País2",
-    "jane.doe@example.com",
-    "987654321",
-    "Banco2",
-    "Cuenta2",
-    "123456789",
-    "Jane Smith",
-    "DNI",
-    "654321",
-    "Ciudad4",
-  ],
-  // Agregar más datos de ejemplo aquí...
+  "Nombre del pagador",
+  "Valor de contrato",
+  "Porcentaje de descuento",
+  "Valor de descuento",
+  "Valor de contrato con descuento",
+  "Financiamiento total",
+  "Cantidad de cuotas",
 ];
 
 const Dataset = () => {
-  const [products, setProducts] = useState([
+  const [contracts, setContracts] = useState([]);
+
+  const [services, setServices] = useState([
     {
-      id: "1",
+      id: 1,
       name: "Standard",
-      value: 2200000,
-    },
-    {
-      id: "2",
-      name: "Premium",
       value: 2200000,
     },
   ]);
 
   const [selectedContract, setSelectedContract] = useState(null);
   const [dues, setDues] = useState([]);
-  const [firstPayment, setFirstPayment] = useState({ date: new Date() });
   const [contract, setContract] = useState({
     vites: 0,
-    product: "1",
+    service: 1,
     total: 0,
     discount: 0,
-    firstPayment: 0,
+    firstPaymentValue: 0,
+    firstPaymentDate: new Date(),
     financing: false,
   });
   const subTotalValue = useMemo(
-    () => contract.vites * products.find((p) => p.id === contract.product).value,
-    [contract.vites, contract.product, products]
+    () => contract.vites * services.find((p) => p.id === contract.service).value,
+    [contract.vites, contract.service, services]
   );
   const discountValue = useMemo(() => subTotalValue * (contract.discount / 100), [subTotalValue, contract.discount]);
   const totalValue = useMemo(() => subTotalValue - discountValue, [subTotalValue, discountValue]);
-  const totalFinancingValue = useMemo(() => totalValue - contract.firstPayment, [contract.firstPayment, totalValue]);
+  const totalFinancingValue = useMemo(
+    () => totalValue - contract.firstPaymentValue,
+    [contract.firstPaymentValue, totalValue]
+  );
   const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value), 0), [dues]);
   const $Contract = useMemo(() => new ContractService(), []);
 
-  const onCancelCreateContract = (event) => {
-    setSelectedContract(null);
-    setContract({
-      vites: 0,
-      product: "1",
-      total: 0,
-      discount: 0,
-      firstPayment: 0,
-      financing: false,
-    });
-    setFirstPayment({
-      date: new Date(),
-    });
-  };
-
   useEffect(() => {
     (async () => {
-      const { status, data } = await $Contract.get();
-
-      if (status) {
-        console.log(data);
-      }
+      await fetchContracts();
     })();
   }, [$Contract]);
 
-  const onCreateContract = () => {
-    // Aquí puedes hacer lo que desees con el valor de "cuotas"
-    // Por ejemplo, enviarlo a una API o realizar alguna acción
-    // Puedes agregar tu lógica aquí...
+  const fetchContracts = async () => {
+    const {
+      status,
+      data: { data },
+    } = await $Contract.get();
+
+    if (status) {
+      setContracts(data);
+    }
+  };
+
+  const onCancelCreateContract = () => {
+    setSelectedContract(null);
+    setContract({
+      vites: 0,
+      service: 1,
+      total: 0,
+      discount: 0,
+      firstPaymentValue: 0,
+      firstPaymentDate: new Date(),
+      financing: false,
+    });
+  };
+
+  const onCreateContract = async () => {
+    const { status } = await $Contract.complete({
+      id: selectedContract.id,
+      body:
+        totalFinancingValue !== 0
+          ? {
+              // Financing
+              financed: 1,
+              with_guarantee: 0,
+              contract_vites: contract.vites,
+              contract_amount: subTotalValue,
+              id_services: contract.service,
+              percentage_discount: contract.discount,
+              contract_discount: discountValue,
+              total_contract_with_discount: totalValue,
+              first_payment: contract.firstPaymentValue,
+              first_payment_date: contract.firstPaymentDate,
+              total_financed: totalDuesValue,
+              payment_numbers: dues.length,
+              financed_contracts: dues.map((d, index) => ({
+                quota_number: index + 1,
+                payment_amount: d.value,
+                date_payment: d.date,
+              })),
+            }
+          : {
+              //  Financing't
+              financed: 0,
+              with_guarantee: 0,
+              contract_vites: contract.vites,
+              contract_amount: subTotalValue,
+              id_services: contract.service,
+              percentage_discount: contract.discount,
+              contract_discount: discountValue,
+              total_contract_with_discount: totalValue,
+              first_payment: contract.firstPaymentValue,
+              first_payment_date: contract.firstPaymentDate,
+            },
+    });
+
+    if (status) {
+      onCancelCreateContract();
+      await fetchContracts();
+    }
   };
 
   return (
-    <Box>
+    <Box padding={2}>
       <TableContainer component={Paper} sx={{ margin: "auto", marginTop: 20 }}>
         <Table stickyHeader sx={{ overflowX: "auto" }}>
           <TableHead>
@@ -171,7 +172,7 @@ const Dataset = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {datosFalsos.map((fila, index) => (
+            {contracts.map((contract, index) => (
               <TableRow key={index}>
                 <TableCell
                   sx={{
@@ -179,22 +180,79 @@ const Dataset = () => {
                     padding: "8px",
                   }}
                 >
-                  <Button variant="contained" onClick={() => setSelectedContract(fila)} sx={{ width: 104 }}>
-                    Ver PDF
-                  </Button>
+                  {contract.status_contracts === 0 ? (
+                    <Button variant="contained" onClick={() => setSelectedContract(contract)} sx={{ width: 104 }}>
+                      Crear
+                    </Button>
+                  ) : (
+                    <Button variant="outlined" onClick={() => {}} sx={{ width: 104 }}>
+                      Ver
+                    </Button>
+                  )}
                 </TableCell>
-                {fila.map((valor, i) => (
-                  <TableCell
-                    key={i}
-                    sx={{
-                      border: "1px solid #C0C0C0",
-                      padding: "8px",
-                      color: "#c0c0c0",
-                    }}
-                  >
-                    {valor}
-                  </TableCell>
-                ))}
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.payer_fullname}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.contract_amount}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.percentage_discount}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.contract_discount}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.total_contract_with_discount}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.total_financed}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    border: "1px solid #C0C0C0",
+                    padding: "8px",
+                    color: "#c0c0c0",
+                  }}
+                >
+                  {contract.payment_numbers}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -218,11 +276,11 @@ const Dataset = () => {
                 <TextField
                   select
                   label="Producto"
-                  value={contract.product}
-                  onChange={(event) => setContract((prev) => ({ ...prev, product: event.target.value }))}
+                  value={contract.service}
+                  onChange={(event) => setContract((prev) => ({ ...prev, service: event.target.value }))}
                   sx={{ width: "100%" }}
                 >
-                  {products.map((option) => (
+                  {services.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
                       {option.name}
                     </MenuItem>
@@ -251,7 +309,7 @@ const Dataset = () => {
                   customInput={TextField}
                   label="Primer abono"
                   variant="outlined"
-                  value={contract.firstPayment}
+                  value={contract.firstPaymentValue}
                   sx={{ width: "100%" }}
                   InputProps={{
                     startAdornment: (
@@ -261,18 +319,71 @@ const Dataset = () => {
                     ),
                   }}
                   thousandSeparator
-                  onValueChange={({ floatValue }) => setContract((prev) => ({ ...prev, firstPayment: floatValue }))}
+                  onValueChange={({ floatValue }) =>
+                    setContract((prev) => ({ ...prev, firstPaymentValue: floatValue }))
+                  }
+                />
+                <TextField
+                  label="Fecha del primer abono"
+                  variant="outlined"
+                  type="date"
+                  value={contract.firstPaymentDate}
+                  sx={{ width: "100%" }}
+                  onChange={(event) =>
+                    setContract((prev) => ({
+                      ...prev,
+                      firstPaymentDate: new Date(event.target.value).toLocaleDateString("en-CA"),
+                    }))
+                  }
                 />
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
-                <TextField label="Subtotal" variant="outlined" value={subTotalValue} disabled sx={{ width: "100%" }} />
-                <TextField label="Descuento" variant="outlined" value={discountValue} disabled sx={{ width: "100%" }} />
-                <TextField label="Total" variant="outlined" value={totalValue} disabled sx={{ width: "100%" }} />
-                <TextField
-                  label="Fecha del primer abono"
+                <NumericFormat
+                  customInput={TextField}
+                  label="Subtotal"
                   variant="outlined"
-                  value={firstPayment.date.toLocaleDateString()}
+                  value={subTotalValue}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography>$</Typography>
+                      </InputAdornment>
+                    ),
+                  }}
+                  thousandSeparator
+                  disabled
+                  sx={{ width: "100%" }}
+                />
+                <NumericFormat
+                  customInput={TextField}
+                  label="Descuento"
+                  variant="outlined"
+                  value={discountValue}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography>$</Typography>
+                      </InputAdornment>
+                    ),
+                  }}
+                  thousandSeparator
+                  disabled
+                  sx={{ width: "100%" }}
+                />
+                <NumericFormat
+                  customInput={TextField}
+                  label="Total"
+                  variant="outlined"
+                  value={totalValue}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography>$</Typography>
+                      </InputAdornment>
+                    ),
+                  }}
+                  thousandSeparator
                   disabled
                   sx={{ width: "100%" }}
                 />
@@ -291,6 +402,12 @@ const Dataset = () => {
                     ),
                   }}
                   thousandSeparator
+                />
+                <FormControlLabel
+                  label="Financiamiento"
+                  checked={totalFinancingValue !== 0}
+                  control={<Checkbox />}
+                  disabled
                 />
               </Grid>
             </Grid>
