@@ -42,6 +42,7 @@ function TableInformation() {
     <Box sx={(theme) => ({
       display:'none',
       [theme.breakpoints.up('lg')]: {
+        display:'flex',
         marginTop: 10,
         width: '75vw',
         marginRight: 10,

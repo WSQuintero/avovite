@@ -4,9 +4,11 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./assets/css/_default.css";
 import FinalContextProvider, { useFinalContext } from "./Context/FinalContext";
-import Sidebar from "./Components/Sidebar";
+
 import { useState } from "react";
 import { Grid } from "@mui/material";
+import Private from "./Components/Private";
+import Sidebar from "./Components/Sidebar";
 
 const theme = createTheme({
   palette: {
@@ -252,33 +254,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <FinalContextProvider>
-        <Grid sx={(theme)=>({
-          [theme.breakpoints.up('lg')]:{
-            display: "flex", 
-            justifyContent: "end" 
-          }
-         })}>
-          <Grid sx={(theme)=>({
-            [theme.breakpoints.up('lg')]:{
-             
-              width:"15%"
-            }
-           })}
-          >
-            <Sidebar setOpen={setOpen} open={open} />
-          </Grid>
-
-          <Grid sx={(theme)=>({
-            [theme.breakpoints.up('lg')]:{
-             
-              width:"75%"
-            }
-           })}
-          >
-            <Router />
-           
-          </Grid>
-        </Grid>
+        <Private>
+        
+          <Router/>
+        </Private>
       </FinalContextProvider>
     </ThemeProvider>
   );
