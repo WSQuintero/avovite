@@ -12,9 +12,67 @@ import {
 } from "@mui/material";
 import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";
+import ContractService from "../Services/contract.service";
 
 const Formulario = () => {
   const theme = useTheme();
+  const [formData, setFormData] = useState({
+    payment_deadline: "",
+    id_type: "",
+    id_location_expedition: "",
+    email: "",
+    nombreCompletoBeneficiario: "",
+    id_number: "",
+    location_residence: "",
+    cellphone: "",
+    id_bank_beneficiary: "",
+    beneficiary_bank_account_type: "",
+    beneficiary_bank_account_number: "",
+    payer_fullname: "",
+    payer_id_type: "",
+    payer_id_number: "",
+    payer_id_location_expedition: "",
+  });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const contractService = new ContractService("YOUR_AUTH_TOKEN");
+
+      const postData = {
+        payment_deadline: formData.payment_deadline,
+        id_type: formData.id_type,
+        id_location_expedition: formData.id_location_expedition,
+        email: formData.email,
+        nombreCompletoBeneficiario: formData.nombreCompletoBeneficiario,
+        id_number: formData.id_number,
+        location_residence: formData.location_residence,
+        cellphone: formData.cellphone,
+        id_bank_beneficiary: formData.id_bank_beneficiary,
+        beneficiary_bank_account_type: formData.beneficiary_bank_account_type,
+        beneficiary_bank_account_number: formData.beneficiary_bank_account_number,
+        payer_fullname: formData.payer_fullname,
+        payer_id_type: formData.payer_id_type,
+        payer_id_number: formData.payer_id_number,
+        payer_id_location_expedition: formData.payer_id_location_expedition,
+      };
+
+      const response = await contractService.add({ body: postData });
+      console.log("Form data sent successfully:", response);
+    } catch (error) {
+      console.error("Error sending form data:", error);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+
   return (
     <Grid
       sx={(theme) => ({
@@ -85,7 +143,7 @@ const Formulario = () => {
             <Typography variant="h3">Tipo de Documento Beneficiario</Typography>
             <FormControl fullWidth variant="outlined">
               <Select
-                id="tipoDocumentoBeneficiario"
+                id="id_type"
                 defaultValue="Selecciona el tipo de documento"
               >
                 <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
@@ -168,7 +226,7 @@ const Formulario = () => {
             })}
           >
             <Select
-              id="bancoBeneficiario"
+              id="id_bank_beneficiary"
               defaultValue="bancoAgrario"
               sx={(theme) => ({
                 [theme.breakpoints.up("lg")]: {
@@ -233,7 +291,7 @@ const Formulario = () => {
 
             <FormControl variant="outlined" sx={{ width: 350 }}>
               <Select
-                id="tipoDeCuentaBeneficiaria"
+                id="beneficiary_bank_account_type"
                 defaultValue="Selecciona el tipo de documento"
               >
                 <MenuItem value="">Seleccione una Opción</MenuItem>
@@ -297,7 +355,7 @@ const Formulario = () => {
             <Typography variant="h3">Tipo de documento Pagador</Typography>
             <FormControl fullWidth variant="outlined">
               <Select
-                id="tipoDocumentoBeneficiario"
+                id="id_type"
                 defaultValue="Selecciona el tipo de documento"
                 sx={{ width: 350 }}
               >
@@ -368,7 +426,7 @@ const Formulario = () => {
             },
           })}
         ></Box>
-        <Button type="submit" variant="contained">
+        <Button type="submit" onClick={()=>handleSubmit()}variant="contained">
           Enviar
         </Button>
       </Box>
