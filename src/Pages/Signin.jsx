@@ -19,7 +19,7 @@ import {
   KeyboardBackspace as KeyboardBackspaceIcon,
 } from "@mui/icons-material";
 
-import home from "../assets/img/backgroundOfLogin/Home.svg";
+import siginphoto from "../assets/img/backgroundOfLogin/signinImg.png";
 import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";
 
@@ -72,7 +72,7 @@ function Signin() {
           })}
         >
           <img
-            src={home}
+            src={siginphoto}
             alt="photo"
             style={{
               width: "100%",

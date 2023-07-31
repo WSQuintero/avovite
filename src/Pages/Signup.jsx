@@ -21,7 +21,7 @@ import {
 } from "@mui/icons-material";
 
 import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
-import siginup from "../assets/img/backgroundOfLogin/signup.svg";
+import siginup from "../assets/img/backgroundOfLogin/signupImg.png";
 
 import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";

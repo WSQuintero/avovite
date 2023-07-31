@@ -18,7 +18,7 @@ import {
   MailOutline as MailOutlineIcon,
 } from "@mui/icons-material";
 
-import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
+import BackgroundPhoto from "../assets/img/backgroundphotoImg.png";
 import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";
 

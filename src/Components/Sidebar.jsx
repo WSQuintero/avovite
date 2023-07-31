@@ -295,8 +295,14 @@ export default function Sidebar({ setOpen, open }) {
             height: 340,
           }}
         >
-          <img style={{ marginRight: 90 }} src={icon} alt="icon" />
-          <Typography sx={{ marginTop: 2, marginRight: 15 }}>Navigation</Typography>
+          <Box
+          component={Button}
+          onClick={()=>navigate('/dashtable')}
+          >
+
+          <img style={{ marginRight: 90, marginTop:1 }} src={icon} alt="icon" />
+          </Box>
+          <Button variant="outlined"  onClick={()=>navigate('/menu')}sx={{ marginTop: 0, marginRight: 0, color:'#FFFFFF' }}>Contratos</Button>
         </DrawerHeader>
 
         <List sx={{ bgcolor: "primary.main", paddingX: 2 }}>
@@ -307,7 +313,7 @@ export default function Sidebar({ setOpen, open }) {
                   <img src={getIconByName(text)} alt={text} />
                 </ListItemIcon>
                 {/* Aplicamos el color blanco (#FFFFFF) al texto cuando el índice coincide con el elemento seleccionado */}
-                <ListItemText primary={text} sx={{ color: index === selectedItem ? "#FFFFFF" : "inherit" }} />
+                <ListItemText primary={text} sx={{ color: index === selectedItem ? "#FFFFFF" : "text.secondary" }} />
                 <img src={vector} alt="Vector" />
               </ListItemButton>
             </ListItem>

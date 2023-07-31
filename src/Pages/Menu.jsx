@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import React, { useState} from "react";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Box,
   Grid,
   Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
+  
   Typography,
-  InputAdornment,
-  Link,
-  Paper,
+  
 } from "@mui/material";
 import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-  KeyboardBackspace as KeyboardBackspaceIcon,
+  
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 
 import { useTheme } from "@emotion/react";
 import menuSidebar from "../assets/img/header menu copy.svg";
-import imageProfile from "../assets/img/imageProfile.svg";
+import imageProfile from "../assets/img/imageProfileImg.png";
+
+
 import photoDefault from "../assets/img/photoDefault.svg";
 import vite from "../assets/img/profile/vite.svg";
 import billetera from "../assets/img/profile/billetera.svg";
