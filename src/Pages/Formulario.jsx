@@ -1,5 +1,15 @@
-import React from "react";
-import { TextField, Button, Container, Grid, Typography, FormControl, Select, MenuItem, Box } from "@mui/material";
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Container,
+  Grid,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  Box,
+} from "@mui/material";
 import logo from "../assets/img/logo.svg";
 import { useTheme } from "@emotion/react";
 import ContractService from "../Services/contract.service";
@@ -11,7 +21,7 @@ const Formulario = () => {
     id_type: "",
     id_location_expedition: "",
     email: "",
-    nombreCompletoBeneficiario: "",
+    fullname: "",
     id_number: "",
     location_residence: "",
     cellphone: "",
@@ -26,6 +36,7 @@ const Formulario = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const contractService = new ContractService("YOUR_AUTH_TOKEN");
 
@@ -34,7 +45,7 @@ const Formulario = () => {
         id_type: formData.id_type,
         id_location_expedition: formData.id_location_expedition,
         email: formData.email,
-        nombreCompletoBeneficiario: formData.nombreCompletoBeneficiario,
+        fullname: formData.fullname,
         id_number: formData.id_number,
         location_residence: formData.location_residence,
         cellphone: formData.cellphone,
@@ -46,6 +57,8 @@ const Formulario = () => {
         payer_id_number: formData.payer_id_number,
         payer_id_location_expedition: formData.payer_id_location_expedition,
       };
+
+      // Aquí puedes agregar validaciones si es necesario antes de enviar los datos
 
       const response = await contractService.add({ body: postData });
       console.log("Form data sent successfully:", response);
@@ -61,7 +74,6 @@ const Formulario = () => {
       [name]: value,
     }));
   };
-
 
   return (
     <Container>
@@ -117,33 +129,105 @@ const Formulario = () => {
               },
             })}
           >
-            <Grid display="flex" flexDirection="column" justifyContent="space-between" width="100%" gap={2}>
+            <Grid
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              width="100%"
+              gap={2}
+            >
               <Typography variant="h3">Fecha de pago</Typography>
-              <TextField type="date" sx={{ width: "100%" }} />
-              <Typography variant="h3">Tipo de Documento Beneficiario</Typography>
+              <TextField
+                name="payment_deadline"
+                type="date"
+                value={formData.payment_deadline}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
+              <Typography variant="h3">
+                Tipo de Documento Beneficiario
+              </Typography>
               <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <Select id="tipoDocumentoBeneficiario" defaultValue="Selecciona el tipo de documento">
+                <Select
+                  id="tipoDocumentoBeneficiario"
+                  name="id_type"
+                  value={formData.id_type}
+                  onChange={handleInputChange}
+                >
                   <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                  <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                  <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                  <MenuItem value="tarjetaIdentidad">
+                    Tarjeta de Identidad
+                  </MenuItem>
+                  <MenuItem value="cedulaExtranjeria">
+                    Cédula de Extranjería
+                  </MenuItem>
                   <MenuItem value="pasaporte">Pasaporte</MenuItem>
                   <MenuItem value="registroCivil">Registro Civil</MenuItem>
                 </Select>
               </FormControl>
-              <Typography variant="h3">Lugar de Exp del Doc. Beneficiario</Typography>
-              <TextField type="date" sx={{ width: "100%" }} />
-              <Typography variant="h3">Correo Electrónico Beneficiario</Typography>
-              <TextField sx={{ width: "100%" }} />
+              <Typography variant="h3">
+                Lugar de Exp del Doc. Beneficiario
+              </Typography>
+              <TextField
+                name="id_location_expedition"
+                type="date"
+                value={formData.id_location_expedition}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
+              <Typography variant="h3">
+                Correo Electrónico Beneficiario
+              </Typography>
+              <TextField
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
             </Grid>
-            <Grid display="flex" flexDirection="column" justifyContent="space-between" width="100%" gap={2}>
-              <Typography variant="h3">Nombre Completo Beneficiario</Typography>
-              <TextField sx={{ width: "100%" }} />
+            <Grid
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              width="100%"
+              gap={2}
+            >
+              <Typography variant="h3">
+                Nombre Completo Beneficiario
+              </Typography>
+              <TextField
+                name="fullname"
+                value={formData.fullname}
+                onChange={handleInputChange}
+                fullnamesx={{ width: "100%" }}
+              />
               <Typography variant="h3">No Documento Beneficiario</Typography>
-              <TextField type="number" sx={{ width: "100%" }} />
-              <Typography variant="h3">Ciudad y País de Residencia Beneficiario</Typography>
-              <TextField sx={{ width: "100%" }} />
-              <Typography variant="h3">Teléfono de Contacto Beneficiario</Typography>
-              <TextField type="number" sx={{ width: "100%" }} />
+              <TextField
+                name="id_number"
+                type="number"
+                value={formData.id_number}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
+              <Typography variant="h3">
+                Ciudad y País de Residencia Beneficiario
+              </Typography>
+              <TextField
+                name="location_residence"
+                value={formData.location_residence}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
+              <Typography variant="h3">
+                Teléfono de Contacto Beneficiario
+              </Typography>
+              <TextField
+                name="cellphone"
+                type="number"
+                value={formData.cellphone}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
             </Grid>
           </Box>
 
@@ -152,12 +236,10 @@ const Formulario = () => {
               display: "flex",
               flexDirection: "column",
               width: "100%",
-              [theme.breakpoints.up("lg")]: {},
             })}
           >
             <Typography
               variant="h3"
-              textAlign="start"
               sx={(theme) => ({
                 paddingY: 1,
                 width: "100%",
@@ -176,28 +258,34 @@ const Formulario = () => {
             >
               <Select
                 id="bancoBeneficiario"
-                defaultValue="bancoAgrario"
+                name="id_bank_beneficiary"
+                value={formData.id_bank_beneficiary}
+                onChange={handleInputChange}
                 sx={(theme) => ({
                   width: "100%",
                 })}
               >
                 <MenuItem value="">Selecciona una Opcion</MenuItem>
-                <MenuItem value="bancoAgrario">Banco Agrario de Colombia</MenuItem>
-                <MenuItem value="bancoBogota">Banco de Bogotá</MenuItem>
-                <MenuItem value="bancoCajaSocial">Banco Caja Social</MenuItem>
-                <MenuItem value="bancoColpatria">Banco Colpatria</MenuItem>
-                <MenuItem value="bancoDavivienda">Banco Davivienda</MenuItem>
-                <MenuItem value="bancoOccidente">Banco de Occidente</MenuItem>
-                <MenuItem value="bancoPopular">Banco Popular</MenuItem>
-                <MenuItem value="bancoProcredit">Banco Procredit</MenuItem>
-                <MenuItem value="bancoSantander">Banco Santander</MenuItem>
-                <MenuItem value="bancoScotiabank">Banco Scotiabank Colpatria</MenuItem>
-                <MenuItem value="bancoAVVillas">Banco AV Villas</MenuItem>
-                <MenuItem value="bancoGNB">Banco GNB Sudameris</MenuItem>
-                <MenuItem value="bancoItau">Banco Itaú</MenuItem>
-                <MenuItem value="bancoPichincha">Banco Pichincha</MenuItem>
-                <MenuItem value="bancoWWB">Banco WWB</MenuItem>
-                <MenuItem value="bancamia">Bancamía</MenuItem>
+                <MenuItem value={0}>
+                  Banco Agrario de Colombia
+                </MenuItem>
+                <MenuItem value={1}>Banco de Bogotá</MenuItem>
+                <MenuItem value={2}>Banco Caja Social</MenuItem>
+                <MenuItem value={3}>Banco Colpatria</MenuItem>
+                <MenuItem value={4}>Banco Davivienda</MenuItem>
+                <MenuItem value={5}>Banco de Occidente</MenuItem>
+                <MenuItem value={6}>Banco Popular</MenuItem>
+                <MenuItem value={7}>Banco Procredit</MenuItem>
+                <MenuItem value={8}>Banco Santander</MenuItem>
+                <MenuItem value={9}>
+                  Banco Scotiabank Colpatria
+                </MenuItem>
+                <MenuItem value={10}>Banco AV Villas</MenuItem>
+                <MenuItem value={11}>Banco GNB Sudameris</MenuItem>
+                <MenuItem value={12}>Banco Itaú</MenuItem>
+                <MenuItem value={13}>Banco Pichincha</MenuItem>
+                <MenuItem value={14}>Banco WWB</MenuItem>
+                <MenuItem value={15}>Bancamía</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -234,16 +322,36 @@ const Formulario = () => {
               </Typography>
 
               <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <Select id="tipoDeCuentaBeneficiaria" defaultValue="Selecciona el tipo de documento">
+                <Select
+                  name="beneficiary_bank_account_type"
+                  id="tipoDeCuentaBeneficiaria"
+                  value={formData.beneficiary_bank_account_type}
+                  onChange={handleInputChange}
+                >
                   <MenuItem value="">Seleccione una Opción</MenuItem>
-                  <MenuItem value="cedula">Cuenta Corriente</MenuItem>
-                  <MenuItem value="tarjetaIdentidad">Cuenta de Ahorros</MenuItem>
+                  <MenuItem value={0}>Cuenta Corriente</MenuItem>
+                  <MenuItem value={1}>
+                    Cuenta de Ahorros
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid display="flex" flexDirection="column" gap={2} sx={{ width: "100%" }}>
-              <Typography variant="h3">Número de Cuenta Beneficiario</Typography>
-              <TextField type="number" sx={{ width: "100%" }} />
+            <Grid
+              display="flex"
+              flexDirection="column"
+              gap={2}
+              sx={{ width: "100%" }}
+            >
+              <Typography variant="h3">
+                Número de Cuenta Beneficiario
+              </Typography>
+              <TextField
+                type="number"
+                name="beneficiary_bank_account_number"
+                value={formData.beneficiary_bank_account_number}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
             </Grid>
           </Box>
           <Box
@@ -265,6 +373,9 @@ const Formulario = () => {
             </Typography>
 
             <TextField
+              name="payer_fullname"
+              value={formData.payer_fullname}
+              onChange={handleInputChange}
               Fullwidth
               sx={(theme) => ({
                 width: "100%",
@@ -288,15 +399,29 @@ const Formulario = () => {
               },
             })}
           >
-            <Grid display="flex" flexDirection="column" gap={2} sx={{ width: "100%" }}>
+            <Grid
+              display="flex"
+              flexDirection="column"
+              gap={2}
+              sx={{ width: "100%" }}
+            >
               <Typography variant="h3" sx={{ width: "100%" }}>
                 Tipo de documento Pagador
               </Typography>
               <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <Select id="tipoDocumentoBeneficiario" defaultValue="Selecciona el tipo de documento">
+                <Select
+                  name="payer_id_type"
+                  id="tipoDocumentoBeneficiario"
+                  value={formData.payer_id_type}
+                  onChange={handleInputChange}
+                >
                   <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                  <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                  <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                  <MenuItem value="tarjetaIdentidad">
+                    Tarjeta de Identidad
+                  </MenuItem>
+                  <MenuItem value="cedulaExtranjeria">
+                    Cédula de Extranjería
+                  </MenuItem>
                   <MenuItem value="pasaporte">Pasaporte</MenuItem>
                   <MenuItem value="registroCivil">Registro Civil</MenuItem>
                 </Select>
@@ -317,7 +442,13 @@ const Formulario = () => {
               <Typography variant="h3" sx={{ width: "100%" }}>
                 No Documento Pagador
               </Typography>
-              <TextField type="number" sx={{ width: "100%" }} />
+              <TextField
+                name="payer_id_number"
+                type="number"
+                value={formData.payer_id_number}
+                onChange={handleInputChange}
+                sx={{ width: "100%" }}
+              />
             </Grid>
           </Box>
           <Box
@@ -339,6 +470,9 @@ const Formulario = () => {
             </Typography>
 
             <TextField
+              name="payer_id_location_expedition"
+              value={formData.payer_id_location_expedition}
+              onChange={handleInputChange}
               sx={(theme) => ({
                 width: "100%",
               })}
@@ -353,7 +487,7 @@ const Formulario = () => {
               },
             })}
           ></Box>
-          <Button type="submit" variant="contained">
+          <Button type="submit" onClick={handleSubmit} variant="contained">
             Enviar
           </Button>
         </Box>

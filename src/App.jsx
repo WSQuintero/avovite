@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import Router from "./Router";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./assets/css/_default.css";
 import FinalContextProvider, { useFinalContext } from "./Context/FinalContext";
@@ -8,7 +8,6 @@ import FinalContextProvider, { useFinalContext } from "./Context/FinalContext";
 import { useState } from "react";
 import { Grid } from "@mui/material";
 import Private from "./Components/Private";
-import Sidebar from "./Components/Sidebar";
 
 const theme = createTheme({
   palette: {
