@@ -51,7 +51,8 @@ const Formulario = () => {
         cellphone: formData.cellphone,
         id_bank_beneficiary: formData.id_bank_beneficiary,
         beneficiary_bank_account_type: formData.beneficiary_bank_account_type,
-        beneficiary_bank_account_number: formData.beneficiary_bank_account_number,
+        beneficiary_bank_account_number:
+          formData.beneficiary_bank_account_number,
         payer_fullname: formData.payer_fullname,
         payer_id_type: formData.payer_id_type,
         payer_id_number: formData.payer_id_number,
@@ -122,7 +123,8 @@ const Formulario = () => {
 
               [theme.breakpoints.up("lg")]: {
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: "column",
+
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 4,
@@ -131,103 +133,159 @@ const Formulario = () => {
           >
             <Grid
               display="flex"
-              flexDirection="column"
-              justifyContent="space-between"
               width="100%"
-              gap={2}
+              alignItems="center"
+              justifyItems="center"
+              gap={4}
             >
-              <Typography variant="h3">Fecha de pago</Typography>
-              <TextField
-                name="payment_deadline"
-                type="date"
-                value={formData.payment_deadline}
-                onChange={handleInputChange}
-                sx={{ width: "100%" }}
-              />
-              <Typography variant="h3">
-                Tipo de Documento Beneficiario
-              </Typography>
-              <FormControl variant="outlined" sx={{ width: "100%" }}>
-                <Select
-                  id="tipoDocumentoBeneficiario"
-                  name="id_type"
-                  value={formData.id_type}
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+              >
+                <Typography variant="h3">
+                  Tipo de Documento Beneficiario
+                </Typography>
+                <FormControl variant="outlined" sx={{ width: "100%" }}>
+                  <Select
+                    id="tipoDocumentoBeneficiario"
+                    name="id_type"
+                    value={formData.id_type}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                    <MenuItem value="tarjetaIdentidad">
+                      Tarjeta de Identidad
+                    </MenuItem>
+                    <MenuItem value="cedulaExtranjeria">
+                      Cédula de Extranjería
+                    </MenuItem>
+                    <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                    <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+                height='100%'
+              >
+                <Typography variant="h3">
+                  Lugar de Exp del Doc. Beneficiario
+                </Typography>
+                <TextField
+                  name="id_location_expedition"
+                  type="date"
+                  value={formData.id_location_expedition}
                   onChange={handleInputChange}
-                >
-                  <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                  <MenuItem value="tarjetaIdentidad">
-                    Tarjeta de Identidad
-                  </MenuItem>
-                  <MenuItem value="cedulaExtranjeria">
-                    Cédula de Extranjería
-                  </MenuItem>
-                  <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                  <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                </Select>
-              </FormControl>
-              <Typography variant="h3">
-                Lugar de Exp del Doc. Beneficiario
-              </Typography>
-              <TextField
-                name="id_location_expedition"
-                type="date"
-                value={formData.id_location_expedition}
-                onChange={handleInputChange}
-                sx={{ width: "100%" }}
-              />
-              <Typography variant="h3">
-                Correo Electrónico Beneficiario
-              </Typography>
-              <TextField
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                sx={{ width: "100%" }}
-              />
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
             </Grid>
-            <Grid
-              display="flex"
-              flexDirection="column"
-              justifyContent="space-between"
-              width="100%"
-              gap={2}
-            >
-              <Typography variant="h3">
-                Nombre Completo Beneficiario
-              </Typography>
-              <TextField
-                name="fullname"
-                value={formData.fullname}
-                onChange={handleInputChange}
-                fullnamesx={{ width: "100%" }}
-              />
-              <Typography variant="h3">No Documento Beneficiario</Typography>
-              <TextField
-                name="id_number"
-                type="number"
-                value={formData.id_number}
-                onChange={handleInputChange}
-                sx={{ width: "100%" }}
-              />
-              <Typography variant="h3">
-                Ciudad y País de Residencia Beneficiario
-              </Typography>
-              <TextField
-                name="location_residence"
-                value={formData.location_residence}
-                onChange={handleInputChange}
-                sx={{ width: "100%" }}
-              />
-              <Typography variant="h3">
-                Teléfono de Contacto Beneficiario
-              </Typography>
-              <TextField
-                name="cellphone"
-                type="number"
-                value={formData.cellphone}
-                onChange={handleInputChange}
-                sx={{ width: "100%" }}
-              />
+            <Grid display="flex" width="100%" gap={4}>
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+              >
+                <Typography variant="h3">
+                  Correo Electrónico Beneficiario
+                </Typography>
+                <TextField
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
+
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+              >
+                <Typography variant="h3">
+                  Nombre Completo Beneficiario
+                </Typography>
+                <TextField
+                  name="fullname"
+                  value={formData.fullname}
+                  onChange={handleInputChange}
+                  fullname
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
+            </Grid>
+            <Grid display="flex" width="100%" gap={4}>
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+              >
+                <Typography variant="h3">No Documento Beneficiario</Typography>
+                <TextField
+                  name="id_number"
+                  type="number"
+                  value={formData.id_number}
+                  onChange={handleInputChange}
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+              >
+                <Typography variant="h3">
+                  Ciudad y País de Residencia Beneficiario
+                </Typography>
+                <TextField
+                  name="location_residence"
+                  value={formData.location_residence}
+                  onChange={handleInputChange}
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
+            </Grid>
+            <Grid display="flex" width="100%" gap={4}>
+              <Grid
+                width="0"
+                flexGrow={1}
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                gap={1}
+              >
+                <Typography variant="h3">
+                  Teléfono de Contacto Beneficiario
+                </Typography>
+                <TextField
+                  name="cellphone"
+                  type="number"
+                  value={formData.cellphone}
+                  onChange={handleInputChange}
+                  sx={{ width: "100%" }}
+                />
+              </Grid>
             </Grid>
           </Box>
 
@@ -266,9 +324,7 @@ const Formulario = () => {
                 })}
               >
                 <MenuItem value="">Selecciona una Opcion</MenuItem>
-                <MenuItem value={0}>
-                  Banco Agrario de Colombia
-                </MenuItem>
+                <MenuItem value={0}>Banco Agrario de Colombia</MenuItem>
                 <MenuItem value={1}>Banco de Bogotá</MenuItem>
                 <MenuItem value={2}>Banco Caja Social</MenuItem>
                 <MenuItem value={3}>Banco Colpatria</MenuItem>
@@ -277,9 +333,7 @@ const Formulario = () => {
                 <MenuItem value={6}>Banco Popular</MenuItem>
                 <MenuItem value={7}>Banco Procredit</MenuItem>
                 <MenuItem value={8}>Banco Santander</MenuItem>
-                <MenuItem value={9}>
-                  Banco Scotiabank Colpatria
-                </MenuItem>
+                <MenuItem value={9}>Banco Scotiabank Colpatria</MenuItem>
                 <MenuItem value={10}>Banco AV Villas</MenuItem>
                 <MenuItem value={11}>Banco GNB Sudameris</MenuItem>
                 <MenuItem value={12}>Banco Itaú</MenuItem>
@@ -330,9 +384,7 @@ const Formulario = () => {
                 >
                   <MenuItem value="">Seleccione una Opción</MenuItem>
                   <MenuItem value={0}>Cuenta Corriente</MenuItem>
-                  <MenuItem value={1}>
-                    Cuenta de Ahorros
-                  </MenuItem>
+                  <MenuItem value={1}>Cuenta de Ahorros</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

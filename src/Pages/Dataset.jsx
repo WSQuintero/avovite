@@ -165,7 +165,7 @@ const Dataset = () => {
       await fetchContracts();
     }
   };
-
+console.log(contracts)
   return (
     <Box padding={2}>
       <Typography variant="h2" color="primary" marginTop={14}>
