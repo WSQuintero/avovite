@@ -21,7 +21,7 @@ import PasarDinero from "../Pages/PasarDinero";
 import Products from "../Pages/Products";
 import ProductDetail from "../Pages/ProductDetail";
 import Checkout from "../Pages/Checkout";
-import Formulario from "../Pages/Formulario";
+import BookingForm from "../Pages/BookingForm";
 import Dataset from "../Pages/Dataset";
 
 
@@ -118,8 +118,8 @@ function Router() {
       element: <Checkout/>
     },
     {
-      path:'/form',
-      element:<Formulario/>
+      path:'/book-now',
+      element:<BookingForm/>
     },
     {
       path:'/dashTable',

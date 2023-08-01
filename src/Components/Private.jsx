@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 
-const routesToExclude = new Set(["/signin", "/signup", "/", "/form"]);
+const routesToExclude = new Set(["/signin", "/signup", "/", "/book-now"]);
 
 function Private({ children }) {
   const { pathname } = useLocation();
