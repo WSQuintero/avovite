@@ -50,9 +50,13 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
 
   return (
     <>
-      <TableRow sx={{ width: "100%", "& > *": { borderBottom: "unset" } }}>
+      <TableRow sx={{ width: "100%", "& > *": { borderBottom: "unset"} }}>
         <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -88,7 +92,12 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
             color: "#757575",
           }}
         >
-          $<NumericFormat displayType="text" value={contract.contract_amount} thousandSeparator></NumericFormat>
+          $
+          <NumericFormat
+            displayType="text"
+            value={contract.contract_amount}
+            thousandSeparator
+          ></NumericFormat>
         </TableCell>
         <TableCell
           sx={{
@@ -106,7 +115,12 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
             color: "#757575",
           }}
         >
-          $<NumericFormat displayType="text" value={contract.contract_discount} thousandSeparator></NumericFormat>
+          $
+          <NumericFormat
+            displayType="text"
+            value={contract.contract_discount}
+            thousandSeparator
+          ></NumericFormat>
         </TableCell>
         <TableCell
           sx={{
@@ -129,7 +143,12 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
             color: "#757575",
           }}
         >
-          $<NumericFormat displayType="text" value={contract.total_financed} thousandSeparator></NumericFormat>
+          $
+          <NumericFormat
+            displayType="text"
+            value={contract.total_financed}
+            thousandSeparator
+          ></NumericFormat>
         </TableCell>
         <TableCell
           sx={{
@@ -145,19 +164,45 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                History
-              </Typography>
-              <Table size="small" aria-label="purchases">
+              <Table size="small" aria-label="purchases" sx={{borderRadius:50}}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell sx={{ color: "white" }}>Nombre</TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      Tipo Documento
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>Documento</TableCell>
+                    <TableCell sx={{ color: "white" }}>Lugar de Expedición</TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      Cuenta de Banco
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>
+                      Monto del Contrato
+                    </TableCell>
+                    {contract.contract_signature_date !== null && (
+                      <TableCell sx={{ color: "white" }}>
+                        Fecha Del Contrato
+                      </TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
-                <TableBody>Hello</TableBody>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{contract.payer_fullname}</TableCell>
+                    <TableCell>{contract.payer_id_type}</TableCell>
+                    <TableCell>{contract.payer_id_number}</TableCell>
+                    <TableCell>
+                      {contract.payer_id_location_expedition}
+                    </TableCell>
+                    <TableCell>
+                      {contract.beneficiary_bank_account_number}
+                    </TableCell>
+                    <TableCell>{contract.contract_amount}</TableCell>
+                    {contract.created_at !== null && (
+                      <TableCell>{new Date(contract.created_at).toLocaleDateString()}</TableCell>
+                    )}
+                  </TableRow>
+                </TableBody>
               </Table>
             </Box>
           </Collapse>
@@ -190,7 +235,10 @@ const Dataset = () => {
     financing: false,
   });
   const subTotalValue = useMemo(
-    () => parseFloat(contract.vites * services.find((p) => p.id === contract.service).value).toFixed(2),
+    () =>
+      parseFloat(
+        contract.vites * services.find((p) => p.id === contract.service).value
+      ).toFixed(2),
     [contract.vites, contract.service, services]
   );
   const discountValue = useMemo(
@@ -198,14 +246,18 @@ const Dataset = () => {
     [subTotalValue, contract.discount]
   );
   const totalValue = useMemo(
-    () => parseFloat(subTotalValue - discountValue).toFixed(2),
+    () => Math.round(parseFloat(subTotalValue - discountValue).toFixed(2)),
     [subTotalValue, discountValue]
   );
   const totalFinancingValue = useMemo(
     () => parseFloat(totalValue - contract.firstPaymentValue).toFixed(2),
     [contract.firstPaymentValue, totalValue]
   );
-  const totalDuesValue = useMemo(() => parseFloat(dues.reduce((a, c) => a + parseInt(c.value), 0)).toFixed(2), [dues]);
+  const totalDuesValue = useMemo(
+    () =>
+     parseFloat(dues.reduce((a, c) => a + parseInt(c.value), 0)).toFixed(2),
+    [dues]
+  );
 
   const totalSubDuesValue = useMemo(
     () => parseFloat(totalFinancingValue - (totalDuesValue || 0)).toFixed(2),
@@ -243,7 +295,7 @@ const Dataset = () => {
       financing: false,
     });
   };
-
+  console.log(contracts);
   const onCreateContract = async () => {
     const { status } = await $Contract.complete({
       id: selectedContract.id,
@@ -257,12 +309,14 @@ const Dataset = () => {
               contract_amount: subTotalValue,
               id_services: contract.service,
               percentage_discount: contract.discount,
-              contract_discount: discountValue,
-              total_contract_with_discount: totalValue,
+              
+              contract_discount: Math.round(discountValue,2),
+              total_contract_with_discount: Math.round(totalValue,3),
               first_payment: contract.firstPaymentValue,
               first_payment_date: contract.firstPaymentDate,
               total_financed: totalDuesValue,
               payment_numbers: dues.length,
+            
               financed_contracts: dues.map((d, index) => ({
                 quota_number: index + 1,
                 payment_amount: d.value,
@@ -276,9 +330,11 @@ const Dataset = () => {
               contract_vites: contract.vites,
               contract_amount: subTotalValue,
               id_services: contract.service,
+            
+
               percentage_discount: contract.discount,
-              contract_discount: discountValue,
-              total_contract_with_discount: totalValue,
+              contract_discount: Math.round(discountValue,3),
+              total_contract_with_discount:  Math.round(totalValue,3),
               first_payment: contract.firstPaymentValue,
               first_payment_date: contract.firstPaymentDate,
             },
@@ -295,10 +351,14 @@ const Dataset = () => {
       <Typography variant="h2" color="primary" marginTop={14}>
         Contratos
       </Typography>
-      <TableContainer component={Paper} elevation={0} sx={{ margin: "auto", marginTop: 2 }}>
+      <TableContainer
+        component={Paper}
+        elevation={0}
+        sx={{ margin: "auto", marginTop: 2 }}
+      >
         <Table>
-          <TableHead>
-            <TableRow>
+          <TableHead >
+            <TableRow >
               {columnasVisibles.map((columna, index) => (
                 <TableCell
                   key={index}
@@ -319,17 +379,34 @@ const Dataset = () => {
                 contract={contract}
                 index={index}
                 onCreate={() => setSelectedContract(contract)}
-                onPDF={() => setSelectedContract(contract)}
+                onPDF={() =>
+                  window.open(
+                    `https://avovite-api-dev.concilbot.com/api/v1/contracts/files/${contract.id}`,
+                    "_blank"
+                  )
+                }
               />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
+      <Dialog
+        open={!!selectedContract}
+        onClose={onCancelCreateContract}
+        maxWidth="xl"
+        fullWidth
+      >
         <DialogTitle color="primary.main">Crear contrato</DialogTitle>
         <DialogContent>
-          <Box component="form" display="flex" flexDirection="column" gap={3} padding={1} onSubmit={onCreateContract}>
+          <Box
+            component="form"
+            display="flex"
+            flexDirection="column"
+            gap={3}
+            padding={1}
+            onSubmit={onCreateContract}
+          >
             <Grid display="flex" gap={2}>
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
                 <TextField
@@ -413,13 +490,9 @@ const Dataset = () => {
                   variant="outlined"
                   type="date"
                   value={contract.firstPaymentDate}
+                  required
                   sx={{ width: "100%" }}
-                  onChange={(event) =>
-                    setContract((prev) => ({
-                      ...prev,
-                      firstPaymentDate: new Date(event.target.value).toLocaleDateString("en-CA"),
-                    }))
-                  }
+                  
                 />
               </Grid>
               <Divider orientation="vertical" flexItem />
@@ -504,15 +577,31 @@ const Dataset = () => {
                     <Typography variant="h2" fontSize={18} fontWeight={500}>
                       Cuotas
                     </Typography>
-                    <Grid display="flex" flexDirection="column" justifyContent="center">
-                      <Typography fontSize={18} fontWeight={500} color="primary">
+                    <Grid
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="center"
+                    >
+                      <Typography
+                        fontSize={18}
+                        fontWeight={500}
+                        color="primary"
+                      >
                         Total: $
-                        <NumericFormat displayType="text" value={totalDuesValue} thousandSeparator></NumericFormat>
+                        <NumericFormat
+                          displayType="text"
+                          value={totalDuesValue}
+                          thousandSeparator
+                        ></NumericFormat>
                       </Typography>
                       {totalSubDuesValue > 0 && (
                         <Typography sx={{ color: "red", fontSize: 12 }}>
                           Faltante: $
-                          <NumericFormat displayType="text" value={totalSubDuesValue} thousandSeparator></NumericFormat>
+                          <NumericFormat
+                            displayType="text"
+                            value={totalSubDuesValue}
+                            thousandSeparator
+                          ></NumericFormat>
                         </Typography>
                       )}
                     </Grid>
@@ -530,10 +619,15 @@ const Dataset = () => {
                         label="Fecha"
                         type="date"
                         variant="outlined"
+                        required
                         value={due.date}
                         onChange={(event) =>
                           setDues((prev) =>
-                            prev.map((d) => (d.id === due.id ? { ...due, date: event.target.value } : d))
+                            prev.map((d) =>
+                              d.id === due.id
+                                ? { ...due, date: event.target.value }
+                                : d
+                            )
                           )
                         }
                         sx={{ width: "100%" }}
@@ -552,14 +646,28 @@ const Dataset = () => {
                           ),
                         }}
                         onValueChange={({ floatValue }) =>
-                          setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, value: floatValue } : d)))
+                          setDues((prev) =>
+                            prev.map((d) =>
+                              d.id === due.id
+                                ? { ...due, value: floatValue }
+                                : d
+                            )
+                          )
                         }
                         thousandSeparator
                       />
-                      <Box display="flex" justifyContent="center" alignItems="center">
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
                         <IconButton
                           color="error"
-                          onClick={() => setDues((prev) => prev.filter((d) => d.id !== due.id))}
+                          onClick={() =>
+                            setDues((prev) =>
+                              prev.filter((d) => d.id !== due.id)
+                            )
+                          }
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -567,9 +675,15 @@ const Dataset = () => {
                     </Grid>
                   ))}
                   <Grid display="flex" justifyContent="flex-end">
+                  
                     <Button
                       variant="contained"
-                      onClick={() => setDues((prev) => [...prev, { id: uuid(), date: new Date(), value: 0 }])}
+                      onClick={() =>
+                        setDues((prev) => [
+                          ...prev,
+                          { id: uuid(), date: new Date(), value: 0 },
+                        ])
+                      }
                     >
                       Agregar
                     </Button>
@@ -580,14 +694,40 @@ const Dataset = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCancelCreateContract}>Cancelar</Button>
+          <Grid display='flex' justifyContent='space-between' alignItems='center' width='98%' height='100%' >
+              
+            <Grid display='flex' flexDirection='column' width='100%'>
+            <TextField
+                 label='Fecha de Contrato'
+                  variant="outlined"
+                  type="date"
+                  sx={{width:'60%'}}
+                  value={contract.firstPaymentDate}
+                 
+                  onChange={(event) =>
+                    setContract((prev) => ({
+                      ...prev,
+                      firstPaymentDate: new Date(
+                        event.target.value
+                      ).toLocaleDateString("en-CA"),
+                    }))
+                  }
+                />
+            </Grid>
+            <Grid display='flex' justifyContent='end'  width='50%' height='50%'>
+            <Button onClick={onCancelCreateContract}sx={{width:'100%', height:'100%'}}>Cancelar</Button>
           <Button
             onClick={onCreateContract}
             variant="contained"
+            sx={{width:'100%', height:'100%'}}
             disabled={totalDuesValue !== totalFinancingValue || !contract.vites}
           >
             Crear contrato
           </Button>
+            </Grid>
+          </Grid>
+        
+         
         </DialogActions>
       </Dialog>
     </Box>

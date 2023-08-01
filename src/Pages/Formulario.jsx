@@ -41,7 +41,7 @@ const Formulario = () => {
       const contractService = new ContractService("YOUR_AUTH_TOKEN");
 
       const postData = {
-        payment_deadline: formData.payment_deadline,
+        
         id_type: formData.id_type,
         id_location_expedition: formData.id_location_expedition,
         email: formData.email,
@@ -154,6 +154,7 @@ const Formulario = () => {
                     id="tipoDocumentoBeneficiario"
                     name="id_type"
                     value={formData.id_type}
+                    required
                     onChange={handleInputChange}
                   >
                     <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
@@ -177,13 +178,14 @@ const Formulario = () => {
                 gap={1}
                 height='100%'
               >
-                <Typography variant="h3">
+                <Typography variant="h3" width="100%">
                   Lugar de Exp del Doc. Beneficiario
                 </Typography>
                 <TextField
                   name="id_location_expedition"
                   type="date"
                   value={formData.id_location_expedition}
+                  required
                   onChange={handleInputChange}
                   sx={{ width: "100%" }}
                 />
@@ -194,6 +196,7 @@ const Formulario = () => {
                 width="0"
                 flexGrow={1}
                 display="flex"
+                required
                 flexDirection="column"
                 justifyContent="space-between"
                 gap={1}
@@ -204,6 +207,7 @@ const Formulario = () => {
                 <TextField
                   name="email"
                   value={formData.email}
+                  required
                   onChange={handleInputChange}
                   sx={{ width: "100%" }}
                 />
@@ -223,6 +227,7 @@ const Formulario = () => {
                 <TextField
                   name="fullname"
                   value={formData.fullname}
+                  required
                   onChange={handleInputChange}
                   fullname
                   sx={{ width: "100%" }}
@@ -234,6 +239,7 @@ const Formulario = () => {
                 width="0"
                 flexGrow={1}
                 display="flex"
+                
                 flexDirection="column"
                 justifyContent="space-between"
                 gap={1}
@@ -242,6 +248,7 @@ const Formulario = () => {
                 <TextField
                   name="id_number"
                   type="number"
+                  required
                   value={formData.id_number}
                   onChange={handleInputChange}
                   sx={{ width: "100%" }}
@@ -251,6 +258,7 @@ const Formulario = () => {
                 width="0"
                 flexGrow={1}
                 display="flex"
+                
                 flexDirection="column"
                 justifyContent="space-between"
                 gap={1}
@@ -260,6 +268,7 @@ const Formulario = () => {
                 </Typography>
                 <TextField
                   name="location_residence"
+                  required
                   value={formData.location_residence}
                   onChange={handleInputChange}
                   sx={{ width: "100%" }}
@@ -281,6 +290,7 @@ const Formulario = () => {
                 <TextField
                   name="cellphone"
                   type="number"
+                  required
                   value={formData.cellphone}
                   onChange={handleInputChange}
                   sx={{ width: "100%" }}
