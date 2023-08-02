@@ -1,381 +1,217 @@
-import React, { useState } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import AuthService from "../Services/auth.service";
 import {
   Box,
-  Grid,
   Button,
-  TextField,
-  FormControlLabel,
   Checkbox,
-  Typography,
+  FormControlLabel,
+  Grid,
   InputAdornment,
   Link,
-  Paper,
+  TextField,
+  Typography,
 } from "@mui/material";
 import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-  Person,
-  KeyboardBackspace as KeyboardBackspaceIcon,
+  PersonOutlineOutlined as PersonIcon,
+  EmailOutlined as EmailIcon,
+  LockOpenOutlined as LockIcon,
 } from "@mui/icons-material";
 
-import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
-import siginup from "../assets/img/backgroundOfLogin/signupImg.png";
-
+import siginphoto from "../assets/img/backgroundOfLogin/signinImg.png";
 import logo from "../assets/img/logo.svg";
-import { useTheme } from "@emotion/react";
 
-function Signup() {
-  const theme = useTheme();
-  const route = useNavigate();
-  const [isClicked, setIsClicked] = useState(false);
-  const [PasswordClic, setPasswordClic] = useState(false);
+function Signin() {
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    privacyPolicy: false,
+  });
+  const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
+  const $Auth = useMemo(() => new AuthService(), []);
 
-  const handleSubmit = (event) => {
+  const onUserChange = (event) => {
+    const { name, value } = event.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const onSignup = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data);
+
+    const { status, data } = await $Auth.signin(user);
+
+    if (!status) {
+      setFeedback({
+        show: true,
+        message: "Ha ocurrido un error, inténtelo de nuevo.",
+        status: "error",
+      });
+
+      return;
+    }
+
+    setToken(data.token);
   };
 
   return (
-    <Grid display="flex" flexDirection="column"
-    sx={(theme) => ({
-      [theme.breakpoints.up("lg")]: {
-        position: "relative",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
-    })}
-
+    <Grid
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      sx={(theme) => ({
+        [theme.breakpoints.down("md")]: {
+          flexDirection: "column",
+        },
+      })}
     >
       <Box
+        borderRadius={4}
+        display="flex"
+        height="100vh"
+        width="50vw"
+        order={1}
+        sx={(theme) => ({
+          overflow: "hidden",
+          backgroundImage: `url(${siginphoto})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "-5px",
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          [theme.breakpoints.down("md")]: {
+            borderRadius: 0,
+            order: 0,
+            width: "100vw",
+            height: "50vh",
+          },
+        })}
+      ></Box>
+      <Box
+        position="relative"
         display="flex"
         flexDirection="column"
-        position="relative"
-        height="50vh"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
+        padding={4}
+        height="100vh"
+        width="50vw"
         sx={(theme) => ({
-          [theme.breakpoints.up("lg")]: {
-            order: 1,
-
-            height: "50%",
-            width: "50%",
-            borderRadius:'50%'
-
+          [theme.breakpoints.down("md")]: {
+            width: "100vw",
+            height: "50vh",
           },
         })}
       >
         <Box
-          sx={(theme) => ({
-            height: "55vh",
-            [theme.breakpoints.up("lg")]: {
-              height:"100%",
-
-              borderRadius:'50%'
-            },
-          })}
-        >
-          <img
-            src={siginup}
-            alt="photo"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-        </Box>
-        <Box
-          position="absolute"
-          left={0}
-          top={0}
-          width="100%"
-          height={40}
-          bgcolor="#214820"
-          sx={(theme) => ({
-            [theme.breakpoints.up("lg")]: {
-              height: 0,
-              display: "none",
-            },
-          })}
-        >
-          <Button
-            onClick={() => route("/")}
-            sx={{
-              marginLeft: 1,
-              color: "secondary.body",
-              textTransform: "none",
-              cursor: "poinet",
-            }}
-            startIcon={
-              <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
-            }
-          >
-            Registro
-          </Button>
-        </Box>
-
-        {/* the filter of image */}
-       
-        <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
-          position="absolute"
           borderRadius="50%"
           backgroundColor="white"
           overflow="hidden"
-          bottom={0}
-          left="50%"
           width={160}
           height={160}
           padding={2}
           sx={(theme) => ({
-            transform: "translate(-50%,50%)",
-            [theme.breakpoints.up("lg")]: {
-              width: "20vh",
-              height: "20vh",
-              left: "-50%",
-              top:-20,
+            [theme.breakpoints.down("md")]: {
+              position: "absolute",
+              top: 0,
+              left: "50%",
+              transform: "translate(-50%,-50%)",
             },
           })}
         >
-          <img
-            src={logo}
-            alt="logos"
-            style={{ width: "100%", height: "100%" }}
-          />
+          <img src={logo} alt="logos" style={{ width: "100%", height: "100%" }} />
         </Box>
-      </Box>
-      <Grid
-        flexGrow={1}
-        paddingX={4}
-        paddingY={2}
-        display="flex"
-        flexDirection="column"
-        gap={1}
-        sx={(theme) => ({
-          [theme.breakpoints.up("lg")]: {
-            order: 0,
-            paddingX: 8,
-            marginTop:-20
-          },
-        })}
-      >
-        <Box  sx={(theme) => ({
-          height:80,
-          [theme.breakpoints.up("lg")]: {
-            height:80
-          },
-        })}></Box>
-        <Typography
-          display="none"
-          sx={(theme) => ({
-            [theme.breakpoints.up("lg")]: {
-              display: "flex",
-              color: "primary.main",
-              fontSize: 24,
-              fontWeight: 650,
-            },
-          })}
-        >
-          Crear Cuenta
-        </Typography>
-        <Box height={20}></Box>
-        <Typography
-          display="none"
-          sx={(theme) => ({
-            [theme.breakpoints.up("lg")]: {
-              display: "flex",
-              color: "text.disabled",
-            },
-          })}
-        >
-          Nombre de Usuario
-        </Typography>
-
-        <TextField
-          name="email"
-          placeholder="Nombre de usuario"
-          required
-          style={{
-            borderRadius: "10px",
-            backgroundColor: "rgba(192,192,192,0.4 )",
-            border: "none",
-          }}
-          InputProps={{
-            style: {
-              color: "black",
-              height: "40px",
-              fontSize: "20px",
-              fontWeight: 500,
-              borderRadius: "10px",
-            },
-            startAdornment: (
-              <InputAdornment position="start">
-                <Person sx={{ color: theme.palette.primary.main }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-<Typography
-          display="none"
-          sx={(theme) => ({
-            [theme.breakpoints.up("lg")]: {
-              display: "flex",
-              color: "text.disabled",
-            },
-          })}
-        >
-          Correo Electrónico
-        </Typography>
-
-
-        <TextField
-          name="email"
-          placeholder="Correo electronico"
-          required
-          fullWidth
-          style={{
-            borderRadius: "10px",
-            backgroundColor: "rgba(192,192,192,0.4 )",
-            border: "none",
-          }}
-          InputProps={{
-            style: {
-              color: "black",
-              height: "40px",
-              fontSize: "20px",
-              fontWeight: 500,
-              borderRadius: "10px",
-              border: "none",
-            },
-            startAdornment: (
-              <InputAdornment position="start">
-                <MailOutlineIcon sx={{ color: "primary.main" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-<Typography
-          display="none"
-          sx={(theme) => ({
-            [theme.breakpoints.up("lg")]: {
-              display: "flex",
-              color: "text.disabled",
-            },
-          })}
-        >
-          Contraseña
-        </Typography>
-
-        <TextField
-          name="password"
-          type="password"
-          placeholder="Contraseña"
-          required
-          fullWidth
-          style={{
-            borderRadius: "10px",
-            backgroundColor: "rgba(192,192,192,0.4 )",
-            border: "none",
-          }}
-          InputProps={{
-            style: {
-              color: "black",
-              height: "40px",
-              fontSize: "20px",
-              fontWeight: 500,
-              borderRadius: "10px",
-              border: "none",
-            },
-            startAdornment: (
-              <InputAdornment position="start">
-                <LockOutlinedIcon sx={{ color: "primary.main" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              value="allowExtraEmails"
-              color="primary"
-              sx={{
-                "& .MuiSvgIcon-root": {
-                  borderRadius: 20,
-                },
-              }}
-            />
-          }
-          label={
-            <>
-              <Link
-                component={RouterLink}
-                to="/termsandConditions"
-                onClick={() => setPasswordClic(!PasswordClic)}
-                sx={{
-                  cursor: "pointer",
-                  color: PasswordClic ? "secondary.main" : "#67AA36",
-                  fontSize: "18px",
-                  transition: "color 0.2s ease-in-out",
-                  textDecoration: "none",
-                  "&:hover": {
-                    color: "secondary.main", // Cambia el color al puntero estar encima del enlace
-                  },
-                }}
-              >
-                Acepto los términos y condiciones
-              </Link>
-            </>
-          }
-        />
-
-        <Button
-          color="secondary"
-          fullWidth
-          sx={{
-            backgroundImage: "linear-gradient(to top, #7DCF43, #60A033)",
-            fontSize: "25px",
-            textTransform: "none",
-            "&:hover": {
-              backgroundImage: "linear-gradient(to top, #60A033, #7DCF43)",
-            },
-          }}
-          onClick={() => route("/termsandConditions")}
-        >
-          Iniciar sesión
-        </Button>
-        <Grid
+        <Box
           display="flex"
           flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
+          gap={2}
+          component="form"
+          width="100%"
+          maxWidth={550}
+          onSubmit={onSignup}
         >
-          <Link
-            component={RouterLink}
-            to="/signup"
-            onClick={() => setIsClicked(true)}
-            sx={{
-              cursor: "pointer",
-              color: isClicked ? "#FFFF" : "#67AA36",
-              fontSize: "17px",
-              transition: "color 0.2s ease-in-out",
-              textDecoration: "none",
-              "&:hover": {
-                color: "#FFFF",
+          <Typography
+            variant="h2"
+            color="primary"
+            textAlign="start"
+            marginBottom={2}
+            sx={(theme) => ({
+              [theme.breakpoints.down("md")]: {
+                display: "none",
               },
-            }}
+            })}
           >
-           ¿Ya tienes cuenta?
+            Crear Cuenta
+          </Typography>
+          <TextField
+            name="name"
+            label="Nombre de usuario"
+            sx={{ width: "100%" }}
+            value={user.email}
+            onInput={onUserChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon color="primary" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            name="email"
+            type="email"
+            label="Correo electrónico"
+            sx={{ width: "100%" }}
+            value={user.email}
+            onInput={onUserChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonIcon color="primary" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            name="password"
+            type="password"
+            label="Contraseña"
+            sx={{ width: "100%" }}
+            value={user.password}
+            onInput={onUserChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon color="primary" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FormControlLabel
+            control={<Checkbox value={user.privacyPolicy} />}
+            label={
+              <Typography>
+                He leido y acepto los{" "}
+                <Link component={RouterLink} textAlign="center" to="/privacy-policy" target="_blank">
+                  terminos y condiciones
+                </Link>
+              </Typography>
+            }
+          />
+          <Button variant="contained" size="large" type="submit">
+            Crear Cuenta
+          </Button>
+          <Link component={RouterLink} textAlign="center" to="/signin">
+            ¿Ya tienes cuenta?
           </Link>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Grid>
   );
 }
 
-export default Signup;
+export default Signin;

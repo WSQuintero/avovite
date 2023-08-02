@@ -6,17 +6,12 @@ export default createTheme({
       main: "#67AA36",
     },
     secondary: {
-      main: "#D9D9D9",
-      body: "#FFFFFF",
-    },
-    filter: {
-      main: "#5D9B31",
+      main: "#344B2C",
     },
     text: {
-      primary: "#757575",
-      secondary: "#c0c0c0",
-      disabled: "#757575",
-      cards: "#757575",
+      primary: "#979797",
+      light: "#D2D2D2",
+      disabled: "#c9c9c9",
     },
     background: {
       paper: "#E8E8E8",
@@ -56,7 +51,6 @@ export default createTheme({
         },
       },
     },
-
     MuiCard: {
       defaultProps: {
         sx: {
@@ -66,30 +60,45 @@ export default createTheme({
     },
     MuiButton: {
       styleOverrides: {
+        root: {
+          textTransform: "inherit",
+        },
         contained: {
           color: "#FFFFFF",
+          backgroundColor: "#63A534",
+          boxShadow: "none",
+          "&:hover": {
+            backgroundColor: "#79C941",
+            boxShadow: "none",
+          },
         },
-        
+        sizeLarge: {
+          paddingLeft: 2.5 * 8,
+          paddingRight: 2.5 * 8,
+          paddingTop: 1.5 * 8,
+          paddingBottom: 1.5 * 8,
+        },
       },
+    },
+    MuiFormLabel: {
       defaultProps: {
         sx: {
-          textTransform: "initial",
-          paddingX: 2.5,
-          paddingY: 1.5,
+          color: "#979797",
         },
       },
     },
     MuiInputBase: {
       defaultProps: {
-        style: {
-          borderRadius: 12,
+        sx: {
+          borderRadius: 1.5,
+          "& fieldset": { borderColor: "#979797" },
         },
       },
     },
     MuiInputAdornment: {
-      defaultProps: {
-        sx: {
-          color: "text.disabled",
+      styleOverrides: {
+        root: {
+          color: "inherit",
         },
       },
     },
@@ -107,24 +116,6 @@ export default createTheme({
         },
       },
     },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
-          border: "none",
-          color: "#757575", // Cambia el color del texto según tus preferencias
-          fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
-          fontWeight: 500,
-          width: 350,
-        },
-      },
-      defaultProps: {
-        inputProps: {
-          color: "#757575",
-        },
-      },
-    },
     MuiMenuItem: {
       styleOverrides: {
         root: {
@@ -138,69 +129,18 @@ export default createTheme({
         },
       },
     },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          backgroundColor: "#EEEEEE66", // Cambia el color de fondo según tus preferencias
-          border: "none",
-          color: "#757575", // Cambia el color del texto según tus preferencias
-          fontSize: "16px", // Ajusta el tamaño de fuente según tus necesidades
-          fontWeight: 500,
-
-          "&:hover": {
-            borderWidth: 3,
-          },
-        },
-      },
-      defaultProps: {
-        inputProps: {
-          color: "#C0C0C0",
-        },
-      },
-    },
-    MuiTable: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#FFFFFF",
-        },
-      },
-    },
     MuiTableHead: {
       styleOverrides: {
         root: {
-          color: "#67AA36",
           backgroundColor: "#67AA36",
-        },
-      },
-    },
-    MuiTableBody: {
-      styleOverrides: {
-        root: {
-          border: "none",
-        },
-      },
-    },
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          color: "#67AA36",
-          textAlign: "center",
-        },
-      },
-    },
-    MuiTableContainer: {
-      styleOverrides: {
-        root: {
-          display: "flex",
-          color: "#67AA36",
-
-          alignItems: "center",
+          th: {
+            color: "white",
+            textAlign: "center",
+          },
         },
       },
     },
   },
-
   breakpoints: {
     values: {
       sm: 576,
@@ -208,6 +148,14 @@ export default createTheme({
       lg: 992,
       xl: 1200,
       xxl: 1400,
+    },
+  },
+  sizes: {
+    sidebar: {
+      main: 256,
+    },
+    header: {
+      main: 72,
     },
   },
 });

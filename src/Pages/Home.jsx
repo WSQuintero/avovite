@@ -78,16 +78,18 @@ function Home() {
         >
           <img src={logo} alt="logos" style={{ width: "100%", height: "100%" }} />
         </Box>
-        <Typography color="primary" textAlign="center">
-          Las ganancias del aguacate HASS Colombiano son para todos
-        </Typography>
-        <Grid display="flex" flexDirection="column" gap={2} width="100%">
-          <Button onClick={() => route("/signin")} variant="contained" fullWidth>
-            Iniciar sesión
-          </Button>
-          <Button onClick={() => route("/signup")} variant="outlined" fullWidth>
-            Inscribirse
-          </Button>
+        <Grid display='flex' flexDirection='column' gap={2} maxWidth={550}>
+          <Typography color="primary" textAlign="center">
+            Las ganancias del aguacate HASS Colombiano son para todos
+          </Typography>
+          <Grid display="flex" flexDirection="column" gap={2} width="100%">
+            <Button onClick={() => route("/signin")} variant="contained" fullWidth>
+              Iniciar sesión
+            </Button>
+            <Button onClick={() => route("/signup")} variant="outlined" fullWidth>
+              Inscribirse
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </Grid>

@@ -1,326 +1,104 @@
-import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import menuSidebar from "../assets/img/header menu copy.svg";
-
+import { NavLink } from "react-router-dom";
 import {
-  Search as SearchIcon,
-  MailOutline as MailOutlineIcon,
-  ShoppingCartOutlined as ShoppingCartOutlinedIcon,
-} from "@mui/icons-material";
-import { InputAdornment } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import bomb from "../assets/img/Sidebar/Bomb.svg";
-import profile from "../assets/img/Sidebar/profile default.svg";
-import icon from "../assets/img/Sidebar/icon.svg";
-import vites from "../assets/img/Sidebar/vites.svg";
-import Billetera from "../assets/img/Sidebar/Billetera.svg";
-import Cosechas from "../assets/img/Sidebar/Cosechas.svg";
-import Ganancias from "../assets/img/Sidebar/Ganancias.svg";
-import ComprarVites from "../assets/img/Sidebar/ComprarVites.svg";
-import Perfil from "../assets/img/Sidebar/Perfil.svg";
-import vector from "../assets/img/Sidebar/vector.svg";
-import { Button, Grid, TextField } from "@mui/material";
-import { useFinalContext } from "../Context/FinalContext";
+  Box,
+  Drawer,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { AndroidOutlined as SampleIcon, ChevronRightOutlined as ChevronRightIcon } from "@mui/icons-material";
 
-const drawerWidth = 240;
+const routes = [
+  {
+    name: "Vites",
+    route: "/",
+  },
+  {
+    name: "Billetera",
+    route: "/wallet",
+  },
+  {
+    name: "Cosechas",
+    route: "/crops",
+  },
+  {
+    name: "Ganancias",
+    route: "/earnings",
+  },
+  {
+    name: "Comprar Vites",
+    route: "/buy",
+  },
+  {
+    name: "Perfil",
+    route: "/profile",
+  },
+];
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${drawerWidth}px`,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  }),
-}));
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
-
-// Función para obtener la imagen correspondiente al nombre del elemento
-const getIconByName = (name) => {
-  const iconMap = {
-    vites: vites,
-    Billetera: Billetera,
-    Cosechas: Cosechas,
-    Ganancias: Ganancias,
-    "Comprar Vites": ComprarVites,
-    Perfil: Perfil,
-  };
-
-  return iconMap[name] || icon; // Devuelve el icono correspondiente o el icono por defecto si no encuentra una imagen para el nombre dado
-};
-
-export default function Sidebar({ setOpen, open }) {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const [selectedItem, setSelectedItem] = useState(-1);
-  const {
-    setGananciaList,
-    gananciaList,
-    setTransaction,
-    asesorComponent,
-    setAsesorComponent,
-    setCosechasList,
-    cosechasList,
-  } = useFinalContext();
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleNavigation = (route, index) => {
-    setSelectedItem(index); // Actualizamos el índice del elemento seleccionado
-    switch (route) {
-      case "vites":
-        navigate("/informacion");
-        setCosechasList(false);
-        setGananciaList(false);
-
-        setTransaction(null);
-        setAsesorComponent(false);
-        break;
-      case "Billetera":
-        navigate("/wallet");
-        setCosechasList(false);
-        setGananciaList(false);
-
-        setTransaction(null);
-        setAsesorComponent(false);
-        break;
-      case "Cosechas":
-        navigate("/menu");
-        setCosechasList(true);
-        setGananciaList(false);
-
-        setTransaction(null);
-        setAsesorComponent(false);
-        break;
-      case "Ganancias":
-        navigate("/menu");
-        setCosechasList(false);
-
-        setGananciaList(true);
-        setTransaction(null);
-        setAsesorComponent(false);
-        break;
-      case "Comprar Vites":
-        navigate("/products");
-        setGananciaList(false);
-        setTransaction(null);
-        setCosechasList(false);
-        setAsesorComponent(false);
-        break;
-      case "Perfil":
-        navigate("/profile");
-        setCosechasList(false);
-        setGananciaList(false);
-
-        setTransaction(null);
-        setAsesorComponent(false);
-        break;
-
-      default:
-        break;
-    }
-  };
+function Sidebar() {
   return (
-    <Box
-      sx={(theme) => ({
-        display: "none",
-
-        [theme.breakpoints.up("lg")]: {
-          display: "flex",
+    <Drawer
+      variant="permanent"
+      anchor="left"
+      sx={(t) => ({
+        flexShrink: 0,
+        width: t.sizes.sidebar.main,
+        backgroundColor: "primary.main",
+        "& .MuiDrawer-paper": {
+          width: t.sizes.sidebar.main,
+          border: "none",
+          backgroundColor: "transparent",
         },
       })}
     >
-      <AppBar position="fixed" open={open} elevation={0} sx={{ border: "none", borderColor: "white" }}>
-        <Toolbar
-          sx={{
-            width: "100%",
-            bgcolor: "white",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            onClick={handleDrawerOpen}
-            sx={(theme) => ({
-              [theme.breakpoints.up("lg")]: {
-                display: "none",
-                paddingLeft: 100,
-                color: "secondary.body",
-                textTransform: "none",
-                mr: 2,
-                ...(open && { display: "none" }),
-              },
-            })}
-            // Open the sidebar when this button is clicked
-            startIcon={<img src={menuSidebar} width={20} height={20} alt="menuSidebar" />}
-          />
-          <Grid display="flex" justifyContent="center" alignItems="center" paddingLeft={30} gap={2}>
-            <Typography variant="h3">Avovite App</Typography>
-            <TextField
-              fullWidth
-              sx={{ bgcolor: "transparent" }}
-              placeholder="Type to search"
-              InputProps={{
-                style: {
-                  color: "black",
-                  height: "40px",
-                  width: "80%",
-                  fontSize: 15,
-                  fontWeight: 500,
-                  borderRadius: "10px",
-                  border: "none",
+      <Toolbar />
+      <Typography paddingX={2} color="common.white">
+        Navegación
+      </Typography>
+      <List>
+        {routes.map(({ name, route }) => (
+          <ListItem key={name} disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to={route}
+              sx={(t) => ({
+                position: "relative",
+                color: "text.secondary",
+                fontWeight: 400,
+                borderRadius: 0,
+                "&.active": {
+                  color: "white",
+                  "&::after": {
+                    content: "''",
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    right: 0,
+                    width: 6,
+                    backgroundColor: "white",
+                  },
+                  "& .chevron-icon": {
+                    display: "none",
+                  },
                 },
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <img src={bomb} alt="bomb" />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid
-            sx={(theme) => ({
-              [theme.breakpoints.up("lg")]: {
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 2,
-              },
-            })}
-          >
-            <Button
-              variant="contained"
-              sx={{ bgcolor: "primary.main" }}
-              onClick={() => navigate("/checkout")}
-              startIcon={<ShoppingCartOutlinedIcon sx={{ color: "white" }} />}
-            ></Button>
-            <Box border={1} borderColor="text.disabled" height={40}></Box>
-            <img src={profile} alt="profile" />
-            <Grid display="flex" flexDirection="column">
-              <Typography variant="h3" color="text.cards">
-                Jhonatan
-              </Typography>
-              <Typography variant="h3" color="text.disabled">
-                Admin
-              </Typography>
-            </Grid>
-          </Grid>
-          <Button
-            sx={(theme) => ({
-              [theme.breakpoints.up("lg")]: {
-                display: "none",
-              },
-            })}
-            endIcon={<MoreVertIcon style={{ color: "white" }} />}
-          />
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-        variant="permanent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader
-          sx={{
-            bgcolor: "primary.main",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-            height: 340,
-          }}
-        >
-          <Box
-          component={Button}
-          onClick={()=>navigate('/dashtable')}
-          >
-
-          <img style={{ marginRight: 90, marginTop:1 }} src={icon} alt="icon" />
-          </Box>
-          <Button variant="outlined"  onClick={()=>navigate('/menu')}sx={{ marginTop: 0, marginRight: 0, color:'#FFFFFF' }}>Contratos</Button>
-        </DrawerHeader>
-
-        <List sx={{ bgcolor: "primary.main", paddingX: 2 }}>
-          {["vites", "Billetera", "Cosechas", "Ganancias", "Comprar Vites", "Perfil"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ width: "17vw" }}>
-              <ListItemButton onClick={() => handleNavigation(text, index)}>
-                <ListItemIcon>
-                  <img src={getIconByName(text)} alt={text} />
-                </ListItemIcon>
-                {/* Aplicamos el color blanco (#FFFFFF) al texto cuando el índice coincide con el elemento seleccionado */}
-                <ListItemText primary={text} sx={{ color: index === selectedItem ? "#FFFFFF" : "text.secondary" }} />
-                <img src={vector} alt="Vector" />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Box height="100%" bgcolor="primary.main"></Box>
-      </Drawer>
-    </Box>
+              })}
+            >
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <SampleIcon sx={{ color: "inherit" }} />
+              </ListItemIcon>
+              <ListItemText primary={name} />
+              <ChevronRightIcon className="chevron-icon" sx={{ color: "inherit" }} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
   );
 }
+
+export default Sidebar;

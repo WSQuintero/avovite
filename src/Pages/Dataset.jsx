@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { NumericFormat } from "react-number-format";
+import { v4 as uuid } from "uuid";
 import {
   Table,
   TableHead,
@@ -31,9 +33,11 @@ import {
   KeyboardArrowUp as KeyboardArrowUpIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
 } from "@mui/icons-material";
-import { NumericFormat } from "react-number-format";
-import { v4 as uuid } from "uuid";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import ContractService from "../Services/contract.service";
+import PageWrapper from "../Components/PageWrapper";
+import { isToday } from "../utilities/index";
 
 const columnasVisibles = [
   "",
@@ -52,18 +56,14 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
 
   return (
     <>
-      <TableRow sx={{ width: "100%", "& > *": { borderBottom: "unset" } }}>
+      <TableRow>
         <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+          <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
 
-        <TableCell
-          sx={{
-            padding: "8px",
-          }}
-        >
+        <TableCell>
           {contract.status_contracts === 0 ? (
             <Button variant="contained" onClick={onCreate} sx={{ width: 104 }}>
               Crear
@@ -74,49 +74,15 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
             </Button>
           )}
         </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
-          {contract.payer_fullname}
-        </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
+        <TableCell>{contract.payer_fullname}</TableCell>
+        <TableCell>
           $<NumericFormat displayType="text" value={contract.contract_amount} thousandSeparator></NumericFormat>
         </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
-          {contract.percentage_discount}%
-        </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
+        <TableCell>{contract.percentage_discount}%</TableCell>
+        <TableCell>
           $<NumericFormat displayType="text" value={contract.contract_discount} thousandSeparator></NumericFormat>
         </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
+        <TableCell>
           $
           <NumericFormat
             displayType="text"
@@ -124,41 +90,25 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
             thousandSeparator
           ></NumericFormat>
         </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
+        <TableCell>
           $<NumericFormat displayType="text" value={contract.total_financed} thousandSeparator></NumericFormat>
         </TableCell>
-        <TableCell
-          sx={{
-            border: "1px solid #C0C0C0",
-            padding: "8px",
-            color: "#757575",
-          }}
-        >
-          {contract.payment_numbers}
-        </TableCell>
+        <TableCell>{contract.payment_numbers}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Table size="small" aria-label="purchases" sx={{ borderRadius: 50 }}>
+              <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ color: "white" }}>Nombre</TableCell>
-                    <TableCell sx={{ color: "white" }}>Tipo Documento</TableCell>
-                    <TableCell sx={{ color: "white" }}>Documento</TableCell>
-                    <TableCell sx={{ color: "white" }}>Lugar de Expedición</TableCell>
-                    <TableCell sx={{ color: "white" }}>Cuenta de Banco</TableCell>
-                    <TableCell sx={{ color: "white" }}>Monto del Contrato</TableCell>
-                    {contract.contract_signature_date !== null && (
-                      <TableCell sx={{ color: "white" }}>Fecha Del Contrato</TableCell>
-                    )}
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Tipo Documento</TableCell>
+                    <TableCell>Documento</TableCell>
+                    <TableCell>Lugar de Expedición</TableCell>
+                    <TableCell>Cuenta de Banco</TableCell>
+                    <TableCell>Monto del Contrato</TableCell>
+                    {contract.contract_signature_date !== null && <TableCell>Fecha Del Contrato</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -202,25 +152,23 @@ const Dataset = () => {
     total: "",
     discount: "",
     firstPaymentValue: "",
-    firstPaymentDate: new Date().toLocaleDateString("en-CA"),
-    signatureDate: new Date().toLocaleDateString("en-CA"),
+    firstPaymentDate: new Date(),
+    signatureDate: new Date(),
     financing: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const subTotalValue = useMemo(
-    () => Math.round(contract.vites * services.find((p) => p.id === contract.service).value),
-    [contract.vites, contract.service, services]
-  );
+  const unitValue = useMemo(() => services.find((p) => p.id === contract.service).value, [contract.service, services]);
+  const subTotalValue = useMemo(() => Math.round(contract.vites * unitValue), [contract.vites, unitValue]);
   const discountValue = useMemo(
     () => Math.round(subTotalValue * (contract.discount / 100)),
     [subTotalValue, contract.discount]
   );
   const totalValue = useMemo(() => subTotalValue - discountValue, [subTotalValue, discountValue]);
   const totalFinancingValue = useMemo(
-    () => Math.round(totalValue - contract.firstPaymentValue),
+    () => Math.round(totalValue - (contract.firstPaymentValue || 0)),
     [contract.firstPaymentValue, totalValue]
   );
-  const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value), 0), [dues]);
+  const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value || 0), 0), [dues]);
   const totalSubDuesValue = useMemo(
     () => totalFinancingValue - (totalDuesValue || 0),
     [totalDuesValue, totalFinancingValue]
@@ -230,8 +178,9 @@ const Dataset = () => {
       totalDuesValue !== totalFinancingValue ||
       !contract.vites ||
       contract.discount === "" ||
-      contract.firstPaymentValue === "",
-    [contract.discount, contract.firstPaymentValue, contract.vites, totalDuesValue, totalFinancingValue]
+      contract.firstPaymentValue === "" ||
+      dues.reduce((a, c) => a || isToday(new Date(c.date)), false),
+    [contract.discount, contract.firstPaymentValue, contract.vites, dues, totalDuesValue, totalFinancingValue]
   );
   const $Contract = useMemo(() => new ContractService(), []);
 
@@ -249,14 +198,16 @@ const Dataset = () => {
   const onCancelCreateContract = () => {
     setSelectedContract(null);
     setContract({
-      vites: 0,
+      vites: "",
       service: 1,
-      total: 0,
-      discount: 0,
-      firstPaymentValue: 0,
-      firstPaymentDate: "",
+      total: "",
+      discount: "",
+      firstPaymentValue: "",
+      firstPaymentDate: new Date(),
+      signatureDate: new Date(),
       financing: false,
     });
+    setDues([]);
   };
 
   const onCreateContract = async () => {
@@ -321,24 +272,16 @@ const Dataset = () => {
   }, [$Contract]);
 
   return (
-    <Box padding={2}>
-      <Typography variant="h2" color="primary" marginTop={14}>
+    <PageWrapper>
+      <Typography variant="h2" color="primary" marginBottom={4}>
         Contratos
       </Typography>
-      <TableContainer component={Paper} elevation={0} sx={{ margin: "auto", marginTop: 2 }}>
+      <TableContainer component={Paper} elevation={0}>
         <Table>
           <TableHead>
             <TableRow>
               {columnasVisibles.map((columna, index) => (
-                <TableCell
-                  key={index}
-                  sx={{
-                    color: "white",
-                    padding: 1,
-                  }}
-                >
-                  {columna}
-                </TableCell>
+                <TableCell key={index}>{columna}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -436,7 +379,6 @@ const Dataset = () => {
                   variant="outlined"
                   value={contract.firstPaymentValue}
                   sx={{ width: "100%" }}
-                  required
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -452,41 +394,47 @@ const Dataset = () => {
                     }))
                   }
                 />
-                <TextField
+                <DatePicker
                   label="Fecha del primer abono"
-                  variant="outlined"
-                  type="date"
-                  value={contract.firstPaymentDate}
-                  required
-                  sx={{ width: "100%" }}
-                  onChange={(event) =>
+                  value={dayjs(contract.firstPaymentDate)}
+                  format="DD/MM/YYYY"
+                  onChange={(value) =>
                     setContract((prev) => ({
                       ...prev,
-                      firstPaymentDate: new Date(new Date(event.target.value).getTime() + 18000000).toLocaleDateString(
-                        "en-CA"
-                      ),
+                      firstPaymentDate: value.toDate(),
                     }))
                   }
                 />
-                <TextField
+                <DatePicker
                   label="Fecha de Contrato"
-                  variant="outlined"
-                  type="date"
-                  sx={{ width: "100%" }}
-                  required
-                  value={contract.signatureDate}
-                  onChange={(event) =>
+                  value={dayjs(contract.signatureDate)}
+                  format="DD/MM/YYYY"
+                  onChange={(value) =>
                     setContract((prev) => ({
                       ...prev,
-                      signatureDate: new Date(new Date(event.target.value).getTime() + 18000000).toLocaleDateString(
-                        "en-CA"
-                      ),
+                      signatureDate: value.toDate(),
                     }))
                   }
                 />
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
+                <NumericFormat
+                  customInput={TextField}
+                  label="Valor Unitario"
+                  variant="outlined"
+                  value={unitValue}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography>$</Typography>
+                      </InputAdornment>
+                    ),
+                  }}
+                  thousandSeparator
+                  disabled
+                  sx={{ width: "100%" }}
+                />
                 <NumericFormat
                   customInput={TextField}
                   label="Subtotal"
@@ -583,18 +531,15 @@ const Dataset = () => {
                         disabled
                         sx={{ width: "100%" }}
                       />
-                      <TextField
+                      <DatePicker
                         label="Fecha"
-                        type="date"
-                        variant="outlined"
-                        required
-                        value={due.date}
-                        onChange={(event) =>
-                          setDues((prev) =>
-                            prev.map((d) => (d.id === due.id ? { ...due, date: event.target.value } : d))
-                          )
-                        }
+                        value={dayjs(due.date)}
+                        format="DD/MM/YYYY"
                         sx={{ width: "100%" }}
+                        disablePast
+                        onChange={(value) =>
+                          setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, date: value.toDate() } : d)))
+                        }
                       />
                       <NumericFormat
                         customInput={TextField}
@@ -602,6 +547,7 @@ const Dataset = () => {
                         variant="outlined"
                         value={due.value}
                         sx={{ width: "100%" }}
+                        thousandSeparator
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -612,7 +558,6 @@ const Dataset = () => {
                         onValueChange={({ floatValue }) =>
                           setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, value: floatValue } : d)))
                         }
-                        thousandSeparator
                       />
                       <Box display="flex" justifyContent="center" alignItems="center">
                         <IconButton
@@ -632,7 +577,7 @@ const Dataset = () => {
                           ...prev,
                           {
                             id: uuid(),
-                            date: new Date(new Date().getTime() + 18000000).toLocaleDateString("en-CA"),
+                            date: new Date(),
                             value: "",
                           },
                         ])
@@ -666,7 +611,7 @@ const Dataset = () => {
           {feedback.message}
         </Alert>
       </Snackbar>
-    </Box>
+    </PageWrapper>
   );
 };
 

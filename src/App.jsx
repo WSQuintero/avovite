@@ -3,9 +3,6 @@ import Router from "./Router";
 import useSession from "./Hooks/useSession";
 import useConfig from "./Hooks/useConfig";
 import AuthService from "./Services/auth.service";
-import Private from "./Components/Private";
-
-import "./assets/css/_default.css";
 
 function App() {
   const [session, { setUser, logout }] = useSession();
@@ -34,11 +31,7 @@ function App() {
     setLoading(false);
   }, [session.token]);
 
-  return (
-    <Private>
-      <Router />
-    </Private>
-  );
+  return <Router />;
 }
 
 export default App;

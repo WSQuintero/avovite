@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import useSession from "../Hooks/useSession";
 import AuthService from "../Services/auth.service";
-import { Box, Grid, InputAdornment, Link, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, InputAdornment, Link, TextField, Typography } from "@mui/material";
 import { PersonOutlineOutlined as PersonIcon, LockOpenOutlined as LockIcon } from "@mui/icons-material";
 
 import siginphoto from "../assets/img/backgroundOfLogin/signinImg.png";
@@ -163,7 +163,9 @@ function Signin() {
               ),
             }}
           />
-
+          <Button variant="contained" size="large" type="submit">
+            Iniciar Sesion
+          </Button>
           <Link component={RouterLink} textAlign="center" to="/forgot-password">
             ¿Has olvidado tu contraseña?
           </Link>

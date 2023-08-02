@@ -11,7 +11,12 @@ import {
   Box,
   Snackbar,
   Alert,
+  alpha,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
+import { InfoOutlined as InfoIcon } from "@mui/icons-material";
+import PhoneField from "react-phone-input-2";
 import logo from "../assets/img/logo.svg";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
@@ -53,18 +58,18 @@ const Label = ({ error = false, children }) => <Typography color={error ? "error
 
 const Formulario = () => {
   const [formData, setFormData] = useState({
-    id_type: "",
+    id_type: "-",
     id_location_expedition: "",
     email: "",
     fullname: "",
     id_number: "",
     location_residence: "",
     cellphone: "",
-    id_bank_beneficiary: "",
-    beneficiary_bank_account_type: "",
+    id_bank_beneficiary: "-",
+    beneficiary_bank_account_type: "-",
     beneficiary_bank_account_number: "",
     payer_fullname: "",
-    payer_id_type: "",
+    payer_id_type: "-",
     payer_id_number: "",
     payer_id_location_expedition: "",
   });
@@ -172,9 +177,47 @@ const Formulario = () => {
       </Grid>
       <Box height={64} />
       <Grid display="flex" flexDirection="column" gap={3}>
+        <Typography
+          fontSize={24}
+          textAlign="center"
+          fontWeight={600}
+          color="primary"
+          paddingY={1}
+          marginX={-3}
+          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+        >
+          Titular
+        </Typography>
+
         <Row>
           <Column>
-            <Label error={errors.id_type}>Tipo de Documento Beneficiario</Label>
+            <Label error={errors.fullname}>Nombre Completo</Label>
+            <TextField
+              name="fullname"
+              value={formData.fullname}
+              required
+              fullname
+              error={errors.fullname}
+              sx={{ width: "100%" }}
+              onChange={handleInputChange}
+            />
+          </Column>
+          <Column>
+            <Label error={errors.email}>Correo Electrónico</Label>
+            <TextField
+              name="email"
+              value={formData.email}
+              required
+              sx={{ width: "100%" }}
+              error={errors.email}
+              onChange={handleInputChange}
+            />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.id_type}>Tipo de Documento</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <Select
                 id="tipoDocumentoBeneficiario"
@@ -184,6 +227,9 @@ const Formulario = () => {
                 error={errors.id_type}
                 onChange={handleInputChange}
               >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
                 <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
                 <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
                 <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
@@ -208,33 +254,7 @@ const Formulario = () => {
 
         <Row>
           <Column>
-            <Label error={errors.email}>Correo Electrónico Beneficiario</Label>
-            <TextField
-              name="email"
-              value={formData.email}
-              required
-              sx={{ width: "100%" }}
-              error={errors.email}
-              onChange={handleInputChange}
-            />
-          </Column>
-          <Column>
-            <Label error={errors.fullname}>Nombre Completo Beneficiario</Label>
-            <TextField
-              name="fullname"
-              value={formData.fullname}
-              required
-              fullname
-              error={errors.fullname}
-              sx={{ width: "100%" }}
-              onChange={handleInputChange}
-            />
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
-            <Label error={errors.id_number}>No Documento Beneficiario</Label>
+            <Label error={errors.id_number}>Número de Documento</Label>
             <TextField
               name="id_number"
               type="number"
@@ -246,7 +266,7 @@ const Formulario = () => {
             />
           </Column>
           <Column>
-            <Label error={errors.location_residence}>Ciudad y País de Residencia Beneficiario</Label>
+            <Label error={errors.location_residence}>Ciudad y País de Residencia</Label>
             <TextField
               name="location_residence"
               required
@@ -260,22 +280,32 @@ const Formulario = () => {
 
         <Row>
           <Column>
-            <Label error={errors.cellphone}>Teléfono de Contacto Beneficiario</Label>
-            <TextField
-              name="cellphone"
-              type="number"
-              required
+            <Label error={errors.cellphone}>Teléfono de Contacto</Label>
+            <PhoneField
+              enableSearch={true}
               value={formData.cellphone}
-              onChange={handleInputChange}
-              error={errors.cellphone}
-              sx={{ width: "100%" }}
+              country="co"
+              specialLabel=""
+              autoFormat={true}
+              inputStyle={{
+                width: "100%",
+              }}
+              inputProps={{
+                name: "cellphone",
+                required: true,
+              }}
+              isValid={(value, country) => {
+                if (value.match(/12345/) || errors.cellphone) {
+                  return "Invalid value:" + value + ", " + country.name;
+                } else {
+                  return true;
+                }
+              }}
+              onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
             />
           </Column>
-        </Row>
-
-        <Row>
           <Column>
-            <Label error={errors.id_bank_beneficiary}>Banco Beneficiario</Label>
+            <Label error={errors.id_bank_beneficiary}>Banco</Label>
             <FormControl variant="outlined">
               <Select
                 id="bancoBeneficiario"
@@ -284,7 +314,9 @@ const Formulario = () => {
                 onChange={handleInputChange}
                 error={errors.id_bank_beneficiary}
               >
-                <MenuItem value="">Selecciona una Opcion</MenuItem>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
                 <MenuItem value={0}>Banco Agrario de Colombia</MenuItem>
                 <MenuItem value={1}>Banco de Bogotá</MenuItem>
                 <MenuItem value={2}>Banco Caja Social</MenuItem>
@@ -304,8 +336,11 @@ const Formulario = () => {
               </Select>
             </FormControl>
           </Column>
+        </Row>
+
+        <Row>
           <Column>
-            <Label error={errors.beneficiary_bank_account_type}>Tipo de Cuenta Beneficiario</Label>
+            <Label error={errors.beneficiary_bank_account_type}>Tipo de Cuenta</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <Select
                 name="beneficiary_bank_account_type"
@@ -314,17 +349,16 @@ const Formulario = () => {
                 onChange={handleInputChange}
                 error={errors.beneficiary_bank_account_type}
               >
-                <MenuItem value="">Seleccione una Opción</MenuItem>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
                 <MenuItem value={0}>Cuenta Corriente</MenuItem>
                 <MenuItem value={1}>Cuenta de Ahorros</MenuItem>
               </Select>
             </FormControl>
           </Column>
-        </Row>
-
-        <Row>
           <Column>
-            <Label error={errors.beneficiary_bank_account_number}>Número de Cuenta Beneficiario</Label>
+            <Label error={errors.beneficiary_bank_account_number}>Número de Cuenta</Label>
             <TextField
               type="number"
               name="beneficiary_bank_account_number"
@@ -334,9 +368,23 @@ const Formulario = () => {
               error={errors.beneficiary_bank_account_number}
             />
           </Column>
-          <Column>
-            <Label error={errors.payer_fullname}>Nombre Completo Pagador</Label>
+        </Row>
 
+        <Typography
+          fontSize={24}
+          textAlign="center"
+          fontWeight={600}
+          color="primary"
+          paddingY={1}
+          marginX={-3}
+          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+        >
+          Pagador
+        </Typography>
+
+        <Row>
+          <Column>
+            <Label error={errors.payer_fullname}>Nombre Completo</Label>
             <TextField
               name="payer_fullname"
               value={formData.payer_fullname}
@@ -345,29 +393,8 @@ const Formulario = () => {
               error={errors.payer_fullname}
             />
           </Column>
-        </Row>
-
-        <Row>
           <Column>
-            <Label error={errors.payer_id_type}>Tipo de documento Pagador</Label>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <Select
-                name="payer_id_type"
-                id="tipoDocumentoBeneficiario"
-                value={formData.payer_id_type}
-                onChange={handleInputChange}
-                error={errors.payer_id_type}
-              >
-                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                <MenuItem value="registroCivil">Registro Civil</MenuItem>
-              </Select>
-            </FormControl>
-          </Column>
-          <Column>
-            <Label error={errors.payer_id_number}>No Documento Pagador</Label>
+            <Label error={errors.payer_id_number}>Número de Documento</Label>
             <TextField
               name="payer_id_number"
               type="number"
@@ -381,7 +408,101 @@ const Formulario = () => {
 
         <Row>
           <Column>
-            <Label error={errors.payer_id_location_expedition}>Lugar de Expedición del Documento Pagador</Label>
+            <Label error={errors.payer_id_type}>Tipo de Documento</Label>
+            <FormControl variant="outlined" sx={{ width: "100%" }}>
+              <Select
+                name="payer_id_type"
+                id="tipoDocumentoBeneficiario"
+                value={formData.payer_id_type}
+                onChange={handleInputChange}
+                error={errors.payer_id_type}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
+                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                <MenuItem value="registroCivil">Registro Civil</MenuItem>
+              </Select>
+            </FormControl>
+          </Column>
+          <Column>
+            <Label error={errors.payer_id_location_expedition}>Lugar de Expedición del Documento</Label>
+            <TextField
+              name="payer_id_location_expedition"
+              value={formData.payer_id_location_expedition}
+              sx={{ width: "100%" }}
+              error={errors.payer_id_location_expedition}
+              onChange={handleInputChange}
+            />
+          </Column>
+        </Row>
+
+        <Typography
+          fontSize={24}
+          textAlign="center"
+          fontWeight={600}
+          color="primary"
+          paddingY={1}
+          marginX={-3}
+          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+        >
+          Beneficiario
+          <Typography variant="caption" display='block'>
+            En caso de que quieras transferir tus plantas ingresa un beneficiario
+          </Typography>
+        </Typography>
+
+        <Row>
+          <Column>
+            <Label error={errors.payer_fullname}>Nombre Completo</Label>
+            <TextField
+              name="payer_fullname"
+              value={formData.payer_fullname}
+              onChange={handleInputChange}
+              sx={{ width: "100%" }}
+              error={errors.payer_fullname}
+            />
+          </Column>
+          <Column>
+            <Label error={errors.payer_id_number}>Número de Documento</Label>
+            <TextField
+              name="payer_id_number"
+              type="number"
+              value={formData.payer_id_number}
+              onChange={handleInputChange}
+              sx={{ width: "100%" }}
+              error={errors.payer_id_number}
+            />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.payer_id_type}>Tipo de Documento</Label>
+            <FormControl variant="outlined" sx={{ width: "100%" }}>
+              <Select
+                name="payer_id_type"
+                id="tipoDocumentoBeneficiario"
+                value={formData.payer_id_type}
+                onChange={handleInputChange}
+                error={errors.payer_id_type}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
+                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                <MenuItem value="registroCivil">Registro Civil</MenuItem>
+              </Select>
+            </FormControl>
+          </Column>
+          <Column>
+            <Label error={errors.payer_id_location_expedition}>Lugar de Expedición del Documento</Label>
             <TextField
               name="payer_id_location_expedition"
               value={formData.payer_id_location_expedition}
@@ -394,9 +515,10 @@ const Formulario = () => {
 
         <Button
           type="submit"
-          onClick={handleSubmit}
+          size="large"
           variant="contained"
           disabled={Object.values(errors).reduce((a, c) => a || c, false)}
+          onClick={handleSubmit}
         >
           Enviar
         </Button>

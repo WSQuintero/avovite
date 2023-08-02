@@ -3,7 +3,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 import useSession from "../Hooks/useSession";
 import Signup from "../Pages/Signup";
 import Signin from "../Pages/Signin";
-import Home from "../Pages/Home";
+import Dashboard from "../Pages/Dashboard";
 import TermsConditions from "../Pages/TermsConditions";
 import FormInscription from "../Pages/FormInscription";
 import Profile from "../Pages/Profile";
@@ -60,12 +60,12 @@ function Router() {
       element: <PrivateRoute component={Signup} meta={[META.HIDE_FOR_AUTH]} />,
     },
     {
-      path: "/termsandConditions",
+      path: "/privacy-policy",
       element: <TermsConditions />,
     },
     {
       path: "/",
-      element: <Home />,
+      element: <Dashboard />,
     },
     {
       path: "/inscription",
@@ -140,7 +140,7 @@ function Router() {
       element: <Checkout />,
     },
     {
-      path: "/book-now",
+      path: "/form",
       element: <BookingForm />,
     },
     {
