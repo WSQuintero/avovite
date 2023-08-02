@@ -1,161 +1,95 @@
-import React from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
-import {
-  Box,
-  Grid,
-  Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  InputAdornment,
-  Link,
-  Paper,
-} from "@mui/material";
-import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-} from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { Box, Grid, Button, Typography, Container } from "@mui/material";
 
 import BackgroundPhoto from "../assets/img/backgroundphotoImg.png";
 import logo from "../assets/img/logo.svg";
-import { useTheme } from "@emotion/react";
 
 function Home() {
-  const theme = useTheme();
   const route = useNavigate();
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data);
-  };
 
   return (
     <Grid
-     
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
       sx={(theme) => ({
-        display:"flex",
-        flexDirection:"column",
-        [theme.breakpoints.up('lg')]: {
-          position:'relative',
-          flexDirection:'row',
-          justifyContent:'space-between',
-          alignItems:'center'
+        [theme.breakpoints.down("md")]: {
+          flexDirection: "column",
         },
       })}
     >
-      <Box position="relative" height="50vh" sx={(theme)=>({
-        [theme.breakpoints.up('lg')]:{
-          
-          order: 1 ,
-          height:'50%',
-          width:'50%',
-          
-        }
-      })}>
-        <img
-          src={BackgroundPhoto}
-          alt="photo"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-            borderRadius:29
-
-          }}
-        />
-        <Box
-          position="absolute"
-          left={0}
-          top={0}
-          width="100%"
-          height="100%"
-          bgcolor="filter.main"
-          sx={(theme)=>({
-            opacity: 0.25, 
-            [theme.breakpoints.up('lg')]:{
-              borderRadius:4,
-            }
-          })}
-        ></Box>
+      <Box
+        borderRadius={4}
+        display="flex"
+        height="100vh"
+        width="50vw"
+        order={1}
+        sx={(theme) => ({
+          overflow: "hidden",
+          backgroundImage: `url(${BackgroundPhoto})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "-5px",
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          [theme.breakpoints.down("md")]: {
+            borderRadius: 0,
+            order: 0,
+            width: "100vw",
+            height: "50vh",
+          },
+        })}
+      ></Box>
+      <Box
+        position="relative"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap={2}
+        padding={4}
+        height="100vh"
+        width="50vw"
+        sx={(theme) => ({
+          [theme.breakpoints.down("md")]: {
+            width: "100vw",
+            height: "50vh",
+          },
+        })}
+      >
         <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
-          position="absolute"
           borderRadius="50%"
           backgroundColor="white"
           overflow="hidden"
-          bottom={0}
-          left="50%"
           width={160}
           height={160}
           padding={2}
-          sx={(theme)=>({
-            transform: "translate(-50%,50%)" ,
-            [theme.breakpoints.up('lg')]:{
-              left:'-50%',
-              top:'5%'            }
+          sx={(theme) => ({
+            [theme.breakpoints.down("md")]: {
+              position: "absolute",
+              top: 0,
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+            },
           })}
         >
-          <img
-            src={logo}
-            alt="logos"
-            style={{ width: "100%", height: "100%" }}
-          />
+          <img src={logo} alt="logos" style={{ width: "100%", height: "100%" }} />
         </Box>
-      </Box>
-      <Grid
-        flexGrow={1}
-        paddingX={4}
-        paddingY={2}
-        display="flex"
-        flexDirection="column"
-        gap={4}
-        sx={(theme)=>({
-          [theme.breakpoints.up('lg')]:{
-            order: 0 ,
-            paddingY:0,
-            paddingX:10,
-            gap:1
-          }
-        })}
-      >
-        <Box height={80} 
-        sx={(theme)=>({
-          [theme.breakpoints.up('lg')]:{
-            height:0,
-            marginTop:-5
-          }
-        })}
-        
-        
-        ></Box>
-        <Typography
-          color="primary"
-          textAlign="center"
-          width="75%"
-          marginX="auto"
-          
-        >
+        <Typography color="primary" textAlign="center">
           Las ganancias del aguacate HASS Colombiano son para todos
         </Typography>
-        <Grid display="flex" gap={2}>
-          <Button
-            onClick={() => route("/signin")}
-            variant="contained"
-            fullWidth
-            sx={{ color: "white" }}
-          >
+        <Grid display="flex" flexDirection="column" gap={2} width="100%">
+          <Button onClick={() => route("/signin")} variant="contained" fullWidth>
             Iniciar sesión
           </Button>
           <Button onClick={() => route("/signup")} variant="outlined" fullWidth>
             Inscribirse
           </Button>
         </Grid>
-      </Grid>
+      </Box>
     </Grid>
   );
 }

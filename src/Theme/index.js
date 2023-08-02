@@ -69,12 +69,7 @@ export default createTheme({
         contained: {
           color: "#FFFFFF",
         },
-        outlined: {
-          borderWidth: 2,
-          "&:hover": {
-            borderWidth: 2,
-          },
-        },
+        
       },
       defaultProps: {
         sx: {
@@ -95,14 +90,6 @@ export default createTheme({
       defaultProps: {
         sx: {
           color: "text.disabled",
-        },
-      },
-    },
-    MuiLink: {
-      defaultProps: {
-        sx: {
-          color: "text.secondary",
-          textDecorationColor: "black",
         },
       },
     },
