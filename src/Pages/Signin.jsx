@@ -1,26 +1,43 @@
+import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import useSession from "../Hooks/useSession";
+import AuthService from "../Services/auth.service";
 import { Box, Grid, InputAdornment, Link, TextField, Typography } from "@mui/material";
 import { PersonOutlineOutlined as PersonIcon, LockOpenOutlined as LockIcon } from "@mui/icons-material";
 
 import siginphoto from "../assets/img/backgroundOfLogin/signinImg.png";
 import logo from "../assets/img/logo.svg";
-import { useState } from "react";
 
 function Signin() {
+  const [, { setToken }] = useSession();
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
+  const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
+  const $Auth = useMemo(() => new AuthService(), []);
 
   const onUserChange = (event) => {
     const { name, value } = event.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSignin = (event) => {
+  const onSignin = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data);
+
+    const { status, data } = await $Auth.signin(user);
+
+    if (!status) {
+      setFeedback({
+        show: true,
+        message: "Ha ocurrido un error, inténtelo de nuevo.",
+        status: "error",
+      });
+
+      return;
+    }
+
+    setToken(data.token);
   };
 
   return (

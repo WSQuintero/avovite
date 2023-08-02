@@ -1,4 +1,6 @@
-import { useRoutes } from "react-router-dom";
+import { useMemo } from "react";
+import { Navigate, useRoutes } from "react-router-dom";
+import useSession from "../Hooks/useSession";
 import Signup from "../Pages/Signup";
 import Signin from "../Pages/Signin";
 import Home from "../Pages/Home";
@@ -24,108 +26,127 @@ import Checkout from "../Pages/Checkout";
 import BookingForm from "../Pages/BookingForm";
 import Dataset from "../Pages/Dataset";
 
+const META = {
+  REQUIRES_AUTH: Symbol("REQUIRES_AUTH"),
+  HIDE_FOR_AUTH: Symbol("HIDE_FOR_AUTH"),
+};
 
+function PrivateRoute({ component: Component, meta = [], ...props }) {
+  const [session] = useSession();
+  const isAuthenticated = useMemo(() => session.token, [session.token]);
+
+  if (isAuthenticated === false) {
+    return <></>;
+  }
+
+  if (meta.includes(META.REQUIRES_AUTH) && !isAuthenticated) {
+    return <Navigate to="/signin" />;
+  }
+  if (meta.includes(META.HIDE_FOR_AUTH) && isAuthenticated) {
+    return <Navigate to="/" />;
+  }
+
+  return <Component {...props} />;
+}
 
 function Router() {
   return useRoutes([
+    {
+      path: "/signin",
+      element: <PrivateRoute component={Signin} meta={[META.HIDE_FOR_AUTH]} />,
+    },
+    {
+      path: "/signup",
+      element: <PrivateRoute component={Signup} meta={[META.HIDE_FOR_AUTH]} />,
+    },
+    {
+      path: "/termsandConditions",
+      element: <TermsConditions />,
+    },
     {
       path: "/",
       element: <Home />,
     },
     {
-      path:"/signin",
-      element:<Signin/>
-    },
-   
-    {
-      path: "/signup",
-      element: <Signup />,
+      path: "/inscription",
+      element: <FormInscription />,
     },
     {
-      path:"/termsandConditions",
-      element: <TermsConditions/>
+      path: "/menu",
+      element: <Menu />,
     },
     {
-      path: '/inscription',
-      element:<FormInscription/>
+      path: "/profile",
+      element: <Profile />,
     },
     {
-      path:'/menu',
-      element:<Menu/>
+      path: "/editPerfil",
+      element: <EditProfile />,
     },
     {
-      path:'/profile',
-      element:<Profile/>
+      path: "/vites",
+      element: <Vites />,
     },
     {
-      path:'/editPerfil',
-      element:<EditProfile/>
+      path: "/informacion",
+      element: <Informaicion />,
     },
     {
-      path:'/vites',
-      element:<Vites/>
+      path: "/informacion/vite/:id",
+      element: <DatePlantation />,
     },
     {
-      path:'/informacion',
-      element: <Informaicion/>
+      path: "/cosechas",
+      element: <Cosechas />,
     },
     {
-      path:'/informacion/vite/:id',
-      element: <DatePlantation/>
+      path: "/cosechaDetail",
+      element: <CosechaDetail />,
     },
     {
-      path:'/cosechas',
-      element:<Cosechas/>
+      path: "/dineroDetail",
+      element: <DineroDetail />,
     },
     {
-      path:'/cosechaDetail',
-      element:<CosechaDetail/>
+      path: "/anotherDatas",
+      element: <AnotherDatas />,
     },
     {
-      path:'/dineroDetail',
-      element:<DineroDetail/>
-    }, 
-    {
-      path:'/anotherDatas',
-      element:<AnotherDatas/>
+      path: "/anotherData/:id",
+      element: <OtherDataOptions />,
     },
     {
-      path:'/anotherData/:id',
-      element:<OtherDataOptions/>
+      path: "/certificados",
+      element: <Certificate />,
     },
     {
-      path:'/certificados',
-      element:<Certificate/>
+      path: "/wallet",
+      element: <Wallet />,
     },
     {
-      path:'/wallet',
-      element:<Wallet/>
+      path: "/passmoney",
+      element: <PasarDinero />,
     },
     {
-      path:'/passmoney',
-      element:<PasarDinero/>
+      path: "/products",
+      element: <Products />,
     },
     {
-      path:'/products',
-      element:<Products/>
+      path: "/productDetail/:id",
+      element: <ProductDetail />,
     },
     {
-      path:'/productDetail/:id',
-      element:<ProductDetail/>
+      path: "/checkout",
+      element: <Checkout />,
     },
     {
-      path:'/checkout',
-      element: <Checkout/>
+      path: "/book-now",
+      element: <BookingForm />,
     },
     {
-      path:'/book-now',
-      element:<BookingForm/>
+      path: "/dashTable",
+      element: <Dataset />,
     },
-    {
-      path:'/dashTable',
-      element:<Dataset/>
-    }
-    
   ]);
 }
 
