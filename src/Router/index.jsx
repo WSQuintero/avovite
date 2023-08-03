@@ -25,6 +25,8 @@ import ProductDetail from "../Pages/ProductDetail";
 import Checkout from "../Pages/Checkout";
 import BookingForm from "../Pages/BookingForm";
 import Dataset from "../Pages/Dataset";
+import TransferMoney from "../Pages/TransferMoney";
+import Info from "../Pages/Info";
 
 const META = {
   REQUIRES_AUTH: Symbol("REQUIRES_AUTH"),
@@ -52,6 +54,10 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 function Router() {
   return useRoutes([
     {
+      path: "/form",
+      element: <BookingForm />,
+    },
+    {
       path: "/signin",
       element: <PrivateRoute component={Signin} meta={[META.HIDE_FOR_AUTH]} />,
     },
@@ -66,6 +72,20 @@ function Router() {
     {
       path: "/",
       element: <Dashboard />,
+    },
+    {
+      path: "/wallet",
+      element: <Wallet />,
+      children: [
+        {
+          path: "transfer/:bank?",
+          element: <TransferMoney />,
+        },
+      ],
+    },
+    {
+      path: "/info/:category?",
+      element: <Info />,
     },
     {
       path: "/inscription",
@@ -120,10 +140,6 @@ function Router() {
       element: <Certificate />,
     },
     {
-      path: "/wallet",
-      element: <Wallet />,
-    },
-    {
       path: "/passmoney",
       element: <PasarDinero />,
     },
@@ -138,10 +154,6 @@ function Router() {
     {
       path: "/checkout",
       element: <Checkout />,
-    },
-    {
-      path: "/form",
-      element: <BookingForm />,
     },
     {
       path: "/dashTable",

@@ -48,8 +48,12 @@ export default class AuthService {
             resolve({
               user: {
                 name: "Miguel",
-                lastName: "Waters",
                 email: "wungo@raru.li",
+                phone: "573101112233",
+                account_number: 2873557237,
+                city: "Medellín",
+                country: "Colombia",
+                account_bank: 3948779348,
                 avatar: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
               },
             }),

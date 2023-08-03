@@ -8,7 +8,17 @@ function PageWrapper({ hideSidebar = false, hideHeader = false, children }) {
       <Sidebar />
       <Grid flexGrow={1} display="flex" flexDirection="column" minHeight="100vh">
         <Header />
-        <Box component="main" flexGrow={1} padding={6}>
+        <Box
+          component="main"
+          flexGrow={1}
+          padding={6}
+          sx={(t) => ({
+            [t.breakpoints.down("md")]: {
+              padding: 4,
+              paddingTop: 12,
+            },
+          })}
+        >
           {children}
         </Box>
       </Grid>

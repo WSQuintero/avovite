@@ -4,8 +4,13 @@
   box-sizing: border-box;
 }
 
-.react-tel-input input{
+body {
+  box-sizing: border-box;
+}
+
+.react-tel-input input {
   border-radius: 12px !important;
+  color: #979797;
 }
 
 .react-tel-input input:focus {

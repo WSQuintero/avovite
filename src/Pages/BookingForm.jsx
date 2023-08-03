@@ -379,79 +379,10 @@ const Formulario = () => {
           marginX={-3}
           sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
         >
-          Pagador
-        </Typography>
-
-        <Row>
-          <Column>
-            <Label error={errors.payer_fullname}>Nombre Completo</Label>
-            <TextField
-              name="payer_fullname"
-              value={formData.payer_fullname}
-              onChange={handleInputChange}
-              sx={{ width: "100%" }}
-              error={errors.payer_fullname}
-            />
-          </Column>
-          <Column>
-            <Label error={errors.payer_id_number}>Número de Documento</Label>
-            <TextField
-              name="payer_id_number"
-              type="number"
-              value={formData.payer_id_number}
-              onChange={handleInputChange}
-              sx={{ width: "100%" }}
-              error={errors.payer_id_number}
-            />
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
-            <Label error={errors.payer_id_type}>Tipo de Documento</Label>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <Select
-                name="payer_id_type"
-                id="tipoDocumentoBeneficiario"
-                value={formData.payer_id_type}
-                onChange={handleInputChange}
-                error={errors.payer_id_type}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                <MenuItem value="registroCivil">Registro Civil</MenuItem>
-              </Select>
-            </FormControl>
-          </Column>
-          <Column>
-            <Label error={errors.payer_id_location_expedition}>Lugar de Expedición del Documento</Label>
-            <TextField
-              name="payer_id_location_expedition"
-              value={formData.payer_id_location_expedition}
-              sx={{ width: "100%" }}
-              error={errors.payer_id_location_expedition}
-              onChange={handleInputChange}
-            />
-          </Column>
-        </Row>
-
-        <Typography
-          fontSize={24}
-          textAlign="center"
-          fontWeight={600}
-          color="primary"
-          paddingY={1}
-          marginX={-3}
-          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-        >
           Beneficiario
-          <Typography variant="caption" display='block'>
-            En caso de que quieras transferir tus plantas ingresa un beneficiario
+          <Typography variant="caption" display="block">
+            Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento
+            fortuito.
           </Typography>
         </Typography>
 

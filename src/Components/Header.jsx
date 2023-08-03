@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 import {
   AppBar,
   Avatar,
@@ -15,12 +16,22 @@ import {
   TextField,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
-import { AndroidOutlined as SampleIcon } from "@mui/icons-material";
+import {
+  AndroidOutlined as SampleIcon,
+  MenuOpenOutlined as MenuIcon,
+  MoreVertOutlined as SettingsIcon,
+  KeyboardBackspaceOutlined as BackIcon,
+} from "@mui/icons-material";
 import useSession from "../Hooks/useSession";
+import useConfig from "../Hooks/useConfig";
 
 function Header() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [session] = useSession();
+  const [, { toggleSidebar }] = useConfig();
   const [search, setSearch] = useState("");
   const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
 
@@ -28,7 +39,7 @@ function Header() {
     return <></>;
   }
 
-  return (
+  return !isMobile ? (
     <AppBar position="static" color="transparent" elevation={0}>
       <Toolbar>
         <Grid display="flex" alignItems="center" gap={2} width="100%">
@@ -101,6 +112,46 @@ function Header() {
           </Grid>
         </MenuItem>
       </Menu>
+    </AppBar>
+  ) : (
+    <AppBar position="relative" color="secondary" elevation={0}>
+      <Toolbar>
+        <Grid display="flex" justifyContent="space-between" width="100%">
+          <IconButton onClick={() => toggleSidebar()}>
+            <MenuIcon sx={{ color: "white" }} />
+          </IconButton>
+          <Link
+            fontSize={24}
+            fontWeight={500}
+            component={RouterLink}
+            to="/"
+            sx={{ textDecoration: "none", color: "white" }}
+          >
+            Avovite app
+          </Link>
+          <IconButton>
+            <SettingsIcon sx={{ color: "white" }} />
+          </IconButton>
+        </Grid>
+      </Toolbar>
+      <Box
+        position="absolute"
+        zIndex={1}
+        top="100%"
+        left={0}
+        right={0}
+        display="flex"
+        alignItems="center"
+        gap={1}
+        paddingX={3}
+        paddingY={1}
+        sx={{ backgroundColor: "primary.main" }}
+      >
+        <IconButton>
+          <BackIcon sx={{ color: "white" }} />
+        </IconButton>
+        <Typography color="white">Ir Atrás</Typography>
+      </Box>
     </AppBar>
   );
 }

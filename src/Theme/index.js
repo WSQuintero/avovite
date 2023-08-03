@@ -6,7 +6,7 @@ export default createTheme({
       main: "#67AA36",
     },
     secondary: {
-      main: "#344B2C",
+      main: "#214820",
     },
     text: {
       primary: "#979797",
@@ -90,7 +90,7 @@ export default createTheme({
     MuiInputBase: {
       defaultProps: {
         sx: {
-          borderRadius: 1.5,
+          borderRadius: 1,
           "& fieldset": { borderColor: "#979797" },
         },
       },

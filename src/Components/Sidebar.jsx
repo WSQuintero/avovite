@@ -1,17 +1,25 @@
 import { NavLink } from "react-router-dom";
 import {
+  Avatar,
   Box,
+  Divider,
   Drawer,
   Grid,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
   Toolbar,
   Typography,
+  alpha,
 } from "@mui/material";
 import { AndroidOutlined as SampleIcon, ChevronRightOutlined as ChevronRightIcon } from "@mui/icons-material";
+import { useTheme } from "@emotion/react";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import useConfig from "../Hooks/useConfig";
+import useSession from "../Hooks/useSession";
+
+import background from "../assets/img/wallet/background.png";
 
 const routes = [
   {
@@ -41,23 +49,55 @@ const routes = [
 ];
 
 function Sidebar() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [{ sidebar }, { toggleSidebar }] = useConfig();
+  const [{ user }] = useSession();
+
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <Drawer
-      variant="permanent"
+      variant={isMobile ? "temporary" : "permanent"}
       anchor="left"
+      open={sidebar}
       sx={(t) => ({
         flexShrink: 0,
         width: t.sizes.sidebar.main,
-        backgroundColor: "primary.main",
         "& .MuiDrawer-paper": {
           width: t.sizes.sidebar.main,
           border: "none",
-          backgroundColor: "transparent",
+          backgroundColor: "primary.main",
         },
       })}
+      onClose={() => toggleSidebar()}
     >
-      <Toolbar />
-      <Typography paddingX={2} color="common.white">
+      {isMobile && (
+        <>
+          <Toolbar>
+            <img
+              src={background}
+              alt="background"
+              style={{ position: "absolute", zIndex: -1, top: 0, left: 0, right: 0, width: "100%" }}
+            />
+            <Grid display="flex" justifyContent="space-between" alignItems="center" paddingY={2} width="100%">
+              <Grid display="flex" flexDirection="column">
+                <Typography fontSize={24} fontWeight={600} color="white">
+                  {user.name}
+                </Typography>
+                <Typography variant="caption" color="white">
+                  {user.email}
+                </Typography>
+              </Grid>
+              <Avatar src={user.avatar} alt={user.name} />
+            </Grid>
+          </Toolbar>
+          <Divider sx={{ borderColor: alpha("#ffffff", 0.25) }} />
+        </>
+      )}
+      <Typography padding={2} color="common.white">
         Navegación
       </Typography>
       <List>
@@ -68,9 +108,10 @@ function Sidebar() {
               to={route}
               sx={(t) => ({
                 position: "relative",
-                color: "text.secondary",
-                fontWeight: 400,
+                color: "text.light",
                 borderRadius: 0,
+                paddingLeft: 4,
+                paddingY: 1.5,
                 "&.active": {
                   color: "white",
                   "&::after": {
@@ -91,7 +132,10 @@ function Sidebar() {
               <ListItemIcon sx={{ color: "inherit" }}>
                 <SampleIcon sx={{ color: "inherit" }} />
               </ListItemIcon>
-              <ListItemText primary={name} />
+              {/* <ListItemText primary={name} sx={{ fontSize: 10 }} /> */}
+              <Typography flexGrow={1} fontSize={16} fontWeight={400}>
+                {name}
+              </Typography>
               <ChevronRightIcon className="chevron-icon" sx={{ color: "inherit" }} />
             </ListItemButton>
           </ListItem>
