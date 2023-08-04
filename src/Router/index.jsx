@@ -71,11 +71,11 @@ function Router() {
     },
     {
       path: "/",
-      element: <Dashboard />,
+      element: <PrivateRoute component={Dashboard} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/wallet",
-      element: <Wallet />,
+      element: <PrivateRoute component={Wallet} meta={[META.REQUIRES_AUTH]} />,
       children: [
         {
           path: "transfer/:bank?",
@@ -85,79 +85,79 @@ function Router() {
     },
     {
       path: "/info/:category?",
-      element: <Info />,
+      element: <PrivateRoute component={Info} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/inscription",
-      element: <FormInscription />,
+      element: <PrivateRoute component={FormInscription} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/menu",
-      element: <Menu />,
+      element: <PrivateRoute component={Menu} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/profile",
-      element: <Profile />,
+      element: <PrivateRoute component={Profile} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/editPerfil",
-      element: <EditProfile />,
+      element: <PrivateRoute component={EditProfile} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/vites",
-      element: <Vites />,
+      element: <PrivateRoute component={Vites} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/informacion",
-      element: <Informaicion />,
+      element: <PrivateRoute component={Informaicion} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/informacion/vite/:id",
-      element: <DatePlantation />,
+      element: <PrivateRoute component={DatePlantation} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/cosechas",
-      element: <Cosechas />,
+      element: <PrivateRoute component={Cosechas} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/cosechaDetail",
-      element: <CosechaDetail />,
+      element: <PrivateRoute component={CosechaDetail} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/dineroDetail",
-      element: <DineroDetail />,
+      element: <PrivateRoute component={DineroDetail} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/anotherDatas",
-      element: <AnotherDatas />,
+      element: <PrivateRoute component={AnotherDatas} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/anotherData/:id",
-      element: <OtherDataOptions />,
+      element: <PrivateRoute component={OtherDataOptions} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/certificados",
-      element: <Certificate />,
+      element: <PrivateRoute component={Certificate} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/passmoney",
-      element: <PasarDinero />,
+      element: <PrivateRoute component={PasarDinero} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/products",
-      element: <Products />,
+      element: <PrivateRoute component={Products} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/productDetail/:id",
-      element: <ProductDetail />,
+      element: <PrivateRoute component={ProductDetail} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/checkout",
-      element: <Checkout />,
+      element: <PrivateRoute component={Checkout} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/dashTable",
-      element: <Dataset />,
+      element: <PrivateRoute component={Dataset} meta={[META.REQUIRES_AUTH]} />,
     },
   ]);
 }

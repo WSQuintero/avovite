@@ -8,9 +8,12 @@ export default class AuthService {
 
   async signin({ email, password }) {
     try {
-      const data = await new Promise((resolve) => setTimeout(() => resolve({ token: "123" }), 200));
+      const { data } = await axios.post(`${this.API_URL}/users/signin`, {
+        email,
+        password,
+      });
 
-      return { status: true, data };
+      return { status: true, data: data.data };
     } catch (error) {
       return { status: false, data: "" };
     }
@@ -47,7 +50,7 @@ export default class AuthService {
           () =>
             resolve({
               user: {
-                name: "Miguel",
+                name: "Glen Cunningham",
                 email: "wungo@raru.li",
                 phone: "573101112233",
                 account_number: 2873557237,

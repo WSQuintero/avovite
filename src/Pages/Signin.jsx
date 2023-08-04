@@ -37,7 +37,7 @@ function Signin() {
       return;
     }
 
-    setToken(data.token);
+    setToken(data);
   };
 
   return (

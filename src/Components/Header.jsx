@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import {
@@ -30,10 +30,11 @@ import useConfig from "../Hooks/useConfig";
 function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [session] = useSession();
+  const [session, { logout }] = useSession();
   const [, { toggleSidebar }] = useConfig();
   const [search, setSearch] = useState("");
-  const [profileMenuAnchor, setProfileMenuAnchor] = useState(null);
+  const profileMenuRef = useRef();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   if (!session.user) {
     return <></>;
@@ -66,12 +67,13 @@ function Header() {
           </Button>
           <Divider orientation="vertical" variant="middle" flexItem />
           <Button
+            ref={profileMenuRef}
             color="inherit"
             sx={{ display: "flex", alignItems: "center", gap: 2 }}
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
-              setProfileMenuAnchor(event.target);
+              setIsProfileMenuOpen(true);
             }}
           >
             <Avatar alt={session.user.name} src={session.user.avatar} />
@@ -88,24 +90,13 @@ function Header() {
       </Toolbar>
 
       <Menu
-        anchorEl={profileMenuAnchor}
-        open={!!profileMenuAnchor}
+        anchorEl={profileMenuRef.current}
+        open={isProfileMenuOpen}
         elevation={0}
-        onClose={() => setProfileMenuAnchor(null)}
+        onClose={() => setIsProfileMenuOpen(false)}
+        sx={{ top: 16 }}
       >
-        <MenuItem onClick={() => setProfileMenuAnchor(null)}>
-          <Grid display="flex" justifyContent="space-between" alignItems="center" gap={1} width="100%">
-            <Typography>Profile & Notifications </Typography>
-            <SampleIcon color="info" fontSize="small" />
-          </Grid>
-        </MenuItem>
-        <MenuItem onClick={() => setProfileMenuAnchor(null)}>
-          <Grid display="flex" justifyContent="space-between" alignItems="center" gap={1} width="100%">
-            <Typography>Billing Settings</Typography>
-            <SampleIcon color="info" fontSize="small" />
-          </Grid>
-        </MenuItem>
-        <MenuItem onClick={() => setProfileMenuAnchor(null)}>
+        <MenuItem onClick={() => logout()} sx={{ minWidth: 200 }}>
           <Grid display="flex" justifyContent="space-between" alignItems="center" gap={1} width="100%">
             <Typography color="error">Log Out</Typography>
             <SampleIcon color="error" fontSize="small" />

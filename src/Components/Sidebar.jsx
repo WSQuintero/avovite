@@ -50,7 +50,7 @@ const routes = [
 
 function Sidebar() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
 
@@ -80,18 +80,18 @@ function Sidebar() {
             <img
               src={background}
               alt="background"
-              style={{ position: "absolute", zIndex: -1, top: 0, left: 0, right: 0, width: "100%" }}
+              style={{ position: "absolute", zIndex: -1, top: "-50%", left: 0, right: 0, width: "100%" }}
             />
-            <Grid display="flex" justifyContent="space-between" alignItems="center" paddingY={2} width="100%">
+            <Grid display="flex" justifyContent="space-between" alignItems="center" paddingY={4} width="100%">
               <Grid display="flex" flexDirection="column">
-                <Typography fontSize={24} fontWeight={600} color="white">
-                  {user.name}
+                <Typography fontSize={24} fontWeight={600} lineHeight={1} color="white">
+                  {user.name.split(" ")[0]}
                 </Typography>
-                <Typography variant="caption" color="white">
+                <Typography variant="caption" fontWeight={200} color="white">
                   {user.email}
                 </Typography>
               </Grid>
-              <Avatar src={user.avatar} alt={user.name} />
+              <Avatar src={user.avatar} alt={user.name} sx={{ width: 48, height: 48 }} />
             </Grid>
           </Toolbar>
           <Divider sx={{ borderColor: alpha("#ffffff", 0.25) }} />
@@ -115,28 +115,43 @@ function Sidebar() {
                 "&.active": {
                   color: "white",
                   "&::after": {
-                    content: "''",
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    width: 6,
-                    backgroundColor: "white",
+                    transform: "translate(0)",
+                    opacity: 1,
                   },
                   "& .chevron-icon": {
-                    display: "none",
+                    transform: "translate(100%)",
+                    opacity: 0,
                   },
+                },
+                "&::after": {
+                  content: "''",
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  width: 6,
+                  opacity: 0,
+                  backgroundColor: "white",
+                  transform: "translateX(100%)",
+                  transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
                 },
               })}
             >
               <ListItemIcon sx={{ color: "inherit" }}>
                 <SampleIcon sx={{ color: "inherit" }} />
               </ListItemIcon>
-              {/* <ListItemText primary={name} sx={{ fontSize: 10 }} /> */}
               <Typography flexGrow={1} fontSize={16} fontWeight={400}>
                 {name}
               </Typography>
-              <ChevronRightIcon className="chevron-icon" sx={{ color: "inherit" }} />
+              <ChevronRightIcon
+                className="chevron-icon"
+                sx={{
+                  color: "inherit",
+                  opacity: 1,
+                  transform: "translate(0)",
+                  transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
