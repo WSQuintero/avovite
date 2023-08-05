@@ -3,6 +3,7 @@ import { CssBaseline } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ConfigProvider } from "../Providers/ConfigProvider";
 import { SessionProvider } from "../Providers/SessionProvider";
+import { CartProvider } from "../Providers/CartProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Theme from "../Theme";
 
@@ -12,7 +13,9 @@ function MasterProvider({ children }) {
       <ThemeProvider theme={Theme}>
         <CssBaseline />
         <SessionProvider>
-          <ConfigProvider>{children}</ConfigProvider>
+          <CartProvider>
+            <ConfigProvider>{children}</ConfigProvider>
+          </CartProvider>
         </SessionProvider>
       </ThemeProvider>
     </LocalizationProvider>

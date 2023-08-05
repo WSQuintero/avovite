@@ -15,11 +15,29 @@ export const validateJSON = (o) => {
 
 export const isToday = (date) => {
   const today = new Date();
-  console.log(today)
-  console.log(date)
+  console.log(today);
+  console.log(date);
   return (
     date.getDate() === today.getDate() &&
     date.getMonth() === today.getMonth() &&
     date.getFullYear() === today.getFullYear()
   );
 };
+
+export const formatDate = (date) =>
+  `${new Date(date).getDate()} ${
+    [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Deciembre",
+    ][new Date(date).getMonth()]
+  } ${new Date(date).getFullYear()}`;

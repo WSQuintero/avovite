@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 import {
   AppBar,
   Avatar,
+  Badge,
   Box,
   Button,
   Divider,
@@ -26,12 +27,14 @@ import {
 } from "@mui/icons-material";
 import useSession from "../Hooks/useSession";
 import useConfig from "../Hooks/useConfig";
+import useCart from "../Hooks/useCart";
 
 function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [session, { logout }] = useSession();
   const [, { toggleSidebar }] = useConfig();
+  const [shoppingCart] = useCart();
   const [search, setSearch] = useState("");
   const profileMenuRef = useRef();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -62,9 +65,11 @@ function Header() {
             sx={{ marginLeft: 2 }}
           />
           <Box flexGrow={1} />
-          <Button variant="contained" size="small">
-            <SampleIcon />
-          </Button>
+          <Badge color="error" badgeContent={shoppingCart.length}>
+            <Button component={RouterLink} variant="contained" size="small" to="/cart">
+              <SampleIcon />
+            </Button>
+          </Badge>
           <Divider orientation="vertical" variant="middle" flexItem />
           <Button
             ref={profileMenuRef}

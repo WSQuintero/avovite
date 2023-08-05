@@ -9,10 +9,10 @@ import FormInscription from "../Pages/FormInscription";
 import Profile from "../Pages/Profile";
 import Menu from "../Pages/Menu";
 import EditProfile from "../Pages/EditProfile";
-import Vites from "../Pages/Vites";
+import Shop from "../Pages/Shop";
 import Informaicion from "../Pages/Informaicion";
 import DatePlantation from "../Pages/DatePlantation";
-import Cosechas from "../Pages/Cosechas";
+import Crops from "../Pages/Crops";
 import CosechaDetail from "../Pages/CosechaDetail";
 import DineroDetail from "../Pages/DineroDetail";
 import AnotherDatas from "../Pages/AnotherDatas";
@@ -27,6 +27,9 @@ import BookingForm from "../Pages/BookingForm";
 import Dataset from "../Pages/Dataset";
 import TransferMoney from "../Pages/TransferMoney";
 import Info from "../Pages/Info";
+import Earnings from "../Pages/Earnings";
+import Budget from "../Pages/Budget";
+import ShoppingCart from "../Pages/ShoppingCart";
 
 const META = {
   REQUIRES_AUTH: Symbol("REQUIRES_AUTH"),
@@ -84,9 +87,30 @@ function Router() {
       ],
     },
     {
+      path: "/crops/:id?",
+      element: <PrivateRoute component={Crops} meta={[META.REQUIRES_AUTH]} />,
+    },
+    {
       path: "/info/:category?",
       element: <PrivateRoute component={Info} meta={[META.REQUIRES_AUTH]} />,
     },
+    {
+      path: "/earnings",
+      element: <PrivateRoute component={Earnings} meta={[META.REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/budget",
+      element: <PrivateRoute component={Budget} meta={[META.REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/shop",
+      element: <PrivateRoute component={Shop} meta={[META.REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/cart",
+      element: <PrivateRoute component={ShoppingCart} meta={[META.REQUIRES_AUTH]} />,
+    },
+    //
     {
       path: "/inscription",
       element: <PrivateRoute component={FormInscription} meta={[META.REQUIRES_AUTH]} />,
@@ -104,20 +128,12 @@ function Router() {
       element: <PrivateRoute component={EditProfile} meta={[META.REQUIRES_AUTH]} />,
     },
     {
-      path: "/vites",
-      element: <PrivateRoute component={Vites} meta={[META.REQUIRES_AUTH]} />,
-    },
-    {
       path: "/informacion",
       element: <PrivateRoute component={Informaicion} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/informacion/vite/:id",
       element: <PrivateRoute component={DatePlantation} meta={[META.REQUIRES_AUTH]} />,
-    },
-    {
-      path: "/cosechas",
-      element: <PrivateRoute component={Cosechas} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/cosechaDetail",

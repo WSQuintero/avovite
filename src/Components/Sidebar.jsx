@@ -40,7 +40,7 @@ const routes = [
   },
   {
     name: "Comprar Vites",
-    route: "/buy",
+    route: "/shop",
   },
   {
     name: "Perfil",
@@ -100,7 +100,7 @@ function Sidebar() {
       <Typography padding={2} color="common.white">
         Navegación
       </Typography>
-      <List>
+      <List sx={{ overflow: "hidden" }}>
         {routes.map(({ name, route }) => (
           <ListItem key={name} disablePadding>
             <ListItemButton

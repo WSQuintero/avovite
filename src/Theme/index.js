@@ -7,6 +7,11 @@ export default createTheme({
     },
     secondary: {
       main: "#214820",
+      light: "#79C941",
+    },
+    premium: {
+      main: "#D0A723",
+      dark: "#8B620D",
     },
     text: {
       primary: "#979797",
@@ -30,8 +35,8 @@ export default createTheme({
     fontSize: 16,
     fontFamily: "'Poppins', sans-serif",
     h3: {
-      fontWeight: 400,
-      fontSize: 18,
+      fontWeight: 500,
+      fontSize: 24,
       color: "#67AA36",
     },
     h2: {
@@ -65,10 +70,8 @@ export default createTheme({
         },
         contained: {
           color: "#FFFFFF",
-          backgroundColor: "#63A534",
           boxShadow: "none",
           "&:hover": {
-            backgroundColor: "#79C941",
             boxShadow: "none",
           },
         },
@@ -143,6 +146,7 @@ export default createTheme({
   },
   breakpoints: {
     values: {
+      xsm: 400,
       sm: 576,
       md: 768,
       lg: 992,
