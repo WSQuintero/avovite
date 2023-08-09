@@ -12,10 +12,8 @@ import {
   Snackbar,
   Alert,
   alpha,
-  Tooltip,
-  IconButton,
+ 
 } from "@mui/material";
-import { InfoOutlined as InfoIcon } from "@mui/icons-material";
 import PhoneField from "react-phone-input-2";
 import logo from "../assets/img/logo.svg";
 import ContractService from "../Services/contract.service";
@@ -65,13 +63,13 @@ const Formulario = () => {
     id_number: "",
     location_residence: "",
     cellphone: "",
-    id_bank_beneficiary: "-",
-    beneficiary_bank_account_type: "-",
-    beneficiary_bank_account_number: "",
-    payer_fullname: "",
-    payer_id_type: "-",
-    payer_id_number: "",
-    payer_id_location_expedition: "",
+    user_id_bank: "-",
+    user_bank_account_type: "-",
+    user_bank_account_number: "",
+    beneficiary_fullname: "",
+    beneficiary_id_type: "-",
+    beneficiary_id_number: "",
+    beneficiary_id_location_expedition: "",
   });
   const [errors, setErrors] = useState({
     id_type: false,
@@ -81,13 +79,13 @@ const Formulario = () => {
     id_number: false,
     location_residence: false,
     cellphone: false,
-    id_bank_beneficiary: false,
-    beneficiary_bank_account_type: false,
-    beneficiary_bank_account_number: false,
-    payer_fullname: false,
-    payer_id_type: false,
-    payer_id_number: false,
-    payer_id_location_expedition: false,
+    user_id_bank: false,
+    user_bank_account_type: false,
+    user_bank_account_number: false,
+    beneficiary_fullname: false,
+    beneficiary_id_type: false,
+    beneficiary_id_number: false,
+    beneficiary_id_location_expedition: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
@@ -112,13 +110,13 @@ const Formulario = () => {
       id_number: formData.id_number,
       location_residence: formData.location_residence,
       cellphone: formData.cellphone,
-      id_bank_beneficiary: formData.id_bank_beneficiary,
-      beneficiary_bank_account_type: formData.beneficiary_bank_account_type,
-      beneficiary_bank_account_number: formData.beneficiary_bank_account_number,
-      payer_fullname: formData.payer_fullname,
-      payer_id_type: formData.payer_id_type,
-      payer_id_number: formData.payer_id_number,
-      payer_id_location_expedition: formData.payer_id_location_expedition,
+      user_id_bank: formData.user_id_bank,
+      user_bank_account_type: formData.user_bank_account_type,
+      user_bank_account_number: formData.user_bank_account_number,
+      beneficiary_fullname: formData.beneficiary_fullname,
+      beneficiary_id_type: formData.beneficiary_id_type,
+      beneficiary_id_number: formData.beneficiary_id_number,
+      beneficiary_id_location_expedition: formData.beneficiary_id_location_expedition,
     };
 
     // Aquí puedes agregar validaciones si es necesario antes de enviar los datos
@@ -134,13 +132,13 @@ const Formulario = () => {
         id_number: "",
         location_residence: "",
         cellphone: "",
-        id_bank_beneficiary: "",
-        beneficiary_bank_account_type: "",
-        beneficiary_bank_account_number: "",
-        payer_fullname: "",
-        payer_id_type: "",
-        payer_id_number: "",
-        payer_id_location_expedition: "",
+        user_id_bank: "",
+        user_bank_account_type: "",
+        user_bank_account_number: "",
+        beneficiary_fullname: "",
+        beneficiary_id_type: "",
+        beneficiary_id_number: "",
+        beneficiary_id_location_expedition: "",
       });
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -305,14 +303,14 @@ const Formulario = () => {
             />
           </Column>
           <Column>
-            <Label error={errors.id_bank_beneficiary}>Banco</Label>
+            <Label error={errors.user_id_bank}>Banco</Label>
             <FormControl variant="outlined">
               <Select
                 id="bancoBeneficiario"
-                name="id_bank_beneficiary"
-                value={formData.id_bank_beneficiary}
+                name="user_id_bank"
+                value={formData.user_id_bank}
                 onChange={handleInputChange}
-                error={errors.id_bank_beneficiary}
+                error={errors.user_id_bank}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -340,14 +338,14 @@ const Formulario = () => {
 
         <Row>
           <Column>
-            <Label error={errors.beneficiary_bank_account_type}>Tipo de Cuenta</Label>
+            <Label error={errors.user_bank_account_type}>Tipo de Cuenta</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <Select
-                name="beneficiary_bank_account_type"
+                name="user_bank_account_type"
                 id="tipoDeCuentaBeneficiaria"
-                value={formData.beneficiary_bank_account_type}
+                value={formData.user_bank_account_type}
                 onChange={handleInputChange}
-                error={errors.beneficiary_bank_account_type}
+                error={errors.user_bank_account_type}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -358,14 +356,14 @@ const Formulario = () => {
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.beneficiary_bank_account_number}>Número de Cuenta</Label>
+            <Label error={errors.user_bank_account_number}>Número de Cuenta</Label>
             <TextField
               type="number"
-              name="beneficiary_bank_account_number"
-              value={formData.beneficiary_bank_account_number}
+              name="user_bank_account_number"
+              value={formData.user_bank_account_number}
               onChange={handleInputChange}
               sx={{ width: "100%" }}
-              error={errors.beneficiary_bank_account_number}
+              error={errors.user_bank_account_number}
             />
           </Column>
         </Row>
@@ -388,38 +386,38 @@ const Formulario = () => {
 
         <Row>
           <Column>
-            <Label error={errors.payer_fullname}>Nombre Completo</Label>
+            <Label error={errors.beneficiary_fullname}>Nombre Completo</Label>
             <TextField
-              name="payer_fullname"
-              value={formData.payer_fullname}
+              name="beneficiary_fullname"
+              value={formData.beneficiary_fullname}
               onChange={handleInputChange}
               sx={{ width: "100%" }}
-              error={errors.payer_fullname}
+              error={errors.beneficiary_fullname}
             />
           </Column>
           <Column>
-            <Label error={errors.payer_id_number}>Número de Documento</Label>
+            <Label error={errors.beneficiary_id_number}>Número de Documento</Label>
             <TextField
-              name="payer_id_number"
+              name="beneficiary_id_number"
               type="number"
-              value={formData.payer_id_number}
+              value={formData.beneficiary_id_number}
               onChange={handleInputChange}
               sx={{ width: "100%" }}
-              error={errors.payer_id_number}
+              error={errors.beneficiary_id_number}
             />
           </Column>
         </Row>
 
         <Row>
           <Column>
-            <Label error={errors.payer_id_type}>Tipo de Documento</Label>
+            <Label error={errors.beneficiary_id_type}>Tipo de Documento</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <Select
-                name="payer_id_type"
+                name="beneficiary_id_type"
                 id="tipoDocumentoBeneficiario"
-                value={formData.payer_id_type}
+                value={formData.beneficiary_id_type}
                 onChange={handleInputChange}
-                error={errors.payer_id_type}
+                error={errors.beneficiary_id_type}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -433,12 +431,12 @@ const Formulario = () => {
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.payer_id_location_expedition}>Lugar de Expedición del Documento</Label>
+            <Label error={errors.beneficiary_id_location_expedition}>Lugar de Expedición del Documento</Label>
             <TextField
-              name="payer_id_location_expedition"
-              value={formData.payer_id_location_expedition}
+              name="beneficiary_id_location_expedition"
+              value={formData.beneficiary_id_location_expedition}
               sx={{ width: "100%" }}
-              error={errors.payer_id_location_expedition}
+              error={errors.beneficiary_id_location_expedition}
               onChange={handleInputChange}
             />
           </Column>

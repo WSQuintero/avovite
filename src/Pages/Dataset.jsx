@@ -74,7 +74,7 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
             </Button>
           )}
         </TableCell>
-        <TableCell>{contract.payer_fullname}</TableCell>
+        <TableCell>{contract.beneficiary_fullname}</TableCell>
         <TableCell>
           $<NumericFormat displayType="text" value={contract.contract_amount} thousandSeparator></NumericFormat>
         </TableCell>
@@ -113,11 +113,11 @@ function CustomTableRow({ contract, index, onCreate, onPDF }) {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>{contract.payer_fullname}</TableCell>
-                    <TableCell>{contract.payer_id_type}</TableCell>
-                    <TableCell>{contract.payer_id_number}</TableCell>
-                    <TableCell>{contract.payer_id_location_expedition}</TableCell>
-                    <TableCell>{contract.beneficiary_bank_account_number}</TableCell>
+                    <TableCell>{contract.beneficiary_fullname}</TableCell>
+                    <TableCell>{contract.beneficiary_id_type}</TableCell>
+                    <TableCell>{contract.beneficiary_id_number}</TableCell>
+                    <TableCell>{contract.beneficiary_id_location_expedition}</TableCell>
+                    <TableCell>{contract.user_bank_account_number}</TableCell>
                     <TableCell>{contract.contract_amount}</TableCell>
                     {contract.created_at !== null && (
                       <TableCell>{new Date(contract.created_at).toLocaleDateString()}</TableCell>
@@ -209,7 +209,14 @@ const Dataset = () => {
     });
     setDues([]);
   };
-
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    console.log(`${year}-${month}-${day}`)
+    return `${year}-${month}-${day}`;
+  }
   const onCreateContract = async () => {
     const { status } = await $Contract.complete({
       id: selectedContract.id,
@@ -226,14 +233,14 @@ const Dataset = () => {
               contract_discount: parseFloat(discountValue),
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
-              first_payment_date: contract.firstPaymentDate,
-              contract_signature_date: contract.signatureDate,
+              first_payment_date: formatDate(contract.firstPaymentDate),
+              contract_signature_date: formatDate(contract.signatureDate),
               total_financed: parseFloat(totalDuesValue),
               payment_numbers: dues.length,
               financed_contracts: dues.map((d, index) => ({
                 quota_number: index + 1,
                 payment_amount: d.value,
-                date_payment: d.date,
+                date_payment: formatDate(d.date),
               })),
             }
           : {
@@ -247,8 +254,8 @@ const Dataset = () => {
               contract_discount: parseFloat(discountValue),
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
-              first_payment_date: contract.firstPaymentDate,
-              contract_signature_date: contract.signatureDate,
+              first_payment_date:formatDate(contract.firstPaymentDate),
+              contract_signature_date: formatDate(contract.signatureDate)
             },
     });
 
@@ -261,6 +268,10 @@ const Dataset = () => {
     }
   };
 
+
+
+
+
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -270,7 +281,6 @@ const Dataset = () => {
       await fetchContracts();
     })();
   }, [$Contract]);
-
   return (
     <PageWrapper>
       <Typography variant="h2" color="primary" marginBottom={4}>
