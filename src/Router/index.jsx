@@ -31,6 +31,7 @@ import Earnings from "../Pages/Earnings";
 import Budget from "../Pages/Budget";
 import ShoppingCart from "../Pages/ShoppingCart";
 import Admin from "../Pages/Admin";
+import Post from "../Pages/Post";
 
 const META = {
   REQUIRES_AUTH: Symbol("REQUIRES_AUTH"),
@@ -114,6 +115,10 @@ function Router() {
     {
       path: "/admin",
       element: <PrivateRoute component={Admin} meta={[META.REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/posts/:id",
+      element: <PrivateRoute component={Post} meta={[META.REQUIRES_AUTH]} />,
     },
     //
     {

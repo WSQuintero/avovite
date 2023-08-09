@@ -1,20 +1,37 @@
-import React from "react";
-import PageWrapper from "../Components/PageWrapper";
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
-import { AndroidOutlined as SampleIcon } from "@mui/icons-material";
+import { useEffect, useMemo, useState } from "react";
+import { Box, Button, Container, Grid, Typography, alpha } from "@mui/material";
 import useConfig from "../Hooks/useConfig";
-import CardMenu from "../Components/CardMenu";
-import { useNavigate } from "react-router-dom";
+import useSession from "../Hooks/useSession";
+import PostService from "../Services/post.service";
+import PageWrapper from "../Components/PageWrapper";
+import Post from "../Components/Post";
+import VitesImage from "../assets/img/common/vites.png";
 
 function Dashboard() {
-  const navigate = useNavigate();
   const [config, { setOnboarding }] = useConfig();
+  const [session] = useSession();
+  const [posts, setPosts] = useState([]);
+  const $Post = useMemo(() => new PostService(session.token), [session.token]);
+
+  const fetchPosts = async () => {
+    const { status, data } = await $Post.get();
+
+    if (status) {
+      setPosts(data);
+    }
+  };
+
+  useEffect(() => {
+    if (session.token) {
+      fetchPosts();
+    }
+  }, [session.token]);
 
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
         {!config.onboarding ? (
-          <Grid display="flex" flexDirection="column" gap={2} width="100%">
+          <Grid display="flex" flexDirection="column" gap={8} width="100%">
             <Grid
               display="flex"
               gap={2}
@@ -24,91 +41,6 @@ function Dashboard() {
                 },
               })}
             >
-              <Grid
-                display="flex"
-                flexDirection="column"
-                gap={2}
-                width="50%"
-                sx={(t) => ({
-                  [t.breakpoints.down("lg")]: {
-                    width: "100%",
-                  },
-                })}
-              >
-                <Grid
-                  display="flex"
-                  gap={2}
-                  sx={(t) => ({
-                    [t.breakpoints.down("lg")]: {
-                      flexDirection: "column",
-                    },
-                  })}
-                >
-                  <CardMenu
-                    title="Información"
-                    sx={{ width: "50%" }}
-                    icon={<SampleIcon sx={{ color: "primary.main" }} />}
-                  />
-                  <CardMenu
-                    title="Cosechas"
-                    sx={{ width: "50%" }}
-                    icon={<SampleIcon sx={{ color: "primary.main" }} />}
-                  />
-                </Grid>
-                <Grid
-                  display="flex"
-                  gap={2}
-                  sx={(t) => ({
-                    [t.breakpoints.down("lg")]: {
-                      flexDirection: "column",
-                    },
-                  })}
-                >
-                  <CardMenu
-                    title="Otros Datos"
-                    sx={{ width: "50%" }}
-                    icon={<SampleIcon sx={{ color: "primary.main" }} />}
-                    onClick={() => navigate("info")}
-                  />
-                  <CardMenu
-                    title="Certificados"
-                    sx={{ width: "50%" }}
-                    icon={<SampleIcon sx={{ color: "primary.main" }} />}
-                  />
-                </Grid>
-              </Grid>
-              <Box
-                width="50%"
-                padding={2}
-                borderRadius={2}
-                sx={(t) => ({
-                  backgroundColor: "secondary.main",
-                  [t.breakpoints.down("lg")]: {
-                    width: "100%",
-                  },
-                })}
-              ></Box>
-            </Grid>
-            <Grid
-              display="flex"
-              gap={2}
-              sx={(t) => ({
-                [t.breakpoints.down("lg")]: {
-                  flexDirection: "column",
-                },
-              })}
-            >
-              <Box
-                width="50%"
-                padding={2}
-                borderRadius={2}
-                sx={(t) => ({
-                  backgroundColor: "secondary.main",
-                  [t.breakpoints.down("lg")]: {
-                    width: "100%",
-                  },
-                })}
-              ></Box>
               <Grid
                 display="flex"
                 gap={2}
@@ -121,6 +53,11 @@ function Dashboard() {
                 })}
               >
                 <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={1}
                   width="50%"
                   padding={2}
                   borderRadius={2}
@@ -130,7 +67,18 @@ function Dashboard() {
                       width: "100%",
                     },
                   })}
-                ></Box>
+                >
+                  <Typography color="primary" lineHeight={1}>
+                    Vites
+                  </Typography>
+                  <img src={VitesImage} alt="vites image" style={{ width: "50%" }} />
+                  <Typography fontSize={40} fontWeight={300} color="white" lineHeight={1}>
+                    VITES
+                  </Typography>
+                  <Typography fontSize={40} fontWeight={700} color="white" lineHeight={1}>
+                    67
+                  </Typography>
+                </Box>
                 <Box
                   display="flex"
                   flexDirection="column"
@@ -175,6 +123,25 @@ function Dashboard() {
                     <Typography color="primary">17</Typography>
                   </Box>
                 </Box>
+              </Grid>
+              <Box
+                width="50%"
+                padding={2}
+                borderRadius={2}
+                sx={(t) => ({
+                  backgroundColor: "secondary.main",
+                  [t.breakpoints.down("lg")]: {
+                    width: "100%",
+                  },
+                })}
+              ></Box>
+            </Grid>
+            <Grid display="flex" flexDirection="column" gap={4}>
+              <Typography variant="h2">Recientes</Typography>
+              <Grid display="flex" flexDirection="column" gap={2}>
+                {posts.map((post) => (
+                  <Post key={post.id} post={post} route={`/posts/${post.id}`} />
+                ))}
               </Grid>
             </Grid>
           </Grid>

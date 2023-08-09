@@ -14,7 +14,7 @@ function PageWrapper({ hideSidebar = false, hideHeader = false, children }) {
           padding={6}
           sx={(t) => ({
             [t.breakpoints.down("md")]: {
-              padding: 4,
+              padding: 2,
               paddingTop: 12,
             },
           })}
