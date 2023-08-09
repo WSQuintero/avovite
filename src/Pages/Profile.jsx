@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -10,7 +9,6 @@ import {
   IconButton,
   alpha,
   Avatar,
-  Divider,
   Snackbar,
   Alert,
 } from "@mui/material";
@@ -87,6 +85,10 @@ function Profile() {
       setLoading(false);
     }, 500);
   }, [session]);
+
+  if (!session.user) {
+    return <></>;
+  }
 
   return (
     <PageWrapper>

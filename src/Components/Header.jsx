@@ -20,11 +20,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
+  SearchOutlined as SearchIcon,
   AndroidOutlined as SampleIcon,
   MenuOpenOutlined as MenuIcon,
   MoreVertOutlined as SettingsIcon,
   KeyboardBackspaceOutlined as BackIcon,
 } from "@mui/icons-material";
+import { EcommerceIcon, BombIcon } from "../Components/Icons";
 import useSession from "../Hooks/useSession";
 import useConfig from "../Hooks/useConfig";
 import useCart from "../Hooks/useCart";
@@ -56,9 +58,11 @@ function Header() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SampleIcon />
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton color="primary">
+                    <SearchIcon color="inherit" />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
@@ -67,7 +71,7 @@ function Header() {
           <Box flexGrow={1} />
           <Badge color="error" badgeContent={shoppingCart.length}>
             <Button component={RouterLink} variant="contained" size="small" to="/cart">
-              <SampleIcon />
+              <EcommerceIcon />
             </Button>
           </Badge>
           <Divider orientation="vertical" variant="middle" flexItem />
