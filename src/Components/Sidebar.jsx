@@ -13,7 +13,7 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { AndroidOutlined as SampleIcon, ChevronRightOutlined as ChevronRightIcon } from "@mui/icons-material";
+import { InvestIcon, WalletIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
@@ -23,30 +23,32 @@ import background from "../assets/img/wallet/background.png";
 
 const routes = [
   {
+    icon: <InvestIcon />,
     name: "Vites",
     route: "/",
   },
   {
+    icon: <WalletIcon />,
     name: "Billetera",
     route: "/wallet",
   },
   {
-    name: "Cosechas",
-    route: "/crops",
-  },
-  {
+    icon: <GraphIcon />,
     name: "Ganancias",
     route: "/earnings",
   },
   {
+    icon: <EcommerceIcon />,
     name: "Comprar Vites",
     route: "/shop",
   },
   {
+    icon: <AccountantIcon />,
     name: "Perfil",
     route: "/profile",
   },
   {
+    icon: <ProtectionIcon />,
     name: "Administrador",
     route: "/admin",
   },
@@ -105,7 +107,7 @@ function Sidebar() {
         Navegación
       </Typography>
       <List sx={{ overflow: "hidden" }}>
-        {routes.map(({ name, route }) => (
+        {routes.map(({ icon, name, route }) => (
           <ListItem key={name} disablePadding>
             <ListItemButton
               component={NavLink}
@@ -136,9 +138,7 @@ function Sidebar() {
                 },
               })}
             >
-              <ListItemIcon sx={{ color: "inherit" }}>
-                <SampleIcon sx={{ color: "inherit" }} />
-              </ListItemIcon>
+              <ListItemIcon sx={{ color: "inherit" }}>{icon}</ListItemIcon>
               <Typography flexGrow={1} fontSize={16} fontWeight={400}>
                 {name}
               </Typography>
