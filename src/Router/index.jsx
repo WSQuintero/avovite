@@ -28,7 +28,6 @@ import Dataset from "../Pages/Dataset";
 import TransferMoney from "../Pages/TransferMoney";
 import Info from "../Pages/Info";
 import Earnings from "../Pages/Earnings";
-import Budget from "../Pages/Budget";
 import ShoppingCart from "../Pages/ShoppingCart";
 import Admin from "../Pages/Admin";
 import Post from "../Pages/Post";
@@ -99,10 +98,6 @@ function Router() {
     {
       path: "/earnings",
       element: <PrivateRoute component={Earnings} meta={[META.REQUIRES_AUTH]} />,
-    },
-    {
-      path: "/budget",
-      element: <PrivateRoute component={Budget} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/shop",

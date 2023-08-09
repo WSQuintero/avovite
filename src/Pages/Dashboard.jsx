@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Box, Button, Container, Grid, Typography, alpha } from "@mui/material";
 import useConfig from "../Hooks/useConfig";
-import useSession from "../Hooks/useSession";
-import PostService from "../Services/post.service";
+import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import Post from "../Components/Post";
 import VitesImage from "../assets/img/common/vites.png";
 
 function Dashboard() {
   const [config, { setOnboarding }] = useConfig();
-  const [session] = useSession();
   const [posts, setPosts] = useState([]);
-  const $Post = useMemo(() => new PostService(session.token), [session.token]);
+  const $Post = usePost();
 
   const fetchPosts = async () => {
     const { status, data } = await $Post.get();
@@ -22,10 +20,10 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (session.token) {
+    if ($Post) {
       fetchPosts();
     }
-  }, [session.token]);
+  }, [$Post]);
 
   return (
     <PageWrapper>

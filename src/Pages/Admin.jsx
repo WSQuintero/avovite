@@ -10,38 +10,27 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Snackbar,
   Tab,
   Tabs,
   TextField,
+  Typography,
 } from "@mui/material";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
 import PageWrapper from "../Components/PageWrapper";
 import EnhancedTable from "../Components/EnhancedTable";
 import DateRangeService from "../Services/daterange.service";
+import ProfitService from "../Services/profit.service";
 import useSession from "../Hooks/useSession";
 import { formatDate } from "../utilities";
-
-const earningsHeadCells = [
-  {
-    id: "id_contract_date_range",
-    label: "ID de Lapso",
-    align: "left",
-    width: "50%",
-    disablePadding: false,
-    format: (value) => value,
-  },
-  {
-    id: "amount_profit",
-    label: "Valor de rentabilidad",
-    align: "left",
-    width: "50%",
-    disablePadding: false,
-    format: (value) => value,
-  },
-];
+import { NumericFormat } from "react-number-format";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -132,14 +121,81 @@ function Admin() {
     []
   );
 
+  // PROFITS
+  const [profits, setProfits] = useState([]);
+  const [currentProfit, setCurrentProfit] = useState({
+    id: null,
+    id_contract_date_range: "",
+    amount_profit: "",
+  });
+  const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
+  const profitHeadCells = useMemo(
+    () => [
+      {
+        id: "id_contract_date_range",
+        label: "ID de Lapso",
+        align: "left",
+        width: "50%",
+        disablePadding: false,
+        format: (value) => value,
+      },
+      {
+        id: "amount_profit",
+        label: "Valor de rentabilidad",
+        align: "left",
+        width: "50%",
+        disablePadding: false,
+        format: (value) => (
+          <>
+            $<NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
+          </>
+        ),
+      },
+      {
+        id: "",
+        label: "",
+        align: "left",
+        disablePadding: false,
+        format: (value, row) => (
+          <Grid display="flex" justifyContent="flex-end" gap={1}>
+            <IconButton
+              onClick={() => {
+                setCurrentProfit(row);
+                setShowModal("create-profit");
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => {
+                setCurrentProfit(row);
+                setShowModal("delete-profit");
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        ),
+      },
+    ],
+    []
+  );
+
   const clearFields = (target) => {
-    if (target === "newDateRange") {
+    if (target === "DateRange") {
       setNewDateRange({
         id: null,
         date_start_inscription: null,
         date_end_inscription: null,
         months_duration: "",
         date_start_profit: null,
+      });
+    } else if (target === "Profit") {
+      setCurrentProfit({
+        id: null,
+        id_contract_date_range: "",
+        amount_profit: "",
       });
     }
   };
@@ -161,7 +217,7 @@ function Admin() {
     if (status) {
       setFeedback({ show: true, status: "success", message: "Lapso creado con éxito." });
       setShowModal(null);
-      clearFields("newDateRange");
+      clearFields("DateRange");
       // Add to the list
     } else {
       setFeedback({ show: true, status: "error", message: "Error al crear lapso." });
@@ -186,7 +242,7 @@ function Admin() {
     if (status) {
       setFeedback({ show: true, status: "success", message: "Lapso actualizado con éxito." });
       setShowModal(null);
-      clearFields("newDateRange");
+      clearFields("DateRange");
       // Add to the list
     } else {
       setFeedback({ show: true, status: "error", message: "Error al actualizar lapso." });
@@ -205,6 +261,64 @@ function Admin() {
     }
   };
 
+  const onCreateProfit = async (event) => {
+    event.preventDefault();
+
+    const { status, data } = await $Profit.add({
+      body: {
+        id_contract_date_range: currentProfit.id_contract_date_range,
+        amount_profit: currentProfit.amount_profit,
+      },
+    });
+
+    console.log(data);
+
+    if (status) {
+      setFeedback({ show: true, status: "success", message: "Rentabilidad creada con éxito." });
+      setShowModal(null);
+      clearFields("Profit");
+      // Add to the list
+    } else {
+      setFeedback({ show: true, status: "error", message: "Error al crear rentabilidad." });
+    }
+  };
+
+  const onUpdateProfit = async (event) => {
+    event.preventDefault();
+
+    const { status, data } = await $Profit.update({
+      id: currentProfit.id,
+      body: {
+        id_contract_date_range: currentProfit.id_contract_date_range,
+        amount_profit: currentProfit.amount_profit,
+      },
+    });
+
+    console.log(data);
+
+    if (status) {
+      setFeedback({ show: true, status: "success", message: "Rentabilidad actualizada con éxito." });
+      setShowModal(null);
+      clearFields("Profit");
+      // Add to the list
+    } else {
+      setFeedback({ show: true, status: "error", message: "Error al actualizar rentabilidad." });
+    }
+  };
+
+  const onDeleteProfit = async () => {
+    const { status } = await $Profit.delete({ id: currentProfit.id });
+
+    if (status) {
+      setFeedback({ show: true, status: "success", message: "Rentabilidad eliminada con éxito." });
+      setProfits((prev) => prev.filter((e) => e.id !== currentProfit.id));
+      clearFields("Profit");
+      setShowModal(null);
+    } else {
+      setFeedback({ show: true, status: "error", message: "Error al eliminar la rentabilidad." });
+    }
+  };
+
   useEffect(() => {
     if (session.token) {
       (async () => {
@@ -212,6 +326,13 @@ function Admin() {
 
         if (status) {
           setDateRanges(data.data);
+        }
+      })();
+      (async () => {
+        const { status, data } = await $Profit.get();
+
+        if (status) {
+          setProfits(data.data);
         }
       })();
     }
@@ -237,22 +358,27 @@ function Admin() {
               Crear
             </Button>
           </Grid>
-          <EnhancedTable
-            headCells={dateRangeHeadCells}
-            rows={dateRanges}
-            footer={<Grid display="flex" gap={1}></Grid>}
-          />
+          <EnhancedTable headCells={dateRangeHeadCells} rows={dateRanges} />
         </Grid>
       </CustomTabPanel>
       <CustomTabPanel value={currentTab} index={1}>
-        <EnhancedTable headCells={earningsHeadCells} rows={[]} footer={<Grid display="flex" gap={1}></Grid>} />
+        <Grid display="flex" flexDirection="column" gap={2}>
+          <Grid display="flex" justifyContent="flex-end">
+            <Button variant="contained" onClick={() => setShowModal("create-profit")}>
+              Crear
+            </Button>
+          </Grid>
+          <EnhancedTable headCells={profitHeadCells} rows={profits} />
+        </Grid>
       </CustomTabPanel>
+
+      {/* DATE RANGES */}
 
       <Dialog
         maxWidth="sm"
         open={showModal === "create-date-range"}
         onClose={() => {
-          clearFields("newDateRange");
+          clearFields("DateRange");
           setShowModal(null);
         }}
         fullWidth
@@ -342,7 +468,7 @@ function Admin() {
           <Button
             variant="outlined"
             onClick={() => {
-              clearFields("newDateRange");
+              clearFields("DateRange");
               setShowModal(null);
             }}
           >
@@ -364,6 +490,128 @@ function Admin() {
             Cancelar
           </Button>
           <Button variant="contained" onClick={onDeleteDateRange}>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* PROFIT */}
+
+      <Dialog
+        maxWidth="sm"
+        open={showModal === "create-profit"}
+        onClose={() => {
+          clearFields("Profit");
+          setShowModal(null);
+        }}
+        fullWidth
+      >
+        <DialogTitle>{currentProfit.id ? "Actualizar" : "Crear"} rentabilidad</DialogTitle>
+        <DialogContent>
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            paddingY={1}
+            component="form"
+            onSubmit={currentProfit.id ? onUpdateProfit : onCreateProfit}
+          >
+            <Grid
+              display="flex"
+              gap={2}
+              sx={(t) => ({
+                [t.breakpoints.down("md")]: {
+                  flexDirection: "column",
+                },
+              })}
+            >
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-helper-label">Lapso</InputLabel>
+                <Select
+                  label="Lapso"
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={currentProfit.id_contract_date_range}
+                  onChange={(event) =>
+                    setCurrentProfit((prev) => ({ ...prev, id_contract_date_range: event.target.value }))
+                  }
+                  fullWidth
+                >
+                  <MenuItem value={-1} disabled>
+                    Seleccionar opción
+                  </MenuItem>
+                  {dateRanges.map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {e.id}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <NumericFormat
+                customInput={TextField}
+                label="Valor"
+                variant="outlined"
+                value={currentProfit.amount_profit}
+                sx={{ width: "100%" }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Typography>$</Typography>
+                    </InputAdornment>
+                  ),
+                }}
+                thousandSeparator
+                onValueChange={({ floatValue }) =>
+                  setCurrentProfit((prev) => ({
+                    ...prev,
+                    amount_profit: String(floatValue),
+                  }))
+                }
+              />
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              clearFields("Profit");
+              setShowModal(null);
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={currentProfit.id ? onUpdateProfit : onCreateProfit}>
+            {currentProfit.id ? "Actualizar" : "Crear"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        maxWidth="sm"
+        open={showModal === "delete-profit"}
+        onClose={() => {
+          clearFields("Profit");
+          setShowModal(null);
+        }}
+        fullWidth
+      >
+        <DialogTitle>Eliminar rentabilidad</DialogTitle>
+        <DialogContent>
+          <DialogContentText>¿Estás seguro que quieres eliminar esta rentabilidad?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              clearFields("Profit");
+              setShowModal(null);
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={onDeleteProfit}>
             Eliminar
           </Button>
         </DialogActions>
