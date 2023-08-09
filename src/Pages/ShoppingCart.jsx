@@ -9,6 +9,7 @@ import {
   FormGroup,
   Grid,
   IconButton,
+  InputAdornment,
   TextField,
   Typography,
   alpha,
@@ -17,6 +18,7 @@ import useCart from "../Hooks/useCart";
 import standardPlant from "../assets/img/products/plantaEstandar.svg";
 import premiumPlant from "../assets/img/products/plantaPremium.svg";
 import { PRODUCTS } from "../utilities/constants";
+import { NumericFormat } from "react-number-format";
 
 function ShoppingCart() {
   const [shoppingCart, { remove, updateQuantity }] = useCart();
@@ -64,10 +66,18 @@ function ShoppingCart() {
                   <Typography color="primary">
                     Precio:{" "}
                     <Typography component="span" fontWeight={600}>
-                      {element.package.vites *
-                        PRODUCTS.find((p) => p.id === element.package.type).value *
-                        (1 - element.package.disccount / 100) *
-                        element.quantity}
+                      $
+                      <NumericFormat
+                        displayType="text"
+                        value={
+                          element.package.vites *
+                          PRODUCTS.find((p) => p.id === element.package.type).value *
+                          (1 - element.package.disccount / 100) *
+                          element.quantity
+                        }
+                        thousandSeparator
+                        disabled
+                      />
                     </Typography>
                   </Typography>
                 </Grid>

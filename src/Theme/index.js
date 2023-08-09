@@ -138,8 +138,17 @@ export default createTheme({
           backgroundColor: "#67AA36",
           th: {
             color: "white",
-            textAlign: "center",
+            "span.Mui-active, span:hover": {
+              color: "white",
+            },
           },
+        },
+      },
+    },
+    MuiTableSortLabel: {
+      styleOverrides: {
+        icon: {
+          fill: "white",
         },
       },
     },

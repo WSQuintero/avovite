@@ -46,6 +46,10 @@ const routes = [
     name: "Perfil",
     route: "/profile",
   },
+  {
+    name: "Administrador",
+    route: "/admin",
+  },
 ];
 
 function Sidebar() {
@@ -108,19 +112,15 @@ function Sidebar() {
               to={route}
               sx={(t) => ({
                 position: "relative",
-                color: "text.light",
+                color: "white",
                 borderRadius: 0,
                 paddingLeft: 4,
                 paddingY: 1.5,
+                transition: t.transitions.create(["background-color"], { duration: 200, easing: "ease-out" }),
                 "&.active": {
-                  color: "white",
+                  backgroundColor: alpha(t.palette.common.white, 0.2),
                   "&::after": {
-                    transform: "translate(0)",
                     opacity: 1,
-                  },
-                  "& .chevron-icon": {
-                    transform: "translate(100%)",
-                    opacity: 0,
                   },
                 },
                 "&::after": {
@@ -132,8 +132,7 @@ function Sidebar() {
                   width: 6,
                   opacity: 0,
                   backgroundColor: "white",
-                  transform: "translateX(100%)",
-                  transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
+                  transition: "opacity 0.2s ease-out",
                 },
               })}
             >
@@ -143,15 +142,6 @@ function Sidebar() {
               <Typography flexGrow={1} fontSize={16} fontWeight={400}>
                 {name}
               </Typography>
-              <ChevronRightIcon
-                className="chevron-icon"
-                sx={{
-                  color: "inherit",
-                  opacity: 1,
-                  transform: "translate(0)",
-                  transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
-                }}
-              />
             </ListItemButton>
           </ListItem>
         ))}

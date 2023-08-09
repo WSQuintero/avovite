@@ -1,7 +1,7 @@
 import axios from "axios";
 import { handleCall } from "../utilities";
 
-export default class ContractService {
+export default class DateRangeService {
   constructor(token) {
     this.token = token;
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
@@ -11,7 +11,7 @@ export default class ContractService {
     return await handleCall(async () => {
       if (id) {
         return (
-          await axios.get(`${this.API_URL}/contracts/${id}`, {
+          await axios.get(`${this.API_URL}/contract-date-range/${id}`, {
             headers: {
               Authorization: this.token,
             },
@@ -19,7 +19,7 @@ export default class ContractService {
         ).data;
       } else {
         return (
-          await axios.get(`${this.API_URL}/contracts`, {
+          await axios.get(`${this.API_URL}/contract-date-range`, {
             headers: {
               Authorization: this.token,
             },
@@ -33,18 +33,29 @@ export default class ContractService {
     return await handleCall(
       async () =>
         (
-          await axios.post(`${this.API_URL}/contracts`, body, {
+          await axios.post(`${this.API_URL}/contract-date-range`, body, {
             headers: { Authorization: this.token },
           })
         ).data
     );
   }
 
-  async complete({ id, body } = {}) {
+  async update({ id, body }) {
     return await handleCall(
       async () =>
         (
-          await axios.put(`${this.API_URL}/contracts/completeContract/${id}`, body, {
+          await axios.put(`${this.API_URL}/contract-date-range/${id}`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
+
+  async delete({ id }) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.delete(`${this.API_URL}/contract-date-range/${id}`, {
             headers: { Authorization: this.token },
           })
         ).data
