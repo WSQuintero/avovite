@@ -18,7 +18,7 @@ import useConfig from "../Hooks/useConfig";
 import PageWrapper from "../Components/PageWrapper";
 import FormRow from "../Components/FormRow";
 
-import coverPhoto from "../assets/img/backgroundOfLogin/signinImg.png";
+import CoverImage from "../assets/img/signin/background.png";
 
 function Profile() {
   const [session, setSession] = useSession();
@@ -96,7 +96,7 @@ function Profile() {
         <Box position="relative" padding={2}>
           <Box display="flex" borderRadius={4} overflow="hidden" maxHeight={320}>
             <img
-              src={coverPhoto}
+              src={CoverImage}
               alt="cover photo"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
             />

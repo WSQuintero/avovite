@@ -26,7 +26,7 @@ import {
   MoreVertOutlined as SettingsIcon,
   KeyboardBackspaceOutlined as BackIcon,
 } from "@mui/icons-material";
-import { EcommerceIcon, BombIcon } from "../Components/Icons";
+import { EcommerceIcon } from "../Components/Icons";
 import useSession from "../Hooks/useSession";
 import useConfig from "../Hooks/useConfig";
 import useCart from "../Hooks/useCart";
