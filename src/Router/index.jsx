@@ -16,6 +16,7 @@ import ShoppingCart from "../Pages/ShoppingCart";
 import Admin from "../Pages/Admin";
 import Post from "../Pages/Post";
 import Profile from "../Pages/Profile";
+import Contact from "../Pages/Contact";
 
 const META = {
   REQUIRES_AUTH: Symbol("REQUIRES_AUTH"),
@@ -104,6 +105,10 @@ function Router() {
       path: "/checkout",
       element: <PrivateRoute component={Checkout} meta={[META.REQUIRES_AUTH]} />,
     },
+    {
+      path:'/contact-us',
+      element: <PrivateRoute component={Contact} meta={[META.REQUIRES_AUTH]}/>
+    }
   ]);
 }
 
