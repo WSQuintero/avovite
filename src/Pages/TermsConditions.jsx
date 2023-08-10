@@ -1,31 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, Link as RouterLink, Route } from "react-router-dom";
-import {
-  Box,
-  Grid,
-  Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  InputAdornment,
-  Link,
-  Paper,
-} from "@mui/material";
-import {
-  Https as HttpsIcon,
-  LockOutlined as LockOutlinedIcon,
-  MailOutline as MailOutlineIcon,
-  Person,
-  KeyboardBackspace as KeyboardBackspaceIcon,
-  MoreVert as MoreVertIcon,
-} from "@mui/icons-material";
-
-import BackgroundPhoto from "../assets/img/backgroundphoto.svg";
-import logo from "../assets/img/logo.svg";
-
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Grid, Button, Typography } from "@mui/material";
+import { KeyboardBackspace as KeyboardBackspaceIcon } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
-import Header from "../Components/Header/Header";
 
 function TermsConditions() {
   const theme = useTheme();
@@ -67,14 +44,7 @@ function TermsConditions() {
         },
       })}
     >
-      <Box
-        position="relative"
-        height="10vh"
-        display="flex"
-        flexDirection="column"
-      >
-        <Header />
-
+      <Box position="relative" height="10vh" display="flex" flexDirection="column">
         <Box
           width="100%"
           height={40}
@@ -95,9 +65,7 @@ function TermsConditions() {
                 display: "none",
               },
             })}
-            startIcon={
-              <KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />
-            }
+            startIcon={<KeyboardBackspaceIcon sx={{ color: "secondary.body" }} />}
           >
             Registro
           </Button>
@@ -105,23 +73,21 @@ function TermsConditions() {
 
         {/* the filter of image */}
 
-        <Grid display="flex" flexDirection="column"
-        sx={(theme)=>({
-          paddingX:5,
-            paddingY:2,
-          [theme.breakpoints.up('lg')]:{
-            paddingX:30,
-            paddingY:6,
-          }
-        })}
+        <Grid
+          display="flex"
+          flexDirection="column"
+          sx={(theme) => ({
+            paddingX: 5,
+            paddingY: 2,
+            [theme.breakpoints.up("lg")]: {
+              paddingX: 30,
+              paddingY: 6,
+            },
+          })}
         >
           <Box>
             <Grid display="flex" flexDirection="column" justifyContent="center">
-              <Typography
-                color="primary.main"
-                textAlign="center"
-                sx={{ fontSize: "25px", fontWeight: 600 }}
-              >
+              <Typography color="primary.main" textAlign="center" sx={{ fontSize: "25px", fontWeight: 600 }}>
                 Términos y Condiciones
               </Typography>
               <Typography
@@ -129,35 +95,29 @@ function TermsConditions() {
                 ref={typographyRef}
                 textAlign="justify"
                 lineHeight={2}
-                sx={(theme)=>({
+                sx={(theme) => ({
                   maxHeight: "500px", // Ajusta la altura máxima deseada
                   overflowY: "scroll",
                   scrollbarWidth: "thin",
                   padding: "20px",
-                  [theme.breakpoints.up('lg')]:{
+                  [theme.breakpoints.up("lg")]: {
                     maxHeight: 500, // Ajusta la altura máxima deseada
-                  overflowY: "scroll",
-                  
-                  scrollbarWidth: "thin",
-                  padding: 4,
-                  }
+                    overflowY: "scroll",
+
+                    scrollbarWidth: "thin",
+                    padding: 4,
+                  },
                 })}
               >
-                Términos y Condiciones de Uso de la Aplicación Avovite app Por
-                favor, lea detenidamente los siguientes términos y condiciones
-                antes de utilizar la aplicación (" Avovite app"). Estos Términos
-                constituyen un acuerdo legalmente vinculante entre usted ("el
-                Usuario") y [Avovite S.A.S] Al utilizar la Aplicación, usted
-                acepta cumplir con estos Términos en su totalidad. Si no está de
-                acuerdo con alguno de los términos o condiciones aquí
-                establecidos, le pedimos que no utilice la Aplicación.
-                Aplicación, usted acepta cumplir con estos Términos en su
-                totalidad. Si no está de acuerdo con alguno de los términos o
-                condiciones aquí establecidos, le pedimos que no utilice la
-                Aplicación. Aplicación, usted acepta cumplir con estos Términos
-                en su totalidad. Si no está de acuerdo con alguno de los
-                términos o condiciones aquí establecidos, le pedimos que no
-                utilice la Aplicación.{" "}
+                Términos y Condiciones de Uso de la Aplicación Avovite app Por favor, lea detenidamente los siguientes
+                términos y condiciones antes de utilizar la aplicación (" Avovite app"). Estos Términos constituyen un
+                acuerdo legalmente vinculante entre usted ("el Usuario") y [Avovite S.A.S] Al utilizar la Aplicación,
+                usted acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con alguno de los
+                términos o condiciones aquí establecidos, le pedimos que no utilice la Aplicación. Aplicación, usted
+                acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con alguno de los términos o
+                condiciones aquí establecidos, le pedimos que no utilice la Aplicación. Aplicación, usted acepta cumplir
+                con estos Términos en su totalidad. Si no está de acuerdo con alguno de los términos o condiciones aquí
+                establecidos, le pedimos que no utilice la Aplicación.{" "}
               </Typography>
 
               {/* <div style={{ textAlign: "center" }}>
@@ -167,20 +127,10 @@ function TermsConditions() {
           </Box>
 
           <Grid display="flex" gap={2}>
-            <Button
-              onClick={() => route("/inscription")}
-              variant="contained"
-              fullWidth
-              sx={{ color: "white" }}
-            >
+            <Button onClick={() => route("/inscription")} variant="contained" fullWidth sx={{ color: "white" }}>
               Aceptar
             </Button>
-            <Button
-              onClick={() => route("/signin")}
-              variant="contained"
-              fullWidth
-              sx={{ color: "white" }}
-            >
+            <Button onClick={() => route("/signin")} variant="contained" fullWidth sx={{ color: "white" }}>
               Cancelar
             </Button>
           </Grid>

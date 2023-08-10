@@ -19,7 +19,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
 
-import background from "../assets/img/wallet/background.png";
+import background from "../assets/img/sidebar/background.png";
 
 const routes = [
   {
@@ -86,7 +86,7 @@ function Sidebar() {
             <img
               src={background}
               alt="background"
-              style={{ position: "absolute", zIndex: -1, top: "-50%", left: 0, right: 0, width: "100%" }}
+              style={{ position: "absolute", zIndex: -1, top: "-100%", left: 0, right: 0, width: "100%" }}
             />
             <Grid display="flex" justifyContent="space-between" alignItems="center" paddingY={4} width="100%">
               <Grid display="flex" flexDirection="column">

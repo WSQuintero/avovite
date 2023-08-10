@@ -12,12 +12,11 @@ import {
   Snackbar,
   Alert,
   alpha,
- 
 } from "@mui/material";
 import PhoneField from "react-phone-input-2";
-import logo from "../assets/img/logo.svg";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
+import LogoImage from "../assets/img/common/logo.svg";
 
 const Row = ({ children }) => (
   <Grid
@@ -167,7 +166,7 @@ const Formulario = () => {
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
       <Grid display="flex" justifyContent="center">
         <Grid display="flex" flexDirection="column" alignItems="center">
-          <img src={logo} width={160} height={160} alt="photo" />
+          <img src={LogoImage} width={160} height={160} alt="photo" />
           <Typography variant="h2" fontSize={25}>
             Aplicación Standard
           </Typography>

@@ -2,8 +2,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { Box, Grid, Button, Typography, Link, Badge } from "@mui/material";
 import { ShoppingCartOutlined as ShoppingCartIcon } from "@mui/icons-material";
 import { PRODUCTS } from "../utilities/constants";
-import plantaEstandar from "../assets/img/products/plantaEstandar.svg";
-import plantaPremium from "../assets/img/products/plantaPremium.svg";
+import PlantImage from "../assets/img/common/plant.png";
+import PlantPremiumImage from "../assets/img/common/plant_premium.png";
 
 function CardProduct({ product, sx, onBuy }) {
   const color = product.type === "premium" ? "premium.main" : "primary.main";
@@ -37,7 +37,7 @@ function CardProduct({ product, sx, onBuy }) {
         -{product.disccount}%
       </Box>
       <Box display="flex" justifyContent="center" alignItems="center" gap={7} sx={{ aspectRatio: 2 }}>
-        <img src={product.type === "premium" ? plantaPremium : plantaEstandar} alt="logo" />
+        <img src={product.type === "premium" ? PlantPremiumImage : PlantImage} alt="logo" />
       </Box>
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
         <Typography

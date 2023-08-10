@@ -18,8 +18,8 @@ import {
   LockOpenOutlined as LockIcon,
 } from "@mui/icons-material";
 
-import siginphoto from "../assets/img/backgroundOfLogin/signinImg.png";
-import logo from "../assets/img/logo.svg";
+import BackgroundImage from "../assets/img/signup/background.png";
+import LogoImage from "../assets/img/common/logo.svg";
 
 function Signin() {
   const [user, setUser] = useState({
@@ -73,7 +73,7 @@ function Signin() {
         order={1}
         sx={(theme) => ({
           overflow: "hidden",
-          backgroundImage: `url(${siginphoto})`,
+          backgroundImage: `url(${BackgroundImage})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "-5px",
@@ -123,7 +123,7 @@ function Signin() {
             },
           })}
         >
-          <img src={logo} alt="logos" style={{ width: "100%", height: "100%" }} />
+          <img src={LogoImage} alt="logos" style={{ width: "100%", height: "100%" }} />
         </Box>
         <Box
           display="flex"

@@ -5,8 +5,8 @@ import AuthService from "../Services/auth.service";
 import { Box, Button, Grid, InputAdornment, Link, TextField, Typography } from "@mui/material";
 import { PersonOutlineOutlined as PersonIcon, LockOpenOutlined as LockIcon } from "@mui/icons-material";
 
-import siginphoto from "../assets/img/backgroundOfLogin/signinImg.png";
-import logo from "../assets/img/logo.svg";
+import BackgroundImage from "../assets/img/signin/background.png";
+import LogoImage from "../assets/img/common/logo.svg";
 
 function Signin() {
   const [, { setToken }] = useSession();
@@ -59,10 +59,9 @@ function Signin() {
         order={1}
         sx={(theme) => ({
           overflow: "hidden",
-          backgroundImage: `url(${siginphoto})`,
+          backgroundImage: `url(${BackgroundImage})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
-          backgroundPosition: "-5px",
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
           [theme.breakpoints.down("md")]: {
@@ -109,7 +108,7 @@ function Signin() {
             },
           })}
         >
-          <img src={logo} alt="logos" style={{ width: "100%", height: "100%" }} />
+          <img src={LogoImage} alt="logos" style={{ width: "100%", height: "100%" }} />
         </Box>
         <Box
           display="flex"

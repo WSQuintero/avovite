@@ -1,24 +1,11 @@
-import React from "react";
 import PageWrapper from "../Components/PageWrapper";
 import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as DeleteIcon } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Container,
-  FormGroup,
-  Grid,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-  alpha,
-} from "@mui/material";
+import { Box, Button, Container, Grid, IconButton, TextField, Typography } from "@mui/material";
 import useCart from "../Hooks/useCart";
-import standardPlant from "../assets/img/products/plantaEstandar.svg";
-import premiumPlant from "../assets/img/products/plantaPremium.svg";
 import { PRODUCTS } from "../utilities/constants";
 import { NumericFormat } from "react-number-format";
+import PlantImage from "../assets/img/common/plant.png";
+import PlantPremiumImage from "../assets/img/common/plant_premium.png";
 
 function ShoppingCart() {
   const [shoppingCart, { remove, updateQuantity }] = useCart();
@@ -44,7 +31,7 @@ function ShoppingCart() {
                   },
                 })}
               >
-                <img src={element.package.type === "premium" ? premiumPlant : standardPlant} alt="plant logo" />
+                <img src={element.package.type === "premium" ? PlantPremiumImage : PlantImage} alt="plant logo" />
                 <Grid display="flex" flexDirection="column" justifyContent="center">
                   <Typography fontSize={24} fontWeight={600}>
                     {element.package.vites} VITES
