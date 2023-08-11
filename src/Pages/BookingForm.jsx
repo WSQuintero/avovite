@@ -56,19 +56,19 @@ const Label = ({ error = false, children }) => <Typography color={error ? "error
 const Formulario = () => {
   const [formData, setFormData] = useState({
     id_type: "-",
-    id_location_expedition: "MEDELLIN",
-    email: "programador16@tramitarapp.com",
-    fullname: "JHON DOE",
-    id_number: "123456",
-    location_residence: "MEDELLIN",
-    cellphone: "3017894455",
+    id_location_expedition: "",
+    email: "",
+    fullname: "",
+    id_number: "",
+    location_residence: "",
+    cellphone: "",
     user_id_bank: "-",
     user_bank_account_type: "-",
     user_bank_account_number: "",
-    beneficiary_fullname: "JHON 2 DOE 2",
+    beneficiary_fullname: "",
     beneficiary_id_type: "-",
-    beneficiary_id_number: "654321",
-    beneficiary_id_location_expedition: "BELLO",
+    beneficiary_id_number: "",
+    beneficiary_id_location_expedition: "",
   });
   const [errors, setErrors] = useState({
     id_type: false,
