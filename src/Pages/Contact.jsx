@@ -1,15 +1,13 @@
 import { Box, Grid, Typography, Container } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import PageWrapper from "../Components/PageWrapper";
-import map from "../assets/img/contact/Bitmap.png";
-import avovite from "../assets/img/contact/avovite.png";
-import message from "../assets/img/contact/message.png";
-import clock from "../assets/img/contact/clock.png";
+import MapImage from "../assets/img/contact/MapPlaceholder.png";
+import { AvoviteIcon, ClockIcon, MessageChat } from "../Components/Icons";
 function Contact() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        <Grid display="flex" flexDirection="column"   gap={5}>
+        <Grid display="flex" flexDirection="column" gap={5}>
           <Typography
             variant="h2"
             sx={(t) => ({
@@ -26,7 +24,7 @@ function Contact() {
               justifyContent="center"
               alignItems="center"
               position="relative"
-              width='100%'
+              width="100%"
             >
               <Box position="absolute" width={70} height={70}>
                 <PlaceIcon
@@ -35,10 +33,10 @@ function Contact() {
                 />
               </Box>
 
-              <img src={map} alt="photo" />
+              <img src={MapImage} alt="photo" />
             </Box>
-            <Box display="flex"  height="100%" flexDirection="column" gap={2}>
-              <Typography variant="h3"  fontWeight={600}>
+            <Box display="flex" height="100%" flexDirection="column" gap={2}>
+              <Typography variant="h3" fontWeight={600}>
                 Contáctenos Llamanos o escríbenos para despejar tus dudas.
               </Typography>
 
@@ -47,12 +45,12 @@ function Contact() {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  width={60}
+                  width={64}
                   height={48}
                   borderRadius="50%"
                   sx={{ backgroundColor: "primary.main" }}
                 >
-                  <img src={avovite} alt="avovite" />
+                  <AvoviteIcon sx={(t) => ({ width: "60%", height: "60%" })} />
                 </Box>
                 <Box display="flex" flexDirection="column">
                   <Typography fontWeight={800}>Locación</Typography>
@@ -66,17 +64,20 @@ function Contact() {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  width={60}
+                  width={48}
                   height={48}
                   borderRadius="50%"
                   sx={{ backgroundColor: "primary.main" }}
                 >
-                  <img src={message} alt="avovite" />
+                  <MessageChat />
                 </Box>
                 <Box display="flex" flexDirection="column">
-                  <Typography fontWeight={800}>Locación</Typography>
+                  <Typography fontWeight={800}>Contactos</Typography>
                   <Typography>
-                    Montebello, Antioquia Colombia Finca Las Cascadas
+                    <span style={{ textDecoration: "underline" }}>
+                      +57(314)8855345 <br />
+                      info@gmail.com
+                    </span>
                   </Typography>
                 </Box>
               </Grid>
@@ -85,17 +86,18 @@ function Contact() {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  width={60}
+                  width={88}
                   height={48}
                   borderRadius="50%"
                   sx={{ backgroundColor: "primary.main" }}
                 >
-                  <img src={clock} alt="avovite" />
+                  <ClockIcon />
                 </Box>
                 <Box display="flex" flexDirection="column">
                   <Typography fontWeight={800}>Horas</Typography>
                   <Typography>
-                    Montebello, Antioquia Colombia Finca Las Cascadas
+                    Lunes A Sabado: 9:00AM to 5:00PM Domingos/Festivos: 8:00AM
+                    to 12:00PM
                   </Typography>
                 </Box>
               </Grid>

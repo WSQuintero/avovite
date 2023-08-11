@@ -7,6 +7,7 @@ import ATM from "../assets/icons/ATM";
 import ATM2 from "../assets/icons/ATM2";
 import Auction from "../assets/icons/Auction";
 import AvoviteWhite from "../assets/icons/AvoviteWhite";
+import Avovite from '../assets/icons/avovite';
 import Bag from "../assets/icons/Bag";
 import Balance from "../assets/icons/Balance";
 import Balance2 from "../assets/icons/Balance2";
@@ -27,6 +28,7 @@ import Cashregister from "../assets/icons/Cashregister";
 import Chart from "../assets/icons/Chart";
 import Cheque from "../assets/icons/Cheque";
 import Cheque2 from "../assets/icons/Cheque2";
+import Clock from "../assets/icons/clock";
 import Coins from "../assets/icons/Coins";
 import Coins2 from "../assets/icons/Coins2";
 import Computer from "../assets/icons/Computer";
@@ -58,6 +60,7 @@ import Mail from "../assets/icons/Mail";
 import Maintenance from "../assets/icons/Maintenance";
 import Marketing from "../assets/icons/Marketing";
 import Message from "../assets/icons/Message";
+import MessageChatIcon from "../assets/icons/messageChat";
 import Mission from "../assets/icons/Mission";
 import MobileBanking from "../assets/icons/MobileBanking";
 import MobileRecieved from "../assets/icons/MobileRecieved";
@@ -130,6 +133,10 @@ export const AvoviteWhiteIcon = ({ color, ...props }) => (
     {AvoviteWhite}
   </SvgIcon>
 );
+
+export const AvoviteIcon = ({color, ...props})=>(
+  <SvgIcon sx={(t)=>({stroke:typeof color=== "function" ? color(t) : color ? color: 'white'})} {...props}>{Avovite}</SvgIcon>
+)
 export const BagIcon = ({ color, ...props }) => (
   <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
     {Bag}
@@ -240,6 +247,25 @@ export const Coins2Icon = ({ color, ...props }) => (
     {Coins2}
   </SvgIcon>
 );
+
+export const ClockIcon = ({ color, ...props }) => (
+  <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
+    {Clock}
+  </SvgIcon>
+);
+
+export const MessageIcon = ({ color, ...props }) => (
+  <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
+    {Message}
+  </SvgIcon>
+);
+
+export const MessageChat = ({ color, ...props }) => (
+  <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
+    {MessageChatIcon}
+  </SvgIcon>
+);
+
 export const ComputerIcon = ({ color, ...props }) => (
   <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
     {Computer}
@@ -380,11 +406,7 @@ export const MarketingIcon = ({ color, ...props }) => (
     {Marketing}
   </SvgIcon>
 );
-export const MessageIcon = ({ color, ...props }) => (
-  <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
-    {Message}
-  </SvgIcon>
-);
+
 export const MissionIcon = ({ color, ...props }) => (
   <SvgIcon sx={(t) => ({ stroke: typeof color === "function" ? color(t) : color ? color : "white" })} {...props}>
     {Mission}
