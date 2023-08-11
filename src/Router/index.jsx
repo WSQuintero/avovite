@@ -42,7 +42,6 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   return <Component {...props} />;
 }
 
-
 function Router() {
   return useRoutes([
     {
@@ -101,7 +100,7 @@ function Router() {
     },
     {
       path: "/contracts",
-      element: <Dataset component={Admin} meta={[META.REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={Dataset} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/posts/:id",
@@ -112,9 +111,9 @@ function Router() {
       element: <PrivateRoute component={Checkout} meta={[META.REQUIRES_AUTH]} />,
     },
     {
-      path:'/contact-us',
-      element: <PrivateRoute component={Contact} meta={[META.REQUIRES_AUTH]}/>
-    }
+      path: "/contact-us",
+      element: <PrivateRoute component={Contact} meta={[META.REQUIRES_AUTH]} />,
+    },
   ]);
 }
 
