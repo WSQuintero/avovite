@@ -3,6 +3,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 import useSession from "../Hooks/useSession";
 import Signup from "../Pages/Signup";
 import Signin from "../Pages/Signin";
+import Dataset from "../Pages/Dataset";
 import Dashboard from "../Pages/Dashboard";
 import TermsConditions from "../Pages/TermsConditions";
 import Shop from "../Pages/Shop";
@@ -40,6 +41,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 
   return <Component {...props} />;
 }
+
 
 function Router() {
   return useRoutes([
@@ -96,6 +98,10 @@ function Router() {
     {
       path: "/admin",
       element: <PrivateRoute component={Admin} meta={[META.REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/contracts",
+      element: <Dataset component={Admin} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/posts/:id",

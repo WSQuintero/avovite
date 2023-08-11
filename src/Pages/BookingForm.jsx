@@ -56,19 +56,19 @@ const Label = ({ error = false, children }) => <Typography color={error ? "error
 const Formulario = () => {
   const [formData, setFormData] = useState({
     id_type: "-",
-    id_location_expedition: "",
-    email: "",
-    fullname: "",
-    id_number: "",
-    location_residence: "",
-    cellphone: "",
+    id_location_expedition: "MEDELLIN",
+    email: "programador16@tramitarapp.com",
+    fullname: "JHON DOE",
+    id_number: "123456",
+    location_residence: "MEDELLIN",
+    cellphone: "3017894455",
     user_id_bank: "-",
     user_bank_account_type: "-",
     user_bank_account_number: "",
-    beneficiary_fullname: "",
+    beneficiary_fullname: "JHON 2 DOE 2",
     beneficiary_id_type: "-",
-    beneficiary_id_number: "",
-    beneficiary_id_location_expedition: "",
+    beneficiary_id_number: "654321",
+    beneficiary_id_location_expedition: "BELLO",
   });
   const [errors, setErrors] = useState({
     id_type: false,
@@ -120,7 +120,11 @@ const Formulario = () => {
 
     // Aquí puedes agregar validaciones si es necesario antes de enviar los datos
 
-    const { status } = await contractService.add({ body: postData });
+    const { status, data } = await contractService.add({ body: postData });
+
+    console.log('status');
+    console.log(status);
+    console.log(data);
 
     if (status) {
       setFormData({
@@ -236,21 +240,6 @@ const Formulario = () => {
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.id_location_expedition}>Lugar de Exp del Doc. Beneficiario</Label>
-            <TextField
-              name="id_location_expedition"
-              type="date"
-              value={formData.id_location_expedition}
-              required
-              error={errors.id_location_expedition}
-              sx={{ width: "100%" }}
-              onChange={handleInputChange}
-            />
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
             <Label error={errors.id_number}>Número de Documento</Label>
             <TextField
               name="id_number"
@@ -260,6 +249,21 @@ const Formulario = () => {
               onChange={handleInputChange}
               error={errors.id_number}
               sx={{ width: "100%" }}
+            />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.id_location_expedition}>Fecha de Exp del Documento</Label>
+            <TextField
+              name="id_location_expedition"
+              type="date"
+              value={formData.id_location_expedition}
+              required
+              error={errors.id_location_expedition}
+              sx={{ width: "100%" }}
+              onChange={handleInputChange}
             />
           </Column>
           <Column>

@@ -234,7 +234,7 @@ const Dataset = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
-              contract_signature_date: formatDate(contract.signatureDate),
+              //contract_signature_date: formatDate(contract.signatureDate),
               total_financed: parseFloat(totalDuesValue),
               payment_numbers: dues.length,
               financed_contracts: dues.map((d, index) => ({
@@ -255,7 +255,7 @@ const Dataset = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date:formatDate(contract.firstPaymentDate),
-              contract_signature_date: formatDate(contract.signatureDate)
+              //contract_signature_date: formatDate(contract.signatureDate)
             },
     });
 
