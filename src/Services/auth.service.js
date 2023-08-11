@@ -68,8 +68,8 @@ export default class AuthService {
         headers: {
           Authorization: this.token,
         },
-      }); */
-
+      });
+ */
       return { status: true, data };
     } catch (error) {
       return { status: false, data: error };

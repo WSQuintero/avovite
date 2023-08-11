@@ -350,17 +350,12 @@ function Admin() {
             setCurrentTab(newValue);
           }}
         >
-          <Tab label="Contratos" />
+          {/* <Tab label="Contratos" /> */}
           <Tab label="Lapsos" />
           <Tab label="Rentabilidad" />
         </Tabs>
       </Box>
       <CustomTabPanel value={currentTab} index={0}>
-        <Grid display="flex" flexDirection="column" gap={2}>
-          <EnhancedTable headCells={dateRangeHeadCells} rows={dateRanges} />
-        </Grid>
-      </CustomTabPanel>
-      <CustomTabPanel value={currentTab} index={1}>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Grid display="flex" justifyContent="flex-end">
             <Button variant="contained" onClick={() => setShowModal("create-date-range")}>
@@ -370,7 +365,7 @@ function Admin() {
           <EnhancedTable headCells={dateRangeHeadCells} rows={dateRanges} />
         </Grid>
       </CustomTabPanel>
-      <CustomTabPanel value={currentTab} index={2}>
+      <CustomTabPanel value={currentTab} index={1}>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Grid display="flex" justifyContent="flex-end">
             <Button variant="contained" onClick={() => setShowModal("create-profit")}>
