@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import {
@@ -32,7 +33,7 @@ import useSession from "../Hooks/useSession";
 import { formatDate } from "../utilities";
 import { NumericFormat } from "react-number-format";
 import Contracts from "../Components/Admin/Contracts";
-import { useNavigate } from "react-router-dom";
+import useConfig from "../Hooks/useConfig";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,11 +48,10 @@ function CustomTabPanel(props) {
 function Admin() {
   const navigate = useNavigate();
   const [session] = useSession();
+  const [, { setLoading }] = useConfig();
   const [currentTab, setCurrentTab] = useState(0);
   const [showModal, setShowModal] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
-
-  // CONTRACTS
 
   // DATE RANGE
   const [dateRanges, setDateRanges] = useState([]);
@@ -325,11 +325,17 @@ function Admin() {
   };
 
   useEffect(() => {
-    if (session.user?.rol !== 0) {
-      navigate("/");
-    }
-
     if (session.token) {
+      if (session.user?.rol !== 0) {
+        navigate("/");
+      }
+
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+
       (async () => {
         const { status, data } = await $DateRange.get();
 

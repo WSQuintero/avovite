@@ -3,10 +3,11 @@ import Router from "./Router";
 import useSession from "./Hooks/useSession";
 import useConfig from "./Hooks/useConfig";
 import AuthService from "./Services/auth.service";
+import Loader from "./Components/Loader";
 
 function App() {
   const [session, { setUser, logout }] = useSession();
-  const [, { setLoading }] = useConfig();
+  const [{ loading }, { setLoading }] = useConfig();
   const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
 
   const validateSession = async () => {
@@ -25,13 +26,17 @@ function App() {
     if (session.token) {
       (async () => {
         await validateSession();
+        setLoading(false);
       })();
     }
-
-    setLoading(false);
   }, [session.token]);
 
-  return <Router />;
+  return (
+    <>
+      <Loader show={loading} />
+      <Router />
+    </>
+  );
 }
 
 export default App;
