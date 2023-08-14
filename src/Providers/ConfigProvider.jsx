@@ -3,25 +3,25 @@ import { createContext, useCallback, useEffect, useState } from "react";
 export const ConfigContext = createContext();
 
 export const ConfigProvider = ({ children }) => {
-  const [config, setConfig] = useState({ loading: true, onboarding: true, sidebar: false });
+  const [config, setConfig] = useState({ loading: true, onboarding: true, sidebar: false, constants: null });
 
   const setter = (key, value = null) => setConfig((prev) => ({ ...prev, [key]: value === null ? !prev[key] : value }));
-  const setLoading = useCallback((value) => setter("loading", value), []);
-  const setOnboarding = useCallback((value) => {
-    setter("onboarding", value);
-    localStorage.setItem("onboarding", value);
-  }, []);
-  const toggleSidebar = useCallback(() => setter("sidebar"), []);
+
+  const setters = {
+    setLoading: useCallback((value) => setter("loading", value), []),
+    setOnboarding: useCallback((value) => {
+      setter("onboarding", value);
+      localStorage.setItem("onboarding", value);
+    }, []),
+    toggleSidebar: useCallback(() => setter("sidebar"), []),
+    setConstants: useCallback((value) => setter("constants", value), []),
+  };
 
   useEffect(() => {
     if (JSON.parse(localStorage.getItem("onboarding")) === false) {
-      setOnboarding(false);
+      setters.setOnboarding(false);
     }
   }, []);
 
-  return (
-    <ConfigContext.Provider value={[config, { setLoading, setOnboarding, toggleSidebar }]}>
-      {children}
-    </ConfigContext.Provider>
-  );
+  return <ConfigContext.Provider value={[config, setters]}>{children}</ConfigContext.Provider>;
 };

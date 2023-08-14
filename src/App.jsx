@@ -3,12 +3,14 @@ import Router from "./Router";
 import useSession from "./Hooks/useSession";
 import useConfig from "./Hooks/useConfig";
 import AuthService from "./Services/auth.service";
+import UtilsService from "./Services/utils.service";
 import Loader from "./Components/Loader";
 
 function App() {
   const [session, { setUser, logout }] = useSession();
-  const [{ loading }, { setLoading }] = useConfig();
+  const [{ loading }, { setLoading, setConstants }] = useConfig();
   const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
+  const $Utils = useMemo(() => new UtilsService(session.token), [session.token]);
 
   const validateSession = async () => {
     const { status, data } = await $Auth.validate();
@@ -22,10 +24,19 @@ function App() {
     }
   };
 
+  const fetchConstants = async () => {
+    const { status, data } = await $Utils.getConstants();
+
+    if (status) {
+      setConstants(data.data);
+    }
+  };
+
   useEffect(() => {
     if (session.token) {
       (async () => {
         await validateSession();
+        await fetchConstants();
         setLoading(false);
       })();
     }
