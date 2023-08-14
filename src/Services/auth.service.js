@@ -45,7 +45,7 @@ export default class AuthService {
     }
 
     try {
-      const data = await new Promise((resolve) =>
+      /*  const data = await new Promise((resolve) =>
         setTimeout(
           () =>
             resolve({
@@ -62,14 +62,14 @@ export default class AuthService {
             }),
           200
         )
-      );
+      ); */
 
-      /* const { data } = await axios.get(`${this.API_URL}/users/session`, {
+      const { data } = await axios.get(`${this.API_URL}/users/session`, {
         headers: {
           Authorization: this.token,
         },
       });
- */
+
       return { status: true, data };
     } catch (error) {
       return { status: false, data: error };

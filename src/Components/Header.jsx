@@ -88,7 +88,7 @@ function Header() {
             <Avatar alt={session.user.name} src={session.user.avatar} />
             <Grid display="flex" flexDirection="column" alignItems="flex-start" gap={0.5}>
               <Typography fontWeight={500} lineHeight={1}>
-                {session.user.name}
+                {session.user.fullname}
               </Typography>
               <Typography variant="caption" fontWeight={300} lineHeight={1}>
                 Admin
