@@ -22,7 +22,6 @@ import {
   Error as ErrorIcon,
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
-import { tooltipClasses } from "@mui/material";
 import AuthService from "../Services/auth.service";
 
 import BackgroundImage from "../assets/img/signup/background.png";
