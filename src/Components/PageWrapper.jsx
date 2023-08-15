@@ -13,7 +13,9 @@ function PageWrapper({ hideSidebar = false, hideHeader = false, children }) {
           flexGrow={1}
           padding={6}
           sx={(t) => ({
+            maxWidth: `calc(100vw - ${t.sizes.sidebar.main}px)`,
             [t.breakpoints.down("md")]: {
+              maxWidth: "100vw",
               padding: 2,
               paddingTop: 12,
             },

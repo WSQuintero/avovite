@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import EnhancedTableHead from "./EnhancedTableHead";
 
-function EnhancedTable({ title, headCells, rows, footer = <></> }) {
+function EnhancedTable({ headCells, rows, footer = <></> }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState(headCells[0]?.id || "");
   const [page, setPage] = useState(0);
@@ -44,9 +44,9 @@ function EnhancedTable({ title, headCells, rows, footer = <></> }) {
   );
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <TableContainer component={Paper} elevation={0}>
-        <Table aria-labelledby="tableTitle" size={dense ? "small" : "medium"}>
+    <>
+      <TableContainer component={Paper} elevation={0} sx={{ width: "100%" }}>
+        <Table size={dense ? "small" : "medium"}>
           <EnhancedTableHead
             headCells={headCells}
             order={order}
@@ -67,7 +67,7 @@ function EnhancedTable({ title, headCells, rows, footer = <></> }) {
             {emptyRows > 0 && (
               <TableRow
                 style={{
-                  height: (dense ? 33 : 53) * emptyRows,
+                  height: (dense ? 52.4 : 53) * emptyRows,
                 }}
               >
                 <TableCell colSpan={headCells.length} />
@@ -90,7 +90,7 @@ function EnhancedTable({ title, headCells, rows, footer = <></> }) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Grid>
-    </Box>
+    </>
   );
 }
 

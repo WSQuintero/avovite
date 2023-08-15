@@ -17,6 +17,7 @@ import PhoneField from "react-phone-input-2";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
 import LogoImage from "../assets/img/common/logo.svg";
+import useConfig from "../Hooks/useConfig";
 
 const Row = ({ children }) => (
   <Grid
@@ -53,7 +54,9 @@ const Column = ({ children }) => (
 
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
-const Formulario = () => {
+const BookingForm = () => {
+  const [{ constants }] = useConfig();
+
   const [formData, setFormData] = useState({
     id_type: "-",
     id_location_expedition: "",
@@ -122,7 +125,7 @@ const Formulario = () => {
 
     const { status, data } = await contractService.add({ body: postData });
 
-    console.log('status');
+    console.log("status");
     console.log(status);
     console.log(data);
 
@@ -318,22 +321,11 @@ const Formulario = () => {
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
-                <MenuItem value={0}>Banco Agrario de Colombia</MenuItem>
-                <MenuItem value={1}>Banco de Bogotá</MenuItem>
-                <MenuItem value={2}>Banco Caja Social</MenuItem>
-                <MenuItem value={3}>Banco Colpatria</MenuItem>
-                <MenuItem value={4}>Banco Davivienda</MenuItem>
-                <MenuItem value={5}>Banco de Occidente</MenuItem>
-                <MenuItem value={6}>Banco Popular</MenuItem>
-                <MenuItem value={7}>Banco Procredit</MenuItem>
-                <MenuItem value={8}>Banco Santander</MenuItem>
-                <MenuItem value={9}>Banco Scotiabank Colpatria</MenuItem>
-                <MenuItem value={10}>Banco AV Villas</MenuItem>
-                <MenuItem value={11}>Banco GNB Sudameris</MenuItem>
-                <MenuItem value={12}>Banco Itaú</MenuItem>
-                <MenuItem value={13}>Banco Pichincha</MenuItem>
-                <MenuItem value={14}>Banco WWB</MenuItem>
-                <MenuItem value={15}>Bancamía</MenuItem>
+                {constants?.banks.map((bank) => (
+                  <MenuItem key={bank.id} value={bank.id}>
+                    {bank.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Column>
@@ -353,8 +345,11 @@ const Formulario = () => {
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
-                <MenuItem value={0}>Cuenta Corriente</MenuItem>
-                <MenuItem value={1}>Cuenta de Ahorros</MenuItem>
+                {constants?.account_type.map((accountType) => (
+                  <MenuItem key={accountType.id} value={accountType.id}>
+                    {accountType.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Column>
@@ -470,4 +465,4 @@ const Formulario = () => {
   );
 };
 
-export default Formulario;
+export default BookingForm;

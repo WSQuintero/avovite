@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import {
@@ -31,6 +32,8 @@ import ProfitService from "../Services/profit.service";
 import useSession from "../Hooks/useSession";
 import { formatDate } from "../utilities";
 import { NumericFormat } from "react-number-format";
+import Contracts from "../Components/Admin/Contracts";
+import useConfig from "../Hooks/useConfig";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,13 +46,12 @@ function CustomTabPanel(props) {
 }
 
 function Admin() {
+  const navigate = useNavigate();
   const [session] = useSession();
+  const [, { setLoading }] = useConfig();
   const [currentTab, setCurrentTab] = useState(0);
   const [showModal, setShowModal] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
-
-  // CONTRACTS
-  
 
   // DATE RANGE
   const [dateRanges, setDateRanges] = useState([]);
@@ -324,6 +326,16 @@ function Admin() {
 
   useEffect(() => {
     if (session.token) {
+      if (session.user?.rol !== 0) {
+        navigate("/");
+      }
+
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+
       (async () => {
         const { status, data } = await $DateRange.get();
 
@@ -350,12 +362,15 @@ function Admin() {
             setCurrentTab(newValue);
           }}
         >
-          {/* <Tab label="Contratos" /> */}
+          <Tab label="Contratos" />
           <Tab label="Lapsos" />
           <Tab label="Rentabilidad" />
         </Tabs>
       </Box>
       <CustomTabPanel value={currentTab} index={0}>
+        <Contracts />
+      </CustomTabPanel>
+      <CustomTabPanel value={currentTab} index={1}>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Grid display="flex" justifyContent="flex-end">
             <Button variant="contained" onClick={() => setShowModal("create-date-range")}>
@@ -365,7 +380,7 @@ function Admin() {
           <EnhancedTable headCells={dateRangeHeadCells} rows={dateRanges} />
         </Grid>
       </CustomTabPanel>
-      <CustomTabPanel value={currentTab} index={1}>
+      <CustomTabPanel value={currentTab} index={2}>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Grid display="flex" justifyContent="flex-end">
             <Button variant="contained" onClick={() => setShowModal("create-profit")}>
