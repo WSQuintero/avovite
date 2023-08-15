@@ -13,14 +13,16 @@ function App() {
   const $Utils = useMemo(() => new UtilsService(session.token), [session.token]);
 
   const validateSession = async () => {
-    const { status, data } = await $Auth.validate();
+    if (session.token) {
+      const { status, data } = await $Auth.validate();
 
-    if (!status && data !== null && data.response?.status === 401) {
-      logout();
-    }
+      if (!status && data !== null && data.response?.status === 401) {
+        logout();
+      }
 
-    if (status) {
-      setUser(data.user);
+      if (status) {
+        setUser(data.user);
+      }
     }
   };
 
@@ -33,13 +35,11 @@ function App() {
   };
 
   useEffect(() => {
-    if (session.token) {
-      (async () => {
-        await validateSession();
-        await fetchConstants();
-        setLoading(false);
-      })();
-    }
+    (async () => {
+      await validateSession();
+      await fetchConstants();
+      setLoading(false);
+    })();
   }, [session.token]);
 
   return (
