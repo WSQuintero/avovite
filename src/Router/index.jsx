@@ -5,7 +5,7 @@ import Signup from "../Pages/Signup";
 import Signin from "../Pages/Signin";
 import Dataset from "../Pages/Dataset";
 import Dashboard from "../Pages/Dashboard";
-import TermsConditions from "../Pages/TermsConditions";
+import PrivacyPolicy from "../Pages/PrivacyPolicy";
 import Shop from "../Pages/Shop";
 import Wallet from "../Pages/Wallet";
 import Checkout from "../Pages/Checkout";
@@ -58,7 +58,7 @@ function Router() {
     },
     {
       path: "/privacy-policy",
-      element: <TermsConditions />,
+      element: <PrivacyPolicy />,
     },
     {
       path: "/",

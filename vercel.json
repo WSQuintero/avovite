@@ -1,5 +1,13 @@
 {
-    "rewrites":  [
-      {"source": "/(.*)", "destination": "/"}
-    ]
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "env": {
+    "VITE_API_URL": "https://avovite-api-dev.concilbot.com/api/v1"
+  },
+  "build": {
+    "env": {
+      "VITE_API_URL": "https://avovite-api-dev.concilbot.com/api/v1"
+    }
   }
+}

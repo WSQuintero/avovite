@@ -10,7 +10,9 @@ body {
 
 .react-tel-input input {
   border-radius: 12px !important;
+  font-size: 18px !important;
   color: #979797;
+  border-color: #979797 !important;
 }
 
 .react-tel-input input:focus {

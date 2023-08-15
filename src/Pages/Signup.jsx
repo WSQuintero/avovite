@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import AuthService from "../Services/auth.service";
+import PhoneField from "react-phone-input-2";
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -9,27 +10,45 @@ import {
   Grid,
   InputAdornment,
   Link,
+  Snackbar,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
   PersonOutlineOutlined as PersonIcon,
   EmailOutlined as EmailIcon,
   LockOpenOutlined as LockIcon,
+  Error as ErrorIcon,
+  CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
+import AuthService from "../Services/auth.service";
 
 import BackgroundImage from "../assets/img/signup/background.png";
 import LogoImage from "../assets/img/common/logo.svg";
 
+const StatusIcon = ({ status = false }) => {
+  return status ? <CheckCircleIcon /> : <ErrorIcon />;
+};
+
 function Signin() {
   const [user, setUser] = useState({
-    name: "",
+    fullname: "",
     email: "",
     password: "",
+    cellphone: "",
     privacyPolicy: false,
   });
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
   const $Auth = useMemo(() => new AuthService(), []);
+  const passwordStatus = useMemo(
+    () => ({
+      minimumCharacters: user.password.length >= 8 ? true : false,
+      atLeastOneUppercase: /^(?=.*[A-Z])/g.test(user.password) ? true : false,
+      atLeastOneSymbol: /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/.test(user.password) ? true : false,
+    }),
+    [user.password]
+  );
 
   const onUserChange = (event) => {
     const { name, value } = event.target;
@@ -39,7 +58,37 @@ function Signin() {
   const onSignup = async (event) => {
     event.preventDefault();
 
-    const { status, data } = await $Auth.signin(user);
+    if (!(user.fullname && user.email && user.password && user.cellphone)) {
+      setFeedback({
+        show: true,
+        message: "Todos los campos son obligatorios.",
+        status: "error",
+      });
+
+      return;
+    }
+
+    if (!user.privacyPolicy) {
+      setFeedback({
+        show: true,
+        message: "Debes aceptar Térmimos, condiciones y políticas de privacidad para poder continuar.",
+        status: "error",
+      });
+
+      return;
+    }
+
+    if (!(passwordStatus.minimumCharacters && passwordStatus.atLeastOneUppercase && passwordStatus.atLeastOneSymbol)) {
+      setFeedback({
+        show: true,
+        message: "La contraseña no cumple las condiciones.",
+        status: "error",
+      });
+
+      return;
+    }
+
+    const { status } = await $Auth.signup(user);
 
     if (!status) {
       setFeedback({
@@ -47,11 +96,17 @@ function Signin() {
         message: "Ha ocurrido un error, inténtelo de nuevo.",
         status: "error",
       });
-
-      return;
+    } else {
+      setFeedback({
+        show: true,
+        message: "Te has registrado exitosamente.",
+        status: "success",
+      });
     }
+  };
 
-    setToken(data.token);
+  const resetFeedback = () => {
+    setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
   return (
@@ -148,10 +203,10 @@ function Signin() {
             Crear Cuenta
           </Typography>
           <TextField
-            name="name"
+            name="fullname"
             label="Nombre de usuario"
             sx={{ width: "100%" }}
-            value={user.email}
+            value={user.fullname}
             onInput={onUserChange}
             InputProps={{
               startAdornment: (
@@ -176,23 +231,71 @@ function Signin() {
               ),
             }}
           />
-          <TextField
-            name="password"
-            type="password"
-            label="Contraseña"
-            sx={{ width: "100%" }}
-            value={user.password}
-            onInput={onUserChange}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon color="primary" />
-                </InputAdornment>
-              ),
+          <Tooltip
+            placement="right"
+            title={
+              <Box display="flex" flexDirection="column">
+                <Grid display="flex" gap={1}>
+                  <StatusIcon status={passwordStatus.minimumCharacters} />
+                  <Typography>Mínimo 8 caracteres.</Typography>
+                </Grid>
+                <Grid display="flex" gap={1}>
+                  <StatusIcon status={passwordStatus.atLeastOneSymbol} />
+                  <Typography>Al menos un símbolo.</Typography>
+                </Grid>
+                <Grid display="flex" gap={1}>
+                  <StatusIcon status={passwordStatus.atLeastOneUppercase} />
+                  <Typography>Al menos una mayúscula.</Typography>
+                </Grid>
+              </Box>
+            }
+          >
+            <TextField
+              name="password"
+              type="password"
+              label="Contraseña"
+              sx={{ width: "100%" }}
+              value={user.password}
+              onInput={onUserChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon color="primary" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Tooltip>
+          <PhoneField
+            enableSearch={true}
+            value={user.cellphone}
+            country="co"
+            specialLabel=""
+            autoFormat={true}
+            inputStyle={{
+              width: "100%",
             }}
+            inputProps={{
+              name: "cellphone",
+              required: true,
+            }}
+            isValid={(value, country) => {
+              if (value.match(/12345/)) {
+                return "Invalid value:" + value + ", " + country.name;
+              } else {
+                return true;
+              }
+            }}
+            onChange={(value) => onUserChange({ target: { name: "cellphone", value } })}
           />
           <FormControlLabel
-            control={<Checkbox value={user.privacyPolicy} />}
+            control={
+              <Checkbox
+                value={user.privacyPolicy}
+                name="privacyPolicy"
+                onChange={({ target }) => onUserChange({ target: { name: "privacyPolicy", value: target.checked } })}
+              />
+            }
             label={
               <Typography>
                 He leido y acepto los{" "}
@@ -210,6 +313,16 @@ function Signin() {
           </Link>
         </Box>
       </Box>
+      <Snackbar
+        open={feedback.show}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={resetFeedback}
+      >
+        <Alert onClose={resetFeedback} severity={feedback.status} sx={{ width: "100%" }}>
+          {feedback.message}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }

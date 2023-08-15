@@ -19,18 +19,13 @@ export default class AuthService {
     }
   }
 
-  async signup({ fullName, email, password, slug = "" } = {}) {
-    const firstName = fullName.split(" ")[0];
-    const lastName = fullName.split(" ")[1] || "";
-    const slugInvitation = `${firstName}${parseInt(Math.random() * 100)}`;
-
+  async signup({ fullname, email, password, cellphone } = {}) {
     try {
-      const { data } = await axios.post(`${this.API_URL}/users/register/${slug}`, {
+      const { data } = await axios.post(`${this.API_URL}/users/signup`, {
+        fullname,
         email,
-        firstName,
-        lastName,
+        cellphone,
         password,
-        slugInvitation,
       });
 
       return { status: true, data };
