@@ -289,7 +289,6 @@ function Signin() {
             }}
             onChange={(value) => onUserChange({ target: { name: "cellphone", value } })}
           />
-          {user.privacyPolicy ? "si" : "noo"}
           <FormControlLabel
             control={
               <Checkbox
