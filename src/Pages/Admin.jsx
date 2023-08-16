@@ -351,7 +351,7 @@ function Admin() {
   }, [session.token]);
 
   useEffect(() => {
-    if (session.user?.rol === 1) {
+    if (session.user && !session.user.isAdmin()) {
       navigate("/");
     }
   }, [session.user]);

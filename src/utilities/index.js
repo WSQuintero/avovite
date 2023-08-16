@@ -30,17 +30,17 @@ export const isToday = (date) => {
 export const formatDate = (date) =>
   `${new Date(date).getDate()} ${
     [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
     ][new Date(date).getMonth()]
   } ${new Date(date).getFullYear()}`;

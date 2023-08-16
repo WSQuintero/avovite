@@ -17,9 +17,11 @@ import {
   TextField,
 } from "@mui/material";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
+import { formatDate } from "../../utilities";
+import usePost from "../../Hooks/usePost";
 
 function Blog() {
-  const [{ token }] = useSession();
+  const $Post = usePost();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState({
@@ -30,7 +32,6 @@ function Blog() {
     url_video: "",
   });
   const [currentModal, setCurrentModal] = useState(null);
-  const $Post = useMemo(() => new PostService(token), [token]);
   const isValidPost = useMemo(
     () => selectedPost.title && selectedPost.description && selectedPost.url_image && selectedPost.url_video,
     [selectedPost]
@@ -43,14 +44,24 @@ function Blog() {
         label: "Imagen",
         align: "left",
         disablePadding: false,
-        format: (value) => <img src={value} alt="Post image" />,
+        width: 240,
+        format: (value) => (
+          <Box display="flex" width="100%" sx={{ aspectRatio: 1 }}>
+            <img src={value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
+          </Box>
+        ),
       },
       {
         id: "url_video",
         label: "Video",
         align: "left",
+        width: 240,
         disablePadding: false,
-        format: (value) => <video src={value} />,
+        format: (value) => (
+          <Box display="flex" width="100%" sx={{ aspectRatio: 1 }}>
+            <video src={value} width="100%" style={{ objectFit: "cover", borderRadius: 8 }} muted autoPlay />
+          </Box>
+        ),
       },
       {
         id: "title",
@@ -65,6 +76,13 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => value,
+      },
+      {
+        id: "updated_at",
+        label: "Actualizado en",
+        align: "left",
+        disablePadding: false,
+        format: (value) => formatDate(value),
       },
       {
         id: "",
@@ -131,11 +149,10 @@ function Blog() {
 
     const { status, data } = await $Post.add(selectedPost);
 
-    console.log(data);
-
     if (status) {
-      onClearFields();
+      setPosts((prev) => [...prev, { ...selectedPost, id: data.data }]);
       setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
+      onClearFields();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
@@ -152,8 +169,9 @@ function Blog() {
     const { status } = await $Post.update(selectedPost);
 
     if (status) {
+      setPosts((prev) => prev.map((p) => (p.id === selectedPost.id ? selectedPost : p)));
+      setFeedback({ open: true, message: "Publicación actualizada exitosamente.", status: "success" });
       onClearFields();
-      setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
@@ -163,8 +181,9 @@ function Blog() {
     const { status } = await $Post.delete(selectedPost);
 
     if (status) {
-      onClearFields();
+      setPosts((prev) => prev.filter((p) => p.id !== selectedPost.id));
       setFeedback({ open: true, message: "Publicación eliminada exitosamente.", status: "success" });
+      onClearFields();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
@@ -175,12 +194,12 @@ function Blog() {
   };
 
   useEffect(() => {
-    if (token) {
+    if ($Post) {
       (async () => {
         await fetchPosts();
       })();
     }
-  }, [token]);
+  }, [$Post]);
 
   return (
     <>
@@ -190,7 +209,7 @@ function Blog() {
             Crear
           </Button>
         </Grid>
-        <EnhancedTable headCells={postsHeadCells} rows={posts} />
+        <EnhancedTable headCells={postsHeadCells} rows={posts} initialOrderBy="title" />
       </Grid>
 
       <Dialog

@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import EnhancedTableHead from "./EnhancedTableHead";
 
-function EnhancedTable({ headCells, rows, footer = <></> }) {
+function EnhancedTable({ headCells, rows, footer = <></>, initialOrderBy = "" }) {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState(headCells[0]?.id || "");
+  const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(10);

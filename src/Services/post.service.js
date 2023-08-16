@@ -23,7 +23,24 @@ export default class PostService {
     );
   }
 
-  async delete({ id, ...body }) {}
+  async update({ id, ...body }) {
+    const { title, description, url_image, url_video } = body;
 
-  async update({ id, ...body }) {}
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(
+            `${this.API_URL}/blog/${id}`,
+            { title, description, url_image, url_video },
+            { headers: { Authorization: this.token } }
+          )
+        ).data
+    );
+  }
+
+  async delete({ id }) {
+    return await handleCall(
+      async () => (await axios.delete(`${this.API_URL}/blog/${id}`, { headers: { Authorization: this.token } })).data
+    );
+  }
 }

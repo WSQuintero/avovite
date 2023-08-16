@@ -18,6 +18,7 @@ function Post({ post, route }) {
       })}
     >
       <Box
+        display="flex"
         sx={(t) => ({
           width: "30%",
           [t.breakpoints.down(breakpoint)]: {
@@ -25,7 +26,11 @@ function Post({ post, route }) {
           },
         })}
       >
-        <img src={post.image} alt="Post image" style={{ width: "100%", borderRadius: 8 * 2, objectFit: "cover" }} />
+        <img
+          src={post.url_image}
+          alt="Post image"
+          style={{ width: "100%", borderRadius: 8 * 2, objectFit: "cover", aspectRatio: 2 }}
+        />
       </Box>
       <Grid flexGrow={1} display="flex" flexDirection="column" padding={2}>
         <Typography variant="h3">{post.title}</Typography>

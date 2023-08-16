@@ -64,7 +64,7 @@ function Sidebar() {
         icon: <ProtectionIcon />,
         name: "Administrador",
         route: "/admin",
-        show: user?.rol === 0,
+        show: user?.isAdmin(),
       },
     ],
     [user]

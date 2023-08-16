@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Container, Grid, Typography, alpha } from "@mui/material";
+import { Box, Button, Container, Grid, Skeleton, Typography, alpha } from "@mui/material";
 import useConfig from "../Hooks/useConfig";
 import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
@@ -8,20 +8,24 @@ import VitesImage from "../assets/img/common/vites.png";
 
 function Dashboard() {
   const [config, { setOnboarding }] = useConfig();
-  const [posts, setPosts] = useState([]);
   const $Post = usePost();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchPosts = async () => {
     const { status, data } = await $Post.get();
 
     if (status) {
-      setPosts(data);
+      setPosts(data.data);
     }
   };
 
   useEffect(() => {
     if ($Post) {
-      fetchPosts();
+      (async () => {
+        await fetchPosts();
+        setLoading(false);
+      })();
     }
   }, [$Post]);
 
@@ -137,9 +141,9 @@ function Dashboard() {
             <Grid display="flex" flexDirection="column" gap={4}>
               <Typography variant="h2">Recientes</Typography>
               <Grid display="flex" flexDirection="column" gap={2}>
-               {/*  {posts.map((post) => (
-                  <Post key={post.id} post={post} route={`/posts/${post.id}`} />
-                ))} */}
+                {loading
+                  ? [...Array(3).keys()].map((post) => <Skeleton key={post} height={240} sx={{ transform: "none" }} />)
+                  : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} />)}
               </Grid>
             </Grid>
           </Grid>

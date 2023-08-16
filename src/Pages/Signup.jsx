@@ -138,7 +138,7 @@ function Signin() {
             borderRadius: 0,
             order: 0,
             width: "100vw",
-            height: "50vh",
+            height: "20vh",
           },
         })}
       ></Box>
@@ -155,7 +155,7 @@ function Signin() {
         sx={(theme) => ({
           [theme.breakpoints.down("md")]: {
             width: "100vw",
-            height: "50vh",
+            height: "80vh",
           },
         })}
       >
