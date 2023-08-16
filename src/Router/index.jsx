@@ -35,6 +35,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   if (meta.includes(META.REQUIRES_AUTH) && !isAuthenticated) {
     return <Navigate to="/signin" />;
   }
+
   if (meta.includes(META.HIDE_FOR_AUTH) && isAuthenticated) {
     return <Navigate to="/" />;
   }

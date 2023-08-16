@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import {
   AppBar,
@@ -33,6 +33,7 @@ import useCart from "../Hooks/useCart";
 
 function Header() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [session, { logout }] = useSession();
   const [, { toggleSidebar }] = useConfig();
@@ -147,7 +148,7 @@ function Header() {
         paddingY={1}
         sx={{ backgroundColor: "primary.main" }}
       >
-        <IconButton>
+        <IconButton onClick={() => navigate(-1)}>
           <BackIcon sx={{ color: "white" }} />
         </IconButton>
         <Typography color="white">Ir Atrás</Typography>

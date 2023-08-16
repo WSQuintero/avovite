@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleCall } from "../utilities";
 
 export default class AuthService {
   constructor(token = null) {
@@ -42,6 +43,17 @@ export default class AuthService {
     } catch ({ response }) {
       return { status: false, data: response.data };
     }
+  }
+
+  async update(body) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(`${this.API_URL}/users/user`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
   }
 
   async validate() {

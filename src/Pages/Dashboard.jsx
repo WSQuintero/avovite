@@ -5,12 +5,16 @@ import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import Post from "../Components/Post";
 import VitesImage from "../assets/img/common/vites.png";
+import useSession from "../Hooks/useSession";
 
 function Dashboard() {
+  const [{ user }] = useSession();
   const [config, { setOnboarding }] = useConfig();
   const $Post = usePost();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  console.log(user);
 
   const fetchPosts = async () => {
     const { status, data } = await $Post.get();
@@ -78,7 +82,7 @@ function Dashboard() {
                     VITES
                   </Typography>
                   <Typography fontSize={40} fontWeight={700} color="white" lineHeight={1}>
-                    67
+                    {user.vites_balance}
                   </Typography>
                 </Box>
                 <Box
@@ -109,7 +113,7 @@ function Dashboard() {
                     <Typography fontWeight={600} color="primary">
                       Maduros
                     </Typography>
-                    <Typography color="primary">50</Typography>
+                    <Typography color="primary">{user.trees_balance}</Typography>
                   </Box>
                   <Box
                     display="flex"
@@ -119,10 +123,10 @@ function Dashboard() {
                     padding={2}
                     sx={{ backgroundColor: "white" }}
                   >
-                    <Typography fontWeight={600} color="primary">
+                    <Typography fontWeight={600} textAlign='center' color="primary">
                       En crecimiento
                     </Typography>
-                    <Typography color="primary">17</Typography>
+                    <Typography color="primary">{user.trees_balance}</Typography>
                   </Box>
                 </Box>
               </Grid>

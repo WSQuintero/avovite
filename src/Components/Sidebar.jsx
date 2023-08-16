@@ -37,11 +37,17 @@ function Sidebar() {
         show: true,
       },
       {
-        icon: <WalletIcon />,
-        name: "Billetera",
-        route: "/wallet",
+        icon: <AccountantIcon />,
+        name: "Perfil",
+        route: "/profile",
         show: true,
       },
+      // {
+      //   icon: <WalletIcon />,
+      //   name: "Billetera",
+      //   route: "/wallet",
+      //   show: true,
+      // },
       {
         icon: <GraphIcon />,
         name: "Ganancias",
@@ -52,12 +58,6 @@ function Sidebar() {
         icon: <EcommerceIcon />,
         name: "Comprar Vites",
         route: "/shop",
-        show: true,
-      },
-      {
-        icon: <AccountantIcon />,
-        name: "Perfil",
-        route: "/profile",
         show: true,
       },
       {
