@@ -50,7 +50,7 @@ function Header() {
       <Toolbar>
         <Grid display="flex" alignItems="center" gap={2} width="100%">
           <Link fontSize={24} fontWeight={500} component={RouterLink} to="/" sx={{ textDecoration: "none" }}>
-            Avovite app
+            Avovite
           </Link>
           <TextField
             label="Buscar"

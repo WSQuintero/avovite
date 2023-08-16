@@ -55,10 +55,10 @@ function EnhancedTable({ headCells, rows, footer = <></> }) {
             rowCount={rows.length}
           />
           <TableBody>
-            {visibleRows.map((row) => (
-              <TableRow key={row.name} tabIndex={-1} hover>
-                {headCells.map((headCell) => (
-                  <TableCell key={headCell.id} align={headCell.align} style={{ width: headCell.width }}>
+            {visibleRows.map((row, index) => (
+              <TableRow key={index} tabIndex={-1} hover>
+                {headCells.map((headCell, index) => (
+                  <TableCell key={index} align={headCell.align} style={{ width: headCell.width }}>
                     {headCell.format(row[headCell.id], row)}
                   </TableCell>
                 ))}

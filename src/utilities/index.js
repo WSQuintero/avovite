@@ -41,6 +41,6 @@ export const formatDate = (date) =>
       "Septiembre",
       "Octubre",
       "Noviembre",
-      "Deciembre",
+      "Diciembre",
     ][new Date(date).getMonth()]
   } ${new Date(date).getFullYear()}`;

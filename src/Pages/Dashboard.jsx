@@ -137,9 +137,9 @@ function Dashboard() {
             <Grid display="flex" flexDirection="column" gap={4}>
               <Typography variant="h2">Recientes</Typography>
               <Grid display="flex" flexDirection="column" gap={2}>
-                {posts.map((post) => (
+               {/*  {posts.map((post) => (
                   <Post key={post.id} post={post} route={`/posts/${post.id}`} />
-                ))}
+                ))} */}
               </Grid>
             </Grid>
           </Grid>

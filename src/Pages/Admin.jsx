@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { NumericFormat } from "react-number-format";
 import { DatePicker } from "@mui/x-date-pickers";
 import {
   Alert,
@@ -31,8 +32,8 @@ import DateRangeService from "../Services/daterange.service";
 import ProfitService from "../Services/profit.service";
 import useSession from "../Hooks/useSession";
 import { formatDate } from "../utilities";
-import { NumericFormat } from "react-number-format";
 import Contracts from "../Components/Admin/Contracts";
+import Blog from "../Components/Admin/Blog";
 import useConfig from "../Hooks/useConfig";
 
 function CustomTabPanel(props) {
@@ -40,7 +41,9 @@ function CustomTabPanel(props) {
 
   return (
     <Box role="tabpanel" hidden={value !== index} {...other}>
-      {value === index && <Box padding={2}>{children}</Box>}
+      <Box display={value === index ? "initial" : "none"} padding={2}>
+        {children}
+      </Box>
     </Box>
   );
 }
@@ -208,19 +211,18 @@ function Admin() {
   const onCreateDateRange = async (event) => {
     event.preventDefault();
 
-    const { status, data } = await $DateRange.add({
-      body: {
-        date_start_inscription: newDateRange.date_start_inscription,
-        date_end_inscription: newDateRange.date_end_inscription,
-        months_duration: parseInt(newDateRange.months_duration),
-        date_start_profit: newDateRange.date_start_profit,
-      },
-    });
+    const body = {
+      date_start_inscription: newDateRange.date_start_inscription,
+      date_end_inscription: newDateRange.date_end_inscription,
+      months_duration: parseInt(newDateRange.months_duration),
+      date_start_profit: newDateRange.date_start_profit,
+    };
 
-    console.log(data);
+    const { status, data } = await $DateRange.add({ body });
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Lapso creado con éxito." });
+      setDateRanges((prev) => [...prev, { id: data.data, ...body }]);
       setShowModal(null);
       clearFields("DateRange");
       // Add to the list
@@ -232,23 +234,23 @@ function Admin() {
   const onUpdateDateRange = async (event) => {
     event.preventDefault();
 
-    const { status, data } = await $DateRange.update({
-      id: newDateRange.id,
-      body: {
-        date_start_inscription: newDateRange.date_start_inscription,
-        date_end_inscription: newDateRange.date_end_inscription,
-        months_duration: parseInt(newDateRange.months_duration),
-        date_start_profit: newDateRange.date_start_profit,
-      },
-    });
+    const body = {
+      date_start_inscription: newDateRange.date_start_inscription,
+      date_end_inscription: newDateRange.date_end_inscription,
+      months_duration: parseInt(newDateRange.months_duration),
+      date_start_profit: newDateRange.date_start_profit,
+    };
 
-    console.log(data);
+    const { status } = await $DateRange.update({
+      id: newDateRange.id,
+      body,
+    });
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Lapso actualizado con éxito." });
+      setDateRanges((prev) => prev.map((d) => (d.id === newDateRange.id ? { ...d, ...body } : d)));
       setShowModal(null);
       clearFields("DateRange");
-      // Add to the list
     } else {
       setFeedback({ show: true, status: "error", message: "Error al actualizar lapso." });
     }
@@ -269,17 +271,16 @@ function Admin() {
   const onCreateProfit = async (event) => {
     event.preventDefault();
 
-    const { status, data } = await $Profit.add({
-      body: {
-        id_contract_date_range: currentProfit.id_contract_date_range,
-        amount_profit: currentProfit.amount_profit,
-      },
-    });
+    const body = {
+      id_contract_date_range: currentProfit.id_contract_date_range,
+      amount_profit: currentProfit.amount_profit,
+    };
 
-    console.log(data);
+    const { status, data } = await $Profit.add({ body });
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Rentabilidad creada con éxito." });
+      setProfits((prev) => [...prev, { id: data.data, ...body }]);
       setShowModal(null);
       clearFields("Profit");
       // Add to the list
@@ -291,21 +292,21 @@ function Admin() {
   const onUpdateProfit = async (event) => {
     event.preventDefault();
 
-    const { status, data } = await $Profit.update({
-      id: currentProfit.id,
-      body: {
-        id_contract_date_range: currentProfit.id_contract_date_range,
-        amount_profit: currentProfit.amount_profit,
-      },
-    });
+    const body = {
+      id_contract_date_range: currentProfit.id_contract_date_range,
+      amount_profit: currentProfit.amount_profit,
+    };
 
-    console.log(data);
+    const { status } = await $Profit.update({
+      id: currentProfit.id,
+      body,
+    });
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Rentabilidad actualizada con éxito." });
+      setProfits((prev) => prev.map((p) => (p.id === currentProfit.id ? { ...p, ...body } : p)));
       setShowModal(null);
       clearFields("Profit");
-      // Add to the list
     } else {
       setFeedback({ show: true, status: "error", message: "Error al actualizar rentabilidad." });
     }
@@ -326,10 +327,6 @@ function Admin() {
 
   useEffect(() => {
     if (session.token) {
-      if (session.user?.rol !== 0) {
-        navigate("/");
-      }
-
       setLoading(true);
 
       setTimeout(() => {
@@ -353,6 +350,12 @@ function Admin() {
     }
   }, [session.token]);
 
+  useEffect(() => {
+    if (session.user?.rol === 1) {
+      navigate("/");
+    }
+  }, [session.user]);
+
   return (
     <PageWrapper>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -365,6 +368,7 @@ function Admin() {
           <Tab label="Contratos" />
           <Tab label="Lapsos" />
           <Tab label="Rentabilidad" />
+          <Tab label="Blog" />
         </Tabs>
       </Box>
       <CustomTabPanel value={currentTab} index={0}>
@@ -389,6 +393,9 @@ function Admin() {
           </Grid>
           <EnhancedTable headCells={profitHeadCells} rows={profits} />
         </Grid>
+      </CustomTabPanel>
+      <CustomTabPanel value={currentTab} index={3}>
+        <Blog />
       </CustomTabPanel>
 
       {/* DATE RANGES */}
