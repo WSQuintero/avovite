@@ -42,9 +42,8 @@ const Row = ({ children }) => (
 
 function Profile() {
   const [{ constants }] = useConfig();
-  const [session, setSession] = useSession();
+  const [session, { setUser: setSession }] = useSession();
   const [user, setUser] = useState({
-    avatar: "",
     fullname: "",
     email: "",
     cellphone: "",
@@ -66,10 +65,7 @@ function Profile() {
       user.id_type !== "-" &&
       user.id_number &&
       user.id_location_expedition &&
-      user.location_residence &&
-      user.user_id_bank !== "-" &&
-      user.user_bank_account_type !== "-" &&
-      user.user_bank_account_number,
+      user.location_residence,
     [user]
   );
 
@@ -94,6 +90,7 @@ function Profile() {
 
     if (status) {
       setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
+      setSession({ ...session.user, ...user });
     } else {
       setAlert({ show: true, message: "Ha ocurrido un error", status: "error" });
     }
@@ -107,7 +104,6 @@ function Profile() {
     if (session.user) {
       console.log(session.user);
       setUser({
-        avatar: session.user.avatar || "",
         fullname: session.user.fullname || "",
         email: session.user.email || "",
         cellphone: session.user.cellphone || "",
@@ -115,9 +111,6 @@ function Profile() {
         id_number: session.user.id_number || "",
         id_location_expedition: session.user.id_location_expedition || "",
         location_residence: session.user.location_residence || "",
-        user_id_bank: session.user.user_id_bank || "-",
-        user_bank_account_type: session.user.user_bank_account_type || "-",
-        user_bank_account_number: session.user.user_bank_account_number || "",
       });
     }
   }, [session.user]);
@@ -310,60 +303,6 @@ function Profile() {
                 }
               }}
               onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
-            />
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="label-bank">Banco *</InputLabel>
-              <Select
-                name="user_id_bank"
-                labelId="label-bank"
-                label="Banco"
-                value={user.user_id_bank}
-                required
-                fullWidth
-                onChange={handleInputChange}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {constants?.banks.map((bank) => (
-                  <MenuItem key={bank.id} value={bank.id}>
-                    {bank.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Row>
-
-          <Row>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="label-bank-account-type">Tipo de Cuenta *</InputLabel>
-              <Select
-                label="Tipo de Cuenta"
-                labelId="label-bank-account-type"
-                name="user_bank_account_type"
-                value={user.user_bank_account_type}
-                fullWidth
-                required
-                onChange={handleInputChange}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {constants?.account_type.map((accountType) => (
-                  <MenuItem key={accountType.id} value={accountType.id}>
-                    {accountType.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              type="number"
-              name="user_bank_account_number"
-              label="Número de Cuenta"
-              value={user.user_bank_account_number}
-              fullWidth
-              required
-              onChange={handleInputChange}
             />
           </Row>
 

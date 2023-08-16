@@ -12,6 +12,8 @@ import {
   IconButton,
   InputAdornment,
   Link,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   TextField,
@@ -21,10 +23,11 @@ import {
 } from "@mui/material";
 import {
   SearchOutlined as SearchIcon,
-  AndroidOutlined as SampleIcon,
   MenuOpenOutlined as MenuIcon,
   MoreVertOutlined as SettingsIcon,
   KeyboardBackspaceOutlined as BackIcon,
+  LogoutOutlined as LogoutIcon,
+  PersonOutline as PersonIcon,
 } from "@mui/icons-material";
 import { EcommerceIcon } from "../Components/Icons";
 import useSession from "../Hooks/useSession";
@@ -102,15 +105,22 @@ function Header() {
       <Menu
         anchorEl={profileMenuRef.current}
         open={isProfileMenuOpen}
-        elevation={0}
+        elevation={2}
         onClose={() => setIsProfileMenuOpen(false)}
         sx={{ top: 16 }}
       >
+        <MenuItem onClick={() => navigate("/profile")} sx={{ minWidth: 200 }}>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText>Mi perfil</ListItemText>
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={() => logout()} sx={{ minWidth: 200 }}>
-          <Grid display="flex" justifyContent="space-between" alignItems="center" gap={1} width="100%">
-            <Typography color="error">Log Out</Typography>
-            <SampleIcon color="error" fontSize="small" />
-          </Grid>
+          <ListItemIcon>
+            <LogoutIcon color="error" fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ color: "error.main" }}>Cerrar sesión</ListItemText>
         </MenuItem>
       </Menu>
     </AppBar>

@@ -33,6 +33,10 @@ function Dashboard() {
     }
   }, [$Post]);
 
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
@@ -123,7 +127,7 @@ function Dashboard() {
                     padding={2}
                     sx={{ backgroundColor: "white" }}
                   >
-                    <Typography fontWeight={600} textAlign='center' color="primary">
+                    <Typography fontWeight={600} textAlign="center" color="primary">
                       En crecimiento
                     </Typography>
                     <Typography color="primary">{user.trees_balance}</Typography>
