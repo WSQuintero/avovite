@@ -1,14 +1,12 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Box, Grid, Button, Typography, Link, Badge } from "@mui/material";
 import { ShoppingCartOutlined as ShoppingCartIcon } from "@mui/icons-material";
-import { PRODUCTS } from "../utilities/constants";
-import PlantImage from "../assets/img/common/plant.png";
-import PlantPremiumImage from "../assets/img/common/plant_premium.png";
+
 import { NumericFormat } from "react-number-format";
+import { IMAGE_PLACEHOLDER } from "../utilities/constants";
 
 function CardProduct({ product, sx, onBuy }) {
-  const color = product.type === "premium" ? "premium.main" : "primary.main";
-  const pack = PRODUCTS.find((p) => p.id === product.type);
+  const color = "primary.main";
 
   return (
     <Box
@@ -35,24 +33,19 @@ function CardProduct({ product, sx, onBuy }) {
         borderRadius="50%"
         sx={{ backgroundColor: color, color: "white" }}
       >
-        -{product.discount}%
+        -{product.percent_discount}%
       </Box>
       <Box display="flex" justifyContent="center" alignItems="center" gap={7} sx={{ aspectRatio: 2 }}>
-        <img src={product.type === "premium" ? PlantPremiumImage : PlantImage} alt="logo" />
+        <img src={product.url_image || IMAGE_PLACEHOLDER} alt="logo" style={{ width: "100%" }} />
       </Box>
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
-        <Typography
-          fontWeight={600}
-          sx={{
-            color,
-          }}
-        >
-          {product.vites} Vites
+        <Typography fontWeight={600} sx={{ color }}>
+          {product.quantity} {product.product_name}
         </Typography>
         <Typography>
           Paquete:{" "}
           <Typography component="span" color={color} fontWeight={600}>
-            {pack.name}
+            {product.discount_name}
           </Typography>
         </Typography>
         <Typography>
@@ -61,7 +54,7 @@ function CardProduct({ product, sx, onBuy }) {
             $
             <NumericFormat
               displayType="text"
-              value={Math.round(product.vites * pack.value * (1 - product.discount / 100))}
+              value={Math.round(product.quantity * product.unitary_price * (1 - product.percent_discount / 100))}
               thousandSeparator
             ></NumericFormat>
           </Typography>
@@ -69,7 +62,7 @@ function CardProduct({ product, sx, onBuy }) {
         <Box height={8} />
         <Button
           variant="contained"
-          color={product.type === "premium" ? "premium" : "primary"}
+          color="primary"
           fullWidth
           startIcon={<ShoppingCartIcon color="white" />}
           onClick={() => onBuy(product)}

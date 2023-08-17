@@ -4,7 +4,7 @@ import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as 
 import { alpha, Box, Button, Container, Grid, IconButton, TextField, Typography, Divider } from "@mui/material";
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
-import { PRODUCTS } from "../utilities/constants";
+import { IMAGE_PLACEHOLDER, PRODUCTS } from "../utilities/constants";
 
 import PlantImage from "../assets/img/common/plant.png";
 import PlantPremiumImage from "../assets/img/common/plant_premium.png";
@@ -17,10 +17,7 @@ function ShoppingCart() {
         (a, c) =>
           a +
           Math.round(
-            c.package.vites *
-              PRODUCTS.find((p) => p.id === c.package.type).value *
-              (1 - c.package.discount / 100) *
-              c.quantity
+            c.package.quantity * c.package.unitary_price * (1 - c.package.percent_discount / 100) * c.quantity
           ),
         0
       ),
@@ -74,7 +71,17 @@ function ShoppingCart() {
                     },
                   })}
                 >
-                  <img src={element.package.type === "premium" ? PlantPremiumImage : PlantImage} alt="plant logo" />
+                  <Box
+                    width="25%"
+                    sx={(t) => ({
+                      [t.breakpoints.down("xl")]: {
+                        width: "100%",
+                      },
+                    })}
+                  >
+                    <img src={element.package.url_image || IMAGE_PLACEHOLDER} alt="plant logo" width="100%" />
+                  </Box>
+
                   <Grid
                     display="flex"
                     flexDirection="column"
@@ -86,7 +93,7 @@ function ShoppingCart() {
                     })}
                   >
                     <Typography fontSize={24} fontWeight={600}>
-                      {element.package.vites} VITES
+                      {element.package.quantity} {element.package.product_name}
                     </Typography>
                     <Grid display="flex" alignItems="center" justifyContent="space-between" gap={4}>
                       <Typography>Cantidad:</Typography>
@@ -109,9 +116,9 @@ function ShoppingCart() {
                         <NumericFormat
                           displayType="text"
                           value={Math.round(
-                            element.package.vites *
-                              PRODUCTS.find((p) => p.id === element.package.type).value *
-                              (1 - element.package.discount / 100) *
+                            element.package.quantity *
+                              element.package.unitary_price *
+                              (1 - element.package.percent_discount / 100) *
                               element.quantity
                           )}
                           thousandSeparator

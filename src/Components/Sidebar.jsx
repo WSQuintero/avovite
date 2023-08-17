@@ -131,6 +131,10 @@ function Sidebar() {
             name: "Blog",
             route: "/admin/blog",
           },
+          {
+            name: "Tienda",
+            route: "/admin/shop",
+          },
         ],
       },
     ],

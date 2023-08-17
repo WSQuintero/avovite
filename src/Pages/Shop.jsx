@@ -4,7 +4,6 @@ import useCart from "../Hooks/useCart";
 import useShop from "../Hooks/useShop";
 import CardProduct from "../Components/CardProduct";
 import PageWrapper from "../Components/PageWrapper";
-import { PRODUCTS } from "../utilities/constants";
 
 function Shop() {
   const [, { push }] = useCart();
@@ -13,19 +12,10 @@ function Shop() {
   const [loading, setLoading] = useState(true);
 
   const fetchProducts = async () => {
-    const { status, data } = await $Shop.get();
-
-    console.log(data.data)
-
-    const parsedProducts = data.data.map((p) => ({
-      id: p.idService,
-      discount: p.percent_discount,
-      vites: p.quantity_vites,
-      type: PRODUCTS.find((p2) => p2.name === p.serviceName).id,
-    }));
+    const { status, data } = await $Shop.shop.get();
 
     if (status) {
-      setProducts(parsedProducts);
+      setProducts(data.data);
     }
   };
 

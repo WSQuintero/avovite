@@ -8,23 +8,10 @@ import Blog from "../Components/Admin/Blog";
 import DateRanges from "../Components/Admin/DateRanges";
 import Shop from "../Components/Admin/Shop";
 
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Box role="tabpanel" hidden={value !== index} {...other}>
-      <Box display={value === index ? "initial" : "none"} padding={2}>
-        {children}
-      </Box>
-    </Box>
-  );
-}
-
 function Admin() {
   const { section } = useParams();
   const navigate = useNavigate();
   const [session] = useSession();
-  const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
     if (session.user && !session.user.isAdmin()) {
