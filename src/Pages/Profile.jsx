@@ -41,7 +41,6 @@ const Row = ({ children }) => (
 );
 
 function Profile() {
-  const [{ constants }] = useConfig();
   const [session, { setUser: setSession }] = useSession();
   const [user, setUser] = useState({
     fullname: "",
@@ -60,7 +59,6 @@ function Profile() {
   const validation = useMemo(
     () =>
       user.fullname &&
-      user.email &&
       user.cellphone &&
       user.id_type !== "-" &&
       user.id_number &&
@@ -86,7 +84,14 @@ function Profile() {
       return;
     }
 
-    const { status } = await $Auth.update(user);
+    const { status } = await $Auth.update({
+      fullname: user.fullname,
+      cellphone: user.cellphone,
+      id_type: user.id_type,
+      id_number: user.id_number,
+      id_location_expedition: user.id_location_expedition,
+      location_residence: user.location_residence,
+    });
 
     if (status) {
       setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
@@ -223,6 +228,7 @@ function Profile() {
               required
               fullWidth
               onChange={handleInputChange}
+              disabled
             />
           </Row>
           <Row>

@@ -96,7 +96,7 @@ function Router() {
       element: <PrivateRoute component={ShoppingCart} meta={[META.REQUIRES_AUTH]} />,
     },
     {
-      path: "/admin",
+      path: "/admin/:section?",
       element: <PrivateRoute component={Admin} meta={[META.REQUIRES_AUTH]} />,
     },
     {
