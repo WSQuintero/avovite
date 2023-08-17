@@ -23,7 +23,7 @@ import useSession from "../Hooks/useSession";
 
 import background from "../assets/img/sidebar/background.png";
 
-const SidebarLink = ({ open, name, icon, route, subRoutes }) => {
+const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   return (
     <>
       <ListItem disablePadding>
@@ -57,13 +57,13 @@ const SidebarLink = ({ open, name, icon, route, subRoutes }) => {
           })}
         >
           {icon && <ListItemIcon sx={{ color: "inherit" }}>{icon}</ListItemIcon>}
-          <Typography flexGrow={1} fontSize={16} fontWeight={400}>
+          <Typography flexGrow={1} fontSize={16} fontWeight={400} paddingLeft={icon ? 0 : 2}>
             {name}
           </Typography>
         </ListItemButton>
       </ListItem>
       {subRoutes && (
-        <Collapse in={true} timeout="auto" unmountOnExit>
+        <Collapse in={collapse} timeout="auto" unmountOnExit>
           <List disablePadding>
             {subRoutes.map(({ name, route }) => (
               <SidebarLink key={name} open={false} name={name} route={route} />
@@ -75,7 +75,7 @@ const SidebarLink = ({ open, name, icon, route, subRoutes }) => {
   );
 };
 
-function Sidebar() {
+function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
@@ -118,6 +118,7 @@ function Sidebar() {
         name: "Administrador",
         route: "/admin",
         show: user?.isAdmin(),
+        collapse: collapseOn === "admin",
         children: [
           {
             name: "Contratos",
@@ -138,7 +139,7 @@ function Sidebar() {
         ],
       },
     ],
-    [user]
+    [user, collapseOn]
   );
 
   if (!user) {
@@ -188,8 +189,10 @@ function Sidebar() {
       </Typography>
       <List>
         {routes.map(
-          ({ icon, name, route, show, children }) =>
-            show && <SidebarLink key={name} open={false} name={name} icon={icon} route={route} subRoutes={children} />
+          ({ icon, name, route, show, collapse, children }) =>
+            show && (
+              <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
+            )
         )}
       </List>
     </Drawer>

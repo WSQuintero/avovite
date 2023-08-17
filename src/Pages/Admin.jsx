@@ -14,36 +14,30 @@ function Admin() {
   const [session] = useSession();
 
   useEffect(() => {
+    if (!section) {
+      navigate("/admin/contracts");
+    }
+  }, [section]);
+
+  useEffect(() => {
     if (session.user && !session.user.isAdmin()) {
       navigate("/");
     }
   }, [session.user]);
 
-  if (section === "date-ranges") {
-    return (
-      <PageWrapper>
+  return (
+    <PageWrapper collapseSidebar="admin">
+      {section === "date-ranges" ? (
         <DateRanges />
-      </PageWrapper>
-    );
-  } else if (section === "blog") {
-    return (
-      <PageWrapper>
+      ) : section === "blog" ? (
         <Blog />
-      </PageWrapper>
-    );
-  } else if (section === "shop") {
-    return (
-      <PageWrapper>
+      ) : section === "shop" ? (
         <Shop />
-      </PageWrapper>
-    );
-  } else {
-    return (
-      <PageWrapper>
+      ) : (
         <Contracts />
-      </PageWrapper>
-    );
-  }
+      )}
+    </PageWrapper>
+  );
 }
 
 export default Admin;
