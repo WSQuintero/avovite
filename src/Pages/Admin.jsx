@@ -79,6 +79,10 @@ function Admin() {
     id_contract_date_range: "",
     amount_profit: "",
   });
+  const [billSplitting, setBillSplitting] = useState({
+    dateRangeId: null,
+    profitId: null,
+  });
   const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
 
   const dateRangeHeadCells = useMemo(
@@ -124,7 +128,7 @@ function Admin() {
         align: "left",
         disablePadding: false,
         format: (value, row, onCollapse) => (
-          <Grid display="flex" justifyContent="flex-end" gap={1}>
+          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <IconButton onClick={onCollapse}>
               <AddIcon />
             </IconButton>
@@ -139,6 +143,16 @@ function Admin() {
             <IconButton color="error" onClick={() => setRangeToDelete(row.id)}>
               <DeleteIcon />
             </IconButton>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => {
+                setBillSplitting((prev) => ({ ...prev, dateRangeId: row.id }));
+                setShowModal("bill-splitting");
+              }}
+            >
+              Split
+            </Button>
           </Grid>
         ),
       },
@@ -218,6 +232,11 @@ function Admin() {
         id: null,
         id_contract_date_range: "",
         amount_profit: "",
+      });
+    } else if (target === "BillSplitting") {
+      setBillSplitting({
+        dateRangeId: null,
+        profitId: null,
       });
     }
   };
@@ -336,6 +355,23 @@ function Admin() {
       setShowModal(null);
     } else {
       setFeedback({ show: true, status: "error", message: "Error al eliminar la rentabilidad." });
+    }
+  };
+
+  const onGenerateBillSplitting = async () => {
+    if (!billSplitting.profitId) {
+      setFeedback({ show: true, status: "error", message: "Debe seleccionar primero una rentabilidad." });
+      return;
+    }
+
+    const { status } = await $Profit.split({ id: billSplitting.profitId });
+
+    if (status) {
+      setShowModal(null);
+      setFeedback({ show: true, status: "success", message: "Split de pagos completado correctamente." });
+      clearFields("BillSplitting");
+    } else {
+      setFeedback({ show: true, status: "error", message: "Hubo un error al generar split de pagos." });
     }
   };
 
@@ -609,6 +645,58 @@ function Admin() {
           </Button>
           <Button variant="contained" onClick={onDeleteProfit}>
             Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        maxWidth="sm"
+        open={showModal === "bill-splitting"}
+        onClose={() => {
+          clearFields("BillSplitting");
+          setShowModal(null);
+        }}
+        fullWidth
+      >
+        <DialogTitle>Generar split de pagos</DialogTitle>
+        <DialogContent>
+          <Grid paddingY={1}>
+            <FormControl fullWidth>
+              <InputLabel id="label-bill-splitting-select">Rentabilidad</InputLabel>
+              <Select
+                label="Rentabilidad"
+                labelId="label-bill-splitting-select"
+                id="demo-simple-select-helper"
+                value={billSplitting.profitId}
+                fullWidth
+                onChange={(event) => setBillSplitting((prev) => ({ ...prev, profitId: event.target.value }))}
+              >
+                <MenuItem value={-1} disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {profits
+                  .filter((p) => p.id_contract_date_range === billSplitting.dateRangeId)
+                  .map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {formatCurrency(e.amount_profit, "$")}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              clearFields("BillSplitting");
+              setShowModal(null);
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={onGenerateBillSplitting} disabled={!billSplitting.profitId}>
+            Aceptar
           </Button>
         </DialogActions>
       </Dialog>
