@@ -15,6 +15,8 @@ function Shop() {
   const fetchProducts = async () => {
     const { status, data } = await $Shop.get();
 
+    console.log(data.data)
+
     const parsedProducts = data.data.map((p) => ({
       id: p.idService,
       discount: p.percent_discount,

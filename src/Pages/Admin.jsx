@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { NumericFormat } from "react-number-format";
@@ -17,6 +17,9 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
+  List,
+  ListItem,
+  ListItemText,
   MenuItem,
   Select,
   Snackbar,
@@ -24,14 +27,15 @@ import {
   Tabs,
   TextField,
   Typography,
+  alpha,
 } from "@mui/material";
-import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
+import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, AddOutlined as AddIcon } from "@mui/icons-material";
 import PageWrapper from "../Components/PageWrapper";
 import EnhancedTable from "../Components/EnhancedTable";
 import DateRangeService from "../Services/daterange.service";
 import ProfitService from "../Services/profit.service";
 import useSession from "../Hooks/useSession";
-import { formatDate } from "../utilities";
+import { formatCurrency, formatDate } from "../utilities";
 import Contracts from "../Components/Admin/Contracts";
 import Blog from "../Components/Admin/Blog";
 import useConfig from "../Hooks/useConfig";
@@ -67,6 +71,16 @@ function Admin() {
   });
   const [rangeToDelete, setRangeToDelete] = useState(null);
   const $DateRange = useMemo(() => new DateRangeService(session.token), [session.token]);
+
+  // PROFITS
+  const [profits, setProfits] = useState([]);
+  const [currentProfit, setCurrentProfit] = useState({
+    id: null,
+    id_contract_date_range: "",
+    amount_profit: "",
+  });
+  const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
+
   const dateRangeHeadCells = useMemo(
     () => [
       {
@@ -109,8 +123,11 @@ function Admin() {
         label: "",
         align: "left",
         disablePadding: false,
-        format: (value, row) => (
+        format: (value, row, onCollapse) => (
           <Grid display="flex" justifyContent="flex-end" gap={1}>
+            <IconButton onClick={onCollapse}>
+              <AddIcon />
+            </IconButton>
             <IconButton
               onClick={() => {
                 setNewDateRange(row);
@@ -129,65 +146,62 @@ function Admin() {
     []
   );
 
-  // PROFITS
-  const [profits, setProfits] = useState([]);
-  const [currentProfit, setCurrentProfit] = useState({
-    id: null,
-    id_contract_date_range: "",
-    amount_profit: "",
-  });
-  const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
-  const profitHeadCells = useMemo(
-    () => [
-      {
-        id: "id_contract_date_range",
-        label: "ID de Lapso",
-        align: "left",
-        width: "50%",
-        disablePadding: false,
-        format: (value) => value,
-      },
-      {
-        id: "amount_profit",
-        label: "Valor de rentabilidad",
-        align: "left",
-        width: "50%",
-        disablePadding: false,
-        format: (value) => (
-          <>
-            $<NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
-          </>
-        ),
-      },
-      {
-        id: "",
-        label: "",
-        align: "left",
-        disablePadding: false,
-        format: (value, row) => (
-          <Grid display="flex" justifyContent="flex-end" gap={1}>
-            <IconButton
-              onClick={() => {
-                setCurrentProfit(row);
-                setShowModal("create-profit");
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              color="error"
-              onClick={() => {
-                setCurrentProfit(row);
-                setShowModal("delete-profit");
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Grid>
-        ),
-      },
-    ],
-    []
+  const dateRangeCollapse = useCallback(
+    (row) => (
+      <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
+        <Grid display="flex" justifyContent="space-between">
+          <Typography variant="h4">Rentabilidades</Typography>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setCurrentProfit((prev) => ({ ...prev, id_contract_date_range: row.id }));
+              setShowModal("create-profit");
+            }}
+          >
+            Crear
+          </Button>
+        </Grid>
+        <List>
+          {profits
+            .filter((p) => p.id_contract_date_range === row.id)
+            .map((p) => (
+              <ListItem
+                key={p.id}
+                secondaryAction={
+                  <Grid display="flex" justifyContent="flex-end" gap={1}>
+                    <IconButton
+                      onClick={() => {
+                        setCurrentProfit(p);
+                        setShowModal("create-profit");
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() => {
+                        setCurrentProfit(p);
+                        setShowModal("delete-profit");
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
+                }
+                sx={(t) => ({
+                  borderRadius: 1,
+                  "&:hover": {
+                    backgroundColor: alpha(t.palette.primary.main, 0.1),
+                  },
+                })}
+              >
+                <ListItemText primary={formatCurrency(p.amount_profit, "$")} />
+              </ListItem>
+            ))}
+        </List>
+      </Grid>
+    ),
+    [profits]
   );
 
   const clearFields = (target) => {
@@ -367,7 +381,6 @@ function Admin() {
         >
           <Tab label="Contratos" />
           <Tab label="Lapsos" />
-          <Tab label="Rentabilidad" />
           <Tab label="Blog" />
         </Tabs>
       </Box>
@@ -381,20 +394,10 @@ function Admin() {
               Crear
             </Button>
           </Grid>
-          <EnhancedTable headCells={dateRangeHeadCells} rows={dateRanges} />
+          <EnhancedTable headCells={dateRangeHeadCells} rows={dateRanges} collapse={dateRangeCollapse} />
         </Grid>
       </CustomTabPanel>
       <CustomTabPanel value={currentTab} index={2}>
-        <Grid display="flex" flexDirection="column" gap={2}>
-          <Grid display="flex" justifyContent="flex-end">
-            <Button variant="contained" onClick={() => setShowModal("create-profit")}>
-              Crear
-            </Button>
-          </Grid>
-          <EnhancedTable headCells={profitHeadCells} rows={profits} />
-        </Grid>
-      </CustomTabPanel>
-      <CustomTabPanel value={currentTab} index={3}>
         <Blog />
       </CustomTabPanel>
 
@@ -463,7 +466,7 @@ function Admin() {
               })}
             >
               <TextField
-                label="Duración (meses)"
+                label="Duración de contrato (meses)"
                 type="number"
                 value={newDateRange.months_duration}
                 onChange={(event) =>
@@ -542,60 +545,27 @@ function Admin() {
             component="form"
             onSubmit={currentProfit.id ? onUpdateProfit : onCreateProfit}
           >
-            <Grid
-              display="flex"
-              gap={2}
-              sx={(t) => ({
-                [t.breakpoints.down("md")]: {
-                  flexDirection: "column",
-                },
-              })}
-            >
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-helper-label">Lapso</InputLabel>
-                <Select
-                  label="Lapso"
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={currentProfit.id_contract_date_range}
-                  onChange={(event) =>
-                    setCurrentProfit((prev) => ({ ...prev, id_contract_date_range: event.target.value }))
-                  }
-                  fullWidth
-                >
-                  <MenuItem value={-1} disabled>
-                    Seleccionar opción
-                  </MenuItem>
-                  {dateRanges.map((e) => (
-                    <MenuItem key={e.id} value={e.id}>
-                      {e.id}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <NumericFormat
-                customInput={TextField}
-                label="Valor"
-                variant="outlined"
-                value={currentProfit.amount_profit}
-                sx={{ width: "100%" }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Typography>$</Typography>
-                    </InputAdornment>
-                  ),
-                }}
-                thousandSeparator
-                onValueChange={({ floatValue }) =>
-                  setCurrentProfit((prev) => ({
-                    ...prev,
-                    amount_profit: String(floatValue),
-                  }))
-                }
-              />
-            </Grid>
+            <NumericFormat
+              customInput={TextField}
+              label="Valor"
+              variant="outlined"
+              value={currentProfit.amount_profit}
+              sx={{ width: "100%" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Typography>$</Typography>
+                  </InputAdornment>
+                ),
+              }}
+              thousandSeparator
+              onValueChange={({ floatValue }) =>
+                setCurrentProfit((prev) => ({
+                  ...prev,
+                  amount_profit: String(floatValue),
+                }))
+              }
+            />
           </Box>
         </DialogContent>
         <DialogActions>

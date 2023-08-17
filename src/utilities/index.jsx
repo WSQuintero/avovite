@@ -1,3 +1,5 @@
+import { NumericFormat } from "react-number-format";
+
 export const handleCall = async (callback) => {
   if (!callback) {
     return { status: false, data: null };
@@ -44,3 +46,11 @@ export const formatDate = (date) =>
       "diciembre",
     ][new Date(date).getMonth()]
   } ${new Date(date).getFullYear()}`;
+
+export const formatCurrency = (value, prefix = "", sufix = "") => (
+  <>
+    {prefix}
+    <NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
+    {sufix}
+  </>
+);

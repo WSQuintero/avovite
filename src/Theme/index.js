@@ -34,14 +34,19 @@ export default createTheme({
   typography: {
     fontSize: 16,
     fontFamily: "'Poppins', sans-serif",
+    h2: {
+      fontWeight: 600,
+      fontSize: 32,
+      color: "#67AA36",
+    },
     h3: {
       fontWeight: 500,
       fontSize: 24,
       color: "#67AA36",
     },
-    h2: {
-      fontWeight: 600,
-      fontSize: 32,
+    h4: {
+      fontWeight: 500,
+      fontSize: 20,
       color: "#67AA36",
     },
   },
@@ -49,6 +54,9 @@ export default createTheme({
     borderRadius: 10,
   },
   components: {
+    MuiDialogTitle: {
+      styleOverrides: { root: { color: "#67AA36" } },
+    },
     MuiPaper: {
       defaultProps: {
         sx: {
