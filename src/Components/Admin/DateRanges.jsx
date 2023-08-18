@@ -26,7 +26,6 @@ import {
 } from "@mui/material";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, AddOutlined as AddIcon } from "@mui/icons-material";
 import useSession from "../../Hooks/useSession";
-import useConfig from "../../Hooks/useConfig";
 import DateRangeService from "../../Services/daterange.service";
 import ProfitService from "../../Services/profit.service";
 import { formatCurrency, formatDate } from "../../utilities";
@@ -34,16 +33,22 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { NumericFormat } from "react-number-format";
 import EnhancedTable from "../EnhancedTable";
+import useShop from "../../Hooks/useShop";
 
 function DateRanges() {
   const [session] = useSession();
   const [showModal, setShowModal] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
 
+  // PRODUCTS
+  const [products, setProducts] = useState([]);
+  const $Shop = useShop();
+
   // DATE RANGE
   const [dateRanges, setDateRanges] = useState([]);
   const [newDateRange, setNewDateRange] = useState({
     id: null,
+    id_product: -1,
     date_start_inscription: null,
     date_end_inscription: null,
     months_duration: "",
@@ -51,6 +56,15 @@ function DateRanges() {
   });
   const [rangeToDelete, setRangeToDelete] = useState(null);
   const $DateRange = useMemo(() => new DateRangeService(session.token), [session.token]);
+  const isValidDateRange = useMemo(
+    () =>
+      newDateRange.id_product &&
+      newDateRange.date_start_inscription &&
+      newDateRange.date_end_inscription &&
+      newDateRange.months_duration &&
+      newDateRange.date_start_profit,
+    [newDateRange]
+  );
 
   // PROFITS
   const [profits, setProfits] = useState([]);
@@ -68,11 +82,11 @@ function DateRanges() {
   const dateRangeHeadCells = useMemo(
     () => [
       {
-        id: "id",
-        label: "ID",
+        id: "product_name",
+        label: "Producto",
         align: "left",
         disablePadding: false,
-        format: (value) => value,
+        format: (value) => value || "-",
       },
       {
         id: "date_start_inscription",
@@ -225,7 +239,13 @@ function DateRanges() {
   const onCreateDateRange = async (event) => {
     event.preventDefault();
 
+    if (!isValidDateRange) {
+      setFeedback({ show: true, status: "error", message: "Todos los campos son requeridos." });
+      return;
+    }
+
     const body = {
+      id_product: newDateRange.id_product,
       date_start_inscription: newDateRange.date_start_inscription,
       date_end_inscription: newDateRange.date_end_inscription,
       months_duration: parseInt(newDateRange.months_duration),
@@ -248,7 +268,13 @@ function DateRanges() {
   const onUpdateDateRange = async (event) => {
     event.preventDefault();
 
+    if (!isValidDateRange) {
+      setFeedback({ show: true, status: "error", message: "Todos los campos son requeridos." });
+      return;
+    }
+
     const body = {
+      id_product: newDateRange.id_product,
       date_start_inscription: newDateRange.date_start_inscription,
       date_end_inscription: newDateRange.date_end_inscription,
       months_duration: parseInt(newDateRange.months_duration),
@@ -372,6 +398,13 @@ function DateRanges() {
           setProfits(data.data);
         }
       })();
+      (async () => {
+        const { status, data } = await $Shop.product.get();
+
+        if (status) {
+          setProducts(data.data);
+        }
+      })();
     }
   }, [session.token]);
 
@@ -379,7 +412,7 @@ function DateRanges() {
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
-          <Button variant="contained" onClick={() => setShowModal("create-date-range")}>
+          <Button variant="contained" size="small" onClick={() => setShowModal("create-date-range")}>
             Crear
           </Button>
         </Grid>
@@ -460,7 +493,6 @@ function DateRanges() {
                     months_duration: event.target.value,
                   }))
                 }
-                error={parseInt(newDateRange.months_duration) <= 0 || newDateRange.months_duration === ""}
                 sx={{ width: "100%" }}
               />
               <DatePicker
@@ -476,6 +508,41 @@ function DateRanges() {
                 sx={{ width: "100%" }}
               />
             </Grid>
+            <Grid
+              display="flex"
+              gap={2}
+              sx={(t) => ({
+                [t.breakpoints.down("md")]: {
+                  flexDirection: "column",
+                },
+              })}
+            >
+              <FormControl fullWidth>
+                <InputLabel id="label-product-select">Producto</InputLabel>
+                <Select
+                  label="Producto"
+                  labelId="label-product-select"
+                  name="id_product"
+                  value={newDateRange.id_product}
+                  fullWidth
+                  onChange={(event) =>
+                    setNewDateRange((prev) => ({
+                      ...prev,
+                      id_product: event.target.value,
+                    }))
+                  }
+                >
+                  <MenuItem value={-1} selected disabled>
+                    Seleccione una opción
+                  </MenuItem>
+                  {products.map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {e.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -488,7 +555,11 @@ function DateRanges() {
           >
             Cancelar
           </Button>
-          <Button variant="contained" onClick={newDateRange.id ? onUpdateDateRange : onCreateDateRange}>
+          <Button
+            variant="contained"
+            onClick={newDateRange.id ? onUpdateDateRange : onCreateDateRange}
+            disabled={!isValidDateRange}
+          >
             {newDateRange.id ? "Actualizar" : "Crear"}
           </Button>
         </DialogActions>

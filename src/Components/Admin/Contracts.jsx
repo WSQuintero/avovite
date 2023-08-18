@@ -193,27 +193,28 @@ const Contracts = () => {
         disablePadding: false,
         format: (value, row) =>
           row.status_contracts === 0 ? (
-            <Button variant="contained" onClick={() => setSelectedContract(row)} sx={{ width: 104 }}>
+            <Button variant="contained" size="small" onClick={() => setSelectedContract(row)} sx={{ width: 80 }}>
               Crear
             </Button>
           ) : (
             <Button
               variant="outlined"
+              size="small"
               onClick={() =>
                 window.open(`https://avovite-api-dev.concilbot.com/api/v1/contracts/files/${row.id}`, "_blank")
               }
-              sx={{ width: 104 }}
+              sx={{ width: 80 }}
             >
               Ver
             </Button>
           ),
       },
       {
-        id: "beneficiary_fullname",
+        id: "fullname",
         label: "Nombre del pagador",
         align: "left",
         disablePadding: false,
-        format: (value) => value,
+        format: (value) => value || "-",
       },
       {
         id: "contract_vites",

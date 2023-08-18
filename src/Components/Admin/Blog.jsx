@@ -205,7 +205,7 @@ function Blog() {
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
-          <Button variant="contained" onClick={() => setCurrentModal("create")}>
+          <Button variant="contained" size="small" onClick={() => setCurrentModal("create")}>
             Crear
           </Button>
         </Grid>
