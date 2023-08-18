@@ -1,3 +1,5 @@
+import { NumericFormat } from "react-number-format";
+
 export const handleCall = async (callback) => {
   if (!callback) {
     return { status: false, data: null };
@@ -30,17 +32,25 @@ export const isToday = (date) => {
 export const formatDate = (date) =>
   `${new Date(date).getDate()} ${
     [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Deciembre",
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
     ][new Date(date).getMonth()]
   } ${new Date(date).getFullYear()}`;
+
+export const formatCurrency = (value, prefix = "", sufix = "") => (
+  <>
+    {prefix}
+    <NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
+    {sufix}
+  </>
+);

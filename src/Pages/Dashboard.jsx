@@ -1,29 +1,41 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Container, Grid, Typography, alpha } from "@mui/material";
+import { Box, Button, Container, Grid, Skeleton, Typography, alpha } from "@mui/material";
 import useConfig from "../Hooks/useConfig";
 import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import Post from "../Components/Post";
 import VitesImage from "../assets/img/common/vites.png";
+import useSession from "../Hooks/useSession";
 
 function Dashboard() {
+  const [{ user }] = useSession();
   const [config, { setOnboarding }] = useConfig();
-  const [posts, setPosts] = useState([]);
   const $Post = usePost();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  console.log(user);
 
   const fetchPosts = async () => {
     const { status, data } = await $Post.get();
 
     if (status) {
-      setPosts(data);
+      setPosts(data.data);
     }
   };
 
   useEffect(() => {
     if ($Post) {
-      fetchPosts();
+      (async () => {
+        await fetchPosts();
+        setLoading(false);
+      })();
     }
   }, [$Post]);
+
+  if (!user) {
+    return <></>;
+  }
 
   return (
     <PageWrapper>
@@ -74,7 +86,7 @@ function Dashboard() {
                     VITES
                   </Typography>
                   <Typography fontSize={40} fontWeight={700} color="white" lineHeight={1}>
-                    67
+                    {user.vites_balance}
                   </Typography>
                 </Box>
                 <Box
@@ -105,7 +117,7 @@ function Dashboard() {
                     <Typography fontWeight={600} color="primary">
                       Maduros
                     </Typography>
-                    <Typography color="primary">50</Typography>
+                    <Typography color="primary">{user.trees_balance}</Typography>
                   </Box>
                   <Box
                     display="flex"
@@ -115,10 +127,10 @@ function Dashboard() {
                     padding={2}
                     sx={{ backgroundColor: "white" }}
                   >
-                    <Typography fontWeight={600} color="primary">
+                    <Typography fontWeight={600} textAlign="center" color="primary">
                       En crecimiento
                     </Typography>
-                    <Typography color="primary">17</Typography>
+                    <Typography color="primary">{user.trees_balance}</Typography>
                   </Box>
                 </Box>
               </Grid>
@@ -137,9 +149,9 @@ function Dashboard() {
             <Grid display="flex" flexDirection="column" gap={4}>
               <Typography variant="h2">Recientes</Typography>
               <Grid display="flex" flexDirection="column" gap={2}>
-                {posts.map((post) => (
-                  <Post key={post.id} post={post} route={`/posts/${post.id}`} />
-                ))}
+                {loading
+                  ? [...Array(3).keys()].map((post) => <Skeleton key={post} height={240} sx={{ transform: "none" }} />)
+                  : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} />)}
               </Grid>
             </Grid>
           </Grid>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import PhoneField from "react-phone-input-2";
 import {
   Alert,
@@ -32,6 +32,7 @@ const StatusIcon = ({ status = false }) => {
 };
 
 function Signin() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     fullname: "",
     email: "",
@@ -96,6 +97,7 @@ function Signin() {
         message: "Ha ocurrido un error, inténtelo de nuevo.",
         status: "error",
       });
+      navigate("/signin");
     } else {
       setFeedback({
         show: true,
@@ -138,7 +140,7 @@ function Signin() {
             borderRadius: 0,
             order: 0,
             width: "100vw",
-            height: "50vh",
+            height: "20vh",
           },
         })}
       ></Box>
@@ -155,7 +157,7 @@ function Signin() {
         sx={(theme) => ({
           [theme.breakpoints.down("md")]: {
             width: "100vw",
-            height: "50vh",
+            height: "80vh",
           },
         })}
       >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -12,12 +12,15 @@ import {
   Snackbar,
   Alert,
   alpha,
+  Paper,
+  Autocomplete,
 } from "@mui/material";
 import PhoneField from "react-phone-input-2";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
 import LogoImage from "../assets/img/common/logo.svg";
 import useConfig from "../Hooks/useConfig";
+import UtilsService from "../Services/utils.service";
 
 const Row = ({ children }) => (
   <Grid
@@ -56,6 +59,9 @@ const Label = ({ error = false, children }) => <Typography color={error ? "error
 
 const BookingForm = () => {
   const [{ constants }] = useConfig();
+  const $Utils = useMemo(() => new UtilsService(), []);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
   const [formData, setFormData] = useState({
     id_type: "-",
@@ -63,7 +69,8 @@ const BookingForm = () => {
     email: "",
     fullname: "",
     id_number: "",
-    location_residence: "",
+    codeDepto: "-",
+    codMupio: "-",
     cellphone: "",
     user_id_bank: "-",
     user_bank_account_type: "-",
@@ -79,7 +86,8 @@ const BookingForm = () => {
     email: false,
     fullname: false,
     id_number: false,
-    location_residence: false,
+    codeDepto: false,
+    codMupio: false,
     cellphone: false,
     user_id_bank: false,
     user_bank_account_type: false,
@@ -110,7 +118,7 @@ const BookingForm = () => {
       email: formData.email,
       fullname: formData.fullname,
       id_number: formData.id_number,
-      location_residence: formData.location_residence,
+      cod_municipio: formData.codMupio,
       cellphone: formData.cellphone,
       user_id_bank: formData.user_id_bank,
       user_bank_account_type: formData.user_bank_account_type,
@@ -121,13 +129,7 @@ const BookingForm = () => {
       beneficiary_id_location_expedition: formData.beneficiary_id_location_expedition,
     };
 
-    // Aquí puedes agregar validaciones si es necesario antes de enviar los datos
-
-    const { status, data } = await contractService.add({ body: postData });
-
-    console.log("status");
-    console.log(status);
-    console.log(data);
+    const { status } = await contractService.add({ body: postData });
 
     if (status) {
       setFormData({
@@ -136,7 +138,8 @@ const BookingForm = () => {
         email: "",
         fullname: "",
         id_number: "",
-        location_residence: "",
+        codeDepto: "-",
+        codMupio: "-",
         cellphone: "",
         user_id_bank: "",
         user_bank_account_type: "",
@@ -153,8 +156,9 @@ const BookingForm = () => {
     }
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = async (event) => {
     const { name, value } = event.target;
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -163,11 +167,29 @@ const BookingForm = () => {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: false }));
     }
+
+    if (name === "codeDepto") {
+      const { status, data } = await $Utils.getLocation({ stateCode: value });
+
+      if (status) {
+        setCities(data.data);
+      }
+    }
   };
 
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
+
+  useEffect(() => {
+    (async () => {
+      const { status, data } = await $Utils.getLocation();
+
+      if (status) {
+        setStates(data.data);
+      }
+    })();
+  }, []);
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
@@ -270,20 +292,6 @@ const BookingForm = () => {
             />
           </Column>
           <Column>
-            <Label error={errors.location_residence}>Ciudad y País de Residencia</Label>
-            <TextField
-              name="location_residence"
-              required
-              value={formData.location_residence}
-              onChange={handleInputChange}
-              error={errors.location_residence}
-              sx={{ width: "100%" }}
-            />
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
             <Label error={errors.cellphone}>Teléfono de Contacto</Label>
             <PhoneField
               enableSearch={true}
@@ -308,6 +316,42 @@ const BookingForm = () => {
               onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
             />
           </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.codeDepto}>Departamento</Label>
+            <FormControl variant="outlined">
+              <Select name="codeDepto" value={formData.codeDepto} onChange={handleInputChange} error={errors.codeDepto}>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {states.map((e) => (
+                  <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
+                    {e.nombreDepto}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Column>
+          <Column>
+            <Label error={errors.codMupio}>Municipio</Label>
+            <FormControl variant="outlined">
+              <Select name="codMupio" value={formData.codMupio} onChange={handleInputChange} error={errors.codMupio}>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {cities.map((e) => (
+                  <MenuItem key={e.codMupio} value={e.codMupio}>
+                    {e.nombreMupio}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Column>
+        </Row>
+
+        <Row>
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>
             <FormControl variant="outlined">

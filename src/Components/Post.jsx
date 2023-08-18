@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography, alpha } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography, alpha } from "@mui/material";
 import { Link } from "react-router-dom";
 
 function Post({ post, route }) {
@@ -6,18 +6,20 @@ function Post({ post, route }) {
 
   return (
     <Box
-      component="article"
+      component={Paper}
+      elevation={0}
       display="flex"
       width="100%"
       borderRadius={2}
       sx={(t) => ({
-        backgroundColor: alpha(t.palette.primary.main, 0.1),
         [t.breakpoints.down(breakpoint)]: {
           flexDirection: "column",
         },
       })}
     >
       <Box
+        display="flex"
+        flexShrink={0}
         sx={(t) => ({
           width: "30%",
           [t.breakpoints.down(breakpoint)]: {
@@ -25,11 +27,24 @@ function Post({ post, route }) {
           },
         })}
       >
-        <img src={post.image} alt="Post image" style={{ width: "100%", borderRadius: 8 * 2, objectFit: "cover" }} />
+        <img
+          src={post.url_image}
+          alt="Post image"
+          style={{ width: "100%", borderRadius: 8 * 2, objectFit: "cover", aspectRatio: 2 }}
+        />
       </Box>
       <Grid flexGrow={1} display="flex" flexDirection="column" padding={2}>
-        <Typography variant="h3">{post.title}</Typography>
-        <Typography>{post.description}</Typography>
+        <Typography
+          variant="h3"
+          sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}
+        >
+          {post.title}
+        </Typography>
+        <Typography
+          sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}
+        >
+          {post.description}
+        </Typography>
         <Button component={Link} sx={{ marginLeft: "auto", marginTop: "auto" }} to={route}>
           Ver más
         </Button>

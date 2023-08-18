@@ -35,6 +35,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   if (meta.includes(META.REQUIRES_AUTH) && !isAuthenticated) {
     return <Navigate to="/signin" />;
   }
+
   if (meta.includes(META.HIDE_FOR_AUTH) && isAuthenticated) {
     return <Navigate to="/" />;
   }
@@ -95,7 +96,7 @@ function Router() {
       element: <PrivateRoute component={ShoppingCart} meta={[META.REQUIRES_AUTH]} />,
     },
     {
-      path: "/admin",
+      path: "/admin/:section?",
       element: <PrivateRoute component={Admin} meta={[META.REQUIRES_AUTH]} />,
     },
     {

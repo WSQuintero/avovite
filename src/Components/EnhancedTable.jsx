@@ -12,10 +12,11 @@ import {
   TableRow,
 } from "@mui/material";
 import EnhancedTableHead from "./EnhancedTableHead";
+import EnhancedTableRow from "./EnhancedTableRow";
 
-function EnhancedTable({ headCells, rows, footer = <></> }) {
+function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, collapse = null }) {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState(headCells[0]?.id || "");
+  const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -56,13 +57,7 @@ function EnhancedTable({ headCells, rows, footer = <></> }) {
           />
           <TableBody>
             {visibleRows.map((row) => (
-              <TableRow key={row.name} tabIndex={-1} hover>
-                {headCells.map((headCell) => (
-                  <TableCell key={headCell.id} align={headCell.align} style={{ width: headCell.width }}>
-                    {headCell.format(row[headCell.id], row)}
-                  </TableCell>
-                ))}
-              </TableRow>
+              <EnhancedTableRow key={row.id} headCells={headCells} row={row} collapse={collapse} />
             ))}
             {emptyRows > 0 && (
               <TableRow

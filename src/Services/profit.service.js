@@ -61,4 +61,15 @@ export default class ProfitService {
         ).data
     );
   }
+
+  async split({ id }) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(`${this.API_URL}/contract-date-range-profit/split/${id}`, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleCall } from "../utilities";
 
 export default class AuthService {
   constructor(token = null) {
@@ -12,6 +13,16 @@ export default class AuthService {
         email,
         password,
       });
+
+      /* const data = await new Promise((resolve) =>
+        setTimeout(
+          () =>
+            resolve({
+              data: "123",
+            }),
+          200
+        )
+      ); */
 
       return { status: true, data: data.data };
     } catch (error) {
@@ -34,22 +45,34 @@ export default class AuthService {
     }
   }
 
+  async update(body) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(`${this.API_URL}/users/user`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
+
   async validate() {
     if (!this.token) {
       return { status: false, data: null };
     }
 
     try {
-      /*  const data = await new Promise((resolve) =>
+      /* const data = await new Promise((resolve) =>
         setTimeout(
           () =>
             resolve({
               user: {
-                name: "Glen Cunningham",
+                fullname: "Glen Cunningham",
                 email: "wungo@raru.li",
                 phone: "573101112233",
                 account_number: 2873557237,
                 city: "Medellín",
+                rol: 0,
                 country: "Colombia",
                 account_bank: 3948779348,
                 avatar: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",

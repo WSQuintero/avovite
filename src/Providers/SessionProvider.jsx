@@ -7,7 +7,7 @@ export const SessionContext = createContext();
 export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState({ user: null, token: false });
 
-  const setUser = (value) => setSession((prev) => ({ ...prev, user: value }));
+  const setUser = (value) => setSession((prev) => ({ ...prev, user: { ...value, isAdmin: () => value.rol === 1 } }));
 
   const setToken = (value) => setSession((prev) => ({ ...prev, token: value }));
 

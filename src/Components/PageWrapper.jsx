@@ -2,10 +2,10 @@ import { Box, Grid } from "@mui/material";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
-function PageWrapper({ hideSidebar = false, hideHeader = false, children }) {
+function PageWrapper({ collapseSidebar, children }) {
   return (
     <Grid display="flex">
-      <Sidebar />
+      <Sidebar collapseOn={collapseSidebar} />
       <Grid flexGrow={1} display="flex" flexDirection="column" minHeight="100vh">
         <Header />
         <Box
@@ -13,7 +13,7 @@ function PageWrapper({ hideSidebar = false, hideHeader = false, children }) {
           flexGrow={1}
           padding={6}
           sx={(t) => ({
-            maxWidth: `calc(100vw - ${t.sizes.sidebar.main}px)`,
+            maxWidth: `calc(100vw - ${t.sizes.sidebar.main}px - 16px)`,
             [t.breakpoints.down("md")]: {
               maxWidth: "100vw",
               padding: 2,

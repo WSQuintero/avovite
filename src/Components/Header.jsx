@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import {
   AppBar,
@@ -12,6 +12,8 @@ import {
   IconButton,
   InputAdornment,
   Link,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   TextField,
@@ -21,10 +23,11 @@ import {
 } from "@mui/material";
 import {
   SearchOutlined as SearchIcon,
-  AndroidOutlined as SampleIcon,
   MenuOpenOutlined as MenuIcon,
   MoreVertOutlined as SettingsIcon,
   KeyboardBackspaceOutlined as BackIcon,
+  LogoutOutlined as LogoutIcon,
+  PersonOutline as PersonIcon,
 } from "@mui/icons-material";
 import { EcommerceIcon } from "../Components/Icons";
 import useSession from "../Hooks/useSession";
@@ -33,6 +36,7 @@ import useCart from "../Hooks/useCart";
 
 function Header() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [session, { logout }] = useSession();
   const [, { toggleSidebar }] = useConfig();
@@ -50,7 +54,7 @@ function Header() {
       <Toolbar>
         <Grid display="flex" alignItems="center" gap={2} width="100%">
           <Link fontSize={24} fontWeight={500} component={RouterLink} to="/" sx={{ textDecoration: "none" }}>
-            Avovite app
+            Avovite
           </Link>
           <TextField
             label="Buscar"
@@ -101,15 +105,22 @@ function Header() {
       <Menu
         anchorEl={profileMenuRef.current}
         open={isProfileMenuOpen}
-        elevation={0}
+        elevation={2}
         onClose={() => setIsProfileMenuOpen(false)}
         sx={{ top: 16 }}
       >
+        <MenuItem onClick={() => navigate("/profile")} sx={{ minWidth: 200 }}>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText>Mi perfil</ListItemText>
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={() => logout()} sx={{ minWidth: 200 }}>
-          <Grid display="flex" justifyContent="space-between" alignItems="center" gap={1} width="100%">
-            <Typography color="error">Log Out</Typography>
-            <SampleIcon color="error" fontSize="small" />
-          </Grid>
+          <ListItemIcon>
+            <LogoutIcon color="error" fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ color: "error.main" }}>Cerrar sesión</ListItemText>
         </MenuItem>
       </Menu>
     </AppBar>
@@ -147,7 +158,7 @@ function Header() {
         paddingY={1}
         sx={{ backgroundColor: "primary.main" }}
       >
-        <IconButton>
+        <IconButton onClick={() => navigate(-1)}>
           <BackIcon sx={{ color: "white" }} />
         </IconButton>
         <Typography color="white">Ir Atrás</Typography>

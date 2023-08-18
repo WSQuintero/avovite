@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import {
   Avatar,
   Box,
+  Collapse,
   Divider,
   Drawer,
   Grid,
@@ -15,14 +16,66 @@ import {
 } from "@mui/material";
 import { InvestIcon, WalletIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
 
 import background from "../assets/img/sidebar/background.png";
 
-function Sidebar() {
+const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
+  return (
+    <>
+      <ListItem disablePadding>
+        <ListItemButton
+          component={NavLink}
+          to={route}
+          sx={(t) => ({
+            position: "relative",
+            color: "white",
+            borderRadius: 0,
+            paddingLeft: 4,
+            paddingY: 1.5,
+            transition: t.transitions.create(["background-color"], { duration: 200, easing: "ease-out" }),
+            "&.active": {
+              backgroundColor: alpha(t.palette.common.white, 0.2),
+              "&::after": {
+                opacity: 1,
+              },
+            },
+            "&::after": {
+              content: "''",
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              width: 6,
+              opacity: 0,
+              backgroundColor: "white",
+              transition: "opacity 0.2s ease-out",
+            },
+          })}
+        >
+          {icon && <ListItemIcon sx={{ color: "inherit" }}>{icon}</ListItemIcon>}
+          <Typography flexGrow={1} fontSize={16} fontWeight={400} paddingLeft={icon ? 0 : 2}>
+            {name}
+          </Typography>
+        </ListItemButton>
+      </ListItem>
+      {subRoutes && (
+        <Collapse in={collapse} timeout="auto" unmountOnExit>
+          <List disablePadding>
+            {subRoutes.map(({ name, route }) => (
+              <SidebarLink key={name} open={false} name={name} route={route} />
+            ))}
+          </List>
+        </Collapse>
+      )}
+    </>
+  );
+};
+
+function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
@@ -37,11 +90,17 @@ function Sidebar() {
         show: true,
       },
       {
-        icon: <WalletIcon />,
-        name: "Billetera",
-        route: "/wallet",
+        icon: <AccountantIcon />,
+        name: "Perfil",
+        route: "/profile",
         show: true,
       },
+      // {
+      //   icon: <WalletIcon />,
+      //   name: "Billetera",
+      //   route: "/wallet",
+      //   show: true,
+      // },
       {
         icon: <GraphIcon />,
         name: "Ganancias",
@@ -55,19 +114,32 @@ function Sidebar() {
         show: true,
       },
       {
-        icon: <AccountantIcon />,
-        name: "Perfil",
-        route: "/profile",
-        show: true,
-      },
-      {
         icon: <ProtectionIcon />,
         name: "Administrador",
         route: "/admin",
-        show: user?.rol === 0,
+        show: user?.isAdmin(),
+        collapse: collapseOn === "admin",
+        children: [
+          {
+            name: "Contratos",
+            route: "/admin/contracts",
+          },
+          {
+            name: "Lapsos",
+            route: "/admin/date-ranges",
+          },
+          {
+            name: "Blog",
+            route: "/admin/blog",
+          },
+          {
+            name: "Tienda",
+            route: "/admin/shop",
+          },
+        ],
       },
     ],
-    [user]
+    [user, collapseOn]
   );
 
   if (!user) {
@@ -115,46 +187,11 @@ function Sidebar() {
       <Typography padding={2} color="common.white">
         Navegación
       </Typography>
-      <List sx={{ overflow: "hidden" }}>
+      <List>
         {routes.map(
-          ({ icon, name, route, show }) =>
+          ({ icon, name, route, show, collapse, children }) =>
             show && (
-              <ListItem key={name} disablePadding>
-                <ListItemButton
-                  component={NavLink}
-                  to={route}
-                  sx={(t) => ({
-                    position: "relative",
-                    color: "white",
-                    borderRadius: 0,
-                    paddingLeft: 4,
-                    paddingY: 1.5,
-                    transition: t.transitions.create(["background-color"], { duration: 200, easing: "ease-out" }),
-                    "&.active": {
-                      backgroundColor: alpha(t.palette.common.white, 0.2),
-                      "&::after": {
-                        opacity: 1,
-                      },
-                    },
-                    "&::after": {
-                      content: "''",
-                      position: "absolute",
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      width: 6,
-                      opacity: 0,
-                      backgroundColor: "white",
-                      transition: "opacity 0.2s ease-out",
-                    },
-                  })}
-                >
-                  <ListItemIcon sx={{ color: "inherit" }}>{icon}</ListItemIcon>
-                  <Typography flexGrow={1} fontSize={16} fontWeight={400}>
-                    {name}
-                  </Typography>
-                </ListItemButton>
-              </ListItem>
+              <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
             )
         )}
       </List>

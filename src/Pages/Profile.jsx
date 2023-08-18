@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Grid,
@@ -11,29 +11,61 @@ import {
   Avatar,
   Snackbar,
   Alert,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import PhoneField from "react-phone-input-2";
 import useSession from "../Hooks/useSession";
-import useConfig from "../Hooks/useConfig";
 import PageWrapper from "../Components/PageWrapper";
-import FormRow from "../Components/FormRow";
+import useConfig from "../Hooks/useConfig";
 
 import CoverImage from "../assets/img/signin/background.png";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import AuthService from "../Services/auth.service";
+
+const Row = ({ children }) => (
+  <Grid
+    display="flex"
+    gap={4}
+    sx={(t) => ({
+      [t.breakpoints.down("lg")]: {
+        flexDirection: "column",
+      },
+    })}
+  >
+    {children}
+  </Grid>
+);
 
 function Profile() {
-  const [session, setSession] = useSession();
-  const [{ loading }, { setLoading }] = useConfig({});
+  const [session, { setUser: setSession }] = useSession();
   const [user, setUser] = useState({
-    avatar: "",
-    name: "",
+    fullname: "",
     email: "",
-    phone: "",
-    account_number: 0,
-    city: "",
-    country: "",
-    account_bank: 0,
+    cellphone: "",
+    id_type: "-",
+    id_number: "",
+    id_location_expedition: "",
+    location_residence: "",
+    user_id_bank: "-",
+    user_bank_account_type: "-",
+    user_bank_account_number: "",
   });
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
+  const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
+  const validation = useMemo(
+    () =>
+      user.fullname &&
+      user.cellphone &&
+      user.id_type !== "-" &&
+      user.id_number &&
+      user.id_location_expedition &&
+      user.location_residence,
+    [user]
+  );
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -43,21 +75,29 @@ function Profile() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    if (
-      !user.name ||
-      !user.email ||
-      !user.phone ||
-      !user.city ||
-      !user.country ||
-      user.account_number !== "" ||
-      user.account_bank !== ""
-    ) {
+    if (!validation) {
       setAlert({
         show: true,
         message: "Todos los campos son requeridos.",
         status: "error",
       });
       return;
+    }
+
+    const { status } = await $Auth.update({
+      fullname: user.fullname,
+      cellphone: user.cellphone,
+      id_type: user.id_type,
+      id_number: user.id_number,
+      id_location_expedition: user.id_location_expedition,
+      location_residence: user.location_residence,
+    });
+
+    if (status) {
+      setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
+      setSession({ ...session.user, ...user });
+    } else {
+      setAlert({ show: true, message: "Ha ocurrido un error", status: "error" });
     }
   };
 
@@ -66,25 +106,19 @@ function Profile() {
   };
 
   useEffect(() => {
-    setLoading(true);
-
     if (session.user) {
+      console.log(session.user);
       setUser({
-        avatar: session.user.avatar,
-        name: session.user.name,
-        email: session.user.email,
-        phone: session.user.phone,
-        account_number: session.user.account_number,
-        city: session.user.city,
-        country: session.user.country,
-        account_bank: session.user.account_bank,
+        fullname: session.user.fullname || "",
+        email: session.user.email || "",
+        cellphone: session.user.cellphone || "",
+        id_type: session.user.id_type || "-",
+        id_number: session.user.id_number || "",
+        id_location_expedition: session.user.id_location_expedition || "",
+        location_residence: session.user.location_residence || "",
       });
     }
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-  }, [session]);
+  }, [session.user]);
 
   if (!session.user) {
     return <></>;
@@ -93,15 +127,37 @@ function Profile() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        <Box position="relative" padding={2}>
-          <Box display="flex" borderRadius={4} overflow="hidden" maxHeight={320}>
+        <Box position="relative">
+          <Box
+            display="flex"
+            borderRadius={1}
+            overflow="hidden"
+            maxHeight={320}
+            sx={(t) => ({
+              [t.breakpoints.down("lg")]: {
+                maxHeight: 160,
+              },
+            })}
+          >
             <img
               src={CoverImage}
               alt="cover photo"
               style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
             />
           </Box>
-          <Grid position="absolute" bottom={0} left={48} display="flex" alignItems="flex-start" gap={2}>
+          <Grid
+            position="absolute"
+            bottom={-16}
+            left={32}
+            display="flex"
+            alignItems="flex-start"
+            gap={2}
+            sx={(t) => ({
+              [t.breakpoints.down("lg")]: {
+                alignItems: "center",
+              },
+            })}
+          >
             <IconButton
               component="span"
               size="large"
@@ -132,25 +188,111 @@ function Profile() {
               <Typography variant="h1" fontSize={32} fontWeight={600} color="white">
                 Perfil
               </Typography>
-              <Typography fontSize={16} color="white">
+              <Typography
+                fontSize={16}
+                color="white"
+                sx={(t) => ({
+                  [t.breakpoints.down("lg")]: {
+                    display: "none",
+                  },
+                })}
+              >
                 Actualiza tu información personal
               </Typography>
             </Grid>
           </Grid>
         </Box>
-        <Grid component="form" display="flex" flexDirection="column" padding={2} onSubmit={handleFormSubmit} noValidate>
-          <FormRow title="Nombre Completo">
-            <TextField name="name" value={user.name} onChange={handleInputChange} fullWidth />
-          </FormRow>
-          <FormRow title="Correo Electrónico">
-            <TextField name="email" value={user.email} onChange={handleInputChange} fullWidth />
-          </FormRow>
-          <FormRow title="Teléfono">
+        <Box height={32} />
+        <Grid
+          component="form"
+          display="flex"
+          flexDirection="column"
+          padding={2}
+          gap={4}
+          noValidate
+          onSubmit={handleFormSubmit}
+        >
+          <Row>
+            <TextField
+              name="fullname"
+              label="Nombre Completo"
+              value={user.fullname}
+              required
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              name="email"
+              label="Correo Electrónico"
+              value={user.email}
+              required
+              fullWidth
+              onChange={handleInputChange}
+              disabled
+            />
+          </Row>
+          <Row>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel id="label-document-type">Tipo de Documento *</InputLabel>
+              <Select
+                labelId="label-document-type"
+                label="Tipo de Documento"
+                name="id_type"
+                value={user.id_type}
+                required
+                fullWidth
+                onChange={handleInputChange}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
+                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                <MenuItem value="registroCivil">Registro Civil</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              name="id_number"
+              type="number"
+              label="Número de Documento"
+              value={user.id_number}
+              required
+              fullWidth
+              onChange={handleInputChange}
+            />
+          </Row>
+
+          <Row>
+            <DatePicker
+              label="Fecha de Exp del Documento *"
+              value={dayjs(user.id_location_expedition)}
+              format="DD/MM/YYYY"
+              sx={{ width: "100%" }}
+              onChange={(value) =>
+                setUser((prev) => ({
+                  ...prev,
+                  id_location_expedition: value.toDate(),
+                }))
+              }
+            />
+            <TextField
+              name="location_residence"
+              label="Ciudad y País de Residencia"
+              value={user.location_residence}
+              required
+              fullWidth
+              onChange={handleInputChange}
+            />
+          </Row>
+
+          <Row>
             <PhoneField
               enableSearch={true}
-              value={user.phone}
+              value={user.cellphone}
               country="co"
-              specialLabel=""
+              specialLabel="Teléfono de Contacto"
               autoFormat={true}
               inputStyle={{
                 width: "100%",
@@ -166,36 +308,13 @@ function Profile() {
                   return true;
                 }
               }}
-              onChange={(value) => handleInputChange({ target: { name: "phone", value } })}
+              onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
             />
-          </FormRow>
-          <FormRow title="Número de cuenta">
-            <TextField name="account_number" value={user.account_number} onChange={handleInputChange} fullWidth />
-          </FormRow>
-          <FormRow title="País">
-            <TextField name="country" value={user.country} onChange={handleInputChange} fullWidth />
-          </FormRow>
-          <FormRow title="Ciudad">
-            <TextField name="city" value={user.city} onChange={handleInputChange} fullWidth />
-          </FormRow>
-          <FormRow title="Cuenta Bancaria">
-            <TextField name="account_bank" value={user.account_bank} onChange={handleInputChange} fullWidth />
-          </FormRow>
-          <Grid
-            display="flex"
-            marginLeft="auto"
-            padding={2}
-            sx={(t) => ({
-              width: "20%",
-              [t.breakpoints.down("md")]: {
-                width: "100%",
-              },
-            })}
-          >
-            <Button type="submit" variant="contained" fullWidth>
-              Guardar
-            </Button>
-          </Grid>
+          </Row>
+
+          <Button type="submit" size="large" variant="contained" disabled={!validation}>
+            Actualizar
+          </Button>
         </Grid>
         <Snackbar
           open={alert.show}
