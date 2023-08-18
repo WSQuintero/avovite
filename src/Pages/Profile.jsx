@@ -215,7 +215,7 @@ function Profile() {
           <Row>
             <TextField
               name="fullname"
-              label="Nombre Completo"
+              label="Nombres y Apellidos"
               value={user.fullname}
               required
               fullWidth
@@ -265,22 +265,10 @@ function Profile() {
           </Row>
 
           <Row>
-            <DatePicker
-              label="Fecha de Exp del Documento *"
-              value={dayjs(user.id_location_expedition)}
-              format="DD/MM/YYYY"
-              sx={{ width: "100%" }}
-              onChange={(value) =>
-                setUser((prev) => ({
-                  ...prev,
-                  id_location_expedition: value.toDate(),
-                }))
-              }
-            />
             <TextField
-              name="location_residence"
-              label="Ciudad y País de Residencia"
-              value={user.location_residence}
+              name="id_location_expedition"
+              label="Lugar de Expedición del Documento"
+              value={user.id_location_expedition}
               required
               fullWidth
               onChange={handleInputChange}
@@ -309,6 +297,14 @@ function Profile() {
                 }
               }}
               onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
+            />
+            <TextField
+              name="location_residence"
+              label="Ciudad y País de Residencia"
+              value={user.location_residence}
+              required
+              fullWidth
+              onChange={handleInputChange}
             />
           </Row>
 
