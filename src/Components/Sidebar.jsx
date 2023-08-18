@@ -77,7 +77,7 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
 
 function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"), { noSsr: true });
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
 

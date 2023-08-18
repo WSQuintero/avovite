@@ -14,7 +14,7 @@ function PageWrapper({ collapseSidebar, children }) {
           padding={6}
           sx={(t) => ({
             maxWidth: `calc(100vw - ${t.sizes.sidebar.main}px - 16px)`,
-            [t.breakpoints.down("md")]: {
+            [t.breakpoints.down("lg")]: {
               maxWidth: "100vw",
               padding: 2,
               paddingTop: 12,
