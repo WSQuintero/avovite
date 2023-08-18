@@ -206,14 +206,14 @@ function Signin() {
           </Typography>
           <TextField
             name="fullname"
-            label="Nombre de usuario"
+            label="Nombres y apellidos"
             sx={{ width: "100%" }}
             value={user.fullname}
             onInput={onUserChange}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <EmailIcon color="primary" />
+                  <PersonIcon color="primary" />
                 </InputAdornment>
               ),
             }}
@@ -228,7 +228,7 @@ function Signin() {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <PersonIcon color="primary" />
+                  <EmailIcon color="primary" />
                 </InputAdornment>
               ),
             }}
