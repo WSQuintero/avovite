@@ -14,7 +14,10 @@ import {
   alpha,
   Paper,
   Autocomplete,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Clear as ClearIcon } from "@mui/icons-material";
 import PhoneField from "react-phone-input-2";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
@@ -69,8 +72,10 @@ const BookingForm = () => {
     email: "",
     fullname: "",
     id_number: "",
-    codeDepto: "-",
-    codMupio: "-",
+    country: "",
+    countryCode: "-",
+    city: "",
+    cityCode: "-",
     cellphone: "",
     user_id_bank: "-",
     user_bank_account_type: "-",
@@ -86,8 +91,8 @@ const BookingForm = () => {
     email: false,
     fullname: false,
     id_number: false,
-    codeDepto: false,
-    codMupio: false,
+    country: false,
+    city: false,
     cellphone: false,
     user_id_bank: false,
     user_bank_account_type: false,
@@ -118,7 +123,7 @@ const BookingForm = () => {
       email: formData.email,
       fullname: formData.fullname,
       id_number: formData.id_number,
-      cod_municipio: formData.codMupio,
+      cod_municipio: formData.city,
       cellphone: formData.cellphone,
       user_id_bank: formData.user_id_bank,
       user_bank_account_type: formData.user_bank_account_type,
@@ -138,8 +143,10 @@ const BookingForm = () => {
         email: "",
         fullname: "",
         id_number: "",
-        codeDepto: "-",
-        codMupio: "-",
+        country: "",
+        countryCode: "-",
+        city: "",
+        cityCode: "-",
         cellphone: "",
         user_id_bank: "",
         user_bank_account_type: "",
@@ -168,7 +175,7 @@ const BookingForm = () => {
       setErrors((prev) => ({ ...prev, [name]: false }));
     }
 
-    if (name === "codeDepto") {
+    if (name === "country") {
       const { status, data } = await $Utils.getLocation({ stateCode: value });
 
       if (status) {
@@ -280,14 +287,13 @@ const BookingForm = () => {
 
         <Row>
           <Column>
-            <Label error={errors.id_location_expedition}>Fecha de Exp del Documento</Label>
+            <Label error={errors.id_location_expedition}>Lugar de Exp del Documento</Label>
             <TextField
               name="id_location_expedition"
-              type="date"
               value={formData.id_location_expedition}
-              required
               error={errors.id_location_expedition}
-              sx={{ width: "100%" }}
+              required
+              fullWidth
               onChange={handleInputChange}
             />
           </Column>
@@ -320,34 +326,72 @@ const BookingForm = () => {
 
         <Row>
           <Column>
-            <Label error={errors.codeDepto}>Departamento</Label>
-            <FormControl variant="outlined">
-              <Select name="codeDepto" value={formData.codeDepto} onChange={handleInputChange} error={errors.codeDepto}>
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {states.map((e) => (
-                  <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
-                    {e.nombreDepto}
+            <Label error={errors.country}>País</Label>
+            {formData.countryCode !== "-1" ? (
+              <FormControl variant="outlined">
+                <Select
+                  name="countryCode"
+                  value={formData.countryCode}
+                  onChange={handleInputChange}
+                  error={errors.country}
+                >
+                  <MenuItem value="-" selected disabled>
+                    Seleccione una opción
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  {[{ code: "CO", name: "Colombia" }].map((country) => (
+                    <MenuItem key={country.code} value={country.code}>
+                      {country.name}
+                    </MenuItem>
+                  ))}
+                  <MenuItem value="-1">Otro</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              <TextField
+                name="country"
+                value={formData.country}
+                error={errors.country}
+                required
+                fullWidth
+                autoFocus
+                onChange={handleInputChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => handleInputChange({ target: { name: "countryCode", value: "-" } })}>
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           </Column>
           <Column>
-            <Label error={errors.codMupio}>Municipio</Label>
-            <FormControl variant="outlined">
-              <Select name="codMupio" value={formData.codMupio} onChange={handleInputChange} error={errors.codMupio}>
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {cities.map((e) => (
-                  <MenuItem key={e.codMupio} value={e.codMupio}>
-                    {e.nombreMupio}
+            <Label error={errors.city}>Ciudad</Label>
+            {formData.countryCode !== "-1" ? (
+              <FormControl variant="outlined">
+                <Select name="cityCode" value={formData.cityCode} onChange={handleInputChange} error={errors.city}>
+                  <MenuItem value="-" selected disabled>
+                    Seleccione una opción
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  {cities.map((e) => (
+                    <MenuItem key={e.city} value={e.city}>
+                      {e.nombreMupio}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <TextField
+                name="city"
+                value={formData.city}
+                error={errors.city}
+                required
+                fullWidth
+                onChange={handleInputChange}
+              />
+            )}
           </Column>
         </Row>
 

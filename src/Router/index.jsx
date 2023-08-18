@@ -64,7 +64,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 function Router() {
   return useRoutes([
     {
-      path: "/form",
+      path: "/registro-contrato",
       element: <BookingForm />,
     },
     {
