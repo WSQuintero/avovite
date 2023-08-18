@@ -44,7 +44,7 @@ function Blog() {
         label: "Imagen",
         align: "left",
         disablePadding: false,
-        width: 240,
+        width: 200,
         format: (value) => (
           <Box display="flex" width="100%" sx={{ aspectRatio: 1 }}>
             <img src={value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
@@ -55,7 +55,7 @@ function Blog() {
         id: "url_video",
         label: "Video",
         align: "left",
-        width: 240,
+        width: 200,
         disablePadding: false,
         format: (value) => (
           <Box display="flex" width="100%" sx={{ aspectRatio: 1 }}>
@@ -68,14 +68,22 @@ function Blog() {
         label: "Título",
         align: "left",
         disablePadding: false,
-        format: (value) => value,
+        format: (value) => (
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
+            {value}
+          </Box>
+        ),
       },
       {
         id: "description",
         label: "Descripción",
         align: "left",
         disablePadding: false,
-        format: (value) => value,
+        format: (value) => (
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
+            {value}
+          </Box>
+        ),
       },
       {
         id: "updated_at",

@@ -173,10 +173,12 @@ const Contracts = () => {
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
 
+  console.log(contracts);
+
   const contractsHeadCells = useMemo(
     () => [
       {
-        id: "",
+        id: "action_button_1",
         label: "",
         align: "left",
         disablePadding: false,
@@ -187,7 +189,7 @@ const Contracts = () => {
         ),
       },
       {
-        id: "",
+        id: "action_button_2",
         label: "Contrato",
         align: "left",
         disablePadding: false,
@@ -443,7 +445,6 @@ const Contracts = () => {
       <EnhancedTable
         headCells={contractsHeadCells}
         rows={contracts}
-        initialOrderBy="beneficiary_fullname"
         collapse={customCollapse}
       />
 

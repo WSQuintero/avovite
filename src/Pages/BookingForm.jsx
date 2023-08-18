@@ -118,7 +118,7 @@ const BookingForm = () => {
       email: formData.email,
       fullname: formData.fullname,
       id_number: formData.id_number,
-      codMupio: formData.codMupio,
+      cod_municipio: formData.codMupio,
       cellphone: formData.cellphone,
       user_id_bank: formData.user_id_bank,
       user_bank_account_type: formData.user_bank_account_type,
@@ -159,8 +159,6 @@ const BookingForm = () => {
   const handleInputChange = async (event) => {
     const { name, value } = event.target;
 
-    console.log(name, value);
-
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -174,7 +172,6 @@ const BookingForm = () => {
       const { status, data } = await $Utils.getLocation({ stateCode: value });
 
       if (status) {
-        console.log(data.data);
         setCities(data.data);
       }
     }
@@ -190,7 +187,6 @@ const BookingForm = () => {
 
       if (status) {
         setStates(data.data);
-        console.log(data.data);
       }
     })();
   }, []);

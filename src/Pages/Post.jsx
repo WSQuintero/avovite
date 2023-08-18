@@ -76,8 +76,7 @@ function Post() {
               <Grid
                 zIndex={1}
                 display="flex"
-                justifyContent="space-between"
-                alignItems="flex-end"
+                flexDirection="column"
                 width="100%"
                 sx={(t) => ({
                   [t.breakpoints.down("md")]: {
@@ -89,7 +88,18 @@ function Post() {
                 <Typography variant="h2" fontSize={48} color="white">
                   {post.title}
                 </Typography>
-                <Typography color="white">{formatDate(post.updated_at)}</Typography>
+                <Typography
+                  color="white"
+                  width="100%"
+                  textAlign="end"
+                  sx={(t) => ({
+                    [t.breakpoints.down("md")]: {
+                      textAlign: "center",
+                    },
+                  })}
+                >
+                  {formatDate(post.updated_at)}
+                </Typography>
               </Grid>
             </Box>
             <Typography>{post.description}</Typography>
