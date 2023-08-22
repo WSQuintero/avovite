@@ -12,11 +12,15 @@ export default class UtilsService {
     });
   }
 
-  async getLocation({ stateCode = null } = {}) {
+  async getLocation({ countryCode = null, stateCode = null } = {}) {
     return await handleCall(
       async () =>
-        (stateCode ? await axios.get(`${this.API_URL}/mupios/${stateCode}`) : await axios.get(`${this.API_URL}/deptos`))
-          .data
+        (countryCode
+          ? await axios.get(`${this.API_URL}/deptos/${countryCode}`)
+          : stateCode
+          ? await axios.get(`${this.API_URL}/mupios/${stateCode}`)
+          : await axios.get(`${this.API_URL}/paises`)
+        ).data
     );
   }
 }

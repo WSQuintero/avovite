@@ -35,7 +35,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
-import { isToday, formatCurrency } from "../../utilities/index";
+import { isToday, formatCurrency, formatDate as formatLongDate } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import useConfig from "../../Hooks/useConfig";
@@ -299,7 +299,7 @@ const Contracts = () => {
             <Typography component="span" fontWeight={600}>
               Fecha:{" "}
             </Typography>
-            {formatDate(row.first_payment_date)}
+            {formatLongDate(row.first_payment_date)}
           </Typography>
 
           <Typography variant="h4">Información del titular</Typography>

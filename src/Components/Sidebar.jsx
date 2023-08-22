@@ -77,7 +77,7 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
 
 function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"), { noSsr: true });
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
 
@@ -87,31 +87,25 @@ function Sidebar({ collapseOn = "" }) {
         icon: <InvestIcon />,
         name: "Vites",
         route: "/",
-        show: true,
+        show: !user?.isAdmin(),
       },
-      {
-        icon: <AccountantIcon />,
-        name: "Perfil",
-        route: "/profile",
+      /* {
+        icon: <WalletIcon />,
+        name: "Billetera",
+        route: "/wallet",
         show: true,
-      },
-      // {
-      //   icon: <WalletIcon />,
-      //   name: "Billetera",
-      //   route: "/wallet",
-      //   show: true,
-      // },
+      }, */
       {
         icon: <GraphIcon />,
         name: "Ganancias",
         route: "/earnings",
-        show: true,
+        show: !user?.isAdmin(),
       },
       {
         icon: <EcommerceIcon />,
         name: "Comprar Vites",
         route: "/shop",
-        show: true,
+        show: !user?.isAdmin(),
       },
       {
         icon: <ProtectionIcon />,
@@ -137,6 +131,12 @@ function Sidebar({ collapseOn = "" }) {
             route: "/admin/shop",
           },
         ],
+      },
+      {
+        icon: <AccountantIcon />,
+        name: "Perfil",
+        route: "/profile",
+        show: true,
       },
     ],
     [user, collapseOn]
