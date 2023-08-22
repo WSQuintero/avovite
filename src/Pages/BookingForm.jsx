@@ -63,6 +63,7 @@ const Label = ({ error = false, children }) => <Typography color={error ? "error
 const BookingForm = () => {
   const [{ constants }] = useConfig();
   const $Utils = useMemo(() => new UtilsService(), []);
+  const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
@@ -72,10 +73,9 @@ const BookingForm = () => {
     email: "",
     fullname: "",
     id_number: "",
-    country: "",
-    countryCode: "-",
-    city: "",
-    cityCode: "-",
+    country: "-",
+    state: "-",
+    city: "-",
     cellphone: "",
     user_id_bank: "-",
     user_bank_account_type: "-",
@@ -92,6 +92,7 @@ const BookingForm = () => {
     fullname: false,
     id_number: false,
     country: false,
+    state: false,
     city: false,
     cellphone: false,
     user_id_bank: false,
@@ -143,10 +144,9 @@ const BookingForm = () => {
         email: "",
         fullname: "",
         id_number: "",
-        country: "",
-        countryCode: "-",
-        city: "",
-        cityCode: "-",
+        country: "-",
+        state: "-",
+        city: "-",
         cellphone: "",
         user_id_bank: "",
         user_bank_account_type: "",
@@ -176,6 +176,25 @@ const BookingForm = () => {
     }
 
     if (name === "country") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        state: "-",
+        city: "-",
+      }));
+
+      const { status, data } = await $Utils.getLocation({ countryCode: value });
+
+      if (status) {
+        setStates(data.data);
+      }
+    }
+
+    if (name === "state") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        city: "-",
+      }));
+
       const { status, data } = await $Utils.getLocation({ stateCode: value });
 
       if (status) {
@@ -192,8 +211,10 @@ const BookingForm = () => {
     (async () => {
       const { status, data } = await $Utils.getLocation();
 
+      console.log(data.data);
+
       if (status) {
-        setStates(data.data);
+        setCountries(data.data);
       }
     })();
   }, []);
@@ -327,75 +348,53 @@ const BookingForm = () => {
         <Row>
           <Column>
             <Label error={errors.country}>País</Label>
-            {formData.countryCode !== "-1" ? (
-              <FormControl variant="outlined">
-                <Select
-                  name="countryCode"
-                  value={formData.countryCode}
-                  onChange={handleInputChange}
-                  error={errors.country}
-                >
-                  <MenuItem value="-" selected disabled>
-                    Seleccione una opción
+            <FormControl variant="outlined">
+              <Select name="country" value={formData.country} onChange={handleInputChange} error={errors.country}>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {countries.map((country) => (
+                  <MenuItem key={country.codigoPais} value={country.codigoPais}>
+                    {country.nombrePais}
                   </MenuItem>
-                  {[{ code: "CO", name: "Colombia" }].map((country) => (
-                    <MenuItem key={country.code} value={country.code}>
-                      {country.name}
-                    </MenuItem>
-                  ))}
-                  <MenuItem value="-1">Otro</MenuItem>
-                </Select>
-              </FormControl>
-            ) : (
-              <TextField
-                name="country"
-                value={formData.country}
-                error={errors.country}
-                required
-                fullWidth
-                autoFocus
-                onChange={handleInputChange}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => handleInputChange({ target: { name: "countryCode", value: "-" } })}>
-                        <ClearIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
+                ))}
+                <MenuItem value="-1">Otro</MenuItem>
+              </Select>
+            </FormControl>
           </Column>
           <Column>
-            <Label error={errors.city}>Ciudad</Label>
-            {formData.countryCode !== "-1" ? (
-              <FormControl variant="outlined">
-                <Select name="cityCode" value={formData.cityCode} onChange={handleInputChange} error={errors.city}>
-                  <MenuItem value="-" selected disabled>
-                    Seleccione una opción
+            <Label error={errors.city}>Estado o Provincia</Label>
+            <FormControl variant="outlined">
+              <Select name="state" value={formData.state} onChange={handleInputChange} error={errors.state}>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {states.map((e) => (
+                  <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
+                    {e.nombreDepto}
                   </MenuItem>
-                  {cities.map((e) => (
-                    <MenuItem key={e.city} value={e.city}>
-                      {e.nombreMupio}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : (
-              <TextField
-                name="city"
-                value={formData.city}
-                error={errors.city}
-                required
-                fullWidth
-                onChange={handleInputChange}
-              />
-            )}
+                ))}
+              </Select>
+            </FormControl>
           </Column>
         </Row>
 
         <Row>
+          <Column>
+            <Label error={errors.city}>Ciudad</Label>
+            <FormControl variant="outlined">
+              <Select name="city" value={formData.city} onChange={handleInputChange} error={errors.city}>
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {cities.map((e) => (
+                  <MenuItem key={e.codMupio} value={e.codMupio}>
+                    {e.nombreMupio}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Column>
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>
             <FormControl variant="outlined">
