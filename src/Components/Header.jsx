@@ -96,7 +96,7 @@ function Header() {
                     {session.user.fullname}
                   </Typography>
                   <Typography variant="caption" fontWeight={300} lineHeight={1}>
-                    Admin
+                    {session.user?.isAdmin() ? "Admin" : "Member"}
                   </Typography>
                 </Grid>
               </Button>

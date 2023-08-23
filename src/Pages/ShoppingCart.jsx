@@ -1,15 +1,14 @@
 import { useMemo } from "react";
 import { NumericFormat } from "react-number-format";
 import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as DeleteIcon } from "@mui/icons-material";
-import { alpha, Box, Button, Container, Grid, IconButton, TextField, Typography, Divider } from "@mui/material";
+import { alpha, Box, Button, Container, Grid, IconButton, Typography } from "@mui/material";
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
-import { IMAGE_PLACEHOLDER, PRODUCTS } from "../utilities/constants";
-
-import PlantImage from "../assets/img/common/plant.png";
-import PlantPremiumImage from "../assets/img/common/plant_premium.png";
+import { IMAGE_PLACEHOLDER } from "../utilities/constants";
+import { useNavigate } from "react-router-dom";
 
 function ShoppingCart() {
+  const navigate = useNavigate();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
   const subTotal = useMemo(
     () =>
@@ -23,6 +22,10 @@ function ShoppingCart() {
       ),
     [shoppingCart]
   );
+
+  const handlePayment = () => {
+    navigate('/checkout');
+  };
 
   return (
     <PageWrapper>
@@ -162,7 +165,7 @@ function ShoppingCart() {
                   </Typography>
                 </Grid>
               </Box>
-              <Box
+              {/* <Box
                 display="flex"
                 flexDirection="column"
                 gap={4}
@@ -173,8 +176,10 @@ function ShoppingCart() {
                 <Grid display="flex" flexDirection="column" gap={2}>
                   <TextField label="Código de cupón" InputProps={{ sx: { backgroundColor: "white" } }} fullWidth />
                 </Grid>
-              </Box>
-              <Button variant="contained">Proceder a pago</Button>
+              </Box> */}
+              <Button variant="contained" onClick={handlePayment}>
+                Proceder a pago
+              </Button>
             </Grid>
           </Grid>
         </Grid>
