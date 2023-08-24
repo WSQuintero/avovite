@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import useSession from "../Hooks/useSession";
 import AuthService from "../Services/auth.service";
-import { Box, Button, Grid, InputAdornment, Link, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, InputAdornment, Link, TextField, Typography, Snackbar, Alert } from "@mui/material";
 import { PersonOutlineOutlined as PersonIcon, LockOpenOutlined as LockIcon } from "@mui/icons-material";
 
 import BackgroundImage from "../assets/img/signin/background.png";
@@ -30,7 +30,7 @@ function Signin() {
     if (!status) {
       setFeedback({
         show: true,
-        message: "Ha ocurrido un error, inténtelo de nuevo.",
+        message: "Credenciales incorrectas.",
         status: "error",
       });
 
@@ -38,6 +38,10 @@ function Signin() {
     }
 
     setToken(data);
+  };
+
+  const resetFeedback = () => {
+    setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
   return (
@@ -173,6 +177,16 @@ function Signin() {
           </Link>
         </Box>
       </Box>
+      <Snackbar
+        open={feedback.show}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={resetFeedback}
+      >
+        <Alert onClose={resetFeedback} severity={feedback.status} sx={{ width: "100%" }}>
+          {feedback.message}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }

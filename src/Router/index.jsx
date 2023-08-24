@@ -114,16 +114,16 @@ function Router() {
       element: <PrivateRoute component={ShoppingCart} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
     },
     {
+      path: "/checkout",
+      element: <PrivateRoute component={Checkout} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+    },
+    {
       path: "/admin/:section?",
       element: <PrivateRoute component={Admin} meta={[META.REQUIRES_AUTH]} />,
     },
     {
       path: "/posts/:id",
       element: <PrivateRoute component={Post} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
-    },
-    {
-      path: "/checkout",
-      element: <PrivateRoute component={Checkout} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/contact-us",

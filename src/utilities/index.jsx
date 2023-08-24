@@ -11,12 +11,11 @@ export const handleCall = async (callback) => {
   }
 };
 
-export const validateJSON = (o) => {
-  return Object.keys(o).reduce(
-    (a, c) => (o[c] === null || o[c] === undefined || o[c] === "" || o[c] === "-" ? [...a, c] : a),
+export const validateJSON = (o, e = []) =>
+  Object.keys(o).reduce(
+    (a, c) => (e.includes(c) ? a : o[c] === null || o[c] === undefined || o[c] === "" || o[c] === "-" ? [...a, c] : a),
     []
   );
-};
 
 export const isToday = (date) => {
   const today = new Date();
