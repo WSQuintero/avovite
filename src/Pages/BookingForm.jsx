@@ -108,7 +108,7 @@ const BookingForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const validation = validateJSON(formData);
+    const validation = validateJSON(formData, formData.country !== "169" ? ["state"] : []);
 
     if (validation.length) {
       validation.forEach((error) => setErrors((prev) => ({ ...prev, [error]: true })));
@@ -181,11 +181,20 @@ const BookingForm = () => {
         state: "-",
         city: "-",
       }));
+      setCities([]);
+      setStates([]);
 
-      const { status, data } = await $Utils.getLocation({ countryCode: value });
+      if (value === "169") {
+        const { status, data } = await $Utils.getLocation({ countryCode: value });
 
-      if (status) {
-        setStates(data.data);
+        if (status) {
+          setStates(data.data);
+        }
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          city: "",
+        }));
       }
     }
 
@@ -194,6 +203,7 @@ const BookingForm = () => {
         ...prevFormData,
         city: "-",
       }));
+      setCities([]);
 
       const { status, data } = await $Utils.getLocation({ stateCode: value });
 
@@ -358,42 +368,48 @@ const BookingForm = () => {
                     {country.nombrePais}
                   </MenuItem>
                 ))}
-                <MenuItem value="-1">Otro</MenuItem>
               </Select>
             </FormControl>
           </Column>
-          <Column>
-            <Label error={errors.city}>Estado o Provincia</Label>
-            <FormControl variant="outlined">
-              <Select name="state" value={formData.state} onChange={handleInputChange} error={errors.state}>
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {states.map((e) => (
-                  <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
-                    {e.nombreDepto}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Column>
+          {formData.country === "-" ||
+            (formData.country === "169" && (
+              <Column>
+                <Label error={errors.city}>Estado o Provincia</Label>
+                <FormControl variant="outlined">
+                  <Select name="state" value={formData.state} onChange={handleInputChange} error={errors.state}>
+                    <MenuItem value="-" selected disabled>
+                      Seleccione una opción
+                    </MenuItem>
+                    {states.map((e) => (
+                      <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
+                        {e.nombreDepto}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Column>
+            ))}
         </Row>
 
         <Row>
           <Column>
             <Label error={errors.city}>Ciudad</Label>
-            <FormControl variant="outlined">
-              <Select name="city" value={formData.city} onChange={handleInputChange} error={errors.city}>
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {cities.map((e) => (
-                  <MenuItem key={e.codMupio} value={e.codMupio}>
-                    {e.nombreMupio}
+            {formData.country === "-" || formData.country === "169" ? (
+              <FormControl variant="outlined">
+                <Select name="city" value={formData.city} onChange={handleInputChange} error={errors.city}>
+                  <MenuItem value="-" selected disabled>
+                    Seleccione una opción
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  {cities.map((e) => (
+                    <MenuItem key={e.codMupio} value={e.codMupio}>
+                      {e.nombreMupio}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <TextField name="city" value={formData.city} onChange={handleInputChange} error={errors.city} />
+            )}
           </Column>
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>

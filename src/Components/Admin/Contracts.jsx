@@ -173,8 +173,6 @@ const Contracts = () => {
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
 
-  console.log(contracts);
-
   const contractsHeadCells = useMemo(
     () => [
       {
@@ -202,9 +200,7 @@ const Contracts = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={() =>
-                window.open(`https://avovite-api-dev.concilbot.com/api/v1/contracts/files/${row.id}`, "_blank")
-              }
+              onClick={() => window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${row.id}`, "_blank")}
               sx={{ width: 80 }}
             >
               Ver
@@ -442,11 +438,7 @@ const Contracts = () => {
 
   return (
     <>
-      <EnhancedTable
-        headCells={contractsHeadCells}
-        rows={contracts}
-        collapse={customCollapse}
-      />
+      <EnhancedTable headCells={contractsHeadCells} rows={contracts} collapse={customCollapse} />
 
       <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">Crear contrato</DialogTitle>
