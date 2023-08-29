@@ -17,8 +17,15 @@ import {
   InputAdornment,
   Snackbar,
   Alert,
+  Paper,
 } from "@mui/material";
-import { AddOutlined as AddIcon, DeleteOutlined as DeleteIcon } from "@mui/icons-material";
+import { MaterialReactTable } from "material-react-table";
+import { ExportToCsv } from "export-to-csv";
+import {
+  AddOutlined as AddIcon,
+  DeleteOutlined as DeleteIcon,
+  FileDownload as DownloadIcon,
+} from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
@@ -27,6 +34,55 @@ import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
+
+const columns = [
+  {
+    accessorKey: "fullname",
+    id: "fullname",
+    header: "Nombre del pagador",
+  },
+  {
+    accessorKey: "contract_vites",
+    id: "contract_vites",
+    header: "Vites",
+  },
+  {
+    accessorKey: "contract_amount",
+    id: "contract_amount",
+    header: "Valor de contrato",
+    Cell: ({ renderedCellValue }) => (
+      <>
+        $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
+      </>
+    ),
+  },
+  {
+    accessorKey: "payment_numbers",
+    id: "payment_numbers",
+    header: "Cantidad de cuotas",
+  },
+  {
+    accessorKey: "total_financed",
+    id: "total_financed",
+    header: "Financiamiento total",
+
+    Cell: ({ renderedCellValue }) => (
+      <>
+        $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
+      </>
+    ),
+  },
+];
+
+const csvExporter = new ExportToCsv({
+  fieldSeparator: ",",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  useBom: true,
+  useKeysAsHeaders: false,
+  headers: columns.map((c) => c.header),
+});
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -56,7 +112,7 @@ const Contracts = () => {
     financing: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const unitValue = useMemo(() => services[contract.service]?.unitary_price , [contract.service, services]);
+  const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
   const subTotalValue = useMemo(() => Math.round(contract.vites * unitValue), [contract.vites, unitValue]);
   const discountValue = useMemo(
     () => Math.round(subTotalValue * (contract.discount / 100)),
@@ -83,180 +139,6 @@ const Contracts = () => {
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
 
-  const contractsHeadCells = useMemo(
-    () => [
-      {
-        id: "action_button_1",
-        label: "",
-        align: "left",
-        disablePadding: false,
-        format: (value, row, onCollapse) => (
-          <IconButton variant="outlined" color="primary" onClick={() => onCollapse()}>
-            <AddIcon />
-          </IconButton>
-        ),
-      },
-      {
-        id: "action_button_2",
-        label: "Contrato",
-        align: "left",
-        disablePadding: false,
-        format: (value, row) =>
-          row.status_contracts === 0 ? (
-            <Button variant="contained" size="small" onClick={() => setSelectedContract(row)} sx={{ width: 80 }}>
-              Crear
-            </Button>
-          ) : (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${row.id}`, "_blank")}
-              sx={{ width: 80 }}
-            >
-              Ver
-            </Button>
-          ),
-      },
-      {
-        id: "fullname",
-        label: "Nombre del pagador",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value || "-",
-      },
-      {
-        id: "contract_vites",
-        label: "Vites",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value,
-      },
-      {
-        id: "contract_amount",
-        label: "Valor de contrato",
-        align: "left",
-        disablePadding: false,
-        format: (value) => (
-          <>
-            $<NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
-          </>
-        ),
-      },
-      {
-        id: "payment_numbers",
-        label: "Cantidad de cuotas",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value,
-      },
-      {
-        id: "total_financed",
-        label: "Financiamiento total",
-        align: "left",
-        disablePadding: false,
-        format: (value) => (
-          <>
-            $<NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
-          </>
-        ),
-      },
-    ],
-    []
-  );
-
-  const customCollapse = useCallback(
-    (row) => (
-      <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
-        <Grid display="flex" flexDirection="column" gap={1}>
-          <Typography variant="h4">Información financiera</Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Financiado:{" "}
-            </Typography>
-            {row.financed ? "Si" : "No"}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Descuento:{" "}
-            </Typography>
-            {row.percentage_discount}%
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Valor descontado:{" "}
-            </Typography>
-            ${formatCurrency(row.contract_discount)}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Total con descuento:{" "}
-            </Typography>
-            ${formatCurrency(row.total_contract_with_discount)}
-          </Typography>
-
-          <Typography variant="h4">Información de primer pago</Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Valor:{" "}
-            </Typography>
-            ${formatCurrency(row.first_payment)}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Fecha:{" "}
-            </Typography>
-            {formatLongDate(row.first_payment_date)}
-          </Typography>
-
-          <Typography variant="h4">Información del titular</Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Teléfono:{" "}
-            </Typography>
-            {row.cellphone}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Correo:{" "}
-            </Typography>
-            {row.email}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Número de documento:{" "}
-            </Typography>
-            {row.beneficiary_id_number}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Número de cuenta:{" "}
-            </Typography>
-            {row.user_bank_account_number}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Tipo de cuenta:{" "}
-            </Typography>
-            {constants?.account_type?.find((a) => String(a.id) === String(row.user_bank_account_type))?.name}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Banco:{" "}
-            </Typography>
-            {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Número de contrato:{" "}
-            </Typography>
-            {row.contract_number}
-          </Typography>
-        </Grid>
-      </Grid>
-    ),
-    [constants]
-  );
-
   const fetchContracts = async () => {
     const {
       status,
@@ -270,8 +152,6 @@ const Contracts = () => {
 
   const fetchProducts = async () => {
     const { status, data } = await $Shop.shop.get();
-
-    console.log(data.data);
 
     if (status) {
       setServices(data.data);
@@ -303,7 +183,7 @@ const Contracts = () => {
               with_guarantee: 0,
               contract_vites: parseFloat(contract.vites),
               contract_amount: parseFloat(subTotalValue),
-              id_services: contract.service,
+              id_services: services[contract.service].id_product,
               percentage_discount: parseFloat(contract.discount),
               contract_discount: parseFloat(discountValue),
               total_contract_with_discount: parseFloat(totalValue),
@@ -318,12 +198,12 @@ const Contracts = () => {
               })),
             }
           : {
-              //  Financing't
+              //  Financingn't
               financed: 0,
               with_guarantee: 0,
               contract_vites: parseFloat(contract.vites),
               contract_amount: parseFloat(subTotalValue),
-              id_services: contract.service,
+              id_services: services[contract.service].id_product,
               percentage_discount: parseFloat(contract.discount),
               contract_discount: parseFloat(discountValue),
               total_contract_with_discount: parseFloat(totalValue),
@@ -345,6 +225,10 @@ const Contracts = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
+  const handleExportData = () => {
+    csvExporter.generateCsv(contracts);
+  };
+
   useEffect(() => {
     if (token) {
       (async () => {
@@ -356,7 +240,126 @@ const Contracts = () => {
 
   return (
     <>
-      <EnhancedTable headCells={contractsHeadCells} rows={contracts} collapse={customCollapse} />
+      <MaterialReactTable
+        columns={columns}
+        data={contracts}
+        enableColumnFilterModes
+        enableColumnOrdering
+        enableRowActions
+        muiTablePaperProps={{ elevation: 0 }}
+        initialState={{ density: "compact" }}
+        muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
+        renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
+          <MenuItem
+            key={0}
+            onClick={() => {
+              closeMenu();
+              original.status_contracts === 0
+                ? setSelectedContract(original)
+                : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
+            }}
+            sx={{ m: 0 }}
+          >
+            {original.status_contracts === 0 ? "Crear" : " Ver"} contrato
+          </MenuItem>,
+        ]}
+        renderDetailPanel={({ row: { original: row } }) => (
+          <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
+            <Grid display="flex" flexDirection="column" gap={1}>
+              <Typography variant="h4">Información financiera</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Financiado:{" "}
+                </Typography>
+                {row.financed ? "Si" : "No"}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Descuento:{" "}
+                </Typography>
+                {row.percentage_discount}%
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Valor descontado:{" "}
+                </Typography>
+                ${formatCurrency(row.contract_discount)}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Total con descuento:{" "}
+                </Typography>
+                ${formatCurrency(row.total_contract_with_discount)}
+              </Typography>
+
+              <Typography variant="h4">Información de primer pago</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Valor:{" "}
+                </Typography>
+                ${formatCurrency(row.first_payment)}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Fecha:{" "}
+                </Typography>
+                {formatLongDate(row.first_payment_date)}
+              </Typography>
+
+              <Typography variant="h4">Información del titular</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Teléfono:{" "}
+                </Typography>
+                {row.cellphone}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Correo:{" "}
+                </Typography>
+                {row.email}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de documento:{" "}
+                </Typography>
+                {row.beneficiary_id_number}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de cuenta:{" "}
+                </Typography>
+                {row.user_bank_account_number}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Tipo de cuenta:{" "}
+                </Typography>
+                {constants?.account_type?.find((a) => String(a.id) === String(row.user_bank_account_type))?.name}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Banco:{" "}
+                </Typography>
+                {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de contrato:{" "}
+                </Typography>
+                {row.contract_number}
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
+        renderBottomToolbarCustomActions={({ table }) => (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
+              Exportar a csv
+            </Button>
+          </Box>
+        )}
+      />
 
       <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">Crear contrato</DialogTitle>

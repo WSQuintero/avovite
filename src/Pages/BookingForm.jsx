@@ -303,15 +303,15 @@ const BookingForm = () => {
                 <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
                 <MenuItem value="pasaporte">Pasaporte</MenuItem>
                 <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                <MenuItem value="dni">DNI</MenuItem>
               </Select>
             </FormControl>
           </Column>
           <Column>
             <Label error={errors.id_number}>Número de Documento</Label>
             <TextField
-              name="id_number"
-              type="number"
               required
+              name="id_number"
               value={formData.id_number}
               onChange={handleInputChange}
               error={errors.id_number}
@@ -504,7 +504,6 @@ const BookingForm = () => {
             <Label error={errors.beneficiary_id_number}>Número de Documento</Label>
             <TextField
               name="beneficiary_id_number"
-              type="number"
               value={formData.beneficiary_id_number}
               onChange={handleInputChange}
               sx={{ width: "100%" }}
@@ -532,6 +531,7 @@ const BookingForm = () => {
                 <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
                 <MenuItem value="pasaporte">Pasaporte</MenuItem>
                 <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                <MenuItem value="dni">DNI</MenuItem>
               </Select>
             </FormControl>
           </Column>
