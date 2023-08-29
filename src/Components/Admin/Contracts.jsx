@@ -2,13 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
 import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableContainer,
-  TableBody,
-  Paper,
   Box,
   Button,
   Dialog,
@@ -22,16 +15,10 @@ import {
   Typography,
   IconButton,
   InputAdornment,
-  Collapse,
   Snackbar,
   Alert,
 } from "@mui/material";
-import {
-  AddOutlined as AddIcon,
-  DeleteOutlined as DeleteIcon,
-  KeyboardArrowUp as KeyboardArrowUpIcon,
-  KeyboardArrowDown as KeyboardArrowDownIcon,
-} from "@mui/icons-material";
+import { AddOutlined as AddIcon, DeleteOutlined as DeleteIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
@@ -39,6 +26,7 @@ import { isToday, formatCurrency, formatDate as formatLongDate } from "../../uti
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import useConfig from "../../Hooks/useConfig";
+import useShop from "../../Hooks/useShop";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -48,105 +36,27 @@ function formatDate(dateString) {
   return `${year}-${month}-${day}`;
 }
 
-function CustomTableRow({ contract, index, onCreate, onPDF }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <TableRow>
-        <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-
-        <TableCell></TableCell>
-        <TableCell>{contract.beneficiary_fullname}</TableCell>
-        <TableCell>
-          $<NumericFormat displayType="text" value={contract.contract_amount} thousandSeparator></NumericFormat>
-        </TableCell>
-        <TableCell>{contract.percentage_discount}%</TableCell>
-        <TableCell>
-          $<NumericFormat displayType="text" value={contract.contract_discount} thousandSeparator></NumericFormat>
-        </TableCell>
-        <TableCell>
-          $
-          <NumericFormat
-            displayType="text"
-            value={contract.total_contract_with_discount}
-            thousandSeparator
-          ></NumericFormat>
-        </TableCell>
-        <TableCell>
-          $<NumericFormat displayType="text" value={contract.total_financed} thousandSeparator></NumericFormat>
-        </TableCell>
-        <TableCell>{contract.payment_numbers}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Tipo Documento</TableCell>
-                    <TableCell>Documento</TableCell>
-                    <TableCell>Lugar de Expedición</TableCell>
-                    <TableCell>Cuenta de Banco</TableCell>
-                    <TableCell>Monto del Contrato</TableCell>
-                    {contract.contract_signature_date !== null && <TableCell>Fecha Del Contrato</TableCell>}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>{contract.beneficiary_fullname}</TableCell>
-                    <TableCell>{contract.beneficiary_id_type}</TableCell>
-                    <TableCell>{contract.beneficiary_id_number}</TableCell>
-                    <TableCell>{contract.beneficiary_id_location_expedition}</TableCell>
-                    <TableCell>{contract.user_bank_account_number}</TableCell>
-                    <TableCell>{contract.contract_amount}</TableCell>
-                    {contract.created_at !== null && (
-                      <TableCell>{new Date(contract.created_at).toLocaleDateString()}</TableCell>
-                    )}
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-}
-
 const Contracts = () => {
   const [{ constants }] = useConfig();
   const [{ token }] = useSession();
+  const $Shop = useShop();
   const [contracts, setContracts] = useState([]);
 
-  const [services, setServices] = useState([
-    {
-      id: 1,
-      name: "Standard",
-      value: 2200000,
-    },
-  ]);
+  const [services, setServices] = useState([]);
 
   const [selectedContract, setSelectedContract] = useState(null);
   const [dues, setDues] = useState([]);
   const [contract, setContract] = useState({
     vites: "",
-    service: 1,
+    service: 0,
     total: "",
     discount: "",
     firstPaymentValue: "",
     firstPaymentDate: new Date(),
-    signatureDate: new Date(),
     financing: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const unitValue = useMemo(() => services.find((p) => p.id === contract.service).value, [contract.service, services]);
+  const unitValue = useMemo(() => services[contract.service]?.unitary_price , [contract.service, services]);
   const subTotalValue = useMemo(() => Math.round(contract.vites * unitValue), [contract.vites, unitValue]);
   const discountValue = useMemo(
     () => Math.round(subTotalValue * (contract.discount / 100)),
@@ -358,6 +268,16 @@ const Contracts = () => {
     }
   };
 
+  const fetchProducts = async () => {
+    const { status, data } = await $Shop.shop.get();
+
+    console.log(data.data);
+
+    if (status) {
+      setServices(data.data);
+    }
+  };
+
   const onCancelCreateContract = () => {
     setSelectedContract(null);
     setContract({
@@ -367,7 +287,6 @@ const Contracts = () => {
       discount: "",
       firstPaymentValue: "",
       firstPaymentDate: new Date(),
-      signatureDate: new Date(),
       financing: false,
     });
     setDues([]);
@@ -390,7 +309,6 @@ const Contracts = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
-              //contract_signature_date: formatDate(contract.signatureDate),
               total_financed: parseFloat(totalDuesValue),
               payment_numbers: dues.length,
               financed_contracts: dues.map((d, index) => ({
@@ -411,7 +329,6 @@ const Contracts = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
-              //contract_signature_date: formatDate(contract.signatureDate)
             },
     });
 
@@ -432,6 +349,7 @@ const Contracts = () => {
     if (token) {
       (async () => {
         await fetchContracts();
+        await fetchProducts();
       })();
     }
   }, [token]);
@@ -481,9 +399,9 @@ const Contracts = () => {
                   }
                   sx={{ width: "100%" }}
                 >
-                  {services.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
+                  {services.map((option, index) => (
+                    <MenuItem key={index} value={index}>
+                      {option.discount_name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -541,17 +459,6 @@ const Contracts = () => {
                     setContract((prev) => ({
                       ...prev,
                       firstPaymentDate: value.toDate(),
-                    }))
-                  }
-                />
-                <DatePicker
-                  label="Fecha de Contrato"
-                  value={dayjs(contract.signatureDate)}
-                  format="DD/MM/YYYY"
-                  onChange={(value) =>
-                    setContract((prev) => ({
-                      ...prev,
-                      signatureDate: value.toDate(),
                     }))
                   }
                 />
