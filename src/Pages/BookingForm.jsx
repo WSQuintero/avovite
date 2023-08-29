@@ -374,7 +374,7 @@ const BookingForm = () => {
           {formData.country === "-" ||
             (formData.country === "169" && (
               <Column>
-                <Label error={errors.city}>Estado o Provincia</Label>
+                <Label error={errors.city}>Departamento</Label>
                 <FormControl variant="outlined">
                   <Select name="state" value={formData.state} onChange={handleInputChange} error={errors.state}>
                     <MenuItem value="-" selected disabled>
