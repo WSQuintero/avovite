@@ -22,7 +22,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { HighlightOff as ClearIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
+import { HighlightOff as ErrorIcon, Clear as ClearIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import PhoneField from "react-phone-input-2";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
@@ -85,6 +85,7 @@ const BookingForm = () => {
     city: "-",
     cellphone: "",
     user_id_bank: "-",
+    bank_name: "",
     user_bank_account_type: "-",
     user_bank_account_number: "",
     beneficiary_fullname: "",
@@ -115,7 +116,10 @@ const BookingForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const validation = validateJSON(formData, formData.country !== "169" ? ["state"] : []);
+    const validation = validateJSON(formData, [
+      ...(formData.country !== "169" ? ["state"] : []),
+      ...(formData.user_id_bank !== "-1" ? ["bank_name"] : []),
+    ]);
 
     if (validation.length) {
       validation.forEach((error) => setErrors((prev) => ({ ...prev, [error]: true })));
@@ -132,7 +136,7 @@ const BookingForm = () => {
       id_number: formData.id_number,
       cod_municipio: formData.city,
       cellphone: formData.cellphone,
-      user_id_bank: formData.user_id_bank,
+      user_id_bank: formData.user_id_bank === "-1" ? formData.bank_name : formData.user_id_bank,
       user_bank_account_type: formData.user_bank_account_type,
       user_bank_account_number: formData.user_bank_account_number,
       beneficiary_fullname: formData.beneficiary_fullname,
@@ -155,6 +159,7 @@ const BookingForm = () => {
         city: "-",
         cellphone: "",
         user_id_bank: "",
+        bank_name: "",
         user_bank_account_type: "",
         user_bank_account_number: "",
         beneficiary_fullname: "",
@@ -288,7 +293,6 @@ const BookingForm = () => {
             <Label error={errors.id_type}>Tipo de Documento</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
               <Select
-                id="tipoDocumentoBeneficiario"
                 name="id_type"
                 value={formData.id_type}
                 required
@@ -417,24 +421,42 @@ const BookingForm = () => {
           </Column>
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>
-            <FormControl variant="outlined">
-              <Select
-                id="bancoBeneficiario"
-                name="user_id_bank"
-                value={formData.user_id_bank}
+            {formData.user_id_bank !== "-1" ? (
+              <FormControl variant="outlined">
+                <Select
+                  name="user_id_bank"
+                  value={formData.user_id_bank}
+                  onChange={handleInputChange}
+                  error={errors.user_id_bank}
+                >
+                  <MenuItem value="-" selected disabled>
+                    Seleccione una opción
+                  </MenuItem>
+                  {constants?.banks.map((bank) => (
+                    <MenuItem key={bank.id} value={bank.id}>
+                      {bank.name}
+                    </MenuItem>
+                  ))}
+                  <MenuItem value="-1">Otro</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              <TextField
+                name="bank_name"
+                value={formData.bank_name}
                 onChange={handleInputChange}
                 error={errors.user_id_bank}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {constants?.banks.map((bank) => (
-                  <MenuItem key={bank.id} value={bank.id}>
-                    {bank.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => handleInputChange({ target: { name: "user_id_bank", value: "-" } })}>
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           </Column>
         </Row>
 
@@ -463,7 +485,6 @@ const BookingForm = () => {
           <Column>
             <Label error={errors.user_bank_account_number}>Número de Cuenta</Label>
             <TextField
-              type="number"
               name="user_bank_account_number"
               value={formData.user_bank_account_number}
               onChange={handleInputChange}
@@ -582,7 +603,7 @@ const BookingForm = () => {
 
       <Dialog open={feedback.open && feedback.status === "error"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
-          <ClearIcon fontSize="large" />
+          <ErrorIcon fontSize="large" />
           <Typography textAlign="center" fontSize={22} fontWeight={500}>
             Ha ocurrido un error.
           </Typography>
