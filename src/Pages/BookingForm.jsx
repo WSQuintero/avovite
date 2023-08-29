@@ -16,14 +16,20 @@ import {
   Autocomplete,
   InputAdornment,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
-import { Clear as ClearIcon } from "@mui/icons-material";
+import { HighlightOff as ClearIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import PhoneField from "react-phone-input-2";
 import ContractService from "../Services/contract.service";
 import { validateJSON } from "../utilities";
 import LogoImage from "../assets/img/common/logo.svg";
 import useConfig from "../Hooks/useConfig";
 import UtilsService from "../Services/utils.service";
+import { useNavigate } from "react-router-dom";
 
 const Row = ({ children }) => (
   <Grid
@@ -61,6 +67,7 @@ const Column = ({ children }) => (
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
 const BookingForm = () => {
+  const navigate = useNavigate();
   const [{ constants }] = useConfig();
   const $Utils = useMemo(() => new UtilsService(), []);
   const [countries, setCountries] = useState([]);
@@ -112,7 +119,6 @@ const BookingForm = () => {
 
     if (validation.length) {
       validation.forEach((error) => setErrors((prev) => ({ ...prev, [error]: true })));
-      setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
     }
 
@@ -220,8 +226,6 @@ const BookingForm = () => {
   useEffect(() => {
     (async () => {
       const { status, data } = await $Utils.getLocation();
-
-      console.log(data.data);
 
       if (status) {
         setCountries(data.data);
@@ -554,16 +558,46 @@ const BookingForm = () => {
         </Button>
       </Grid>
 
-      <Snackbar
-        open={feedback.open}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        onClose={resetFeedback}
-      >
-        <Alert onClose={resetFeedback} severity={feedback.status} sx={{ width: "100%" }}>
-          {feedback.message}
-        </Alert>
-      </Snackbar>
+      <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
+        <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
+          <CheckIcon fontSize="large" />
+          <Typography textAlign="center" fontSize={22} fontWeight={500}>
+            Formulario completado exitosamente.
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText fontSize={18} textAlign="center">
+            ¿Desea rellenarlo una vez más?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center" }}>
+          <Button onClick={() => navigate("/")} fullWidth>
+            No
+          </Button>
+          <Button variant="contained" onClick={resetFeedback} fullWidth>
+            Si
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={feedback.open && feedback.status === "error"} onClose={resetFeedback}>
+        <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
+          <ClearIcon fontSize="large" />
+          <Typography textAlign="center" fontSize={22} fontWeight={500}>
+            Ha ocurrido un error.
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText fontSize={18} textAlign="center">
+            Inténtelo de nuevo más tarde.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center" }}>
+          <Button variant="contained" onClick={resetFeedback} fullWidth>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
