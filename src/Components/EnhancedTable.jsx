@@ -10,6 +10,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableRow from "./EnhancedTableRow";
@@ -36,9 +37,6 @@ function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, c
     setPage(0);
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
   const visibleRows = useMemo(
     () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rows, rowsPerPage]
@@ -46,7 +44,7 @@ function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, c
 
   return (
     <>
-      <TableContainer component={Paper} elevation={0} sx={{ width: "100%" }}>
+      <TableContainer sx={{ width: "100%" }}>
         <Table size={dense ? "small" : "medium"}>
           <EnhancedTableHead
             headCells={headCells}
@@ -55,20 +53,21 @@ function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, c
             onRequestSort={handleRequestSort}
             rowCount={rows.length}
           />
-          <TableBody>
-            {visibleRows.map((row) => (
-              <EnhancedTableRow key={row.id} headCells={headCells} row={row} collapse={collapse} />
-            ))}
-            {emptyRows > 0 && (
-              <TableRow
-                style={{
-                  height: (dense ? 52.4 : 53) * emptyRows,
-                }}
-              >
-                <TableCell colSpan={headCells.length} />
-              </TableRow>
-            )}
-          </TableBody>
+          {visibleRows.length ? (
+            <TableBody>
+              {visibleRows.map((row) => (
+                <EnhancedTableRow key={row.id} headCells={headCells} row={row} collapse={collapse} />
+              ))}
+            </TableBody>
+          ) : (
+            <TableRow>
+              <TableCell colSpan={12}>
+                <Typography fontWeight={500} textAlign="center" padding={2}>
+                  No hay datos para mostrar
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
         </Table>
       </TableContainer>
       <Grid display="flex" alignItems="center" paddingLeft={2}>

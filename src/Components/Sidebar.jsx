@@ -123,6 +123,10 @@ function Sidebar({ collapseOn = "" }) {
             route: "/admin/date-ranges",
           },
           {
+            name: "Conceptos",
+            route: "/admin/concepts",
+          },
+          {
             name: "Blog",
             route: "/admin/blog",
           },
