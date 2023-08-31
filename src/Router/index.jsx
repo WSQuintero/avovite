@@ -9,6 +9,7 @@ import Shop from "../Pages/Shop";
 import Wallet from "../Pages/Wallet";
 import Checkout from "../Pages/Checkout";
 import BookingForm from "../Pages/BookingForm";
+import BookingFormMortgage from "../Pages/BookingFormMortgage";
 import TransferMoney from "../Pages/TransferMoney";
 import Info from "../Pages/Info";
 import Earnings from "../Pages/Earnings";
@@ -66,6 +67,10 @@ function Router() {
     {
       path: "/registro-contrato",
       element: <BookingForm />,
+    },
+    {
+      path: "/registro-contrato-hipoteca",
+      element: <BookingFormMortgage />,
     },
     {
       path: "/signin",

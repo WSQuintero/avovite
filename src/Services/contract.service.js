@@ -29,13 +29,16 @@ export default class ContractService {
     });
   }
 
-  async add({ body } = {}) {
+  async add({ body, mortgage = false } = {}) {
     return await handleCall(
       async () =>
-        (
-          await axios.post(`${this.API_URL}/contracts`, body, {
-            headers: { Authorization: this.token },
-          })
+        (mortgage
+          ? await axios.post(`${this.API_URL}/contracts/mortgage`, body, {
+              headers: { Authorization: this.token },
+            })
+          : await axios.post(`${this.API_URL}/contracts`, body, {
+              headers: { Authorization: this.token },
+            })
         ).data
     );
   }

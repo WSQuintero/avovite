@@ -36,11 +36,13 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
             borderRadius: 0,
             paddingLeft: 4,
             paddingY: 1.5,
+            overflowX: "hidden",
             transition: t.transitions.create(["background-color"], { duration: 200, easing: "ease-out" }),
             "&.active": {
               backgroundColor: alpha(t.palette.common.white, 0.2),
               "&::after": {
                 opacity: 1,
+                translate: 0,
               },
             },
             "&::after": {
@@ -51,8 +53,9 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
               right: 0,
               width: 6,
               opacity: 0,
+              translate: "100%",
               backgroundColor: "white",
-              transition: "opacity 0.2s ease-out",
+              transition: "opacity 0.2s ease-out, translate 0.2s ease-out",
             },
           })}
         >

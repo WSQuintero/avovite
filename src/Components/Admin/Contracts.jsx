@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
 import {
@@ -17,28 +17,20 @@ import {
   InputAdornment,
   Snackbar,
   Alert,
-  Paper,
   List,
   ListItem,
-  ListItemButton,
-  ListItemIcon,
   ListItemText,
   Checkbox,
   CircularProgress,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { ExportToCsv } from "export-to-csv";
-import {
-  AddOutlined as AddIcon,
-  DeleteOutlined as DeleteIcon,
-  FileDownload as DownloadIcon,
-} from "@mui/icons-material";
+import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
 import { isToday, formatCurrency, formatDate as formatLongDate } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
-import EnhancedTable from "../EnhancedTable";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
 import DueService from "../../Services/due.service";
@@ -48,6 +40,13 @@ const columns = [
     accessorKey: "fullname",
     id: "fullname",
     header: "Nombre del pagador",
+  },
+  {
+    accessorKey: "mortgage_contract",
+    id: "mortgage_contract",
+    header: "Hipotecado",
+    size: 50,
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue === 0 ? "No" : "Si"}</Typography>,
   },
   {
     accessorKey: "contract_vites",
