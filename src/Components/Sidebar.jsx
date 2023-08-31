@@ -1,9 +1,7 @@
 import { NavLink } from "react-router-dom";
 import {
   Avatar,
-  Box,
   Collapse,
-  Divider,
   Drawer,
   Grid,
   List,
@@ -14,9 +12,9 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { InvestIcon, WalletIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
+import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
@@ -136,6 +134,10 @@ function Sidebar({ collapseOn = "" }) {
           {
             name: "Tienda",
             route: "/admin/shop",
+          },
+          {
+            name: "Usuarios",
+            route: "/admin/users",
           },
         ],
       },
