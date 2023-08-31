@@ -18,6 +18,13 @@ import {
   Snackbar,
   Alert,
   Paper,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Checkbox,
+  CircularProgress,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { ExportToCsv } from "export-to-csv";
@@ -34,6 +41,7 @@ import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
+import DueService from "../../Services/due.service";
 
 const columns = [
   {
@@ -57,11 +65,6 @@ const columns = [
     ),
   },
   {
-    accessorKey: "payment_numbers",
-    id: "payment_numbers",
-    header: "Cantidad de cuotas",
-  },
-  {
     accessorKey: "total_financed",
     id: "total_financed",
     header: "Financiamiento total",
@@ -71,6 +74,16 @@ const columns = [
         $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
       </>
     ),
+  },
+  {
+    accessorKey: "payment_numbers",
+    id: "payment_numbers",
+    header: "Cuotas",
+  },
+  {
+    accessorKey: "overdue_quotas",
+    id: "overdue_quotas",
+    header: "Cuotas en mora",
   },
 ];
 
@@ -97,6 +110,8 @@ const Contracts = () => {
   const [{ token }] = useSession();
   const $Shop = useShop();
   const [contracts, setContracts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null);
 
   const [services, setServices] = useState([]);
 
@@ -139,6 +154,11 @@ const Contracts = () => {
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
 
+  // DUES
+  const [contractDues, setContractDues] = useState({ id: null, dues: [] });
+  const $Due = useMemo(() => new DueService(token), [token]);
+  const [loadingDue, setLoadingDue] = useState(false);
+
   const fetchContracts = async () => {
     const {
       status,
@@ -147,6 +167,16 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
+    }
+  };
+
+  const fetchContractDues = async (contractId) => {
+    const { status, data } = await $Due.get({ contractId });
+
+    console.log(data);
+
+    if (status) {
+      setContractDues({ id: contractId, dues: data.data });
     }
   };
 
@@ -221,6 +251,17 @@ const Contracts = () => {
     }
   };
 
+  const onCheckDue = async ({ id, status }) => {
+    setLoadingDue(true);
+    const { status: reqStatus, data } = await $Due.updateStatus({ id, status });
+
+    if (reqStatus) {
+      setContractDues((prev) => ({ ...prev, dues: prev.dues.map((d) => (d.id === id ? { ...d, status } : d)) }));
+    }
+
+    setLoadingDue(false);
+  };
+
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -234,6 +275,7 @@ const Contracts = () => {
       (async () => {
         await fetchContracts();
         await fetchProducts();
+        setLoading(false);
       })();
     }
   }, [token]);
@@ -249,6 +291,7 @@ const Contracts = () => {
         muiTablePaperProps={{ elevation: 0 }}
         initialState={{ density: "compact" }}
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
+        state={{ showSkeletons: loading }}
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
@@ -258,9 +301,18 @@ const Contracts = () => {
                 ? setSelectedContract(original)
                 : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
             }}
-            sx={{ m: 0 }}
           >
             {original.status_contracts === 0 ? "Crear" : " Ver"} contrato
+          </MenuItem>,
+          <MenuItem
+            key={1}
+            onClick={async () => {
+              closeMenu();
+              await fetchContractDues(original.id);
+              setModal("open-contract-dues");
+            }}
+          >
+            Ver cuotas
           </MenuItem>,
         ]}
         renderDetailPanel={({ row: { original: row } }) => (
@@ -648,6 +700,66 @@ const Contracts = () => {
             </Button>
           </Grid>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={modal === "open-contract-dues"}
+        onClose={() => {
+          setModal(null);
+          setContractDues({ id: null, dues: [] });
+        }}
+        maxWidth="xl"
+        fullWidth
+      >
+        <DialogTitle color="primary.main">Cuotas del contrato</DialogTitle>
+        <DialogContent>
+          <List>
+            <ListItem
+              secondaryAction={
+                loadingDue ? (
+                  <CircularProgress size={28} />
+                ) : (
+                  <Typography fontSize={20} fontWeight={600} color="black">
+                    Pagado
+                  </Typography>
+                )
+              }
+            >
+              <Grid display="flex" gap={4} alignItems="center">
+                <ListItemText
+                  primary="Cuota"
+                  primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
+                />
+              </Grid>
+            </ListItem>
+            {contractDues.dues.map((due) => (
+              <ListItem
+                key={due.id}
+                secondaryAction={
+                  <Checkbox
+                    edge="end"
+                    disabled={loadingDue}
+                    checked={due.status}
+                    onChange={({ target }) => onCheckDue({ id: due.id, status: target.checked ? 1 : 0 })}
+                  />
+                }
+              >
+                <Grid display="flex" gap={4} alignItems="center">
+                  <ListItemText
+                    primary={due.quota_number}
+                    primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
+                  />
+                  <ListItemText
+                    primary={formatCurrency(due.payment_amount, "$")}
+                    primaryTypographyProps={{ fontSize: 20, color: "black" }}
+                    secondary={formatLongDate(due.date_payment)}
+                    secondaryTypographyProps={{ color: "text.main" }}
+                  />
+                </Grid>
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
       </Dialog>
 
       <Snackbar
