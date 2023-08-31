@@ -1,14 +1,13 @@
 import { useMemo } from "react";
 import { NumericFormat } from "react-number-format";
+import { v4 as uuid } from "uuid";
 import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as DeleteIcon } from "@mui/icons-material";
 import { alpha, Box, Button, Container, Grid, IconButton, Typography } from "@mui/material";
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
 import { IMAGE_PLACEHOLDER } from "../utilities/constants";
-import { useNavigate } from "react-router-dom";
 
 function ShoppingCart() {
-  const navigate = useNavigate();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
   const subTotal = useMemo(
     () =>
@@ -24,7 +23,47 @@ function ShoppingCart() {
   );
 
   const handlePayment = () => {
-    navigate('/checkout');
+    if (!shoppingCart || !shoppingCart.length) {
+      return;
+    }
+
+    const name = shoppingCart
+      .map((p) => `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`)
+      .join(", ");
+
+    const mandatory = {
+      name,
+      description: name,
+      invoice: `AV-${uuid()}`,
+      currency: "cop",
+      amount: 150000,
+      tax_base: "4000",
+      tax: "500",
+      tax_ico: "500",
+      country: "co",
+      lang: "es",
+    };
+
+    const aditional = {
+      extra1: JSON.stringify(
+        shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))
+      ),
+      confirmation: "http://localhost:5173/payment",
+      response: "http://localhost:5173/checkout",
+
+      name_billing: "Jhon Doe",
+      address_billing: "Carrera 19 numero 14 91",
+      type_doc_billing: "cc",
+      mobilephone_billing: "3050000000",
+      number_doc_billing: "100000000",
+    };
+
+    const handler = window.ePayco.checkout.configure({
+      key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
+      test: true,
+    });
+
+    handler.open({ ...mandatory, ...aditional });
   };
 
   return (
@@ -165,18 +204,6 @@ function ShoppingCart() {
                   </Typography>
                 </Grid>
               </Box>
-              {/* <Box
-                display="flex"
-                flexDirection="column"
-                gap={4}
-                padding={2}
-                borderRadius={1}
-                sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-              >
-                <Grid display="flex" flexDirection="column" gap={2}>
-                  <TextField label="Código de cupón" InputProps={{ sx: { backgroundColor: "white" } }} fullWidth />
-                </Grid>
-              </Box> */}
               <Button variant="contained" onClick={handlePayment}>
                 Proceder a pago
               </Button>
