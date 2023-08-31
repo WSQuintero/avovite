@@ -19,14 +19,14 @@ export const validateJSON = (o, e = []) =>
 
 export const isToday = (date) => {
   const today = new Date();
-  console.log(today);
-  console.log(date);
   return (
     date.getDate() === today.getDate() &&
     date.getMonth() === today.getMonth() &&
     date.getFullYear() === today.getFullYear()
   );
 };
+
+export const isYoutubeVideo = (url) => String(url).startsWith("https://www.youtube.com/embed/");
 
 export const formatDate = (date) =>
   `${new Date(date).getDate()} ${

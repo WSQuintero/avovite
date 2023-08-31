@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import { Box, Container, Grid, Skeleton, Typography } from "@mui/material";
-import { formatDate } from "../utilities";
+import { formatDate, isYoutubeVideo } from "../utilities";
 
 function Post() {
   const { id } = useParams();
@@ -103,6 +103,23 @@ function Post() {
               </Grid>
             </Box>
             <Typography>{post.description}</Typography>
+            <Grid sx={{ aspectRatio: 16 / 9 }}>
+              {isYoutubeVideo(post.url_video) ? (
+                <iframe
+                  src={post.url_video}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8, border: 0 }}
+                />
+              ) : (
+                <video
+                  src={post.url_video}
+                  width="100%"
+                  style={{ objectFit: "cover", borderRadius: 8 }}
+                  muted
+                  autoPlay
+                />
+              )}
+            </Grid>
           </Grid>
         )}
       </Container>
