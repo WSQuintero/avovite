@@ -5,6 +5,7 @@ import App from "./App.jsx";
 
 import "./assets/css/_default.css";
 import "react-phone-input-2/lib/material.css";
+import 'react-quill/dist/quill.snow.css';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <MasterProvider>

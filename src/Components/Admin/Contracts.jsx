@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { ExportToCsv } from "export-to-csv";
+import ReactQuill from "react-quill";
 import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -124,6 +125,7 @@ const Contracts = () => {
     firstPaymentValue: "",
     firstPaymentDate: new Date(),
     financing: false,
+    mortgage_contract_aditional_text: "",
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
@@ -197,6 +199,7 @@ const Contracts = () => {
       firstPaymentValue: "",
       firstPaymentDate: new Date(),
       financing: false,
+      mortgage_contract_aditional_text: "",
     });
     setDues([]);
   };
@@ -204,8 +207,9 @@ const Contracts = () => {
   const onCreateContract = async () => {
     const { status } = await $Contract.complete({
       id: selectedContract.id,
-      body:
-        totalFinancingValue !== 0
+      mortgage: selectedContract.mortgage_contract === 1,
+      body: {
+        ...(totalFinancingValue !== 0
           ? {
               // Financing
               financed: 1,
@@ -238,7 +242,13 @@ const Contracts = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
-            },
+            }),
+        ...(selectedContract.mortgage_contract === 1
+          ? {
+              mortgage_contract_aditional_text: contract.mortgage_contract_aditional_text,
+            }
+          : {}),
+      },
     });
 
     if (status) {
@@ -601,6 +611,18 @@ const Contracts = () => {
                 />
               </Grid>
             </Grid>
+            {selectedContract?.mortgage_contract === 1 && (
+              <ReactQuill
+                placeholder="Texto Adicional"
+                value={contract.mortgage_contract_aditional_text}
+                onChange={(value) =>
+                  setContract((prev) => ({
+                    ...prev,
+                    mortgage_contract_aditional_text: value,
+                  }))
+                }
+              />
+            )}
             {totalFinancingValue !== 0 && (
               <>
                 <Divider />
