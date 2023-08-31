@@ -60,13 +60,15 @@ function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, c
               ))}
             </TableBody>
           ) : (
-            <TableRow>
-              <TableCell colSpan={12}>
-                <Typography fontWeight={500} textAlign="center" padding={2}>
-                  No hay datos para mostrar
-                </Typography>
-              </TableCell>
-            </TableRow>
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={12}>
+                  <Typography fontWeight={500} textAlign="center" padding={2}>
+                    No hay datos para mostrar
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           )}
         </Table>
       </TableContainer>

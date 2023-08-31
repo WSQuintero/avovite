@@ -7,11 +7,11 @@ export default class ProfitService {
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
   }
 
-  async get({ id = null } = {}) {
+  async get({ dateRangeId = null } = {}) {
     return await handleCall(async () => {
-      if (id) {
+      if (dateRangeId) {
         return (
-          await axios.get(`${this.API_URL}/contract-date-range-profit/${id}`, {
+          await axios.get(`${this.API_URL}/contract-date-range-profit/${dateRangeId}`, {
             headers: {
               Authorization: this.token,
             },

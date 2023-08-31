@@ -24,7 +24,12 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, AddOutlined as AddIcon } from "@mui/icons-material";
+import {
+  DeleteOutlined as DeleteIcon,
+  EditOutlined as EditIcon,
+  AddOutlined as AddIcon,
+  KeyboardArrowDown as CollapseIcon,
+} from "@mui/icons-material";
 import useSession from "../../Hooks/useSession";
 import DateRangeService from "../../Services/daterange.service";
 import ProfitService from "../../Services/profit.service";
@@ -34,6 +39,7 @@ import dayjs from "dayjs";
 import { NumericFormat } from "react-number-format";
 import EnhancedTable from "../EnhancedTable";
 import useShop from "../../Hooks/useShop";
+import useConcept from "../../Hooks/useConcept";
 
 function DateRanges() {
   const [session] = useSession();
@@ -67,10 +73,11 @@ function DateRanges() {
   );
 
   // PROFITS
-  const [profits, setProfits] = useState([]);
+  const [profits, setProfits] = useState({});
   const [currentProfit, setCurrentProfit] = useState({
     id: null,
     id_contract_date_range: "",
+    id_profit_concept: "",
     amount_profit: "",
   });
   const [billSplitting, setBillSplitting] = useState({
@@ -78,6 +85,10 @@ function DateRanges() {
     profitId: null,
   });
   const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
+
+  // CONCEPTS
+  const [concepts, setConcepts] = useState([]);
+  const $Concept = useConcept();
 
   const dateRangeHeadCells = useMemo(
     () => [
@@ -123,8 +134,22 @@ function DateRanges() {
         disablePadding: false,
         format: (value, row, onCollapse) => (
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-            <IconButton onClick={onCollapse}>
-              <AddIcon />
+            <IconButton
+              onClick={async () => {
+                onCollapse();
+
+                if (!profits[row.id]) {
+                  const { status, data } = await $Profit.get({ dateRangeId: row.id });
+
+                  console.log(data);
+
+                  if (status) {
+                    setProfits((prev) => ({ ...prev, [row.id]: data.data }));
+                  }
+                }
+              }}
+            >
+              <CollapseIcon />
             </IconButton>
             <IconButton
               onClick={() => {
@@ -171,42 +196,40 @@ function DateRanges() {
           </Button>
         </Grid>
         <List>
-          {profits
-            .filter((p) => p.id_contract_date_range === row.id)
-            .map((p) => (
-              <ListItem
-                key={p.id}
-                secondaryAction={
-                  <Grid display="flex" justifyContent="flex-end" gap={1}>
-                    <IconButton
-                      onClick={() => {
-                        setCurrentProfit(p);
-                        setShowModal("create-profit");
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setCurrentProfit(p);
-                        setShowModal("delete-profit");
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                }
-                sx={(t) => ({
-                  borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: alpha(t.palette.primary.main, 0.1),
-                  },
-                })}
-              >
-                <ListItemText primary={formatCurrency(p.amount_profit, "$")} />
-              </ListItem>
-            ))}
+          {(profits[row.id] || []).map((p) => (
+            <ListItem
+              key={p.id}
+              secondaryAction={
+                <Grid display="flex" justifyContent="flex-end" gap={1}>
+                  <IconButton
+                    onClick={() => {
+                      setCurrentProfit(p);
+                      setShowModal("create-profit");
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      setCurrentProfit(p);
+                      setShowModal("delete-profit");
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
+              }
+              sx={(t) => ({
+                borderRadius: 1,
+                "&:hover": {
+                  backgroundColor: alpha(t.palette.primary.main, 0.1),
+                },
+              })}
+            >
+              <ListItemText primary={formatCurrency(p.amount_profit, "$")} />
+            </ListItem>
+          ))}
         </List>
       </Grid>
     ),
@@ -226,6 +249,7 @@ function DateRanges() {
       setCurrentProfit({
         id: null,
         id_contract_date_range: "",
+        id_profit_concept: "",
         amount_profit: "",
       });
     } else if (target === "BillSplitting") {
@@ -313,6 +337,7 @@ function DateRanges() {
 
     const body = {
       id_contract_date_range: currentProfit.id_contract_date_range,
+      id_profit_concept: currentProfit.id_profit_concept,
       amount_profit: currentProfit.amount_profit,
     };
 
@@ -320,7 +345,14 @@ function DateRanges() {
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Rentabilidad creada con éxito." });
-      setProfits((prev) => [...prev, { id: data.data, ...body }]);
+      profits[currentProfit.id_contract_date_range] &&
+        setProfits((prev) => ({
+          ...prev,
+          [currentProfit.id_contract_date_range]: [
+            ...prev[currentProfit.id_contract_date_range],
+            { id: data.data, ...body },
+          ],
+        }));
       setShowModal(null);
       clearFields("Profit");
       // Add to the list
@@ -334,6 +366,7 @@ function DateRanges() {
 
     const body = {
       id_contract_date_range: currentProfit.id_contract_date_range,
+      id_profit_concept: currentProfit.id_profit_concept,
       amount_profit: currentProfit.amount_profit,
     };
 
@@ -344,7 +377,12 @@ function DateRanges() {
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Rentabilidad actualizada con éxito." });
-      setProfits((prev) => prev.map((p) => (p.id === currentProfit.id ? { ...p, ...body } : p)));
+      setProfits((prev) => ({
+        ...prev,
+        [currentProfit.id_contract_date_range]: prev[currentProfit.id_contract_date_range].map((p) =>
+          p.id === currentProfit.id ? { ...p, ...body } : p
+        ),
+      }));
       setShowModal(null);
       clearFields("Profit");
     } else {
@@ -392,10 +430,10 @@ function DateRanges() {
         }
       })();
       (async () => {
-        const { status, data } = await $Profit.get();
+        const { status, data } = await $Concept.get();
 
         if (status) {
-          setProfits(data.data);
+          setConcepts(data.data);
         }
       })();
       (async () => {
@@ -622,6 +660,23 @@ function DateRanges() {
                 }))
               }
             />
+            <TextField
+              select
+              label="Concepto"
+              value={currentProfit.id_profit_concept}
+              onChange={({ target }) =>
+                setCurrentProfit((prev) => ({
+                  ...prev,
+                  id_profit_concept: target.value,
+                }))
+              }
+            >
+              {concepts.map((c) => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.title}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -669,6 +724,8 @@ function DateRanges() {
         </DialogActions>
       </Dialog>
 
+      {/* BILL SPLITTING */}
+
       <Dialog
         maxWidth="sm"
         open={showModal === "bill-splitting"}
@@ -694,13 +751,11 @@ function DateRanges() {
                 <MenuItem value={-1} disabled>
                   Seleccione una opción
                 </MenuItem>
-                {profits
-                  .filter((p) => p.id_contract_date_range === billSplitting.dateRangeId)
-                  .map((e) => (
-                    <MenuItem key={e.id} value={e.id}>
-                      {formatCurrency(e.amount_profit, "$")}
-                    </MenuItem>
-                  ))}
+                {(profits[billSplitting.dateRangeId] || []).map((e) => (
+                  <MenuItem key={e.id} value={e.id}>
+                    {formatCurrency(e.amount_profit, "$")}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
