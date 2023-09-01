@@ -4,6 +4,7 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -98,6 +99,13 @@ function DateRanges() {
 
   const dateRangeHeadCells = useMemo(
     () => [
+      {
+        id: "id",
+        label: "ID",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value || "-",
+      },
       {
         id: "product_name",
         label: "Producto",
@@ -246,10 +254,9 @@ function DateRanges() {
   const fetchContracts = async (dateRangeId) => {
     const { status, data } = await $Contract.get({ dateRangeId });
 
-    console.log(data);
-
     if (status) {
       setContracts(data.data);
+      setBillSplitting((prev) => ({ ...prev, contracts: data.data.map((c) => c.id_contract) }));
     }
   };
 
@@ -422,12 +429,15 @@ function DateRanges() {
   };
 
   const onGenerateBillSplitting = async () => {
-    if (!billSplitting.profitId) {
-      setFeedback({ show: true, status: "error", message: "Debe seleccionar primero una rentabilidad." });
+    if (billSplitting.profitId === '-' || !billSplitting.contracts.length) {
+      setFeedback({ show: true, status: "error", message: "Todos los campos son obligatorios." });
       return;
     }
 
-    const { status } = await $DateRange.split({ id: billSplitting.profitId });
+    const { status } = await $DateRange.split({
+      id: billSplitting.profitId,
+      idContracts: billSplitting.contracts.join(","),
+    });
 
     if (status) {
       setShowModal(null);
@@ -755,7 +765,7 @@ function DateRanges() {
       >
         <DialogTitle>Generar split de pagos</DialogTitle>
         <DialogContent>
-          <Grid display='flex' flexDirection='column' gap={2} paddingY={1}>
+          <Grid display="flex" flexDirection="column" gap={2} paddingY={1}>
             <FormControl fullWidth>
               <InputLabel id="label-bill-splitting-select">Rentabilidad</InputLabel>
               <Select
@@ -782,12 +792,14 @@ function DateRanges() {
                 multiple
                 label="Contratos"
                 labelId="label-bill-splitting-select-contract"
+                renderValue={(selected) => selected.join(", ")}
                 value={billSplitting.contracts}
                 onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}
               >
-                {billSplitting.contracts.map((c) => (
-                  <MenuItem key={c.id} value={c.id}>
-                    {c.contract_number} {c.fullname}
+                {contracts.map((c) => (
+                  <MenuItem key={c.id_contract} value={c.id_contract}>
+                    <Checkbox checked={billSplitting.contracts.indexOf(c.id_contract) > -1} />
+                    <ListItemText primary={`${c.contract_number || "-"} ${c.fullname}`} />
                   </MenuItem>
                 ))}
               </Select>

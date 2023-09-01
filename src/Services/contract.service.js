@@ -15,7 +15,9 @@ export default class ContractService {
       } else if (id) {
         return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
       } else if (dateRangeId) {
-        return (await axios.get(`${this.API_URL}/split/contracts/${dateRangeId}`, this.config)).data;
+        return (
+          await axios.get(`${this.API_URL}/contract-date-range-profit/split/contracts/${dateRangeId}`, this.config)
+        ).data;
       } else {
         return (await axios.get(`${this.API_URL}/contracts`, this.config)).data;
       }
