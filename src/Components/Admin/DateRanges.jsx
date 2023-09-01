@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,6 +31,7 @@ import {
   EditOutlined as EditIcon,
   AddOutlined as AddIcon,
   KeyboardArrowDown as CollapseIcon,
+  ArrowDropDown as ArrowDownIcon,
 } from "@mui/icons-material";
 import { NumericFormat } from "react-number-format";
 import useSession from "../../Hooks/useSession";
@@ -47,6 +49,7 @@ function DateRanges() {
   const [session] = useSession();
   const [showModal, setShowModal] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
+  const [loading, setLoading] = useState({ contracts: false });
 
   // PRODUCTS
   const [products, setProducts] = useState([]);
@@ -153,13 +156,7 @@ function DateRanges() {
                 onCollapse();
 
                 if (!profits[row.id]) {
-                  const { status, data } = await $Profit.get({ dateRangeId: row.id });
-
-                  console.log(data);
-
-                  if (status) {
-                    setProfits((prev) => ({ ...prev, [row.id]: data.data }));
-                  }
+                  fetchProfits(row.id);
                 }
               }}
             >
@@ -182,7 +179,10 @@ function DateRanges() {
               onClick={async () => {
                 setBillSplitting((prev) => ({ ...prev, dateRangeId: row.id }));
                 setShowModal("bill-splitting");
-                await fetchContracts(row.id);
+
+                if (!profits[row.id]) {
+                  fetchProfits(row.id);
+                }
               }}
             >
               Split
@@ -251,13 +251,25 @@ function DateRanges() {
     [profits]
   );
 
+  const fetchProfits = async (dateRangeId) => {
+    const { status, data } = await $Profit.get({ dateRangeId });
+
+    if (status) {
+      setProfits((prev) => ({ ...prev, [dateRangeId]: data.data }));
+    }
+  };
+
   const fetchContracts = async (dateRangeId) => {
+    setLoading((prev) => ({ ...prev, contracts: true }));
+
     const { status, data } = await $Contract.get({ dateRangeId });
 
     if (status) {
       setContracts(data.data);
       setBillSplitting((prev) => ({ ...prev, contracts: data.data.map((c) => c.id_contract) }));
     }
+
+    setLoading((prev) => ({ ...prev, contracts: false }));
   };
 
   const clearFields = (target) => {
@@ -429,7 +441,7 @@ function DateRanges() {
   };
 
   const onGenerateBillSplitting = async () => {
-    if (billSplitting.profitId === '-' || !billSplitting.contracts.length) {
+    if (billSplitting.profitId === "-" || !billSplitting.contracts.length) {
       setFeedback({ show: true, status: "error", message: "Todos los campos son obligatorios." });
       return;
     }
@@ -773,7 +785,10 @@ function DateRanges() {
                 label="Rentabilidad"
                 labelId="label-bill-splitting-select"
                 value={billSplitting.profitId}
-                onChange={(event) => setBillSplitting((prev) => ({ ...prev, profitId: event.target.value }))}
+                onChange={async (event) => {
+                  setBillSplitting((prev) => ({ ...prev, profitId: event.target.value }));
+                  await fetchContracts(event.target.value);
+                }}
               >
                 <MenuItem value="-" disabled>
                   Seleccione una opción
@@ -794,8 +809,17 @@ function DateRanges() {
                 labelId="label-bill-splitting-select-contract"
                 renderValue={(selected) => selected.join(", ")}
                 value={billSplitting.contracts}
-                onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}
+                IconComponent={() =>
+                  loading.contracts ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" marginRight={2}>
+                      <CircularProgress size={24} />
+                    </Box>
+                  ) : (
+                    <ArrowDownIcon sx={{ marginRight: 0.8 }} />
+                  )
+                }
               >
+                onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}>
                 {contracts.map((c) => (
                   <MenuItem key={c.id_contract} value={c.id_contract}>
                     <Checkbox checked={billSplitting.contracts.indexOf(c.id_contract) > -1} />
