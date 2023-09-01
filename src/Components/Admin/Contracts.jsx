@@ -772,8 +772,8 @@ const Contracts = () => {
                   />
                   <ListItemText
                     primary={formatCurrency(due.payment_amount, "$")}
-                    primaryTypographyProps={{ fontSize: 20, color: "black" }}
                     secondary={formatLongDate(due.date_payment)}
+                    primaryTypographyProps={{ fontSize: 20, color: "black" }}
                     secondaryTypographyProps={{ color: "text.main" }}
                   />
                 </Grid>

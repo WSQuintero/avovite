@@ -18,13 +18,13 @@ import Admin from "../Pages/Admin";
 import Post from "../Pages/Post";
 import Profile from "../Pages/Profile";
 import Contact from "../Pages/Contact";
+import ContractValidation from "../Pages/ContractValidation";
 
-const META = {
-  REQUIRES_AUTH: Symbol("REQUIRES_AUTH"),
-  REQUIRES_ADMIN: Symbol("REQUIRES_ADMIN"),
-  HIDE_FOR_AUTH: Symbol("HIDE_FOR_AUTH"),
-  HIDE_FOR_ADMIN: Symbol("HIDE_FOR_ADMIN"),
-};
+const REQUIRES_AUTH = "REQUIRES_AUTH";
+const REQUIRES_ADMIN = "REQUIRES_ADMIN";
+const HIDE_FOR_AUTH = "HIDE_FOR_AUTH";
+const HIDE_FOR_ADMIN = "HIDE_FOR_ADMIN";
+const REQUIRES_VALIDATION = "REQUIRES_VALIDATION";
 
 function PrivateRoute({ component: Component, meta = [], ...props }) {
   const [session] = useSession();
@@ -35,25 +35,31 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
     return <></>;
   }
 
-  if (meta.includes(META.HIDE_FOR_AUTH)) {
+  if (meta.includes(REQUIRES_VALIDATION)) {
+    if (session.user && session.user.pending_payed_contracts) {
+      return <Navigate to="/validation" />;
+    }
+  }
+
+  if (meta.includes(HIDE_FOR_AUTH)) {
     if (isAuthenticated) {
       return <Navigate to="/" />;
     }
   }
 
-  if (meta.includes(META.HIDE_FOR_ADMIN)) {
+  if (meta.includes(HIDE_FOR_ADMIN)) {
     if (isAdmin) {
       return <Navigate to="/admin" />;
     }
   }
 
-  if (meta.includes(META.REQUIRES_AUTH)) {
+  if (meta.includes(REQUIRES_AUTH, REQUIRES_VALIDATION)) {
     if (!isAuthenticated) {
       return <Navigate to="/signin" />;
     }
   }
 
-  if (meta.includes(META.REQUIRES_ADMIN)) {
+  if (meta.includes(REQUIRES_ADMIN)) {
     if (!isAdmin) {
       return <Navigate to="/" />;
     }
@@ -74,11 +80,11 @@ function Router() {
     },
     {
       path: "/signin",
-      element: <PrivateRoute component={Signin} meta={[META.HIDE_FOR_AUTH]} />,
+      element: <PrivateRoute component={Signin} meta={[HIDE_FOR_AUTH]} />,
     },
     {
       path: "/signup",
-      element: <PrivateRoute component={Signup} meta={[META.HIDE_FOR_AUTH]} />,
+      element: <PrivateRoute component={Signup} meta={[HIDE_FOR_AUTH]} />,
     },
     {
       path: "/privacy-policy",
@@ -86,15 +92,15 @@ function Router() {
     },
     {
       path: "/",
-      element: <PrivateRoute component={Dashboard} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/profile",
-      element: <PrivateRoute component={Profile} meta={[META.REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={Profile} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/wallet",
-      element: <PrivateRoute component={Wallet} meta={[META.REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={Wallet} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
       children: [
         {
           path: "transfer/:bank?",
@@ -104,35 +110,39 @@ function Router() {
     },
     {
       path: "/info/:category?",
-      element: <PrivateRoute component={Info} meta={[META.REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={Info} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/earnings",
-      element: <PrivateRoute component={Earnings} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={Earnings} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/shop",
-      element: <PrivateRoute component={Shop} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={Shop} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/cart",
-      element: <PrivateRoute component={ShoppingCart} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={ShoppingCart} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/checkout",
-      element: <PrivateRoute component={Checkout} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={Checkout} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/admin/:section?",
-      element: <PrivateRoute component={Admin} meta={[META.REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={Admin} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/posts/:id",
-      element: <PrivateRoute component={Post} meta={[META.REQUIRES_AUTH, META.HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={Post} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/contact-us",
-      element: <PrivateRoute component={Contact} meta={[META.REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={Contact} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+    },
+    {
+      path: "/validation",
+      element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />,
     },
   ]);
 }

@@ -13,7 +13,7 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
           flexGrow={1}
           padding={6}
           sx={(t) => ({
-            maxWidth: `calc(100vw - ${t.sizes.sidebar.main}px - 16px)`,
+            maxWidth: isInvalidSession ? "100vw" : `calc(100vw - ${t.sizes.sidebar.main}px - 16px)`,
             [t.breakpoints.down("lg")]: {
               maxWidth: "100vw",
               padding: 2,

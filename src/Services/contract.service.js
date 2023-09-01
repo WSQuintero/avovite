@@ -8,10 +8,14 @@ export default class ContractService {
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
   }
 
-  async get({ id = null } = {}) {
+  async get({ id = null, dateRangeId = null, pending = false } = {}) {
     return await handleCall(async () => {
-      if (id) {
-        return (await axios.get(`${this.API_URL}/contracts/${id}`)).data;
+      if (pending) {
+        return (await axios.get(`${this.API_URL}/contract-transactional-payments/pending`, this.config)).data;
+      } else if (id) {
+        return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
+      } else if (dateRangeId) {
+        return (await axios.get(`${this.API_URL}/split/contracts/${dateRangeId}`, this.config)).data;
       } else {
         return (await axios.get(`${this.API_URL}/contracts`, this.config)).data;
       }
@@ -28,10 +32,12 @@ export default class ContractService {
     );
   }
 
-  async complete({ id, body, mortgage = false } = {}) {
+  async complete({ id, body, mortgage = false, pending = false } = {}) {
     return await handleCall(
       async () =>
-        (mortgage
+        (pending
+          ? await axios.put(`${this.API_URL}/contract-transactional-payments/complete/${id}`, body, this.config)
+          : mortgage
           ? await axios.put(`${this.API_URL}/contracts/complete-contract-mortgage/${id}`, body, this.config)
           : await axios.put(`${this.API_URL}/contracts/completeContract/${id}`, body, this.config)
         ).data

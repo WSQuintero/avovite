@@ -30,13 +30,14 @@ import {
   AddOutlined as AddIcon,
   KeyboardArrowDown as CollapseIcon,
 } from "@mui/icons-material";
+import { NumericFormat } from "react-number-format";
 import useSession from "../../Hooks/useSession";
 import DateRangeService from "../../Services/daterange.service";
+import ContractService from "../../Services/contract.service";
 import ProfitService from "../../Services/profit.service";
 import { formatCurrency, formatDate } from "../../utilities";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { NumericFormat } from "react-number-format";
 import EnhancedTable from "../EnhancedTable";
 import useShop from "../../Hooks/useShop";
 import useConcept from "../../Hooks/useConcept";
@@ -82,13 +83,18 @@ function DateRanges() {
   });
   const [billSplitting, setBillSplitting] = useState({
     dateRangeId: null,
-    profitId: null,
+    profitId: "-",
+    contracts: [],
   });
   const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
 
   // CONCEPTS
   const [concepts, setConcepts] = useState([]);
   const $Concept = useConcept();
+
+  // CONTRACTS
+  const [contracts, setContracts] = useState([]);
+  const $Contract = useMemo(() => new ContractService(session.token), [session.token]);
 
   const dateRangeHeadCells = useMemo(
     () => [
@@ -165,9 +171,10 @@ function DateRanges() {
             <Button
               variant="contained"
               size="small"
-              onClick={() => {
+              onClick={async () => {
                 setBillSplitting((prev) => ({ ...prev, dateRangeId: row.id }));
                 setShowModal("bill-splitting");
+                await fetchContracts(row.id);
               }}
             >
               Split
@@ -236,6 +243,16 @@ function DateRanges() {
     [profits]
   );
 
+  const fetchContracts = async (dateRangeId) => {
+    const { status, data } = await $Contract.get({ dateRangeId });
+
+    console.log(data);
+
+    if (status) {
+      setContracts(data.data);
+    }
+  };
+
   const clearFields = (target) => {
     if (target === "DateRange") {
       setNewDateRange({
@@ -255,7 +272,8 @@ function DateRanges() {
     } else if (target === "BillSplitting") {
       setBillSplitting({
         dateRangeId: null,
-        profitId: null,
+        profitId: "-",
+        contracts: [],
       });
     }
   };
@@ -409,7 +427,7 @@ function DateRanges() {
       return;
     }
 
-    const { status } = await $Profit.split({ id: billSplitting.profitId });
+    const { status } = await $DateRange.split({ id: billSplitting.profitId });
 
     if (status) {
       setShowModal(null);
@@ -737,23 +755,39 @@ function DateRanges() {
       >
         <DialogTitle>Generar split de pagos</DialogTitle>
         <DialogContent>
-          <Grid paddingY={1}>
+          <Grid display='flex' flexDirection='column' gap={2} paddingY={1}>
             <FormControl fullWidth>
               <InputLabel id="label-bill-splitting-select">Rentabilidad</InputLabel>
               <Select
+                fullWidth
                 label="Rentabilidad"
                 labelId="label-bill-splitting-select"
-                id="demo-simple-select-helper"
                 value={billSplitting.profitId}
-                fullWidth
                 onChange={(event) => setBillSplitting((prev) => ({ ...prev, profitId: event.target.value }))}
               >
-                <MenuItem value={-1} disabled>
+                <MenuItem value="-" disabled>
                   Seleccione una opción
                 </MenuItem>
                 {(profits[billSplitting.dateRangeId] || []).map((e) => (
                   <MenuItem key={e.id} value={e.id}>
                     {formatCurrency(e.amount_profit, "$")}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="label-bill-splitting-select-contract">Contratos</InputLabel>
+              <Select
+                fullWidth
+                multiple
+                label="Contratos"
+                labelId="label-bill-splitting-select-contract"
+                value={billSplitting.contracts}
+                onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}
+              >
+                {billSplitting.contracts.map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    {c.contract_number} {c.fullname}
                   </MenuItem>
                 ))}
               </Select>
