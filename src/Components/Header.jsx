@@ -35,7 +35,7 @@ import useSession from "../Hooks/useSession";
 import useConfig from "../Hooks/useConfig";
 import useCart from "../Hooks/useCart";
 
-function Header() {
+function Header({ isInvalidSession = false }) {
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -58,24 +58,26 @@ function Header() {
               <Link fontSize={24} fontWeight={500} component={RouterLink} to="/" sx={{ textDecoration: "none" }}>
                 Avovite
               </Link>
-              <TextField
-                label="Buscar"
-                size="small"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton color="primary">
-                        <SearchIcon color="inherit" />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ marginLeft: 2 }}
-              />
+              {!isInvalidSession && (
+                <TextField
+                  label="Buscar"
+                  size="small"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton color="primary">
+                          <SearchIcon color="inherit" />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ marginLeft: 2 }}
+                />
+              )}
               <Box flexGrow={1} />
-              {!session.user?.isAdmin() && (
+              {!session.user?.isAdmin() && !isInvalidSession && (
                 <Badge color="error" badgeContent={shoppingCart.length}>
                   <Button component={RouterLink} variant="contained" size="small" to="/cart">
                     <EcommerceIcon />
@@ -107,9 +109,11 @@ function Header() {
         <AppBar position="relative" color="secondary" elevation={0}>
           <Toolbar>
             <Grid display="flex" justifyContent="space-between" alignItems="center" width="100%">
-              <IconButton onClick={() => toggleSidebar()}>
-                <MenuIcon sx={{ color: "white" }} />
-              </IconButton>
+              {!isInvalidSession && (
+                <IconButton onClick={() => toggleSidebar()}>
+                  <MenuIcon sx={{ color: "white" }} />
+                </IconButton>
+              )}
               <Link
                 fontSize={24}
                 fontWeight={500}
@@ -131,24 +135,26 @@ function Header() {
             </Grid>
           </Toolbar>
 
-          <Box
-            position="absolute"
-            zIndex={1}
-            top="100%"
-            left={0}
-            right={0}
-            display="flex"
-            alignItems="center"
-            gap={1}
-            paddingX={3}
-            paddingY={1}
-            sx={{ backgroundColor: "primary.main" }}
-          >
-            <IconButton onClick={() => navigate(-1)}>
-              <BackIcon sx={{ color: "white" }} />
-            </IconButton>
-            <Typography color="white">Ir Atrás</Typography>
-          </Box>
+          {!isInvalidSession && (
+            <Box
+              position="absolute"
+              zIndex={1}
+              top="100%"
+              left={0}
+              right={0}
+              display="flex"
+              alignItems="center"
+              gap={1}
+              paddingX={3}
+              paddingY={1}
+              sx={{ backgroundColor: "primary.main" }}
+            >
+              <IconButton onClick={() => navigate(-1)}>
+                <BackIcon sx={{ color: "white" }} />
+              </IconButton>
+              <Typography color="white">Ir Atrás</Typography>
+            </Box>
+          )}
         </AppBar>
       )}
 
@@ -159,7 +165,7 @@ function Header() {
         onClose={() => setProfileMenu(null)}
         sx={{ top: 16, minWidth: 200 }}
       >
-        <MenuItem sx={{ display: "flex", gap: 2 }} onClick={() => navigate("/profile")}>
+        <MenuItem sx={{ display: "flex", gap: 2 }} onClick={() => !isInvalidSession && navigate("/profile")}>
           <Avatar />
           <Grid display="flex" flexDirection="column" maxWidth={184}>
             <Typography
@@ -185,7 +191,7 @@ function Header() {
           </Grid>
         </MenuItem>
         <Divider />
-        {!session.user?.isAdmin() && isMobile && (
+        {!session.user?.isAdmin() && !isInvalidSession && isMobile && (
           <>
             <MenuItem onClick={() => navigate("/cart")}>
               <ListItemIcon>

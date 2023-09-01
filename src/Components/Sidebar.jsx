@@ -90,12 +90,6 @@ function Sidebar({ collapseOn = "" }) {
         route: "/",
         show: !user?.isAdmin(),
       },
-      /* {
-        icon: <WalletIcon />,
-        name: "Billetera",
-        route: "/wallet",
-        show: true,
-      }, */
       {
         icon: <GraphIcon />,
         name: "Ganancias",

@@ -6,8 +6,10 @@ import { alpha, Box, Button, Container, Grid, IconButton, Typography } from "@mu
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
 import { IMAGE_PLACEHOLDER } from "../utilities/constants";
+import useSession from "../Hooks/useSession";
 
 function ShoppingCart() {
+  const [{ token }] = useSession();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
   const subTotal = useMemo(
     () =>
@@ -48,14 +50,9 @@ function ShoppingCart() {
       extra1: JSON.stringify(
         shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))
       ),
-      confirmation: "http://localhost:5173/payment",
+      extra2: token,
+      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
       response: "http://localhost:5173/checkout",
-
-      name_billing: "Jhon Doe",
-      address_billing: "Carrera 19 numero 14 91",
-      type_doc_billing: "cc",
-      mobilephone_billing: "3050000000",
-      number_doc_billing: "100000000",
     };
 
     const handler = window.ePayco.checkout.configure({

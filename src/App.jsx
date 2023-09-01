@@ -1,14 +1,16 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Router from "./Router";
 import useSession from "./Hooks/useSession";
 import useConfig from "./Hooks/useConfig";
 import AuthService from "./Services/auth.service";
 import UtilsService from "./Services/utils.service";
 import Loader from "./Components/Loader";
+import ContractValidation from "./Components/ContractValidation";
 
 function App() {
   const [session, { setUser, logout }] = useSession();
   const [{ loading }, { setLoading, setConstants }] = useConfig();
+  const [sessionStatus, setSessionStatus] = useState(true);
   const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
   const $Utils = useMemo(() => new UtilsService(session.token), [session.token]);
 
@@ -21,6 +23,7 @@ function App() {
       }
 
       if (status) {
+        // setSessionStatus(false);
         setUser(data.user);
       }
     }
@@ -45,7 +48,7 @@ function App() {
   return (
     <>
       <Loader show={loading} />
-      <Router />
+      {!loading && (sessionStatus ? <Router /> : <ContractValidation />)}
     </>
   );
 }

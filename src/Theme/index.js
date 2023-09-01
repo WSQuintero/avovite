@@ -55,7 +55,7 @@ export default createTheme({
   },
   components: {
     MuiDialogTitle: {
-      styleOverrides: { root: { color: "#67AA36" } },
+      defaultProps: { color: "#67AA36" },
     },
     MuiPaper: {
       defaultProps: {

@@ -2,12 +2,12 @@ import { Box, Grid } from "@mui/material";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
-function PageWrapper({ collapseSidebar, children }) {
+function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
   return (
     <Grid display="flex">
-      <Sidebar collapseOn={collapseSidebar} />
+      {!isInvalidSession && <Sidebar collapseOn={collapseSidebar} />}
       <Grid flexGrow={1} display="flex" flexDirection="column" minHeight="100vh">
-        <Header />
+        <Header isInvalidSession={isInvalidSession} />
         <Box
           component="main"
           flexGrow={1}

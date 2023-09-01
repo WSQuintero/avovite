@@ -14,8 +14,6 @@ function Dashboard() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log(user);
-
   const fetchPosts = async () => {
     const { status, data } = await $Post.get();
 
