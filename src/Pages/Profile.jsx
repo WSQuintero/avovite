@@ -251,6 +251,7 @@ function Profile() {
                 <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
                 <MenuItem value="pasaporte">Pasaporte</MenuItem>
                 <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                <MenuItem value="dni">DNI</MenuItem>
               </Select>
             </FormControl>
             <TextField

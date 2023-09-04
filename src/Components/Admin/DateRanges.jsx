@@ -4,6 +4,8 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,21 +26,30 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, AddOutlined as AddIcon } from "@mui/icons-material";
+import {
+  DeleteOutlined as DeleteIcon,
+  EditOutlined as EditIcon,
+  AddOutlined as AddIcon,
+  KeyboardArrowDown as CollapseIcon,
+  ArrowDropDown as ArrowDownIcon,
+} from "@mui/icons-material";
+import { NumericFormat } from "react-number-format";
 import useSession from "../../Hooks/useSession";
 import DateRangeService from "../../Services/daterange.service";
+import ContractService from "../../Services/contract.service";
 import ProfitService from "../../Services/profit.service";
 import { formatCurrency, formatDate } from "../../utilities";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { NumericFormat } from "react-number-format";
 import EnhancedTable from "../EnhancedTable";
 import useShop from "../../Hooks/useShop";
+import useConcept from "../../Hooks/useConcept";
 
 function DateRanges() {
   const [session] = useSession();
   const [showModal, setShowModal] = useState(null);
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
+  const [loading, setLoading] = useState({ contracts: false });
 
   // PRODUCTS
   const [products, setProducts] = useState([]);
@@ -67,20 +78,37 @@ function DateRanges() {
   );
 
   // PROFITS
-  const [profits, setProfits] = useState([]);
+  const [profits, setProfits] = useState({});
   const [currentProfit, setCurrentProfit] = useState({
     id: null,
     id_contract_date_range: "",
+    id_profit_concept: "",
     amount_profit: "",
   });
   const [billSplitting, setBillSplitting] = useState({
     dateRangeId: null,
-    profitId: null,
+    profitId: "-",
+    contracts: [],
   });
   const $Profit = useMemo(() => new ProfitService(session.token), [session.token]);
 
+  // CONCEPTS
+  const [concepts, setConcepts] = useState([]);
+  const $Concept = useConcept();
+
+  // CONTRACTS
+  const [contracts, setContracts] = useState([]);
+  const $Contract = useMemo(() => new ContractService(session.token), [session.token]);
+
   const dateRangeHeadCells = useMemo(
     () => [
+      {
+        id: "id",
+        label: "ID",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value || "-",
+      },
       {
         id: "product_name",
         label: "Producto",
@@ -123,8 +151,16 @@ function DateRanges() {
         disablePadding: false,
         format: (value, row, onCollapse) => (
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-            <IconButton onClick={onCollapse}>
-              <AddIcon />
+            <IconButton
+              onClick={async () => {
+                onCollapse();
+
+                if (!profits[row.id]) {
+                  fetchProfits(row.id);
+                }
+              }}
+            >
+              <CollapseIcon />
             </IconButton>
             <IconButton
               onClick={() => {
@@ -140,9 +176,13 @@ function DateRanges() {
             <Button
               variant="contained"
               size="small"
-              onClick={() => {
+              onClick={async () => {
                 setBillSplitting((prev) => ({ ...prev, dateRangeId: row.id }));
                 setShowModal("bill-splitting");
+
+                if (!profits[row.id]) {
+                  fetchProfits(row.id);
+                }
               }}
             >
               Split
@@ -171,47 +211,66 @@ function DateRanges() {
           </Button>
         </Grid>
         <List>
-          {profits
-            .filter((p) => p.id_contract_date_range === row.id)
-            .map((p) => (
-              <ListItem
-                key={p.id}
-                secondaryAction={
-                  <Grid display="flex" justifyContent="flex-end" gap={1}>
-                    <IconButton
-                      onClick={() => {
-                        setCurrentProfit(p);
-                        setShowModal("create-profit");
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setCurrentProfit(p);
-                        setShowModal("delete-profit");
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                }
-                sx={(t) => ({
-                  borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: alpha(t.palette.primary.main, 0.1),
-                  },
-                })}
-              >
-                <ListItemText primary={formatCurrency(p.amount_profit, "$")} />
-              </ListItem>
-            ))}
+          {(profits[row.id] || []).map((p) => (
+            <ListItem
+              key={p.id}
+              secondaryAction={
+                <Grid display="flex" justifyContent="flex-end" gap={1}>
+                  <IconButton
+                    onClick={() => {
+                      setCurrentProfit(p);
+                      setShowModal("create-profit");
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      setCurrentProfit(p);
+                      setShowModal("delete-profit");
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
+              }
+              sx={(t) => ({
+                borderRadius: 1,
+                "&:hover": {
+                  backgroundColor: alpha(t.palette.primary.main, 0.1),
+                },
+              })}
+            >
+              <ListItemText primary={formatCurrency(p.amount_profit, "$")} />
+            </ListItem>
+          ))}
         </List>
       </Grid>
     ),
     [profits]
   );
+
+  const fetchProfits = async (dateRangeId) => {
+    const { status, data } = await $Profit.get({ dateRangeId });
+
+    if (status) {
+      setProfits((prev) => ({ ...prev, [dateRangeId]: data.data }));
+    }
+  };
+
+  const fetchContracts = async (dateRangeId) => {
+    setLoading((prev) => ({ ...prev, contracts: true }));
+
+    const { status, data } = await $Contract.get({ dateRangeId });
+
+    if (status) {
+      setContracts(data.data);
+      setBillSplitting((prev) => ({ ...prev, contracts: data.data.map((c) => c.id_contract) }));
+    }
+
+    setLoading((prev) => ({ ...prev, contracts: false }));
+  };
 
   const clearFields = (target) => {
     if (target === "DateRange") {
@@ -226,12 +285,14 @@ function DateRanges() {
       setCurrentProfit({
         id: null,
         id_contract_date_range: "",
+        id_profit_concept: "",
         amount_profit: "",
       });
     } else if (target === "BillSplitting") {
       setBillSplitting({
         dateRangeId: null,
-        profitId: null,
+        profitId: "-",
+        contracts: [],
       });
     }
   };
@@ -313,6 +374,7 @@ function DateRanges() {
 
     const body = {
       id_contract_date_range: currentProfit.id_contract_date_range,
+      id_profit_concept: currentProfit.id_profit_concept,
       amount_profit: currentProfit.amount_profit,
     };
 
@@ -320,7 +382,14 @@ function DateRanges() {
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Rentabilidad creada con éxito." });
-      setProfits((prev) => [...prev, { id: data.data, ...body }]);
+      profits[currentProfit.id_contract_date_range] &&
+        setProfits((prev) => ({
+          ...prev,
+          [currentProfit.id_contract_date_range]: [
+            ...prev[currentProfit.id_contract_date_range],
+            { id: data.data, ...body },
+          ],
+        }));
       setShowModal(null);
       clearFields("Profit");
       // Add to the list
@@ -334,6 +403,7 @@ function DateRanges() {
 
     const body = {
       id_contract_date_range: currentProfit.id_contract_date_range,
+      id_profit_concept: currentProfit.id_profit_concept,
       amount_profit: currentProfit.amount_profit,
     };
 
@@ -344,7 +414,12 @@ function DateRanges() {
 
     if (status) {
       setFeedback({ show: true, status: "success", message: "Rentabilidad actualizada con éxito." });
-      setProfits((prev) => prev.map((p) => (p.id === currentProfit.id ? { ...p, ...body } : p)));
+      setProfits((prev) => ({
+        ...prev,
+        [currentProfit.id_contract_date_range]: prev[currentProfit.id_contract_date_range].map((p) =>
+          p.id === currentProfit.id ? { ...p, ...body } : p
+        ),
+      }));
       setShowModal(null);
       clearFields("Profit");
     } else {
@@ -366,12 +441,15 @@ function DateRanges() {
   };
 
   const onGenerateBillSplitting = async () => {
-    if (!billSplitting.profitId) {
-      setFeedback({ show: true, status: "error", message: "Debe seleccionar primero una rentabilidad." });
+    if (billSplitting.profitId === "-" || !billSplitting.contracts.length) {
+      setFeedback({ show: true, status: "error", message: "Todos los campos son obligatorios." });
       return;
     }
 
-    const { status } = await $Profit.split({ id: billSplitting.profitId });
+    const { status } = await $DateRange.split({
+      id: billSplitting.profitId,
+      idContracts: billSplitting.contracts.join(","),
+    });
 
     if (status) {
       setShowModal(null);
@@ -392,10 +470,10 @@ function DateRanges() {
         }
       })();
       (async () => {
-        const { status, data } = await $Profit.get();
+        const { status, data } = await $Concept.get();
 
         if (status) {
-          setProfits(data.data);
+          setConcepts(data.data);
         }
       })();
       (async () => {
@@ -622,6 +700,23 @@ function DateRanges() {
                 }))
               }
             />
+            <TextField
+              select
+              label="Concepto"
+              value={currentProfit.id_profit_concept}
+              onChange={({ target }) =>
+                setCurrentProfit((prev) => ({
+                  ...prev,
+                  id_profit_concept: target.value,
+                }))
+              }
+            >
+              {concepts.map((c) => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.title}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -669,6 +764,8 @@ function DateRanges() {
         </DialogActions>
       </Dialog>
 
+      {/* BILL SPLITTING */}
+
       <Dialog
         maxWidth="sm"
         open={showModal === "bill-splitting"}
@@ -680,27 +777,55 @@ function DateRanges() {
       >
         <DialogTitle>Generar split de pagos</DialogTitle>
         <DialogContent>
-          <Grid paddingY={1}>
+          <Grid display="flex" flexDirection="column" gap={2} paddingY={1}>
             <FormControl fullWidth>
               <InputLabel id="label-bill-splitting-select">Rentabilidad</InputLabel>
               <Select
+                fullWidth
                 label="Rentabilidad"
                 labelId="label-bill-splitting-select"
-                id="demo-simple-select-helper"
                 value={billSplitting.profitId}
-                fullWidth
-                onChange={(event) => setBillSplitting((prev) => ({ ...prev, profitId: event.target.value }))}
+                onChange={async (event) => {
+                  setBillSplitting((prev) => ({ ...prev, profitId: event.target.value }));
+                  await fetchContracts(event.target.value);
+                }}
               >
-                <MenuItem value={-1} disabled>
+                <MenuItem value="-" disabled>
                   Seleccione una opción
                 </MenuItem>
-                {profits
-                  .filter((p) => p.id_contract_date_range === billSplitting.dateRangeId)
-                  .map((e) => (
-                    <MenuItem key={e.id} value={e.id}>
-                      {formatCurrency(e.amount_profit, "$")}
-                    </MenuItem>
-                  ))}
+                {(profits[billSplitting.dateRangeId] || []).map((e) => (
+                  <MenuItem key={e.id} value={e.id}>
+                    {formatCurrency(e.amount_profit, "$")}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="label-bill-splitting-select-contract">Contratos</InputLabel>
+              <Select
+                fullWidth
+                multiple
+                label="Contratos"
+                labelId="label-bill-splitting-select-contract"
+                renderValue={(selected) => selected.join(", ")}
+                value={billSplitting.contracts}
+                IconComponent={() =>
+                  loading.contracts ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" marginRight={2}>
+                      <CircularProgress size={24} />
+                    </Box>
+                  ) : (
+                    <ArrowDownIcon sx={{ marginRight: 0.8 }} />
+                  )
+                }
+              >
+                onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}>
+                {contracts.map((c) => (
+                  <MenuItem key={c.id_contract} value={c.id_contract}>
+                    <Checkbox checked={billSplitting.contracts.indexOf(c.id_contract) > -1} />
+                    <ListItemText primary={`${c.contract_number || "-"} ${c.fullname}`} />
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>

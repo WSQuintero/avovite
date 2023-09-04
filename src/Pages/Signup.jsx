@@ -97,13 +97,13 @@ function Signin() {
         message: "Ha ocurrido un error, inténtelo de nuevo.",
         status: "error",
       });
-      navigate("/signin");
     } else {
       setFeedback({
         show: true,
         message: "Te has registrado exitosamente.",
         status: "success",
       });
+      navigate("/signin");
     }
   };
 

@@ -16,6 +16,8 @@ function App() {
     if (session.token) {
       const { status, data } = await $Auth.validate();
 
+      console.log(data)
+
       if (!status && data !== null && data.response?.status === 401) {
         logout();
       }

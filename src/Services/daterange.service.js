@@ -61,4 +61,15 @@ export default class DateRangeService {
         ).data
     );
   }
+
+  async split({ id, ...body }) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(`${this.API_URL}/contract-date-range-profit/split/${id}`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
 }

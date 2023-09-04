@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EnhancedTable from "../EnhancedTable";
-import useSession from "../../Hooks/useSession";
-import PostService from "../../Services/post.service";
+
 import {
   Alert,
   Box,
@@ -17,58 +16,19 @@ import {
   TextField,
 } from "@mui/material";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
-import { formatDate, isYoutubeVideo } from "../../utilities";
-import usePost from "../../Hooks/usePost";
+import { formatDate } from "../../utilities";
+import useConcept from "../../Hooks/useConcept";
 
-function Blog() {
-  const $Post = usePost();
+function Concepts() {
+  const $Concept = useConcept();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState({
-    id: null,
-    title: "",
-    description: "",
-    url_image: "",
-    url_video: "",
-  });
+  const [concepts, setConcepts] = useState([]);
+  const [selectedConcept, setSelectedConcept] = useState({ id: null, title: "", description: "" });
   const [currentModal, setCurrentModal] = useState(null);
-  const isValidPost = useMemo(
-    () => selectedPost.title && selectedPost.description && selectedPost.url_image && selectedPost.url_video,
-    [selectedPost]
-  );
+  const isValidConcept = useMemo(() => selectedConcept.title && selectedConcept.description, [selectedConcept]);
 
-  const postsHeadCells = useMemo(
+  const conceptsHeadCells = useMemo(
     () => [
-      {
-        id: "url_image",
-        label: "Imagen",
-        align: "left",
-        disablePadding: false,
-        format: (value) => (
-          <Box display="flex" width={200} sx={{ aspectRatio: 1 }}>
-            <img src={value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
-          </Box>
-        ),
-      },
-      {
-        id: "url_video",
-        label: "Video",
-        align: "left",
-        disablePadding: false,
-        format: (value) => (
-          <Box display="flex" width={200} sx={{ aspectRatio: 1 }}>
-            {isYoutubeVideo(value) ? (
-              <iframe
-                src={value}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                style={{ width: "100%", objectFit: "cover", borderRadius: 8, border: 0 }}
-              />
-            ) : (
-              <video src={value} width="100%" style={{ objectFit: "cover", borderRadius: 8 }} muted autoPlay />
-            )}
-          </Box>
-        ),
-      },
       {
         id: "title",
         label: "Título",
@@ -96,10 +56,10 @@ function Blog() {
         label: "Actualizado en",
         align: "left",
         disablePadding: false,
-        format: (value) => formatDate(value),
+        format: (value, row) => formatDate(value || row.created_at),
       },
       {
-        id: "",
+        id: "actions",
         label: "",
         align: "left",
         disablePadding: false,
@@ -107,7 +67,7 @@ function Blog() {
           <Grid display="flex" justifyContent="flex-end" gap={1}>
             <IconButton
               onClick={() => {
-                setSelectedPost(row);
+                setSelectedConcept(row);
                 setCurrentModal("update");
               }}
             >
@@ -116,7 +76,7 @@ function Blog() {
             <IconButton
               color="error"
               onClick={() => {
-                setSelectedPost(row);
+                setSelectedConcept(row);
                 setCurrentModal("delete");
               }}
             >
@@ -129,74 +89,68 @@ function Blog() {
     []
   );
 
-  const fetchPosts = async () => {
-    const { status, data } = await $Post.get();
+  const fetchConcepts = async () => {
+    const { status, data } = await $Concept.get();
 
     if (status) {
-      setPosts(data.data);
+      setConcepts(data.data);
     }
   };
 
   const onChangeFields = ({ target }) => {
     const { name, value } = target;
-    setSelectedPost((prev) => ({ ...prev, [name]: value }));
+    setSelectedConcept((prev) => ({ ...prev, [name]: value }));
   };
 
   const onClearFields = () => {
     setCurrentModal(null);
-    setSelectedPost({
-      id: null,
-      title: "",
-      description: "",
-      url_image: "",
-      url_video: "",
-    });
+    setSelectedConcept({ id: null, title: "", description: "" });
   };
 
-  const onCreatePost = async (event) => {
+  const onCreateConcept = async (event) => {
     event.preventDefault();
 
-    if (!isValidPost) {
+    if (!isValidConcept) {
       setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
       return;
     }
 
-    const { status, data } = await $Post.add(selectedPost);
+    const { status, data } = await $Concept.add(selectedConcept);
 
     if (status) {
-      setPosts((prev) => [...prev, { ...selectedPost, id: data.data }]);
-      setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
+      setConcepts((prev) => [...prev, { ...selectedConcept, id: data.data, created_at: new Date().toDateString() }]);
+      setFeedback({ open: true, message: "Concepto creado exitosamente.", status: "success" });
       onClearFields();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
 
-  const onUpdatePost = async (event) => {
+  const onUpdateConcept = async (event) => {
     event.preventDefault();
 
-    if (!isValidPost) {
+    if (!isValidConcept) {
       setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
       return;
     }
 
-    const { status } = await $Post.update(selectedPost);
+    const { status } = await $Concept.update(selectedConcept);
 
     if (status) {
-      setPosts((prev) => prev.map((p) => (p.id === selectedPost.id ? selectedPost : p)));
-      setFeedback({ open: true, message: "Publicación actualizada exitosamente.", status: "success" });
+      setConcepts((prev) => prev.map((p) => (p.id === selectedConcept.id ? selectedConcept : p)));
+      setFeedback({ open: true, message: "Concepto actualizado exitosamente.", status: "success" });
       onClearFields();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
 
-  const onDeletePost = async () => {
-    const { status } = await $Post.delete(selectedPost);
+  const onDeleteConcept = async () => {
+    const { status } = await $Concept.delete(selectedConcept);
 
     if (status) {
-      setPosts((prev) => prev.filter((p) => p.id !== selectedPost.id));
-      setFeedback({ open: true, message: "Publicación eliminada exitosamente.", status: "success" });
+      setConcepts((prev) => prev.filter((p) => p.id !== selectedConcept.id));
+      setFeedback({ open: true, message: "Concepto eliminado exitosamente.", status: "success" });
       onClearFields();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
@@ -208,12 +162,12 @@ function Blog() {
   };
 
   useEffect(() => {
-    if ($Post) {
+    if ($Concept) {
       (async () => {
-        await fetchPosts();
+        await fetchConcepts();
       })();
     }
-  }, [$Post]);
+  }, [$Concept]);
 
   return (
     <>
@@ -223,7 +177,7 @@ function Blog() {
             Crear
           </Button>
         </Grid>
-        <EnhancedTable headCells={postsHeadCells} rows={posts} initialOrderBy="title" />
+        <EnhancedTable headCells={conceptsHeadCells} rows={concepts} initialOrderBy="title" />
       </Grid>
 
       <Dialog
@@ -232,7 +186,7 @@ function Blog() {
         maxWidth="xl"
         fullWidth
       >
-        <DialogTitle color="primary.main">{currentModal === "create" ? "Crear" : "Editar"} publicación</DialogTitle>
+        <DialogTitle color="primary.main">{currentModal === "create" ? "Crear" : "Editar"} concepto</DialogTitle>
         <DialogContent>
           <Box
             component="form"
@@ -240,44 +194,26 @@ function Blog() {
             flexDirection="column"
             gap={3}
             padding={1}
-            onSubmit={currentModal === "create" ? onCreatePost : onUpdatePost}
+            onSubmit={currentModal === "create" ? onCreateConcept : onUpdateConcept}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
               <Grid display="flex" gap={2}>
-                <TextField label="Título" name="title" value={selectedPost.title} onChange={onChangeFields} fullWidth />
+                <TextField
+                  label="Título"
+                  name="title"
+                  value={selectedConcept.title}
+                  onChange={onChangeFields}
+                  fullWidth
+                />
               </Grid>
               <Grid display="flex" gap={2}>
                 <TextField
                   label="Descripción"
                   name="description"
                   rows={4}
-                  value={selectedPost.description}
+                  value={selectedConcept.description}
                   onChange={onChangeFields}
                   multiline
-                  fullWidth
-                />
-              </Grid>
-              <Grid
-                display="flex"
-                gap={2}
-                sx={(t) => ({
-                  [t.breakpoints.down("lg")]: {
-                    flexDirection: "column",
-                  },
-                })}
-              >
-                <TextField
-                  label="Url de la imagen"
-                  name="url_image"
-                  value={selectedPost.url_image}
-                  onChange={onChangeFields}
-                  fullWidth
-                />
-                <TextField
-                  label="Url del video"
-                  name="url_video"
-                  value={selectedPost.url_video}
-                  onChange={onChangeFields}
                   fullWidth
                 />
               </Grid>
@@ -288,9 +224,9 @@ function Blog() {
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
             <Button
-              onClick={currentModal === "create" ? onCreatePost : onUpdatePost}
+              onClick={currentModal === "create" ? onCreateConcept : onUpdateConcept}
               variant="contained"
-              disabled={!isValidPost}
+              disabled={!isValidConcept}
             >
               {currentModal === "create" ? "Crear" : "Editar"}
             </Button>
@@ -299,15 +235,15 @@ function Blog() {
       </Dialog>
 
       <Dialog maxWidth="sm" open={currentModal === "delete"} onClose={onClearFields} fullWidth>
-        <DialogTitle>Eliminar publicación</DialogTitle>
+        <DialogTitle>Eliminar concepto</DialogTitle>
         <DialogContent>
-          <DialogContentText>¿Estás seguro que quieres eliminar esta publicación?</DialogContentText>
+          <DialogContentText>¿Estás seguro que quieres eliminar este concepto?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={onClearFields}>
             Cancelar
           </Button>
-          <Button variant="contained" onClick={onDeletePost}>
+          <Button variant="contained" onClick={onDeleteConcept}>
             Eliminar
           </Button>
         </DialogActions>
@@ -327,4 +263,4 @@ function Blog() {
   );
 }
 
-export default Blog;
+export default Concepts;

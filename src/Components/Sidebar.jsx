@@ -1,9 +1,7 @@
 import { NavLink } from "react-router-dom";
 import {
   Avatar,
-  Box,
   Collapse,
-  Divider,
   Drawer,
   Grid,
   List,
@@ -14,9 +12,9 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { InvestIcon, WalletIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
+import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
@@ -36,11 +34,13 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
             borderRadius: 0,
             paddingLeft: 4,
             paddingY: 1.5,
+            overflowX: "hidden",
             transition: t.transitions.create(["background-color"], { duration: 200, easing: "ease-out" }),
             "&.active": {
               backgroundColor: alpha(t.palette.common.white, 0.2),
               "&::after": {
                 opacity: 1,
+                translate: 0,
               },
             },
             "&::after": {
@@ -51,8 +51,9 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
               right: 0,
               width: 6,
               opacity: 0,
+              translate: "100%",
               backgroundColor: "white",
-              transition: "opacity 0.2s ease-out",
+              transition: "opacity 0.2s ease-out, translate 0.2s ease-out",
             },
           })}
         >
@@ -89,12 +90,6 @@ function Sidebar({ collapseOn = "" }) {
         route: "/",
         show: !user?.isAdmin(),
       },
-      /* {
-        icon: <WalletIcon />,
-        name: "Billetera",
-        route: "/wallet",
-        show: true,
-      }, */
       {
         icon: <GraphIcon />,
         name: "Ganancias",
@@ -123,12 +118,20 @@ function Sidebar({ collapseOn = "" }) {
             route: "/admin/date-ranges",
           },
           {
+            name: "Conceptos",
+            route: "/admin/concepts",
+          },
+          {
             name: "Blog",
             route: "/admin/blog",
           },
           {
             name: "Tienda",
             route: "/admin/shop",
+          },
+          {
+            name: "Usuarios",
+            route: "/admin/users",
           },
         ],
       },

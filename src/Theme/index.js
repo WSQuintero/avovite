@@ -55,7 +55,7 @@ export default createTheme({
   },
   components: {
     MuiDialogTitle: {
-      styleOverrides: { root: { color: "#67AA36" } },
+      defaultProps: { color: "#67AA36" },
     },
     MuiPaper: {
       defaultProps: {
@@ -101,7 +101,6 @@ export default createTheme({
     MuiInputBase: {
       defaultProps: {
         sx: {
-          borderRadius: 1,
           "& fieldset": { borderColor: "#979797" },
         },
       },
@@ -121,7 +120,6 @@ export default createTheme({
         list: {
           '&[role="menu"]': {
             backgroundColor: "#ffffff",
-            borderRadius: 8,
             border: "1px solid #C0C0C0",
           },
         },
@@ -143,12 +141,9 @@ export default createTheme({
     MuiTableHead: {
       styleOverrides: {
         root: {
-          backgroundColor: "#67AA36",
           th: {
-            color: "white",
-            "span.Mui-active, span:hover": {
-              color: "white",
-            },
+            color: "#67AA36",
+            fontWeight: 500,
           },
         },
       },

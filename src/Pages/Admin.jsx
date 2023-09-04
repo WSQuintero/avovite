@@ -7,6 +7,8 @@ import Contracts from "../Components/Admin/Contracts";
 import Blog from "../Components/Admin/Blog";
 import DateRanges from "../Components/Admin/DateRanges";
 import Shop from "../Components/Admin/Shop";
+import Concepts from "../Components/Admin/Concepts";
+import Users from "../Components/Admin/Users";
 
 function Admin() {
   const { section } = useParams();
@@ -33,6 +35,10 @@ function Admin() {
         <Blog />
       ) : section === "shop" ? (
         <Shop />
+      ) : section === "concepts" ? (
+        <Concepts />
+      ) : section === "users" ? (
+        <Users />
       ) : (
         <Contracts />
       )}

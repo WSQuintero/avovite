@@ -1,14 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
 import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableContainer,
-  TableBody,
-  Paper,
   Box,
   Button,
   Dialog,
@@ -22,23 +15,87 @@ import {
   Typography,
   IconButton,
   InputAdornment,
-  Collapse,
   Snackbar,
   Alert,
+  List,
+  ListItem,
+  ListItemText,
+  Checkbox,
+  CircularProgress,
 } from "@mui/material";
-import {
-  AddOutlined as AddIcon,
-  DeleteOutlined as DeleteIcon,
-  KeyboardArrowUp as KeyboardArrowUpIcon,
-  KeyboardArrowDown as KeyboardArrowDownIcon,
-} from "@mui/icons-material";
+import { MaterialReactTable } from "material-react-table";
+import { ExportToCsv } from "export-to-csv";
+import ReactQuill from "react-quill";
+import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
 import { isToday, formatCurrency, formatDate as formatLongDate } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
-import EnhancedTable from "../EnhancedTable";
 import useConfig from "../../Hooks/useConfig";
+import useShop from "../../Hooks/useShop";
+import DueService from "../../Services/due.service";
+
+const columns = [
+  {
+    accessorKey: "fullname",
+    id: "fullname",
+    header: "Nombre del pagador",
+  },
+  {
+    accessorKey: "mortgage_contract",
+    id: "mortgage_contract",
+    header: "Hipotecado",
+    size: 50,
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue === 0 ? "No" : "Si"}</Typography>,
+  },
+  {
+    accessorKey: "contract_vites",
+    id: "contract_vites",
+    header: "Vites",
+  },
+  {
+    accessorKey: "contract_amount",
+    id: "contract_amount",
+    header: "Valor de contrato",
+    Cell: ({ renderedCellValue }) => (
+      <>
+        $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
+      </>
+    ),
+  },
+  {
+    accessorKey: "total_financed",
+    id: "total_financed",
+    header: "Financiamiento total",
+
+    Cell: ({ renderedCellValue }) => (
+      <>
+        $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
+      </>
+    ),
+  },
+  {
+    accessorKey: "payment_numbers",
+    id: "payment_numbers",
+    header: "Cuotas",
+  },
+  {
+    accessorKey: "overdue_quotas",
+    id: "overdue_quotas",
+    header: "Cuotas en mora",
+  },
+];
+
+const csvExporter = new ExportToCsv({
+  fieldSeparator: ",",
+  quoteStrings: '"',
+  decimalSeparator: ".",
+  showLabels: true,
+  useBom: true,
+  useKeysAsHeaders: false,
+  headers: columns.map((c) => c.header),
+});
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -48,105 +105,30 @@ function formatDate(dateString) {
   return `${year}-${month}-${day}`;
 }
 
-function CustomTableRow({ contract, index, onCreate, onPDF }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <TableRow>
-        <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-
-        <TableCell></TableCell>
-        <TableCell>{contract.beneficiary_fullname}</TableCell>
-        <TableCell>
-          $<NumericFormat displayType="text" value={contract.contract_amount} thousandSeparator></NumericFormat>
-        </TableCell>
-        <TableCell>{contract.percentage_discount}%</TableCell>
-        <TableCell>
-          $<NumericFormat displayType="text" value={contract.contract_discount} thousandSeparator></NumericFormat>
-        </TableCell>
-        <TableCell>
-          $
-          <NumericFormat
-            displayType="text"
-            value={contract.total_contract_with_discount}
-            thousandSeparator
-          ></NumericFormat>
-        </TableCell>
-        <TableCell>
-          $<NumericFormat displayType="text" value={contract.total_financed} thousandSeparator></NumericFormat>
-        </TableCell>
-        <TableCell>{contract.payment_numbers}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Tipo Documento</TableCell>
-                    <TableCell>Documento</TableCell>
-                    <TableCell>Lugar de Expedición</TableCell>
-                    <TableCell>Cuenta de Banco</TableCell>
-                    <TableCell>Monto del Contrato</TableCell>
-                    {contract.contract_signature_date !== null && <TableCell>Fecha Del Contrato</TableCell>}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>{contract.beneficiary_fullname}</TableCell>
-                    <TableCell>{contract.beneficiary_id_type}</TableCell>
-                    <TableCell>{contract.beneficiary_id_number}</TableCell>
-                    <TableCell>{contract.beneficiary_id_location_expedition}</TableCell>
-                    <TableCell>{contract.user_bank_account_number}</TableCell>
-                    <TableCell>{contract.contract_amount}</TableCell>
-                    {contract.created_at !== null && (
-                      <TableCell>{new Date(contract.created_at).toLocaleDateString()}</TableCell>
-                    )}
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-}
-
 const Contracts = () => {
   const [{ constants }] = useConfig();
   const [{ token }] = useSession();
+  const $Shop = useShop();
   const [contracts, setContracts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null);
 
-  const [services, setServices] = useState([
-    {
-      id: 1,
-      name: "Standard",
-      value: 2200000,
-    },
-  ]);
+  const [services, setServices] = useState([]);
 
   const [selectedContract, setSelectedContract] = useState(null);
   const [dues, setDues] = useState([]);
   const [contract, setContract] = useState({
     vites: "",
-    service: 1,
+    service: 0,
     total: "",
     discount: "",
     firstPaymentValue: "",
     firstPaymentDate: new Date(),
-    signatureDate: new Date(),
     financing: false,
+    mortgage_contract_aditional_text: "",
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const unitValue = useMemo(() => services.find((p) => p.id === contract.service).value, [contract.service, services]);
+  const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
   const subTotalValue = useMemo(() => Math.round(contract.vites * unitValue), [contract.vites, unitValue]);
   const discountValue = useMemo(
     () => Math.round(subTotalValue * (contract.discount / 100)),
@@ -173,179 +155,10 @@ const Contracts = () => {
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
 
-  const contractsHeadCells = useMemo(
-    () => [
-      {
-        id: "action_button_1",
-        label: "",
-        align: "left",
-        disablePadding: false,
-        format: (value, row, onCollapse) => (
-          <IconButton variant="outlined" color="primary" onClick={() => onCollapse()}>
-            <AddIcon />
-          </IconButton>
-        ),
-      },
-      {
-        id: "action_button_2",
-        label: "Contrato",
-        align: "left",
-        disablePadding: false,
-        format: (value, row) =>
-          row.status_contracts === 0 ? (
-            <Button variant="contained" size="small" onClick={() => setSelectedContract(row)} sx={{ width: 80 }}>
-              Crear
-            </Button>
-          ) : (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${row.id}`, "_blank")}
-              sx={{ width: 80 }}
-            >
-              Ver
-            </Button>
-          ),
-      },
-      {
-        id: "fullname",
-        label: "Nombre del pagador",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value || "-",
-      },
-      {
-        id: "contract_vites",
-        label: "Vites",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value,
-      },
-      {
-        id: "contract_amount",
-        label: "Valor de contrato",
-        align: "left",
-        disablePadding: false,
-        format: (value) => (
-          <>
-            $<NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
-          </>
-        ),
-      },
-      {
-        id: "payment_numbers",
-        label: "Cantidad de cuotas",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value,
-      },
-      {
-        id: "total_financed",
-        label: "Financiamiento total",
-        align: "left",
-        disablePadding: false,
-        format: (value) => (
-          <>
-            $<NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
-          </>
-        ),
-      },
-    ],
-    []
-  );
-
-  const customCollapse = useCallback(
-    (row) => (
-      <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
-        <Grid display="flex" flexDirection="column" gap={1}>
-          <Typography variant="h4">Información financiera</Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Financiado:{" "}
-            </Typography>
-            {row.financed ? "Si" : "No"}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Descuento:{" "}
-            </Typography>
-            {row.percentage_discount}%
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Valor descontado:{" "}
-            </Typography>
-            ${formatCurrency(row.contract_discount)}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Total con descuento:{" "}
-            </Typography>
-            ${formatCurrency(row.total_contract_with_discount)}
-          </Typography>
-
-          <Typography variant="h4">Información de primer pago</Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Valor:{" "}
-            </Typography>
-            ${formatCurrency(row.first_payment)}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Fecha:{" "}
-            </Typography>
-            {formatLongDate(row.first_payment_date)}
-          </Typography>
-
-          <Typography variant="h4">Información del titular</Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Teléfono:{" "}
-            </Typography>
-            {row.cellphone}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Correo:{" "}
-            </Typography>
-            {row.email}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Número de documento:{" "}
-            </Typography>
-            {row.beneficiary_id_number}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Número de cuenta:{" "}
-            </Typography>
-            {row.user_bank_account_number}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Tipo de cuenta:{" "}
-            </Typography>
-            {constants?.account_type?.find((a) => String(a.id) === String(row.user_bank_account_type))?.name}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Banco:{" "}
-            </Typography>
-            {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
-          </Typography>
-          <Typography>
-            <Typography component="span" fontWeight={600}>
-              Número de contrato:{" "}
-            </Typography>
-            {row.contract_number}
-          </Typography>
-        </Grid>
-      </Grid>
-    ),
-    [constants]
-  );
+  // DUES
+  const [contractDues, setContractDues] = useState({ id: null, dues: [] });
+  const $Due = useMemo(() => new DueService(token), [token]);
+  const [loadingDue, setLoadingDue] = useState(false);
 
   const fetchContracts = async () => {
     const {
@@ -358,6 +171,24 @@ const Contracts = () => {
     }
   };
 
+  const fetchContractDues = async (contractId) => {
+    const { status, data } = await $Due.get({ contractId });
+
+    console.log(data);
+
+    if (status) {
+      setContractDues({ id: contractId, dues: data.data });
+    }
+  };
+
+  const fetchProducts = async () => {
+    const { status, data } = await $Shop.shop.get();
+
+    if (status) {
+      setServices(data.data);
+    }
+  };
+
   const onCancelCreateContract = () => {
     setSelectedContract(null);
     setContract({
@@ -367,8 +198,8 @@ const Contracts = () => {
       discount: "",
       firstPaymentValue: "",
       firstPaymentDate: new Date(),
-      signatureDate: new Date(),
       financing: false,
+      mortgage_contract_aditional_text: "",
     });
     setDues([]);
   };
@@ -376,21 +207,21 @@ const Contracts = () => {
   const onCreateContract = async () => {
     const { status } = await $Contract.complete({
       id: selectedContract.id,
-      body:
-        totalFinancingValue !== 0
+      mortgage: selectedContract.mortgage_contract === 1,
+      body: {
+        ...(totalFinancingValue !== 0
           ? {
               // Financing
               financed: 1,
               with_guarantee: 0,
               contract_vites: parseFloat(contract.vites),
               contract_amount: parseFloat(subTotalValue),
-              id_services: contract.service,
+              id_services: services[contract.service].id_product,
               percentage_discount: parseFloat(contract.discount),
               contract_discount: parseFloat(discountValue),
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
-              //contract_signature_date: formatDate(contract.signatureDate),
               total_financed: parseFloat(totalDuesValue),
               payment_numbers: dues.length,
               financed_contracts: dues.map((d, index) => ({
@@ -400,19 +231,24 @@ const Contracts = () => {
               })),
             }
           : {
-              //  Financing't
+              //  Financingn't
               financed: 0,
               with_guarantee: 0,
               contract_vites: parseFloat(contract.vites),
               contract_amount: parseFloat(subTotalValue),
-              id_services: contract.service,
+              id_services: services[contract.service].id_product,
               percentage_discount: parseFloat(contract.discount),
               contract_discount: parseFloat(discountValue),
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
-              //contract_signature_date: formatDate(contract.signatureDate)
-            },
+            }),
+        ...(selectedContract.mortgage_contract === 1
+          ? {
+              mortgage_contract_aditional_text: contract.mortgage_contract_aditional_text,
+            }
+          : {}),
+      },
     });
 
     if (status) {
@@ -424,21 +260,168 @@ const Contracts = () => {
     }
   };
 
+  const onCheckDue = async ({ id, status }) => {
+    setLoadingDue(true);
+    const { status: reqStatus, data } = await $Due.updateStatus({ id, status });
+
+    if (reqStatus) {
+      setContractDues((prev) => ({ ...prev, dues: prev.dues.map((d) => (d.id === id ? { ...d, status } : d)) }));
+    }
+
+    setLoadingDue(false);
+  };
+
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
+  };
+
+  const handleExportData = () => {
+    csvExporter.generateCsv(contracts);
   };
 
   useEffect(() => {
     if (token) {
       (async () => {
         await fetchContracts();
+        await fetchProducts();
+        setLoading(false);
       })();
     }
   }, [token]);
 
   return (
     <>
-      <EnhancedTable headCells={contractsHeadCells} rows={contracts} collapse={customCollapse} />
+      <MaterialReactTable
+        columns={columns}
+        data={contracts}
+        enableColumnFilterModes
+        enableColumnOrdering
+        enableRowActions
+        muiTablePaperProps={{ elevation: 0 }}
+        initialState={{ density: "compact" }}
+        muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
+        state={{ showSkeletons: loading }}
+        renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
+          <MenuItem
+            key={0}
+            // disabled={!!original.id_user_contract_transactional_payment}
+            onClick={() => {
+              closeMenu();
+              original.status_contracts === 0
+                ? setSelectedContract(original)
+                : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
+            }}
+          >
+            {original.status_contracts === 0 ? "Crear" : " Ver"} contrato
+          </MenuItem>,
+          <MenuItem
+            key={1}
+            onClick={async () => {
+              closeMenu();
+              await fetchContractDues(original.id);
+              setModal("open-contract-dues");
+            }}
+          >
+            Ver cuotas
+          </MenuItem>,
+        ]}
+        renderDetailPanel={({ row: { original: row } }) => (
+          <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
+            <Grid display="flex" flexDirection="column" gap={1}>
+              <Typography variant="h4">Información financiera</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Financiado:{" "}
+                </Typography>
+                {row.financed ? "Si" : "No"}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Descuento:{" "}
+                </Typography>
+                {row.percentage_discount}%
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Valor descontado:{" "}
+                </Typography>
+                ${formatCurrency(row.contract_discount)}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Total con descuento:{" "}
+                </Typography>
+                ${formatCurrency(row.total_contract_with_discount)}
+              </Typography>
+
+              <Typography variant="h4">Información de primer pago</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Valor:{" "}
+                </Typography>
+                ${formatCurrency(row.first_payment)}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Fecha:{" "}
+                </Typography>
+                {formatLongDate(row.first_payment_date)}
+              </Typography>
+
+              <Typography variant="h4">Información del titular</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Teléfono:{" "}
+                </Typography>
+                {row.cellphone}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Correo:{" "}
+                </Typography>
+                {row.email}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de documento:{" "}
+                </Typography>
+                {row.beneficiary_id_number}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de cuenta:{" "}
+                </Typography>
+                {row.user_bank_account_number}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Tipo de cuenta:{" "}
+                </Typography>
+                {constants?.account_type?.find((a) => String(a.id) === String(row.user_bank_account_type))?.name}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Banco:{" "}
+                </Typography>
+                {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de contrato:{" "}
+                </Typography>
+                {row.contract_number}
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
+        renderBottomToolbarCustomActions={({ table }) => (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
+              Exportar a csv
+            </Button>
+          </Box>
+        )}
+      />
 
       <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">Crear contrato</DialogTitle>
@@ -481,9 +464,9 @@ const Contracts = () => {
                   }
                   sx={{ width: "100%" }}
                 >
-                  {services.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
+                  {services.map((option, index) => (
+                    <MenuItem key={index} value={index}>
+                      {option.discount_name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -541,17 +524,6 @@ const Contracts = () => {
                     setContract((prev) => ({
                       ...prev,
                       firstPaymentDate: value.toDate(),
-                    }))
-                  }
-                />
-                <DatePicker
-                  label="Fecha de Contrato"
-                  value={dayjs(contract.signatureDate)}
-                  format="DD/MM/YYYY"
-                  onChange={(value) =>
-                    setContract((prev) => ({
-                      ...prev,
-                      signatureDate: value.toDate(),
                     }))
                   }
                 />
@@ -640,6 +612,18 @@ const Contracts = () => {
                 />
               </Grid>
             </Grid>
+            {selectedContract?.mortgage_contract === 1 && (
+              <ReactQuill
+                placeholder="Texto Adicional"
+                value={contract.mortgage_contract_aditional_text}
+                onChange={(value) =>
+                  setContract((prev) => ({
+                    ...prev,
+                    mortgage_contract_aditional_text: value,
+                  }))
+                }
+              />
+            )}
             {totalFinancingValue !== 0 && (
               <>
                 <Divider />
@@ -738,6 +722,66 @@ const Contracts = () => {
             </Button>
           </Grid>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={modal === "open-contract-dues"}
+        onClose={() => {
+          setModal(null);
+          setContractDues({ id: null, dues: [] });
+        }}
+        maxWidth="xl"
+        fullWidth
+      >
+        <DialogTitle color="primary.main">Cuotas del contrato</DialogTitle>
+        <DialogContent>
+          <List>
+            <ListItem
+              secondaryAction={
+                loadingDue ? (
+                  <CircularProgress size={28} />
+                ) : (
+                  <Typography fontSize={20} fontWeight={600} color="black">
+                    Pagado
+                  </Typography>
+                )
+              }
+            >
+              <Grid display="flex" gap={4} alignItems="center">
+                <ListItemText
+                  primary="Cuota"
+                  primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
+                />
+              </Grid>
+            </ListItem>
+            {contractDues.dues.map((due) => (
+              <ListItem
+                key={due.id}
+                secondaryAction={
+                  <Checkbox
+                    edge="end"
+                    disabled={loadingDue}
+                    checked={due.status}
+                    onChange={({ target }) => onCheckDue({ id: due.id, status: target.checked ? 1 : 0 })}
+                  />
+                }
+              >
+                <Grid display="flex" gap={4} alignItems="center">
+                  <ListItemText
+                    primary={due.quota_number}
+                    primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
+                  />
+                  <ListItemText
+                    primary={formatCurrency(due.payment_amount, "$")}
+                    secondary={formatLongDate(due.date_payment)}
+                    primaryTypographyProps={{ fontSize: 20, color: "black" }}
+                    secondaryTypographyProps={{ color: "text.main" }}
+                  />
+                </Grid>
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
       </Dialog>
 
       <Snackbar
