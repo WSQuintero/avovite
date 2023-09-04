@@ -70,6 +70,8 @@ const BookingFormMortgage = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [statesBeneficiary, setStatesBeneficiary] = useState([]);
+  const [citiesBeneficiary, setCitiesBeneficiary] = useState([]);
 
   const [formData, setFormData] = useState({
     id_type: "-",
@@ -96,6 +98,11 @@ const BookingFormMortgage = () => {
     address_residence_beneficiary: "",
     civil_status_beneficiary: "",
     economy_activity_beneficiary: "",
+    email_beneficiary: "",
+    cellphone_beneficiary: "",
+    country_beneficiary: "-",
+    state_beneficiary: "-",
+    city_beneficiary: "-",
   });
   const [errors, setErrors] = useState({
     id_type: false,
@@ -121,6 +128,11 @@ const BookingFormMortgage = () => {
     address_residence_beneficiary: false,
     civil_status_beneficiary: false,
     economy_activity_beneficiary: false,
+    email_beneficiary: false,
+    cellphone_beneficiary: false,
+    country_beneficiary: false,
+    state_beneficiary: false,
+    city_beneficiary: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
@@ -129,6 +141,7 @@ const BookingFormMortgage = () => {
 
     const validation = validateJSON(formData, [
       ...(formData.country !== "169" ? ["state"] : []),
+      ...(formData.country_beneficiary !== "169" ? ["state_beneficiary"] : []),
       ...(formData.user_id_bank !== "-1" ? ["bank_name"] : []),
     ]);
 
@@ -161,6 +174,9 @@ const BookingFormMortgage = () => {
       address_residence_beneficiary: formData.address_residence_beneficiary,
       civil_status_beneficiary: CIVIL_STATUS[formData.civil_status_beneficiary],
       economy_activity_beneficiary: formData.economy_activity_beneficiary,
+      email_beneficiary: formData.email_beneficiary,
+      cellphone_beneficiary: formData.cellphone_beneficiary,
+      cod_municipio_beneficiary: formData.city_beneficiary,
     };
 
     const { status } = await contractService.add({ body: postData, mortgage: true });
@@ -190,6 +206,11 @@ const BookingFormMortgage = () => {
         address_residence_beneficiary: "",
         civil_status_beneficiary: "",
         economy_activity_beneficiary: "",
+        email_beneficiary: "",
+        cellphone_beneficiary: "",
+        country_beneficiary: "-",
+        state_beneficiary: "-",
+        city_beneficiary: "-",
       });
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -244,6 +265,43 @@ const BookingFormMortgage = () => {
 
       if (status) {
         setCities(data.data);
+      }
+    }
+
+    if (name === "country_beneficiary") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        state_beneficiary: "-",
+        city_beneficiary: "-",
+      }));
+      setCitiesBeneficiary([]);
+      setStatesBeneficiary([]);
+
+      if (value === "169") {
+        const { status, data } = await $Utils.getLocation({ countryCode: value });
+
+        if (status) {
+          setStatesBeneficiary(data.data);
+        }
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          city_beneficiary: "",
+        }));
+      }
+    }
+
+    if (name === "state_beneficiary") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        city_beneficiary: "-",
+      }));
+      setCitiesBeneficiary([]);
+
+      const { status, data } = await $Utils.getLocation({ stateCode: value });
+
+      if (status) {
+        setCitiesBeneficiary(data.data);
       }
     }
   };
@@ -595,6 +653,20 @@ const BookingFormMortgage = () => {
             />
           </Column>
           <Column>
+            <Label error={errors.email_beneficiary}>Correo Electrónico</Label>
+            <TextField
+              name="email_beneficiary"
+              value={formData.email_beneficiary}
+              required
+              sx={{ width: "100%" }}
+              error={errors.email_beneficiary}
+              onChange={handleInputChange}
+            />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
             <Label error={errors.beneficiary_id_number}>Número de Documento</Label>
             <TextField
               name="beneficiary_id_number"
@@ -604,9 +676,6 @@ const BookingFormMortgage = () => {
               error={errors.beneficiary_id_number}
             />
           </Column>
-        </Row>
-
-        <Row>
           <Column>
             <Label error={errors.beneficiary_id_type}>Tipo de Documento</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
@@ -629,6 +698,9 @@ const BookingFormMortgage = () => {
               </Select>
             </FormControl>
           </Column>
+        </Row>
+
+        <Row>
           <Column>
             <Label error={errors.beneficiary_id_location_expedition}>Lugar de Expedición del Documento</Label>
             <TextField
@@ -637,6 +709,31 @@ const BookingFormMortgage = () => {
               sx={{ width: "100%" }}
               error={errors.beneficiary_id_location_expedition}
               onChange={handleInputChange}
+            />
+          </Column>
+          <Column>
+            <Label error={errors.cellphone}>Teléfono de Contacto</Label>
+            <PhoneField
+              enableSearch={true}
+              value={formData.cellphone_beneficiary}
+              country="co"
+              specialLabel=""
+              autoFormat={true}
+              inputStyle={{
+                width: "100%",
+              }}
+              inputProps={{
+                name: "cellphone_beneficiary",
+                required: true,
+              }}
+              isValid={(value, country) => {
+                if (value.match(/12345/) || errors.cellphone_beneficiary) {
+                  return "Invalid value:" + value + ", " + country.name;
+                } else {
+                  return true;
+                }
+              }}
+              onChange={(value) => handleInputChange({ target: { name: "cellphone_beneficiary", value } })}
             />
           </Column>
         </Row>
@@ -653,6 +750,87 @@ const BookingFormMortgage = () => {
               onChange={handleInputChange}
             />
           </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.country_beneficiary}>País</Label>
+            <FormControl variant="outlined">
+              <Select
+                name="country_beneficiary"
+                value={formData.country_beneficiary}
+                onChange={handleInputChange}
+                error={errors.country_beneficiary}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {countries.map((country) => (
+                  <MenuItem key={country.codigoPais} value={country.codigoPais}>
+                    {country.nombrePais}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Column>
+          {formData.country_beneficiary === "-" ||
+            (formData.country_beneficiary === "169" && (
+              <Column>
+                <Label error={errors.state_beneficiary}>Departamento</Label>
+                <FormControl variant="outlined">
+                  <Select
+                    name="state_beneficiary"
+                    value={formData.state_beneficiary}
+                    onChange={handleInputChange}
+                    error={errors.state_beneficiary}
+                  >
+                    <MenuItem value="-" selected disabled>
+                      Seleccione una opción
+                    </MenuItem>
+                    {statesBeneficiary.map((e) => (
+                      <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
+                        {e.nombreDepto}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Column>
+            ))}
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.city_beneficiary}>Ciudad</Label>
+            {formData.country_beneficiary === "-" || formData.country_beneficiary === "169" ? (
+              <FormControl variant="outlined">
+                <Select
+                  name="city_beneficiary"
+                  value={formData.city_beneficiary}
+                  onChange={handleInputChange}
+                  error={errors.city_beneficiary}
+                >
+                  <MenuItem value="-" selected disabled>
+                    Seleccione una opción
+                  </MenuItem>
+                  {citiesBeneficiary.map((e) => (
+                    <MenuItem key={e.codMupio} value={e.codMupio}>
+                      {e.nombreMupio}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <TextField
+                name="city_beneficiary"
+                value={formData.city_beneficiary}
+                onChange={handleInputChange}
+                error={errors.city_beneficiary}
+              />
+            )}
+          </Column>
+        </Row>
+
+        <Row>
           <Column>
             <Label error={errors.civil_status_beneficiary}>Estado civil</Label>
             <FormControl variant="outlined" sx={{ width: "100%" }}>
@@ -674,9 +852,6 @@ const BookingFormMortgage = () => {
               </Select>
             </FormControl>
           </Column>
-        </Row>
-
-        <Row>
           <Column>
             <Label error={errors.economy_activity_beneficiary}>Actividad económica</Label>
             <TextField
@@ -732,7 +907,7 @@ const BookingFormMortgage = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText fontSize={18} textAlign="center">
-            Inténtelo de nuevo más tarde.
+            Verifica los campos e inténtalo nuevamente.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>

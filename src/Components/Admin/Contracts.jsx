@@ -304,6 +304,7 @@ const Contracts = () => {
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
+            // disabled={!!original.id_user_contract_transactional_payment}
             onClick={() => {
               closeMenu();
               original.status_contracts === 0

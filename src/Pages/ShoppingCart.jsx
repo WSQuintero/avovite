@@ -52,7 +52,9 @@ function ShoppingCart() {
       ),
       extra2: token,
       confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
-      response: "http://localhost:5173/checkout",
+      response: `${import.meta.env.VITE_APP_URL}/checkout?products=${JSON.stringify(
+        shoppingCart.map((p) => ({ id: p.id }))
+      )}`,
     };
 
     const handler = window.ePayco.checkout.configure({
