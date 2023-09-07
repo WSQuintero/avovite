@@ -19,11 +19,8 @@ import {
 import PhoneField from "react-phone-input-2";
 import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
-import useConfig from "../Hooks/useConfig";
 
 import CoverImage from "../assets/img/signup/background.png";
-import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import AuthService from "../Services/auth.service";
 
 const Row = ({ children }) => (
@@ -43,6 +40,7 @@ const Row = ({ children }) => (
 function Profile() {
   const [session, { setUser: setSession }] = useSession();
   const [user, setUser] = useState({
+    avatar: null,
     fullname: "",
     email: "",
     cellphone: "",
@@ -54,6 +52,7 @@ function Profile() {
     user_bank_account_type: "-",
     user_bank_account_number: "",
   });
+  const [userAvatar, setUserAvatar] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
   const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
   const validation = useMemo(
@@ -94,8 +93,18 @@ function Profile() {
     });
 
     if (status) {
+      if (userAvatar) {
+        const { status } = await $Auth.updateAvatar({
+          avatar: userAvatar,
+        });
+
+        if (status) {
+          setSession({ ...session.user, avatar: URL.createObjectURL(userAvatar) });
+        }
+      }
       setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
-      setSession({ ...session.user, ...user });
+      const { avatar, ...rest } = user;
+      setSession({ ...session.user, ...rest });
     } else {
       setAlert({ show: true, message: "Ha ocurrido un error", status: "error" });
     }
@@ -107,8 +116,8 @@ function Profile() {
 
   useEffect(() => {
     if (session.user) {
-      console.log(session.user);
       setUser({
+        avatar: session.user.avatar || null,
         fullname: session.user.fullname || "",
         email: session.user.email || "",
         cellphone: session.user.cellphone || "",
@@ -158,32 +167,45 @@ function Profile() {
               },
             })}
           >
-            <IconButton
-              component="span"
-              size="large"
-              sx={{ position: "relative", padding: 0, "&:hover .MuiBox-root": { opacity: 1 } }}
-            >
-              <Box
-                position="absolute"
-                zIndex={1}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                width="100%"
-                height="100%"
-                borderRadius={50}
-                sx={(t) => ({
-                  backgroundColor: alpha(t.palette.primary.main, 0.5),
-                  opacity: 0,
-                  transition: "opacity 0.2s ease-out",
-                })}
+            <TextField
+              type="file"
+              accept="image/*"
+              id="input-select-avatar"
+              sx={{ display: "none" }}
+              onChange={({ target }) => setUserAvatar(target.files[0])}
+            />
+            <label htmlFor="input-select-avatar">
+              <IconButton
+                component="span"
+                size="large"
+                sx={{ position: "relative", padding: 0, "&:hover .MuiBox-root": { opacity: 1 } }}
               >
-                <Typography variant="caption" color="white">
-                  Actualizar
-                </Typography>
-              </Box>
-              <Avatar src={user.avatar} alt={user.firstname} sx={{ width: 92, height: 92 }} />
-            </IconButton>
+                <Box
+                  position="absolute"
+                  zIndex={1}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  width="100%"
+                  height="100%"
+                  borderRadius={50}
+                  sx={(t) => ({
+                    backgroundColor: alpha(t.palette.primary.main, 0.5),
+                    opacity: 0,
+                    transition: "opacity 0.2s ease-out",
+                  })}
+                >
+                  <Typography variant="caption" color="white">
+                    Actualizar
+                  </Typography>
+                </Box>
+                <Avatar
+                  src={userAvatar ? URL.createObjectURL(userAvatar) : user.avatar}
+                  alt={user.firstname}
+                  sx={{ width: 92, height: 92 }}
+                />
+              </IconButton>
+            </label>
             <Grid display="flex" flexDirection="column">
               <Typography variant="h1" fontSize={32} fontWeight={600} color="white">
                 Perfil
