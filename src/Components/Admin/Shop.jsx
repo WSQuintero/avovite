@@ -467,12 +467,11 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                 />
               </Grid>
               <Grid display="flex" gap={2}>
-                <TextField
-                  label="Url de la imagen"
-                  name="url_image"
-                  value={discount.url_image}
-                  onChange={onChangeFields}
+                <MuiFileInput
                   fullWidth
+                  label="Imagen"
+                  value={discount.url_image}
+                  onChange={(value) => onChangeFields({ target: { name: "url_image", value } })}
                 />
               </Grid>
             </Grid>
