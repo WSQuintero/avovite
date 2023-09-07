@@ -11,6 +11,7 @@ import {
   FormControl,
   Grid,
   IconButton,
+  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -26,6 +27,7 @@ import TabPanel from "../TabPanel";
 import { formatCurrency } from "../../utilities";
 import { IMAGE_PLACEHOLDER } from "../../utilities/constants";
 import { NumericFormat } from "react-number-format";
+import { MuiFileInput } from "mui-file-input";
 
 function Products({ service: $Shop, state, feedback }) {
   const [products, setProducts] = state;
@@ -199,12 +201,11 @@ function Products({ service: $Shop, state, feedback }) {
                 />
               </Grid>
               <Grid display="flex" gap={2}>
-                <TextField
-                  label="Url de la imagen"
-                  name="url_image"
-                  value={product.url_image}
-                  onChange={onChangeFields}
+                <MuiFileInput
                   fullWidth
+                  label="Imagen"
+                  value={product.url_image}
+                  onChange={(value) => onChangeFields({ target: { name: "url_image", value } })}
                 />
               </Grid>
             </Grid>
@@ -466,12 +467,11 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                 />
               </Grid>
               <Grid display="flex" gap={2}>
-                <TextField
-                  label="Url de la imagen"
-                  name="url_image"
-                  value={discount.url_image}
-                  onChange={onChangeFields}
+                <MuiFileInput
                   fullWidth
+                  label="Imagen"
+                  value={discount.url_image}
+                  onChange={(value) => onChangeFields({ target: { name: "url_image", value } })}
                 />
               </Grid>
             </Grid>

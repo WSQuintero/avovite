@@ -53,3 +53,9 @@ export const formatCurrency = (value, prefix = "", sufix = "") => (
     {sufix}
   </>
 );
+
+export const toFormData = (data) =>
+  Object.keys(data).reduce((form, key) => {
+    form.append(key, data[key]);
+    return form;
+  }, new FormData());

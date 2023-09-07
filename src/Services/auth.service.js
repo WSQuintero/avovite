@@ -56,6 +56,17 @@ export default class AuthService {
     );
   }
 
+  async updateAvatar(body) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.putForm(`${this.API_URL}/users/userAvatar`, body, {
+            headers: { Authorization: this.token },
+          })
+        ).data
+    );
+  }
+
   async validate() {
     if (!this.token) {
       return { status: false, data: null };
