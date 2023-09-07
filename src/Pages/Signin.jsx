@@ -5,7 +5,7 @@ import AuthService from "../Services/auth.service";
 import { Box, Button, Grid, InputAdornment, Link, TextField, Typography, Snackbar, Alert } from "@mui/material";
 import { PersonOutlineOutlined as PersonIcon, LockOpenOutlined as LockIcon } from "@mui/icons-material";
 
-import BackgroundImage from "../assets/img/signin/background.png";
+import BackgroundImage from "../assets/img/signin/background.jpg";
 import LogoImage from "../assets/img/common/logo.svg";
 
 function Signin() {

@@ -21,7 +21,7 @@ import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
 import useConfig from "../Hooks/useConfig";
 
-import CoverImage from "../assets/img/signin/background.png";
+import CoverImage from "../assets/img/signup/background.png";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import AuthService from "../Services/auth.service";
