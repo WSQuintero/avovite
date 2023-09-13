@@ -260,6 +260,10 @@ const Contracts = () => {
     }
   };
 
+  const onDeleteContract = async () => {
+    
+  }
+
   const onCheckDue = async ({ id, status }) => {
     setLoadingDue(true);
     const { status: reqStatus, data } = await $Due.updateStatus({ id, status });
@@ -323,6 +327,15 @@ const Contracts = () => {
             }}
           >
             Ver cuotas
+          </MenuItem>,
+          <MenuItem
+            key={0}
+            disabled={original.status_contracts !== 0}
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+            Eliminar contrato
           </MenuItem>,
         ]}
         renderDetailPanel={({ row: { original: row } }) => (

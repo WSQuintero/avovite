@@ -1,0 +1,135 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuid } from "uuid";
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import { Warning as WarningIcon, HistoryEdu as ContractIcon } from "@mui/icons-material";
+import ContractService from "../Services/contract.service";
+import useSession from "../Hooks/useSession";
+import PageWrapper from "../Components/PageWrapper";
+import { formatDate } from "../utilities";
+
+function ContractPaymentValidation() {
+  const navigate = useNavigate();
+  const [{ token }] = useSession();
+  const [contracts, setContracts] = useState({});
+  const [modal, setModal] = useState("warning");
+  const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
+
+  const fetchContracts = async () => {
+    const { status, data } = await $Contract.get({ pendingToPay: true });
+
+    if (status) {
+      if (!data.data?.pendings?.length) {
+        navigate("/");
+      }
+
+      setContracts(data.data);
+    }
+  };
+
+  const handlePayment = async (contract) => {
+    const mandatory = {
+      name: "Contrato pendiente",
+      description: "Contrato pendiente",
+      invoice: `AV-${uuid()}`,
+      currency: "cop",
+      amount: 150000,
+      tax_base: "4000",
+      tax: "500",
+      tax_ico: "500",
+      country: "co",
+      lang: "es",
+    };
+
+    const aditional = {
+      extra1: null,
+      extra2: token,
+      extra3: contract.id,
+      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
+      response: `${import.meta.env.VITE_APP_URL}/validation/payment`,
+    };
+
+    const handler = window.ePayco.checkout.configure({
+      key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
+      test: true,
+    });
+
+    handler.open({ ...mandatory, ...aditional });
+  };
+
+  useEffect(() => {
+    if (token) {
+      (async () => {
+        await fetchContracts();
+      })();
+    }
+  }, [token]);
+
+  return (
+    <PageWrapper isInvalidSession>
+      <Container maxWidth="xxl" disableGutters>
+        <Grid display="flex" flexDirection="column" gap={2}>
+          <Typography variant="h2">Pagos pendientes:</Typography>
+          <List>
+            {(contracts.pendings || []).map((contract, index) => (
+              <ListItem
+                key={contract.id}
+                onClick={() => handlePayment(contract)}
+                secondaryAction={
+                  <Button edge="end" variant="outlined" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    Pagar con
+                    <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
+                  </Button>
+                }
+                disablePadding
+              >
+                <ListItemButton role={undefined} onClick={() => {}}>
+                  <ListItemIcon>
+                    <ContractIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`Contrato ${index + 1}`}
+                    secondary={`válido hasta el ${formatDate(contract.payment_deadline)}`}
+                    primaryTypographyProps={{ fontSize: 20, color: "primary" }}
+                    secondaryTypographyProps={{ color: "text.main" }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
+      </Container>
+
+      <Dialog open={modal === "warning"} onClose={() => setModal(null)}>
+        <DialogTitle color="error" display="flex" alignItems="center" gap={1}>
+          <WarningIcon /> Tienes pagos pendientes
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>Para poder continuar debes de efectuar pagos todos tus contratos.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={() => setModal(null)}>
+            Continuar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </PageWrapper>
+  );
+}
+
+export default ContractPaymentValidation;
