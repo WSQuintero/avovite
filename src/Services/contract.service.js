@@ -47,4 +47,8 @@ export default class ContractService {
         ).data
     );
   }
+
+  async delete({ id }) {
+    return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/${id}`, this.config)).data);
+  }
 }

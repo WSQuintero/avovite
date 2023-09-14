@@ -260,9 +260,16 @@ const Contracts = () => {
     }
   };
 
-  const onDeleteContract = async () => {
-    
-  }
+  const onDeleteContract = async (contractId) => {
+    const { status } = await $Contract.delete({ id: contractId });
+
+    if (status) {
+      setFeedback({ open: true, message: "Contrato eliminado exitosamente.", status: "success" });
+      setContracts((prev) => prev.filter((c) => c.id !== contractId));
+    } else {
+      setFeedback({ open: true, message: "Error al eliminar contrato.", status: "error" });
+    }
+  };
 
   const onCheckDue = async ({ id, status }) => {
     setLoadingDue(true);
@@ -331,8 +338,10 @@ const Contracts = () => {
           <MenuItem
             key={0}
             disabled={original.status_contracts !== 0}
-            onClick={() => {
+            sx={{ color: "error.main" }}
+            onClick={async () => {
               closeMenu();
+              await onDeleteContract(original.id);
             }}
           >
             Eliminar contrato
