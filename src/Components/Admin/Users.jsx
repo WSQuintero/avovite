@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { MaterialReactTable } from "material-react-table";
-import { ExportToCsv } from "export-to-csv";
 import { Box, Button } from "@mui/material";
 import { FileDownload as DownloadIcon } from "@mui/icons-material";
 import useUser from "../../Hooks/useUser";
 import useSession from "../../Hooks/useSession";
+import { exportWorksheet } from "../../utilities";
 
 const columns = [
   {
@@ -17,17 +17,12 @@ const columns = [
     id: "email",
     header: "Correo",
   },
+  {
+    accessorKey: "cellphone",
+    id: "cellphone",
+    header: "Teléfono",
+  },
 ];
-
-const csvExporter = new ExportToCsv({
-  fieldSeparator: ",",
-  quoteStrings: '"',
-  decimalSeparator: ".",
-  showLabels: true,
-  useBom: true,
-  useKeysAsHeaders: false,
-  headers: columns.map((c) => c.header),
-});
 
 function Users() {
   const [{ token }] = useSession();
@@ -36,7 +31,10 @@ function Users() {
   const [loading, setLoading] = useState(true);
 
   const handleExportData = () => {
-    csvExporter.generateCsv(users);
+    exportWorksheet(
+      users.map((u) => ({ Nombre: u.fullname, Correo: u.email, Telefono: u.cellphone })),
+      "users.xlsx"
+    );
   };
 
   useEffect(() => {
@@ -66,7 +64,7 @@ function Users() {
         renderBottomToolbarCustomActions={({ table }) => (
           <Box sx={{ display: "flex", gap: 1 }}>
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
-              Exportar a csv
+              Exportar a Excel
             </Button>
           </Box>
         )}

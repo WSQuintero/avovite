@@ -1,3 +1,4 @@
+import * as XLSX from "xlsx";
 import { NumericFormat } from "react-number-format";
 
 export const handleCall = async (callback) => {
@@ -59,3 +60,11 @@ export const toFormData = (data) =>
     form.append(key, data[key]);
     return form;
   }, new FormData());
+
+export const exportWorksheet = (jsonObject, fileName) => {
+  var myFile = fileName;
+  var myWorkSheet = XLSX.utils.json_to_sheet(jsonObject);
+  var myWorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(myWorkBook, myWorkSheet, "myWorkSheet");
+  XLSX.writeFile(myWorkBook, myFile);
+};

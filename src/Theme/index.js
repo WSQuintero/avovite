@@ -71,6 +71,18 @@ export default createTheme({
         },
       },
     },
+    MuiIcon: {
+      defaultProps: {
+        baseClassName: "fas",
+        sx: {
+          display: "flex",
+          justifyContent: "center",
+          width: "min-content",
+          aspectRatio: 1,
+          overflow: "visible",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

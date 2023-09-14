@@ -130,7 +130,7 @@ function Header({ isInvalidSession = false }) {
                   setProfileMenu(event.currentTarget);
                 }}
               >
-                <Avatar alt={session.user.name} src={session.user.avatar} />
+                <Avatar alt={session.user.fullname} src={session.user.avatar} />
               </IconButton>
             </Grid>
           </Toolbar>
@@ -166,7 +166,7 @@ function Header({ isInvalidSession = false }) {
         sx={{ top: 16, minWidth: 200 }}
       >
         <MenuItem sx={{ display: "flex", gap: 2 }} onClick={() => !isInvalidSession && navigate("/profile")}>
-          <Avatar />
+          <Avatar alt={session.user.fullname} src={session.user.avatar} />
           <Grid display="flex" flexDirection="column" maxWidth={184}>
             <Typography
               lineHeight={1}

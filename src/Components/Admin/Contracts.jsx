@@ -22,15 +22,16 @@ import {
   ListItemText,
   Checkbox,
   CircularProgress,
+  FormControlLabel,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import { ExportToCsv } from "export-to-csv";
-import ReactQuill from "react-quill";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
-import { isToday, formatCurrency, formatDate as formatLongDate } from "../../utilities/index";
+import TiptapEditor from "../TiptapEditor";
+import { isToday, formatCurrency, formatDate as formatLongDate, exportWorksheet } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
@@ -60,18 +61,19 @@ const columns = [
     header: "Valor de contrato",
     Cell: ({ renderedCellValue }) => (
       <>
-        $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
+        $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
       </>
     ),
   },
   {
-    accessorKey: "total_financed",
-    id: "total_financed",
-    header: "Financiamiento total",
+    accessorKey: "total_contract_with_discount",
+    id: "total_contract_with_discount",
+    header: "Valor contrato con descuento",
+    size: 300,
 
     Cell: ({ renderedCellValue }) => (
       <>
-        $<NumericFormat displayType="text" value={renderedCellValue} thousandSeparator></NumericFormat>
+        $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
       </>
     ),
   },
@@ -86,16 +88,6 @@ const columns = [
     header: "Cuotas en mora",
   },
 ];
-
-const csvExporter = new ExportToCsv({
-  fieldSeparator: ",",
-  quoteStrings: '"',
-  decimalSeparator: ".",
-  showLabels: true,
-  useBom: true,
-  useKeysAsHeaders: false,
-  headers: columns.map((c) => c.header),
-});
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -126,6 +118,7 @@ const Contracts = () => {
     firstPaymentDate: new Date(),
     financing: false,
     mortgage_contract_aditional_text: "",
+    enable_to_pay_epayco: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
@@ -200,6 +193,7 @@ const Contracts = () => {
       firstPaymentDate: new Date(),
       financing: false,
       mortgage_contract_aditional_text: "",
+      enable_to_pay_epayco: false,
     });
     setDues([]);
   };
@@ -229,6 +223,7 @@ const Contracts = () => {
                 payment_amount: d.value,
                 date_payment: formatDate(d.date),
               })),
+              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
             }
           : {
               //  Financingn't
@@ -242,6 +237,7 @@ const Contracts = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
+              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
             }),
         ...(selectedContract.mortgage_contract === 1
           ? {
@@ -257,6 +253,17 @@ const Contracts = () => {
       await fetchContracts();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  const onDeleteContract = async (contractId) => {
+    const { status } = await $Contract.delete({ id: contractId });
+
+    if (status) {
+      setFeedback({ open: true, message: "Contrato eliminado exitosamente.", status: "success" });
+      setContracts((prev) => prev.filter((c) => c.id !== contractId));
+    } else {
+      setFeedback({ open: true, message: "Error al eliminar contrato.", status: "error" });
     }
   };
 
@@ -276,7 +283,37 @@ const Contracts = () => {
   };
 
   const handleExportData = () => {
-    csvExporter.generateCsv(contracts);
+    exportWorksheet(
+      contracts.map((c) => ({
+        "Fecha de Pago": c.first_payment_date,
+        "Valor de Pago inicial": c.first_payment,
+        "Cantidad de Vites Comprados": c.contract_vites,
+        "Nombre completo": c.fullname,
+        "Tipo de documento": c.id_type,
+        "Numero Documento": c.id_number,
+        "Lugar de Expedición del documento": c.id_location_expedition,
+        "Ciudad y país de Residencia": "-",
+        "Dirección de Residencia": c.address_residence,
+        "Correo Electrónico": c.email,
+        "Teléfono de contacto": c.cellphone,
+        "Estado Civil": c.civil_status,
+        "Actividad Económica Principal (diferente a la profesión)": c.economy_activity,
+        Banco: c.user_id_bank,
+        "Tipo de cuenta": c.user_bank_account_type,
+        "Número de cuenta": c.user_bank_account_number,
+        "Nombre completo Beneficiario:": c.beneficiary_fullname,
+        "Tipo de documento Beneficiario": c.beneficiary_id_type,
+        "Numero Documento Beneficiario": c.beneficiary_id_number,
+        "Lugar de Expedición del documento Beneficiario": c.beneficiary_id_location_expedition,
+        "Ciudad y país de Residencia Beneficiario": "-",
+        "Dirección de Residencia Beneficiario": c.address_residence_beneficiary,
+        "Estado Civil Beneficiario": c.civil_status_beneficiary,
+        "Actividad Económica Principal (diferente a la profesión) Beneficiario": c.economy_activity_beneficiary,
+        "Correo Electrónico Beneficiario": c.email_beneficiary,
+        "Teléfono de contacto Beneficiario": c.cellphone_beneficiary,
+      })),
+      "contracts.xlsx"
+    );
   };
 
   useEffect(() => {
@@ -301,6 +338,7 @@ const Contracts = () => {
         initialState={{ density: "compact" }}
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
         state={{ showSkeletons: loading }}
+        localization={MRT_Localization_ES}
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
@@ -323,6 +361,17 @@ const Contracts = () => {
             }}
           >
             Ver cuotas
+          </MenuItem>,
+          <MenuItem
+            key={0}
+            disabled={original.status_contracts !== 0}
+            sx={{ color: "error.main" }}
+            onClick={async () => {
+              closeMenu();
+              await onDeleteContract(original.id);
+            }}
+          >
+            Eliminar contrato
           </MenuItem>,
         ]}
         renderDetailPanel={({ row: { original: row } }) => (
@@ -417,7 +466,7 @@ const Contracts = () => {
         renderBottomToolbarCustomActions={({ table }) => (
           <Box sx={{ display: "flex", gap: 1 }}>
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
-              Exportar a csv
+              Exportar a Excel
             </Button>
           </Box>
         )}
@@ -612,14 +661,23 @@ const Contracts = () => {
                 />
               </Grid>
             </Grid>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={contract.enable_to_pay_epayco}
+                  onChange={({ target }) => setContract((prev) => ({ ...prev, enable_to_pay_epayco: target.checked }))}
+                />
+              }
+              label="Habilitar pago con Epayco"
+            />
             {selectedContract?.mortgage_contract === 1 && (
-              <ReactQuill
+              <TiptapEditor
                 placeholder="Texto Adicional"
                 value={contract.mortgage_contract_aditional_text}
-                onChange={(value) =>
+                onChange={({ html }) =>
                   setContract((prev) => ({
                     ...prev,
-                    mortgage_contract_aditional_text: value,
+                    mortgage_contract_aditional_text: html,
                   }))
                 }
               />

@@ -8,9 +8,11 @@ export default class ContractService {
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
   }
 
-  async get({ id = null, dateRangeId = null, pending = false } = {}) {
+  async get({ id = null, dateRangeId = null, pending = false, pendingToPay = false } = {}) {
     return await handleCall(async () => {
-      if (pending) {
+      if (pendingToPay) {
+        return (await axios.get(`${this.API_URL}/contract-transactional-payments/pending-to-pay`, this.config)).data;
+      } else if (pending) {
         return (await axios.get(`${this.API_URL}/contract-transactional-payments/pending`, this.config)).data;
       } else if (id) {
         return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
@@ -44,5 +46,9 @@ export default class ContractService {
           : await axios.put(`${this.API_URL}/contracts/completeContract/${id}`, body, this.config)
         ).data
     );
+  }
+
+  async delete({ id }) {
+    return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/${id}`, this.config)).data);
   }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PhoneField from "react-phone-input-2";
 import {
   Button,
@@ -73,6 +74,7 @@ const Column = ({ children }) => (
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
 function ContractValidation() {
+  const navigate = useNavigate();
   const [{ token }] = useSession();
   const [{ constants }] = useConfig();
   const [contracts, setContracts] = useState({});
@@ -126,9 +128,11 @@ function ContractValidation() {
   const fetchContracts = async () => {
     const { status, data } = await $Contract.get({ pending: true });
 
-    console.log(data.data);
-
     if (status) {
+      if (!data.data?.pendings?.length) {
+        navigate("/");
+      }
+
       setContracts(data.data);
     }
   };

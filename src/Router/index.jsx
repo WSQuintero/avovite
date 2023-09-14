@@ -19,6 +19,7 @@ import Post from "../Pages/Post";
 import Profile from "../Pages/Profile";
 import Contact from "../Pages/Contact";
 import ContractValidation from "../Pages/ContractValidation";
+import ContractPaymentValidation from "../Pages/ContractPaymentValidation";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -36,8 +37,13 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   }
 
   if (meta.includes(REQUIRES_VALIDATION)) {
-    if (session.user && session.user.pending_payed_contracts) {
-      return <Navigate to="/validation" />;
+    if (session.user) {
+      if (session.user.pending_to_pay_contracts) {
+        return <Navigate to="/validation/payment" />;
+      }
+      if (session.user.pending_payed_contracts) {
+        return <Navigate to="/validation/confirmation" />;
+      }
     }
   }
 
@@ -141,7 +147,11 @@ function Router() {
       element: <PrivateRoute component={Contact} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
-      path: "/validation",
+      path: "/validation/payment",
+      element: <PrivateRoute component={ContractPaymentValidation} meta={[REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/validation/confirmation",
       element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />,
     },
   ]);

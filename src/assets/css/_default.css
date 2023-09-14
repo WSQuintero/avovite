@@ -25,3 +25,24 @@ body {
 .react-tel-input .special-label {
   font-family: 'Poppins', sans-serif;
 }
+
+.tiptap {
+  padding: 16px;
+  min-height: 320px;
+  border: 1px solid #979797;
+  border-radius: 10px;
+  outline: none;
+
+  &:focus-within {
+    outline: 1px solid #67AA36;
+    border-color: #67AA36;
+  }
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #c9c9c9;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
