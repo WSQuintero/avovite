@@ -17,6 +17,11 @@ const columns = [
     id: "email",
     header: "Correo",
   },
+  {
+    accessorKey: "cellphone",
+    id: "cellphone",
+    header: "Teléfono",
+  },
 ];
 
 function Users() {
@@ -26,7 +31,10 @@ function Users() {
   const [loading, setLoading] = useState(true);
 
   const handleExportData = () => {
-    exportWorksheet(users, "users.xlsx");
+    exportWorksheet(
+      users.map((u) => ({ Nombre: u.fullname, Correo: u.email, Telefono: u.cellphone })),
+      "users.xlsx"
+    );
   };
 
   useEffect(() => {
@@ -56,7 +64,7 @@ function Users() {
         renderBottomToolbarCustomActions={({ table }) => (
           <Box sx={{ display: "flex", gap: 1 }}>
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
-              Exportar a csv
+              Exportar a Excel
             </Button>
           </Box>
         )}
