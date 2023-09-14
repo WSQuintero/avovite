@@ -22,13 +22,15 @@ import {
   ListItemText,
   Checkbox,
   CircularProgress,
+  FormControlLabel,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import ReactQuill from "react-quill";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
+import TiptapEditor from "../TiptapEditor";
 import { isToday, formatCurrency, formatDate as formatLongDate, exportWorksheet } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
 import useConfig from "../../Hooks/useConfig";
@@ -116,6 +118,7 @@ const Contracts = () => {
     firstPaymentDate: new Date(),
     financing: false,
     mortgage_contract_aditional_text: "",
+    enable_to_pay_epayco: false,
   });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
@@ -190,6 +193,7 @@ const Contracts = () => {
       firstPaymentDate: new Date(),
       financing: false,
       mortgage_contract_aditional_text: "",
+      enable_to_pay_epayco: false,
     });
     setDues([]);
   };
@@ -219,6 +223,7 @@ const Contracts = () => {
                 payment_amount: d.value,
                 date_payment: formatDate(d.date),
               })),
+              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
             }
           : {
               //  Financingn't
@@ -232,6 +237,7 @@ const Contracts = () => {
               total_contract_with_discount: parseFloat(totalValue),
               first_payment: parseFloat(contract.firstPaymentValue),
               first_payment_date: formatDate(contract.firstPaymentDate),
+              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
             }),
         ...(selectedContract.mortgage_contract === 1
           ? {
@@ -332,6 +338,7 @@ const Contracts = () => {
         initialState={{ density: "compact" }}
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
         state={{ showSkeletons: loading }}
+        localization={MRT_Localization_ES}
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
@@ -654,14 +661,23 @@ const Contracts = () => {
                 />
               </Grid>
             </Grid>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={contract.enable_to_pay_epayco}
+                  onChange={({ target }) => setContract((prev) => ({ ...prev, enable_to_pay_epayco: target.checked }))}
+                />
+              }
+              label="Habilitar pago con Epayco"
+            />
             {selectedContract?.mortgage_contract === 1 && (
-              <ReactQuill
+              <TiptapEditor
                 placeholder="Texto Adicional"
                 value={contract.mortgage_contract_aditional_text}
-                onChange={(value) =>
+                onChange={({ html }) =>
                   setContract((prev) => ({
                     ...prev,
-                    mortgage_contract_aditional_text: value,
+                    mortgage_contract_aditional_text: html,
                   }))
                 }
               />

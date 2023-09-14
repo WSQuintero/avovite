@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "vite --force",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -17,6 +17,11 @@
     "@mui/lab": "^5.0.0-alpha.142",
     "@mui/material": "^5.14.0",
     "@mui/x-date-pickers": "^6.10.2",
+    "@tiptap/extension-placeholder": "^2.1.9",
+    "@tiptap/extension-text-style": "^2.1.8",
+    "@tiptap/pm": "^2.1.8",
+    "@tiptap/react": "^2.1.8",
+    "@tiptap/starter-kit": "^2.1.8",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "material-react-table": "^1.14.0",
@@ -25,7 +30,6 @@
     "react-dom": "^18.2.0",
     "react-number-format": "^5.2.2",
     "react-phone-input-2": "^2.15.1",
-    "react-quill": "^2.0.0",
     "react-router-dom": "^6.14.1",
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5"
