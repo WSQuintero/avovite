@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { MaterialReactTable } from "material-react-table";
-import { ExportToCsv } from "export-to-csv";
 import { Box, Button } from "@mui/material";
 import { FileDownload as DownloadIcon } from "@mui/icons-material";
 import useUser from "../../Hooks/useUser";
 import useSession from "../../Hooks/useSession";
+import { exportWorksheet } from "../../utilities";
 
 const columns = [
   {
@@ -19,16 +19,6 @@ const columns = [
   },
 ];
 
-const csvExporter = new ExportToCsv({
-  fieldSeparator: ",",
-  quoteStrings: '"',
-  decimalSeparator: ".",
-  showLabels: true,
-  useBom: true,
-  useKeysAsHeaders: false,
-  headers: columns.map((c) => c.header),
-});
-
 function Users() {
   const [{ token }] = useSession();
   const $User = useUser();
@@ -36,7 +26,7 @@ function Users() {
   const [loading, setLoading] = useState(true);
 
   const handleExportData = () => {
-    csvExporter.generateCsv(users);
+    exportWorksheet(users, "users.xlsx");
   };
 
   useEffect(() => {
