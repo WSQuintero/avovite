@@ -482,7 +482,7 @@ const BookingFormMortgage = () => {
 
         <Row>
           <Column>
-            <Label error={errors.address_residence}>Dirección de recidencia</Label>
+            <Label error={errors.address_residence}>Dirección de residencia</Label>
             <TextField
               name="address_residence"
               value={formData.address_residence}
@@ -743,7 +743,7 @@ const BookingFormMortgage = () => {
 
         <Row>
           <Column>
-            <Label error={errors.address_residence_beneficiary}>Dirección de recidencia</Label>
+            <Label error={errors.address_residence_beneficiary}>Dirección de residencia</Label>
             <TextField
               name="address_residence_beneficiary"
               value={formData.address_residence_beneficiary}
