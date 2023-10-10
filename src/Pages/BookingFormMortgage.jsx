@@ -496,7 +496,7 @@ const BookingFormMortgage = () => {
 
         <Row>
           <Column>
-            <Label error={errors.country}>País</Label>
+            <Label error={errors.country}>País de residencia</Label>
             <FormControl variant="outlined">
               <Select name="country" value={formData.country} onChange={handleInputChange} error={errors.country}>
                 <MenuItem value="-" selected disabled>
@@ -513,7 +513,7 @@ const BookingFormMortgage = () => {
           {formData.country === "-" ||
             (formData.country === "169" && (
               <Column>
-                <Label error={errors.city}>Departamento</Label>
+                <Label error={errors.city}>Departamento de residencia</Label>
                 <FormControl variant="outlined">
                   <Select name="state" value={formData.state} onChange={handleInputChange} error={errors.state}>
                     <MenuItem value="-" selected disabled>
@@ -532,7 +532,7 @@ const BookingFormMortgage = () => {
 
         <Row>
           <Column>
-            <Label error={errors.city}>Ciudad</Label>
+            <Label error={errors.city}>Ciudad de residencia</Label>
             {formData.country === "-" || formData.country === "169" ? (
               <FormControl variant="outlined">
                 <Select name="city" value={formData.city} onChange={handleInputChange} error={errors.city}>
@@ -552,26 +552,30 @@ const BookingFormMortgage = () => {
           </Column>
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>
-            {formData.user_id_bank !== "-1" ? (
-              <FormControl variant="outlined">
-                <Select
-                  name="user_id_bank"
-                  value={formData.user_id_bank}
-                  onChange={handleInputChange}
-                  error={errors.user_id_bank}
-                >
-                  <MenuItem value="-" selected disabled>
-                    Seleccione una opción
+            <FormControl variant="outlined">
+              <Select
+                name="user_id_bank"
+                value={formData.user_id_bank}
+                onChange={handleInputChange}
+                error={errors.user_id_bank}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                {constants?.banks.map((bank) => (
+                  <MenuItem key={bank.id} value={bank.id}>
+                    {bank.name}
                   </MenuItem>
-                  {constants?.banks.map((bank) => (
-                    <MenuItem key={bank.id} value={bank.id}>
-                      {bank.name}
-                    </MenuItem>
-                  ))}
-                  <MenuItem value="-1">Otro</MenuItem>
-                </Select>
-              </FormControl>
-            ) : (
+                ))}
+                <MenuItem value="-1">Otro</MenuItem>
+              </Select>
+            </FormControl>
+          </Column>
+        </Row>
+        {formData.user_id_bank === "-1" && (
+          <Row>
+            <Column>
+              <Label error={errors.user_id_bank}>Especifique Cuál Banco</Label>
               <TextField
                 name="bank_name"
                 value={formData.bank_name}
@@ -587,10 +591,9 @@ const BookingFormMortgage = () => {
                   ),
                 }}
               />
-            )}
-          </Column>
-        </Row>
-
+            </Column>
+          </Row>
+        )}
         <Row>
           <Column>
             <Label error={errors.user_bank_account_type}>Tipo de Cuenta</Label>
@@ -754,7 +757,7 @@ const BookingFormMortgage = () => {
 
         <Row>
           <Column>
-            <Label error={errors.country_beneficiary}>País</Label>
+            <Label error={errors.country_beneficiary}>País de residencia</Label>
             <FormControl variant="outlined">
               <Select
                 name="country_beneficiary"
@@ -776,7 +779,7 @@ const BookingFormMortgage = () => {
           {formData.country_beneficiary === "-" ||
             (formData.country_beneficiary === "169" && (
               <Column>
-                <Label error={errors.state_beneficiary}>Departamento</Label>
+                <Label error={errors.state_beneficiary}>Departamento de residencia</Label>
                 <FormControl variant="outlined">
                   <Select
                     name="state_beneficiary"
@@ -800,7 +803,7 @@ const BookingFormMortgage = () => {
 
         <Row>
           <Column>
-            <Label error={errors.city_beneficiary}>Ciudad</Label>
+            <Label error={errors.city_beneficiary}>Ciudad de residencia</Label>
             {formData.country_beneficiary === "-" || formData.country_beneficiary === "169" ? (
               <FormControl variant="outlined">
                 <Select

@@ -365,7 +365,7 @@ const BookingForm = () => {
 
         <Row>
           <Column>
-            <Label error={errors.country}>País</Label>
+            <Label error={errors.country}>País de residencia</Label>
             <FormControl variant="outlined">
               <Select name="country" value={formData.country} onChange={handleInputChange} error={errors.country}>
                 <MenuItem value="-" selected disabled>
@@ -382,7 +382,7 @@ const BookingForm = () => {
           {formData.country === "-" ||
             (formData.country === "169" && (
               <Column>
-                <Label error={errors.city}>Departamento</Label>
+                <Label error={errors.city}>Departamento de residencia</Label>
                 <FormControl variant="outlined">
                   <Select name="state" value={formData.state} onChange={handleInputChange} error={errors.state}>
                     <MenuItem value="-" selected disabled>
@@ -401,7 +401,7 @@ const BookingForm = () => {
 
         <Row>
           <Column>
-            <Label error={errors.city}>Ciudad</Label>
+            <Label error={errors.city}>Ciudad de residencia</Label>
             {formData.country === "-" || formData.country === "169" ? (
               <FormControl variant="outlined">
                 <Select name="city" value={formData.city} onChange={handleInputChange} error={errors.city}>
