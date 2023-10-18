@@ -24,12 +24,12 @@ export default class AuthService {
   }
 
   async update({ id, ...body } = {}) {
-    return await handleCall(async () => (await axios.put(`${this.API_URL}/users/${id}`, body, this.config)).data);
+    return await handleCall(async () => (await axios.put(`${this.API_URL}/users/update/${id}`, body, this.config)).data);
   }
 
   async updateRole({ id, role } = {}) {
     return await handleCall(
-      async () => (await axios.put(`${this.API_URL}/users/rol/${id}`, { rol: role }, this.config)).data
+      async () => (await axios.put(`${this.API_URL}/users/update/rol/${id}`, { rol: role }, this.config)).data
     );
   }
 

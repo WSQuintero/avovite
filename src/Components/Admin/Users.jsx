@@ -9,9 +9,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
   Grid,
   IconButton,
   MenuItem,
+  Radio,
+  RadioGroup,
   Snackbar,
   Stack,
   TextField,
@@ -28,6 +33,8 @@ import useSession from "../../Hooks/useSession";
 import { exportWorksheet } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import PhoneField from "react-phone-input-2";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 function Users() {
   const [{ token }] = useSession();
@@ -39,6 +46,11 @@ function Users() {
     email: "",
     cellphone: "",
     rol: "-1",
+    email_validated: "",
+    birthday: "",
+    id_type: "",
+    id_number: "",
+    id_location_expedition: "",
   });
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
@@ -112,12 +124,17 @@ function Users() {
       email: "",
       cellphone: "",
       rol: "-1",
+      email_validated: "",
+      birthday: "",
+      id_type: "",
+      id_number: "",
+      id_location_expedition: "",
     });
   };
 
   const validate = (values = null) => {
     if (values) {
-      return values.reduce((a, c) => a && !(user[c] === "" || user[c] === "-1"), true);
+      return values.reduce((a, c) => a && !(user[c] === "" || user[c] === "-1" || user[c] === null), true);
     }
     return user.fullname && user.email && user.cellphone && user.rol !== "-1";
   };
@@ -138,7 +155,7 @@ function Users() {
     event.preventDefault();
 
     if (!validate()) {
-      feedback.set("error", "Todos los campos son obligatorios.");
+      setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
     }
 
@@ -147,12 +164,12 @@ function Users() {
     const { status, data } = await $User.add(user);
 
     if (status) {
-      feedback.set("success", "Usuario creado con exito.");
+      setFeedback({ open: true, message: "Usuario creado con exito.", status: "success" });
       clear();
       setModal(null);
       setUsers((prev) => [...prev, data]);
     } else {
-      feedback.set("error", "Error al crear el usuario.");
+      setFeedback({ open: true, message: "Error al crear el usuario.", status: "error" });
     }
 
     setLoading(false);
@@ -161,46 +178,59 @@ function Users() {
   const handleUpdateUser = async (event) => {
     event.preventDefault();
 
-    if (!validate()) {
-      feedback.set("error", "Todos los campos son obligatorios.");
+    if (
+      !validate(["fullname", "email", "email_validated", "birthday", "id_type", "id_number", "id_location_expedition"])
+    ) {
+      setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
     }
 
     setLoading(true);
 
-    const { status } = await $User.update(user);
+    const { status } = await $User.update({
+      id: user.id,
+      fullname: user.fullname,
+      email: user.email,
+      email_validated: user.email_validated,
+      birthday: user.birthday,
+      id_type: user.id_type,
+      id_number: user.id_number,
+      id_location_expedition: user.id_location_expedition,
+    });
 
     if (status) {
-      feedback.set("success", "Usuario actualizado con exito.");
       clear();
       setModal(null);
       setUsers((prev) => prev.map((u) => (user.id === u.id ? user : u)));
+      setFeedback({ open: true, message: "Usuario actualizado con exito.", status: "success" });
     } else {
-      feedback.set("error", "Error al actualizar el usuario.");
+      setFeedback({ open: true, message: "Error al actualizar el usuario.", status: "error" });
     }
 
     setLoading(false);
   };
 
+  console.log(user);
+
   const handleUpdateUserRole = async (event) => {
     event.preventDefault();
 
     if (!validate(["rol"])) {
-      feedback.set("error", "Todos los campos son obligatorios.");
+      setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
     }
 
     setLoading(true);
 
-    const { status } = await $User.updateRole({ id: user.id, role: user.rol });
+    const { status } = await $User.updateRole({ id: user.id, role: String(user.rol) });
 
     if (status) {
-      feedback.set("success", "Rol actualizado con exito.");
+      setFeedback({ open: true, message: "Rol actualizado con exito.", status: "success" });
       clear();
       setModal(null);
       setUsers((prev) => prev.map((u) => (user.id === u.id ? user : u)));
     } else {
-      feedback.set("error", "Error al actualizar el usuario.");
+      setFeedback({ open: true, message: "Error al actualizar el usuario.", status: "error" });
     }
 
     setLoading(false);
@@ -216,12 +246,12 @@ function Users() {
     const { status } = await $User.delete({ id: user.id });
 
     if (status) {
-      feedback.set("success", "Usuario eliminado con exito.");
+      setFeedback({ open: true, message: "Usuario eliminado con exito.", status: "success" });
       clear();
       setModal(null);
       setUsers((prev) => prev.filter((u) => u.id !== user.id));
     } else {
-      feedback.set("error", "Error al eliminar el usuario.");
+      setFeedback({ open: true, message: "Error al eliminar el usuario.", status: "error" });
     }
 
     setLoading(false);
@@ -279,47 +309,86 @@ function Users() {
             onSubmit={modal === "user-create" ? handleCreateUser : handleUpdateUser}
           >
             <Stack spacing={2}>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                <TextField
-                  fullWidth
-                  label="Nombre"
-                  name="fullname"
-                  value={user.fullname}
+              <TextField fullWidth label="Nombre" name="fullname" value={user.fullname} onChange={handleInputChange} />
+              <TextField fullWidth label="Correo" name="email" value={user.email} onChange={handleInputChange} />
+              <FormControl fullWidth>
+                <FormLabel id="user_email_validated">Correo validado</FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby="user_email_validated"
+                  name="email_validated"
+                  value={user.email_validated}
                   onChange={handleInputChange}
+                >
+                  <FormControlLabel value={0} control={<Radio />} label="No" />
+                  <FormControlLabel value={1} control={<Radio />} label="Si" />
+                </RadioGroup>
+              </FormControl>
+              <PhoneField
+                enableSearch={true}
+                value={user.cellphone}
+                country="co"
+                specialLabel="Teléfono de Contacto"
+                autoFormat={true}
+                inputStyle={{
+                  width: "100%",
+                }}
+                inputProps={{
+                  name: "cellphone",
+                  required: true,
+                }}
+                isValid={(value, country) => {
+                  if (value.match(/12345/)) {
+                    return "Invalid value:" + value + ", " + country.name;
+                  } else {
+                    return true;
+                  }
+                }}
+                onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
+              />
+              <FormControl fullWidth>
+                <DatePicker
+                  label="Fecha de nacimiento"
+                  name="birthday"
+                  value={dayjs(user.birthday)}
+                  onChange={(value) => handleInputChange({ target: { name: "birthday", value: value.toDate() } })}
                 />
-                <TextField fullWidth label="Correo" name="email" value={user.email} onChange={handleInputChange} />
-              </Stack>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                <PhoneField
-                  enableSearch={true}
-                  value={user.cellphone}
-                  country="co"
-                  specialLabel="Teléfono de Contacto"
-                  autoFormat={true}
-                  inputStyle={{
-                    width: "100%",
-                  }}
-                  inputProps={{
-                    name: "cellphone",
-                    required: true,
-                  }}
-                  isValid={(value, country) => {
-                    if (value.match(/12345/)) {
-                      return "Invalid value:" + value + ", " + country.name;
-                    } else {
-                      return true;
-                    }
-                  }}
-                  onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
-                />
-                <TextField fullWidth select label="Rol" name="rol" value={user.rol} onChange={handleInputChange}>
-                  <MenuItem value="-1" disabled>
-                    Seleccionar opción
-                  </MenuItem>
-                  <MenuItem value={1}>Admin</MenuItem>
-                  <MenuItem value={0}>Miembro</MenuItem>
-                </TextField>
-              </Stack>
+              </FormControl>
+              <TextField
+                select
+                required
+                fullWidth
+                label="Tipo de documento"
+                name="id_type"
+                value={user.id_type}
+                onChange={handleInputChange}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
+                </MenuItem>
+                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
+                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                <MenuItem value="dni">DNI</MenuItem>
+              </TextField>
+              <TextField
+                required
+                fullWidth
+                label="Número de documento"
+                name="id_number"
+                value={user.id_number}
+                onChange={handleInputChange}
+              />
+              <TextField
+                required
+                fullWidth
+                label="Lugar de expedición del documento"
+                name="id_location_expedition"
+                value={user.id_location_expedition}
+                onChange={handleInputChange}
+              />
             </Stack>
           </Box>
         </DialogContent>
@@ -358,8 +427,8 @@ function Users() {
                   <MenuItem value="-1" disabled>
                     Seleccionar opción
                   </MenuItem>
-                  <MenuItem value={1}>Admin</MenuItem>
-                  <MenuItem value={0}>Miembro</MenuItem>
+                  <MenuItem value={"1"}>Admin</MenuItem>
+                  <MenuItem value={"0"}>Miembro</MenuItem>
                 </TextField>
               </Stack>
             </Stack>
