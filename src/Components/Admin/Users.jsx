@@ -48,7 +48,7 @@ function Users() {
     rol: "-1",
     email_validated: "",
     birthday: "",
-    id_type: "",
+    id_type: "-1",
     id_number: "",
     id_location_expedition: "",
   });
@@ -179,7 +179,16 @@ function Users() {
     event.preventDefault();
 
     if (
-      !validate(["fullname", "email", "email_validated", "birthday", "id_type", "id_number", "id_location_expedition"])
+      !validate([
+        "fullname",
+        "email",
+        "cellphone",
+        "email_validated",
+        "birthday",
+        "id_type",
+        "id_number",
+        "id_location_expedition",
+      ])
     ) {
       setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
@@ -190,6 +199,7 @@ function Users() {
     const { status } = await $User.update({
       id: user.id,
       fullname: user.fullname,
+      cellphone: user.cellphone,
       email: user.email,
       email_validated: user.email_validated,
       birthday: user.birthday,

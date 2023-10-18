@@ -121,7 +121,10 @@ function Products({ service: $Shop, state, feedback }) {
     const { status, data } = await $Shop.product.add(product);
 
     if (status) {
-      setProducts((prev) => [...prev, { ...product, id: data.data }]);
+      setProducts((prev) => [
+        ...prev,
+        { ...product, id: data.data, url_image: URL.createObjectURL(product.url_image) },
+      ]);
       setFeedback({ open: true, message: "Producto creado exitosamente.", status: "success" });
       onClearFields();
     } else {
@@ -365,7 +368,10 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     const { status, data } = await $Shop.discount.add(discount);
 
     if (status) {
-      setDiscounts((prev) => [...prev, { ...discount, id: data.data }]);
+      setDiscounts((prev) => [
+        ...prev,
+        { ...discount, id: data.data, url_image: URL.createObjectURL(discount.url_image) },
+      ]);
       setFeedback({ open: true, message: "Descuento creado exitosamente.", status: "success" });
       onClearFields();
     } else {

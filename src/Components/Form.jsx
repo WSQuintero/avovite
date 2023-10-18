@@ -46,6 +46,7 @@ const InitialState = {
   he_has_children: "No",
   occupation: "",
   profession: "",
+  economy_activity: "",
   monthly_income: "",
   user_id_bank: "-",
   user_bank_account_type: "-",
@@ -88,6 +89,7 @@ const InitialStateErrors = {
   he_has_children: false,
   occupation: false,
   profession: false,
+  economy_activity: false,
   monthly_income: false,
   user_id_bank: false,
   user_bank_account_type: false,
@@ -255,7 +257,10 @@ function Form({ title, isMortgage = false, onSubmit }) {
       return;
     }
 
-    const { status } = await $Contract.add({ body: formData, mortgage: isMortgage });
+    const { status } = await $Contract.add({
+      body: { ...formData, ...(isMortgage ? { mortgage_contract: 1 } : {}) },
+      mortgage: isMortgage,
+    });
 
     if (status) {
       setFormData(InitialState);
@@ -616,6 +621,20 @@ function Form({ title, isMortgage = false, onSubmit }) {
               name="profession"
               value={formData.profession}
               error={errors.profession}
+              onChange={handleInputChange}
+            />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.economy_activity}>Actividad económica</Label>
+            <TextField
+              required
+              fullWidth
+              name="economy_activity"
+              value={formData.economy_activity}
+              error={errors.economy_activity}
               onChange={handleInputChange}
             />
           </Column>
