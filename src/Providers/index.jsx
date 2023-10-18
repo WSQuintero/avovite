@@ -6,10 +6,11 @@ import { SessionProvider } from "../Providers/SessionProvider";
 import { CartProvider } from "../Providers/CartProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Theme from "../Theme";
+import 'dayjs/locale/es';
 
 function MasterProvider({ children }) {
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <ThemeProvider theme={Theme}>
         <CssBaseline />
         <SessionProvider>

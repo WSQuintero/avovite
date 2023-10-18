@@ -21,6 +21,7 @@ import {
   FileDownload as DownloadIcon,
   DeleteOutlined as DeleteIcon,
   EditOutlined as EditIcon,
+  AdminPanelSettingsOutlined as SettingsIcon,
 } from "@mui/icons-material";
 import useUser from "../../Hooks/useUser";
 import useSession from "../../Hooks/useSession";
@@ -66,6 +67,16 @@ function Users() {
         header: "Acciones",
         Cell: ({ row: { original } }) => (
           <Grid display="flex">
+            <Tooltip title="Editar rol" arrow>
+              <IconButton
+                onClick={() => {
+                  setUser(original);
+                  setModal("user-update-role");
+                }}
+              >
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Editar" arrow>
               <IconButton
                 onClick={() => {
@@ -104,7 +115,10 @@ function Users() {
     });
   };
 
-  const validate = () => {
+  const validate = (values = null) => {
+    if (values) {
+      return values.reduce((a, c) => a && !(user[c] === "" || user[c] === "-1"), true);
+    }
     return user.fullname && user.email && user.cellphone && user.rol !== "-1";
   };
 
@@ -158,6 +172,30 @@ function Users() {
 
     if (status) {
       feedback.set("success", "Usuario actualizado con exito.");
+      clear();
+      setModal(null);
+      setUsers((prev) => prev.map((u) => (user.id === u.id ? user : u)));
+    } else {
+      feedback.set("error", "Error al actualizar el usuario.");
+    }
+
+    setLoading(false);
+  };
+
+  const handleUpdateUserRole = async (event) => {
+    event.preventDefault();
+
+    if (!validate(["rol"])) {
+      feedback.set("error", "Todos los campos son obligatorios.");
+      return;
+    }
+
+    setLoading(true);
+
+    const { status } = await $User.updateRole({ id: user.id, role: user.rol });
+
+    if (status) {
+      feedback.set("success", "Rol actualizado con exito.");
       clear();
       setModal(null);
       setUsers((prev) => prev.map((u) => (user.id === u.id ? user : u)));
@@ -297,6 +335,48 @@ function Users() {
           </Button>
           <LoadingButton variant="contained" type="submit" form="form-create-user" loading={loading}>
             {modal === "user-create" ? "Crear" : "Editar"}
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={modal === "user-update-role"}
+        PaperProps={{ elevation: 1 }}
+        onClose={() => {
+          setModal(null);
+          clear();
+        }}
+      >
+        <DialogTitle>Editar rol del usuario</DialogTitle>
+        <DialogContent>
+          <Box id="form-update-role-user" component="form" paddingY={2} onSubmit={handleUpdateUserRole}>
+            <Stack spacing={2}>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+                <TextField fullWidth select label="Rol" name="rol" value={user.rol} onChange={handleInputChange}>
+                  <MenuItem value="-1" disabled>
+                    Seleccionar opción
+                  </MenuItem>
+                  <MenuItem value={1}>Admin</MenuItem>
+                  <MenuItem value={0}>Miembro</MenuItem>
+                </TextField>
+              </Stack>
+            </Stack>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setModal(null);
+              clear();
+            }}
+          >
+            Cancelar
+          </Button>
+          <LoadingButton variant="contained" type="submit" form="form-update-role-user" loading={loading}>
+            Editar
           </LoadingButton>
         </DialogActions>
       </Dialog>

@@ -4,6 +4,7 @@ export default createTheme({
   palette: {
     primary: {
       main: "#67AA36",
+      contrastText: '#FFFFFF',
     },
     secondary: {
       main: "#214820",
