@@ -1,5 +1,23 @@
 import React, { useState } from "react";
-import { Stack, TextField, MenuItem, Typography, Button } from "@mui/material";
+import { Collapse, Stack, TextField, MenuItem, Typography, Button } from "@mui/material";
+
+const Contracts = [
+  {
+    id: 0,
+    name: "Contrato 1",
+    weight: 100,
+  },
+  {
+    id: 1,
+    name: "Contrato 2",
+    weight: 20,
+  },
+  {
+    id: 2,
+    name: "Contrato 3",
+    weight: 50,
+  },
+];
 
 function RequestAvocados({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -41,6 +59,11 @@ function RequestAvocados({ onSubmit }) {
           <MenuItem disabled value="-">
             Selecciona el contrato
           </MenuItem>
+          {Contracts.map((contract) => (
+            <MenuItem key={contract.id} value={contract.id}>
+              {contract.name}
+            </MenuItem>
+          ))}
         </TextField>
       </Stack>
 
@@ -78,56 +101,61 @@ function RequestAvocados({ onSubmit }) {
         </TextField>
       </Stack>
 
-      {!formData.receiveAtDoor && (
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-          <TextField
-            required
-            fullWidth
-            select
-            label="Pais"
-            name="country"
-            value={formData.country}
-            onChange={handleInputChange}
-          >
-            <MenuItem disabled value="-">
-              Selecciona el pais
-            </MenuItem>
-          </TextField>
+      <Collapse unmountOnExit in={!formData.receiveAtDoor}>
+        <Stack spacing={2}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <TextField
+              required
+              fullWidth
+              select
+              label="Pais"
+              name="country"
+              value={formData.country}
+              onChange={handleInputChange}
+            >
+              <MenuItem disabled value="-">
+                Selecciona el pais
+              </MenuItem>
+            </TextField>
+          </Stack>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <TextField
+              required
+              fullWidth
+              select
+              label="Ciudad"
+              name="city"
+              value={formData.city}
+              onChange={handleInputChange}
+            >
+              <MenuItem disabled value="-">
+                Selecciona la ciudad
+              </MenuItem>
+            </TextField>
+            <TextField
+              required
+              fullWidth
+              label="Dirección"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+            />
+          </Stack>
         </Stack>
-      )}
+      </Collapse>
 
-      {!formData.receiveAtDoor && (
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-          <TextField
-            required
-            fullWidth
-            select
-            label="Ciudad"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-          >
-            <MenuItem disabled value="-">
-              Selecciona la ciudad
-            </MenuItem>
-          </TextField>
-          <TextField
-            required
-            fullWidth
-            label="Dirección"
-            name="address"
-            value={formData.address}
-            onChange={handleInputChange}
-          />
+      <Collapse unmountOnExit in={formData.contractId !== "-"}>
+        <Stack direction="row" justifyContent="space-between" padding={2} borderRadius={0.5} bgcolor="primary.main">
+          <Typography color="white">Total de kilogramos</Typography>
+          <Typography color="white" fontWeight={600}>
+            {Contracts.find((contract) => contract.id === formData.contractId)?.weight}kg
+          </Typography>
         </Stack>
-      )}
+      </Collapse>
 
-      <Stack direction="row" justifyContent="space-between" padding={2} borderRadius={0.5} bgcolor="primary.main">
-        <Typography color='white'>Total de kilogramos</Typography>
-        <Typography color='white' fontWeight={600}>50kg</Typography>
-      </Stack>
-
-      <Button variant="outlined" type="submit">Solicitar</Button>
+      <Button variant="outlined" type="submit">
+        Solicitar
+      </Button>
     </Stack>
   );
 }
