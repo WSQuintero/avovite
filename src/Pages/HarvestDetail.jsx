@@ -5,9 +5,9 @@ import Table from "../Components/Table";
 import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import { formatCurrency } from "../utilities";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
-const data = [
+const Harvests = [
   {
     id: "7159",
     date: new Date(),
@@ -34,17 +34,14 @@ const data = [
   },
 ];
 
-function Harvests() {
+function HarvestDetail() {
+  const { contractId } = useParams();
+
   const columns = useMemo(
     () => [
       {
         accessorKey: "contract_id",
         header: "Numero de contrato",
-        Cell: ({ renderedCellValue }) => (
-          <Link component={RouterLink} to={`/harvests/${renderedCellValue}`}>
-            {renderedCellValue}
-          </Link>
-        ),
       },
       {
         accessorKey: "contract_vites",
@@ -70,22 +67,8 @@ function Harvests() {
         header: "",
         Cell: ({ renderedCellValue }) => (
           <Stack direction="row" spacing={1}>
-            <Button
-              component={RouterLink}
-              to="https://sccrtc.org/wp-content/uploads/2010/09/SampleContract-Shuttle.pdf"
-              target="_blank"
-              size="small"
-              variant="contained"
-            >
+            <Button size="small" variant="contained">
               Descargar factura
-            </Button>
-            <Button
-              component={RouterLink}
-              to={`/harvests/${renderedCellValue}/certificates`}
-              size="small"
-              variant="contained"
-            >
-              Certificados
             </Button>
           </Stack>
         ),
@@ -101,13 +84,13 @@ function Harvests() {
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
           </Box>
           <Typography fontWeight={600} color="primary.main">
-            Cosechas
+            Historial de cosechas
           </Typography>
         </Stack>
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={[Harvests.find((h) => h.contract_id === contractId)]} />
       </Container>
     </PageWrapper>
   );
 }
 
-export default Harvests;
+export default HarvestDetail;

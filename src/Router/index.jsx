@@ -23,6 +23,8 @@ import ContractPaymentValidation from "../Pages/ContractPaymentValidation";
 import Vites from "../Pages/Vites";
 import Transactions from "../Pages/Transactions";
 import Harvests from "../Pages/Harvests";
+import HarvestDetail from "../Pages/HarvestDetail";
+import HarvestCertificates from "../Pages/HarvestCertificates";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -118,6 +120,16 @@ function Router() {
     {
       path: "/harvests",
       element: <PrivateRoute component={Harvests} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+    },
+    {
+      path: "/harvests/:contractId",
+      element: <PrivateRoute component={HarvestDetail} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+    },
+    {
+      path: "/harvests/:contractId/certificates",
+      element: (
+        <PrivateRoute component={HarvestCertificates} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />
+      ),
     },
     {
       path: "/profile",

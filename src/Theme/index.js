@@ -111,6 +111,11 @@ const theme = createTheme({
         },
       },
     },
+    MuiStack: {
+      defaultProps: {
+        useFlexGap: true,
+      },
+    },
     MuiInputBase: {
       defaultProps: {
         sx: {

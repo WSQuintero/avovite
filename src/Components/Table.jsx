@@ -11,7 +11,6 @@ function Table({ columns, data = [], isLoading = false, renderDetails, renderBot
       enableColumnDragging={false}
       enableColumnFilters={false}
       enableColumnActions={false}
-      // enableRowActions
       muiTablePaperProps={{ elevation: 0 }}
       initialState={{ density: "compact" }}
       muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}

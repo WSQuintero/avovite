@@ -69,17 +69,10 @@ function Dashboard() {
   const $Post = usePost();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentMode, setCurrentMode] = useState(2);
   const [modal, setModal] = useState("");
 
   const handleUpdateSellingMode = (mode, formData) => {
     setModal("");
-    setCurrentMode(
-      {
-        "request-avocados": 0,
-        "sell-avocados": 1,
-      }[mode]
-    );
     enqueueSnackbar("Se ha actualizado para el contrato seleccionado", {
       variant: "success",
     });
@@ -310,20 +303,6 @@ function Dashboard() {
                       startIcon={<BrokenIcon color={Theme.palette.primary.main} />}
                       onClick={() => setModal("request-avocados")}
                     >
-                      <Grow in={currentMode === 0}>
-                        <Stack
-                          position="absolute"
-                          right={8}
-                          width={32}
-                          justifyContent="center"
-                          alignItems="center"
-                          height={32}
-                          borderRadius={4}
-                          bgcolor="secondary.main"
-                        >
-                          <Check />
-                        </Stack>
-                      </Grow>
                       <Typography textAlign="left" lineHeight={1} py={1} color="primary.main">
                         Solicitar mis frutos
                       </Typography>
@@ -336,20 +315,6 @@ function Dashboard() {
                       startIcon={<TargetIcon color={Theme.palette.primary.main} />}
                       onClick={() => setModal("sell-avocados")}
                     >
-                      <Grow in={currentMode === 1}>
-                        <Stack
-                          position="absolute"
-                          right={8}
-                          width={32}
-                          justifyContent="center"
-                          alignItems="center"
-                          height={32}
-                          borderRadius={4}
-                          bgcolor="secondary.main"
-                        >
-                          <Check />
-                        </Stack>
-                      </Grow>
                       <Typography textAlign="left" lineHeight={1} py={1} color="primary.main">
                         Autorizo vender mis frutos por Avovite o un tercero
                       </Typography>
