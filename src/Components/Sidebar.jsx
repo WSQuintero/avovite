@@ -103,6 +103,12 @@ function Sidebar({ collapseOn = "" }) {
         show: !user?.isAdmin(),
       },
       {
+        icon: <InvestIcon />,
+        name: "Cosechas",
+        route: "/harvests",
+        show: !user?.isAdmin(),
+      },
+      {
         icon: <RecieptIcon />,
         name: "Transacciones",
         route: "/transactions",

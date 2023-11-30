@@ -1,51 +1,68 @@
 import React, { useMemo } from "react";
-import { Typography, Container, Stack, Box, Button } from "@mui/material";
+import { Typography, Container, Stack, Box, Button, Link } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import { formatCurrency } from "../utilities";
+import { Link as RouterLink } from "react-router-dom";
 
 const data = [
   {
-    id: "2924",
-    type: "Pago",
-    created_at: new Date(),
+    id: "7159",
+    date: new Date(),
+    weight: 280,
     value: 2200000,
+    contract_id: "4010",
+    contract_vites: 50,
   },
   {
-    id: "4728",
-    type: "Ganancia",
-    created_at: new Date(),
+    id: "3122",
+    date: new Date(),
+    weight: 300,
     value: 2200000,
+    contract_id: "7616",
+    contract_vites: 20,
   },
   {
-    id: "5497",
-    type: "Retiro",
-    created_at: new Date(),
+    id: "3880",
+    date: new Date(),
+    weight: 750,
     value: 2200000,
+    contract_id: "4578",
+    contract_vites: 1,
   },
 ];
 
-function Transactions() {
+function Harvests() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "id",
-        header: "ID",
+        accessorKey: "contract_id",
+        header: "Numero de contrato",
+        Cell: ({ renderedCellValue }) => (
+          <Link component={RouterLink} to={`/harvests/${renderedCellValue}`}>
+            {renderedCellValue}
+          </Link>
+        ),
       },
       {
-        accessorKey: "type",
-        header: "Transacción",
+        accessorKey: "contract_vites",
+        header: "Numero de VITE",
       },
       {
-        accessorKey: "created_at",
-        header: "Fecha de Transacción",
+        accessorKey: "date",
+        header: "Fecha de Cosecha",
         Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
       },
       {
+        accessorKey: "weight",
+        header: "Kg Cosechados",
+        Cell: ({ renderedCellValue }) => <>{renderedCellValue} Kg</>,
+      },
+      {
         accessorKey: "value",
-        header: "Valor de Transacción",
+        header: "Valor de Cosecha",
         Cell: ({ renderedCellValue }) => <>${formatCurrency(renderedCellValue)} COP</>,
       },
       {
@@ -54,7 +71,10 @@ function Transactions() {
         Cell: ({ renderedCellValue }) => (
           <Stack direction="row" spacing={1}>
             <Button size="small" variant="contained">
-              Ver detalles
+              Descargar factura
+            </Button>
+            <Button size="small" variant="contained">
+              Certificados
             </Button>
           </Stack>
         ),
@@ -70,7 +90,7 @@ function Transactions() {
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
           </Box>
           <Typography fontWeight={600} color="primary.main">
-            Transacciones
+            Cosechas
           </Typography>
         </Stack>
         <Table columns={columns} data={data} />
@@ -79,4 +99,4 @@ function Transactions() {
   );
 }
 
-export default Transactions;
+export default Harvests;

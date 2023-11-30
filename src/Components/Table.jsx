@@ -7,8 +7,10 @@ function Table({ columns, data = [], isLoading = false, renderDetails, renderBot
     <MaterialReactTable
       columns={columns}
       data={data}
-      enableColumnFilterModes
       enableColumnOrdering
+      enableColumnDragging={false}
+      enableColumnFilters={false}
+      enableColumnActions={false}
       // enableRowActions
       muiTablePaperProps={{ elevation: 0 }}
       initialState={{ density: "compact" }}
