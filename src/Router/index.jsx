@@ -20,6 +20,7 @@ import Profile from "../Pages/Profile";
 import Contact from "../Pages/Contact";
 import ContractValidation from "../Pages/ContractValidation";
 import ContractPaymentValidation from "../Pages/ContractPaymentValidation";
+import Vites from "../Pages/Vites";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -98,7 +99,15 @@ function Router() {
     },
     {
       path: "/",
+      element: <Navigate to="/dashboard" />,
+    },
+    {
+      path: "/dashboard",
       element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+    },
+    {
+      path: "/vites",
+      element: <PrivateRoute component={Vites} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/profile",

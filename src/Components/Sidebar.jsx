@@ -12,7 +12,7 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon } from "./Icons";
+import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -85,9 +85,15 @@ function Sidebar({ collapseOn = "" }) {
   const routes = useMemo(
     () => [
       {
+        icon: <LoanIcon />,
+        name: "Dashboard",
+        route: "/dashboard",
+        show: !user?.isAdmin(),
+      },
+      {
         icon: <InvestIcon />,
         name: "Vites",
-        route: "/",
+        route: "/vites",
         show: !user?.isAdmin(),
       },
       {
