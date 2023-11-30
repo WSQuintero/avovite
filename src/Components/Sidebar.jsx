@@ -12,7 +12,7 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon } from "./Icons";
+import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon, RecieptIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -85,6 +85,12 @@ function Sidebar({ collapseOn = "" }) {
   const routes = useMemo(
     () => [
       {
+        icon: <EcommerceIcon />,
+        name: "Comprar Vites",
+        route: "/shop",
+        show: !user?.isAdmin(),
+      },
+      {
         icon: <LoanIcon />,
         name: "Dashboard",
         route: "/dashboard",
@@ -97,15 +103,15 @@ function Sidebar({ collapseOn = "" }) {
         show: !user?.isAdmin(),
       },
       {
-        icon: <GraphIcon />,
-        name: "Ganancias",
-        route: "/earnings",
+        icon: <RecieptIcon />,
+        name: "Transacciones",
+        route: "/transactions",
         show: !user?.isAdmin(),
       },
       {
-        icon: <EcommerceIcon />,
-        name: "Comprar Vites",
-        route: "/shop",
+        icon: <GraphIcon />,
+        name: "Ganancias",
+        route: "/earnings",
         show: !user?.isAdmin(),
       },
       {

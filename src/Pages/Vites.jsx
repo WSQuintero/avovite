@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
-import { Typography, Container } from "@mui/material";
+import { Typography, Container, Box, Stack } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
+import { AvoviteWhiteIcon } from "../Components/Icons";
 
 const data = [
   {
@@ -59,9 +60,14 @@ function Vites() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        <Typography fontWeight={600} color="primary.main">
-          VITES
-        </Typography>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
+            <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
+          </Box>
+          <Typography fontWeight={600} color="primary.main">
+            VITES
+          </Typography>
+        </Stack>
         <Table columns={columns} data={data} />
       </Container>
     </PageWrapper>
