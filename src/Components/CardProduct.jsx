@@ -35,8 +35,8 @@ function CardProduct({ product, sx, onBuy }) {
       >
         -{product.percent_discount}%
       </Box>
-      <Box display="flex" justifyContent="center" alignItems="center" gap={7} sx={{ aspectRatio: 2 }}>
-        <img src={product.url_image || IMAGE_PLACEHOLDER} alt="logo" style={{ width: "100%" }} />
+      <Box display="flex" justifyContent="center" alignItems="center" gap={7} width="100%">
+        <img src={product.url_image || IMAGE_PLACEHOLDER} alt="logo" style={{ width: "100%", aspectRatio: 1, objectFit: "contain"  }} />
       </Box>
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
         <Typography fontWeight={600} sx={{ color }}>
@@ -69,9 +69,9 @@ function CardProduct({ product, sx, onBuy }) {
         >
           Añadir al Carrito
         </Button>
-        <Link component={RouterLink} color={color} to={`/package/${product.id}`} fontSize={12}>
+        {/* <Link component={RouterLink} color={color} to={`/package/${product.id}`} fontSize={12}>
           Producción del paquete
-        </Link>
+        </Link> */}
       </Grid>
     </Box>
   );

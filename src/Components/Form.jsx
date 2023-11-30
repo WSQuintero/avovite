@@ -258,7 +258,11 @@ function Form({ title, isMortgage = false, onSubmit }) {
     }
 
     const { status } = await $Contract.add({
-      body: { ...formData, ...(isMortgage ? { mortgage_contract: 1 } : {}) },
+      body: {
+        ...formData,
+        birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
+        ...(isMortgage ? { mortgage_contract: 1 } : {}),
+      },
       mortgage: isMortgage,
     });
 

@@ -78,7 +78,7 @@ function Users() {
         id: "id",
         header: "Acciones",
         Cell: ({ row: { original } }) => (
-          <Grid display="flex">
+          <Grid display="flex" justifyContent="flex-end">
             <Tooltip title="Editar rol" arrow>
               <IconButton
                 onClick={() => {
@@ -202,7 +202,7 @@ function Users() {
       cellphone: user.cellphone,
       email: user.email,
       email_validated: user.email_validated,
-      birthday: user.birthday,
+      birthday: dayjs(user.birthday).format("YYYY-MM-DD"),
       id_type: user.id_type,
       id_number: user.id_number,
       id_location_expedition: user.id_location_expedition,

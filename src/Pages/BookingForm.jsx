@@ -18,7 +18,7 @@ const BookingForm = () => {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
-  const handleSubmit = async (status) => {
+  const handleSubmit = async ({ status }) => {
     if (status === "success") {
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });

@@ -298,7 +298,11 @@ function ContractValidation() {
               <ListItem
                 key={contract.id}
                 onClick={() => onSelectContract(contract)}
-                secondaryAction={<Button edge="end">Completar</Button>}
+                secondaryAction={
+                  <Button variant="contained" edge="end">
+                    Completar
+                  </Button>
+                }
                 disablePadding
               >
                 <ListItemButton role={undefined} onClick={() => {}}>
@@ -343,324 +347,326 @@ function ContractValidation() {
         }}
       >
         <DialogContent>
-          <Grid display="flex" flexDirection="column" gap={3}>
-            <Typography
-              fontSize={24}
-              textAlign="center"
-              fontWeight={600}
-              color="primary"
-              paddingY={1}
-              marginX={-3}
-              sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-            >
-              Titular
-            </Typography>
+          <Container>
+            <Grid display="flex" flexDirection="column" gap={3}>
+              <Typography
+                fontSize={24}
+                textAlign="center"
+                fontWeight={600}
+                color="primary"
+                paddingY={1}
+                marginX={-3}
+                sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+              >
+                Titular
+              </Typography>
 
-            <Row>
-              <Column>
-                <Label error={errors.fullname}>Nombre Completo</Label>
-                <TextField
-                  name="fullname"
-                  value={contract.fullname}
-                  required
-                  error={errors.fullname}
-                  sx={{ width: "100%" }}
-                  onChange={onInputChange}
-                />
-              </Column>
-              <Column>
-                <Label error={errors.email}>Correo Electrónico</Label>
-                <TextField
-                  name="email"
-                  value={contract.email}
-                  required
-                  sx={{ width: "100%" }}
-                  error={errors.email}
-                  onChange={onInputChange}
-                />
-              </Column>
-            </Row>
-
-            <Row>
-              <Column>
-                <Label error={errors.id_type}>Tipo de Documento</Label>
-                <FormControl variant="outlined" sx={{ width: "100%" }}>
-                  <Select
-                    name="id_type"
-                    value={contract.id_type}
+              <Row>
+                <Column>
+                  <Label error={errors.fullname}>Nombre Completo</Label>
+                  <TextField
+                    name="fullname"
+                    value={contract.fullname}
                     required
-                    error={errors.id_type}
+                    error={errors.fullname}
+                    sx={{ width: "100%" }}
                     onChange={onInputChange}
-                  >
-                    <MenuItem value="-" selected disabled>
-                      Seleccione una opción
-                    </MenuItem>
-                    <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                    <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                    <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                    <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                    <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                    <MenuItem value="dni">DNI</MenuItem>
-                  </Select>
-                </FormControl>
-              </Column>
-              <Column>
-                <Label error={errors.id_number}>Número de Documento</Label>
-                <TextField
-                  required
-                  name="id_number"
-                  value={contract.id_number}
-                  onChange={onInputChange}
-                  error={errors.id_number}
-                  sx={{ width: "100%" }}
-                />
-              </Column>
-            </Row>
+                  />
+                </Column>
+                <Column>
+                  <Label error={errors.email}>Correo Electrónico</Label>
+                  <TextField
+                    name="email"
+                    value={contract.email}
+                    required
+                    sx={{ width: "100%" }}
+                    error={errors.email}
+                    onChange={onInputChange}
+                  />
+                </Column>
+              </Row>
 
-            <Row>
-              <Column>
-                <Label error={errors.id_location_expedition}>Lugar de Exp del Documento</Label>
-                <TextField
-                  name="id_location_expedition"
-                  value={contract.id_location_expedition}
-                  error={errors.id_location_expedition}
-                  required
-                  fullWidth
-                  onChange={onInputChange}
-                />
-              </Column>
-              <Column>
-                <Label error={errors.cellphone}>Teléfono de Contacto</Label>
-                <PhoneField
-                  enableSearch={true}
-                  value={contract.cellphone}
-                  country="co"
-                  specialLabel=""
-                  autoFormat={true}
-                  inputStyle={{
-                    width: "100%",
-                  }}
-                  inputProps={{
-                    name: "cellphone",
-                    required: true,
-                  }}
-                  isValid={(value, country) => {
-                    if (value.match(/12345/) || errors.cellphone) {
-                      return "Invalid value:" + value + ", " + country.name;
-                    } else {
-                      return true;
-                    }
-                  }}
-                  onChange={(value) => onInputChange({ target: { name: "cellphone", value } })}
-                />
-              </Column>
-            </Row>
-
-            <Row>
-              <Column>
-                <Label error={errors.country}>País</Label>
-                <FormControl variant="outlined">
-                  <Select name="country" value={contract.country} onChange={onInputChange} error={errors.country}>
-                    <MenuItem value="-" selected disabled>
-                      Seleccione una opción
-                    </MenuItem>
-                    {countries.map((country) => (
-                      <MenuItem key={country.codigoPais} value={country.codigoPais}>
-                        {country.nombrePais}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Column>
-              {contract.country === "-" ||
-                (contract.country === "169" && (
-                  <Column>
-                    <Label error={errors.city}>Departamento</Label>
-                    <FormControl variant="outlined">
-                      <Select name="state" value={contract.state} onChange={onInputChange} error={errors.state}>
-                        <MenuItem value="-" selected disabled>
-                          Seleccione una opción
-                        </MenuItem>
-                        {states.map((e) => (
-                          <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
-                            {e.nombreDepto}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Column>
-                ))}
-            </Row>
-
-            <Row>
-              <Column>
-                <Label error={errors.city}>Ciudad</Label>
-                {contract.country === "-" || contract.country === "169" ? (
-                  <FormControl variant="outlined">
-                    <Select name="city" value={contract.city} onChange={onInputChange} error={errors.city}>
-                      <MenuItem value="-" selected disabled>
-                        Seleccione una opción
-                      </MenuItem>
-                      {cities.map((e) => (
-                        <MenuItem key={e.codMupio} value={e.codMupio}>
-                          {e.nombreMupio}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
-                  <TextField name="city" value={contract.city} onChange={onInputChange} error={errors.city} />
-                )}
-              </Column>
-              <Column>
-                <Label error={errors.user_id_bank}>Banco</Label>
-                {contract.user_id_bank !== "-1" ? (
-                  <FormControl variant="outlined">
+              <Row>
+                <Column>
+                  <Label error={errors.id_type}>Tipo de Documento</Label>
+                  <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
-                      name="user_id_bank"
-                      value={contract.user_id_bank}
+                      name="id_type"
+                      value={contract.id_type}
+                      required
+                      error={errors.id_type}
                       onChange={onInputChange}
-                      error={errors.user_id_bank}
                     >
                       <MenuItem value="-" selected disabled>
                         Seleccione una opción
                       </MenuItem>
-                      {constants?.banks.map((bank) => (
-                        <MenuItem key={bank.id} value={bank.id}>
-                          {bank.name}
-                        </MenuItem>
-                      ))}
-                      <MenuItem value="-1">Otro</MenuItem>
+                      <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                      <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
+                      <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                      <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                      <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                      <MenuItem value="dni">DNI</MenuItem>
                     </Select>
                   </FormControl>
-                ) : (
+                </Column>
+                <Column>
+                  <Label error={errors.id_number}>Número de Documento</Label>
                   <TextField
-                    name="bank_name"
-                    value={contract.bank_name}
+                    required
+                    name="id_number"
+                    value={contract.id_number}
                     onChange={onInputChange}
-                    error={errors.user_id_bank}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton onClick={() => onInputChange({ target: { name: "user_id_bank", value: "-" } })}>
-                            <ClearIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
+                    error={errors.id_number}
+                    sx={{ width: "100%" }}
                   />
-                )}
-              </Column>
-            </Row>
+                </Column>
+              </Row>
 
-            <Row>
-              <Column>
-                <Label error={errors.user_bank_account_type}>Tipo de Cuenta</Label>
-                <FormControl variant="outlined" sx={{ width: "100%" }}>
-                  <Select
-                    name="user_bank_account_type"
-                    id="tipoDeCuentaBeneficiaria"
-                    value={contract.user_bank_account_type}
+              <Row>
+                <Column>
+                  <Label error={errors.id_location_expedition}>Lugar de Exp del Documento</Label>
+                  <TextField
+                    name="id_location_expedition"
+                    value={contract.id_location_expedition}
+                    error={errors.id_location_expedition}
+                    required
+                    fullWidth
                     onChange={onInputChange}
-                    error={errors.user_bank_account_type}
-                  >
-                    <MenuItem value="-" selected disabled>
-                      Seleccione una opción
-                    </MenuItem>
-                    {constants?.account_type.map((accountType) => (
-                      <MenuItem key={accountType.id} value={accountType.id}>
-                        {accountType.name}
+                  />
+                </Column>
+                <Column>
+                  <Label error={errors.cellphone}>Teléfono de Contacto</Label>
+                  <PhoneField
+                    enableSearch={true}
+                    value={contract.cellphone}
+                    country="co"
+                    specialLabel=""
+                    autoFormat={true}
+                    inputStyle={{
+                      width: "100%",
+                    }}
+                    inputProps={{
+                      name: "cellphone",
+                      required: true,
+                    }}
+                    isValid={(value, country) => {
+                      if (value.match(/12345/) || errors.cellphone) {
+                        return "Invalid value:" + value + ", " + country.name;
+                      } else {
+                        return true;
+                      }
+                    }}
+                    onChange={(value) => onInputChange({ target: { name: "cellphone", value } })}
+                  />
+                </Column>
+              </Row>
+
+              <Row>
+                <Column>
+                  <Label error={errors.country}>País</Label>
+                  <FormControl variant="outlined">
+                    <Select name="country" value={contract.country} onChange={onInputChange} error={errors.country}>
+                      <MenuItem value="-" selected disabled>
+                        Seleccione una opción
                       </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Column>
-              <Column>
-                <Label error={errors.user_bank_account_number}>Número de Cuenta</Label>
-                <TextField
-                  name="user_bank_account_number"
-                  value={contract.user_bank_account_number}
-                  onChange={onInputChange}
-                  sx={{ width: "100%" }}
-                  error={errors.user_bank_account_number}
-                />
-              </Column>
-            </Row>
+                      {countries.map((country) => (
+                        <MenuItem key={country.codigoPais} value={country.codigoPais}>
+                          {country.nombrePais}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Column>
+                {contract.country === "-" ||
+                  (contract.country === "169" && (
+                    <Column>
+                      <Label error={errors.city}>Departamento</Label>
+                      <FormControl variant="outlined">
+                        <Select name="state" value={contract.state} onChange={onInputChange} error={errors.state}>
+                          <MenuItem value="-" selected disabled>
+                            Seleccione una opción
+                          </MenuItem>
+                          {states.map((e) => (
+                            <MenuItem key={e.codigoDepto} value={e.codigoDepto}>
+                              {e.nombreDepto}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Column>
+                  ))}
+              </Row>
 
-            <Typography
-              fontSize={24}
-              textAlign="center"
-              fontWeight={600}
-              color="primary"
-              paddingY={1}
-              marginX={-3}
-              sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-            >
-              Beneficiario
-              <Typography variant="caption" display="block">
-                Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento
-                fortuito.
-              </Typography>
-            </Typography>
+              <Row>
+                <Column>
+                  <Label error={errors.city}>Ciudad</Label>
+                  {contract.country === "-" || contract.country === "169" ? (
+                    <FormControl variant="outlined">
+                      <Select name="city" value={contract.city} onChange={onInputChange} error={errors.city}>
+                        <MenuItem value="-" selected disabled>
+                          Seleccione una opción
+                        </MenuItem>
+                        {cities.map((e) => (
+                          <MenuItem key={e.codMupio} value={e.codMupio}>
+                            {e.nombreMupio}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <TextField name="city" value={contract.city} onChange={onInputChange} error={errors.city} />
+                  )}
+                </Column>
+                <Column>
+                  <Label error={errors.user_id_bank}>Banco</Label>
+                  {contract.user_id_bank !== "-1" ? (
+                    <FormControl variant="outlined">
+                      <Select
+                        name="user_id_bank"
+                        value={contract.user_id_bank}
+                        onChange={onInputChange}
+                        error={errors.user_id_bank}
+                      >
+                        <MenuItem value="-" selected disabled>
+                          Seleccione una opción
+                        </MenuItem>
+                        {constants?.banks.map((bank) => (
+                          <MenuItem key={bank.id} value={bank.id}>
+                            {bank.name}
+                          </MenuItem>
+                        ))}
+                        <MenuItem value="-1">Otro</MenuItem>
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <TextField
+                      name="bank_name"
+                      value={contract.bank_name}
+                      onChange={onInputChange}
+                      error={errors.user_id_bank}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => onInputChange({ target: { name: "user_id_bank", value: "-" } })}>
+                              <ClearIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                </Column>
+              </Row>
 
-            <Row>
-              <Column>
-                <Label error={errors.beneficiary_fullname}>Nombre Completo</Label>
-                <TextField
-                  name="beneficiary_fullname"
-                  value={contract.beneficiary_fullname}
-                  onChange={onInputChange}
-                  sx={{ width: "100%" }}
-                  error={errors.beneficiary_fullname}
-                />
-              </Column>
-              <Column>
-                <Label error={errors.beneficiary_id_number}>Número de Documento</Label>
-                <TextField
-                  name="beneficiary_id_number"
-                  value={contract.beneficiary_id_number}
-                  onChange={onInputChange}
-                  sx={{ width: "100%" }}
-                  error={errors.beneficiary_id_number}
-                />
-              </Column>
-            </Row>
-
-            <Row>
-              <Column>
-                <Label error={errors.beneficiary_id_type}>Tipo de Documento</Label>
-                <FormControl variant="outlined" sx={{ width: "100%" }}>
-                  <Select
-                    name="beneficiary_id_type"
-                    id="tipoDocumentoBeneficiario"
-                    value={contract.beneficiary_id_type}
+              <Row>
+                <Column>
+                  <Label error={errors.user_bank_account_type}>Tipo de Cuenta</Label>
+                  <FormControl variant="outlined" sx={{ width: "100%" }}>
+                    <Select
+                      name="user_bank_account_type"
+                      id="tipoDeCuentaBeneficiaria"
+                      value={contract.user_bank_account_type}
+                      onChange={onInputChange}
+                      error={errors.user_bank_account_type}
+                    >
+                      <MenuItem value="-" selected disabled>
+                        Seleccione una opción
+                      </MenuItem>
+                      {constants?.account_type.map((accountType) => (
+                        <MenuItem key={accountType.id} value={accountType.id}>
+                          {accountType.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Column>
+                <Column>
+                  <Label error={errors.user_bank_account_number}>Número de Cuenta</Label>
+                  <TextField
+                    name="user_bank_account_number"
+                    value={contract.user_bank_account_number}
                     onChange={onInputChange}
-                    error={errors.beneficiary_id_type}
-                  >
-                    <MenuItem value="-" selected disabled>
-                      Seleccione una opción
-                    </MenuItem>
-                    <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                    <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                    <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                    <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                    <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                    <MenuItem value="dni">DNI</MenuItem>
-                  </Select>
-                </FormControl>
-              </Column>
-              <Column>
-                <Label error={errors.beneficiary_id_location_expedition}>Lugar de Expedición del Documento</Label>
-                <TextField
-                  name="beneficiary_id_location_expedition"
-                  value={contract.beneficiary_id_location_expedition}
-                  sx={{ width: "100%" }}
-                  error={errors.beneficiary_id_location_expedition}
-                  onChange={onInputChange}
-                />
-              </Column>
-            </Row>
-          </Grid>
+                    sx={{ width: "100%" }}
+                    error={errors.user_bank_account_number}
+                  />
+                </Column>
+              </Row>
+
+              <Typography
+                fontSize={24}
+                textAlign="center"
+                fontWeight={600}
+                color="primary"
+                paddingY={1}
+                marginX={-3}
+                sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+              >
+                Beneficiario
+                <Typography variant="caption" display="block">
+                  Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o
+                  evento fortuito.
+                </Typography>
+              </Typography>
+
+              <Row>
+                <Column>
+                  <Label error={errors.beneficiary_fullname}>Nombre Completo</Label>
+                  <TextField
+                    name="beneficiary_fullname"
+                    value={contract.beneficiary_fullname}
+                    onChange={onInputChange}
+                    sx={{ width: "100%" }}
+                    error={errors.beneficiary_fullname}
+                  />
+                </Column>
+                <Column>
+                  <Label error={errors.beneficiary_id_number}>Número de Documento</Label>
+                  <TextField
+                    name="beneficiary_id_number"
+                    value={contract.beneficiary_id_number}
+                    onChange={onInputChange}
+                    sx={{ width: "100%" }}
+                    error={errors.beneficiary_id_number}
+                  />
+                </Column>
+              </Row>
+
+              <Row>
+                <Column>
+                  <Label error={errors.beneficiary_id_type}>Tipo de Documento</Label>
+                  <FormControl variant="outlined" sx={{ width: "100%" }}>
+                    <Select
+                      name="beneficiary_id_type"
+                      id="tipoDocumentoBeneficiario"
+                      value={contract.beneficiary_id_type}
+                      onChange={onInputChange}
+                      error={errors.beneficiary_id_type}
+                    >
+                      <MenuItem value="-" selected disabled>
+                        Seleccione una opción
+                      </MenuItem>
+                      <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
+                      <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
+                      <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
+                      <MenuItem value="pasaporte">Pasaporte</MenuItem>
+                      <MenuItem value="registroCivil">Registro Civil</MenuItem>
+                      <MenuItem value="dni">DNI</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Column>
+                <Column>
+                  <Label error={errors.beneficiary_id_location_expedition}>Lugar de Expedición del Documento</Label>
+                  <TextField
+                    name="beneficiary_id_location_expedition"
+                    value={contract.beneficiary_id_location_expedition}
+                    sx={{ width: "100%" }}
+                    error={errors.beneficiary_id_location_expedition}
+                    onChange={onInputChange}
+                  />
+                </Column>
+              </Row>
+            </Grid>
+          </Container>
         </DialogContent>
         <DialogActions>
           <Button
@@ -669,7 +675,7 @@ function ContractValidation() {
               onClearFields();
             }}
           >
-            Cancel
+            Cancelar
           </Button>
           <LoadingButton variant="contained" onClick={onFormSubmit} disabled={isValidContract} loading={loadingSubmit}>
             Continuar

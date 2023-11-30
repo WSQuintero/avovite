@@ -18,7 +18,7 @@ const BookingFormMortgage = () => {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
-  const handleSubmit = async (status) => {
+  const handleSubmit = async ({ status }) => {
     if (status === "success") {
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -33,7 +33,7 @@ const BookingFormMortgage = () => {
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-      <Form isMortgage title="Aplicación con garantía hipotecaria" handleSubmit={handleSubmit} />
+      <Form isMortgage title="Aplicación con garantía hipotecaria" onSubmit={handleSubmit} />
 
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
