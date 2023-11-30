@@ -15,6 +15,7 @@ import {
   FormControl,
   MenuItem,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import PhoneField from "react-phone-input-2";
 import useSession from "../Hooks/useSession";
@@ -54,6 +55,7 @@ function Profile() {
   });
   const [userAvatar, setUserAvatar] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
+  const [loading, setLoading] = useState(false);
   const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
   const validation = useMemo(
     () =>
@@ -69,6 +71,22 @@ function Profile() {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAvatarChange = async (event) => {
+    if (event.target.files.length > 0) {
+      setLoading(true);
+      const { status } = await $Auth.updateAvatar({ avatar: event.target.files[0] });
+      setLoading(false);
+
+      if (status) {
+        setUserAvatar(event.target.files[0]);
+        setSession({ ...session.user, avatar: URL.createObjectURL(userAvatar) });
+        setAlert({ show: true, message: "Tu avatar ha sido actualizado con éxito.", status: "success" });
+      } else {
+        setAlert({ show: true, message: "Hubo un error al actualizar tu avatar.", status: "error" });
+      }
+    }
   };
 
   const handleFormSubmit = async (event) => {
@@ -93,15 +111,6 @@ function Profile() {
     });
 
     if (status) {
-      if (userAvatar) {
-        const { status } = await $Auth.updateAvatar({
-          avatar: userAvatar,
-        });
-
-        if (status) {
-          setSession({ ...session.user, avatar: URL.createObjectURL(userAvatar) });
-        }
-      }
       setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
       const { avatar, ...rest } = user;
       setSession({ ...session.user, ...rest });
@@ -172,13 +181,15 @@ function Profile() {
               accept="image/*"
               id="input-select-avatar"
               sx={{ display: "none" }}
-              onChange={({ target }) => setUserAvatar(target.files[0])}
+              disabled={loading}
+              onChange={handleAvatarChange}
             />
             <label htmlFor="input-select-avatar">
               <IconButton
                 component="span"
                 size="large"
                 sx={{ position: "relative", padding: 0, "&:hover .MuiBox-root": { opacity: 1 } }}
+                disabled={loading}
               >
                 <Box
                   position="absolute"
@@ -199,11 +210,17 @@ function Profile() {
                     Actualizar
                   </Typography>
                 </Box>
-                <Avatar
-                  src={userAvatar ? URL.createObjectURL(userAvatar) : user.avatar}
-                  alt={user.firstname}
-                  sx={{ width: 92, height: 92 }}
-                />
+                {loading ? (
+                  <Avatar sx={{ width: 92, height: 92 }}>
+                    <CircularProgress size={40} color="inherit" />
+                  </Avatar>
+                ) : (
+                  <Avatar
+                    src={userAvatar ? URL.createObjectURL(userAvatar) : user.avatar}
+                    alt={user.firstname}
+                    sx={{ width: 92, height: 92 }}
+                  />
+                )}
               </IconButton>
             </label>
             <Grid display="flex" flexDirection="column">

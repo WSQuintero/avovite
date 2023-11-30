@@ -205,6 +205,13 @@ function Header({ isInvalidSession = false }) {
           </>
         )}
 
+        {/* <MenuItem onClick={() => navigate("/contact-us")}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Contáctanos</ListItemText>
+        </MenuItem> */}
+
         <MenuItem onClick={() => logout()}>
           <ListItemIcon>
             <LogoutIcon color="error" fontSize="small" />

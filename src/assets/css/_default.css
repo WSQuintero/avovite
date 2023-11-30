@@ -15,6 +15,7 @@ body {
   padding: 15.5px 14px 15.5px 58px !important;
   color: #979797;
   border-color: #979797 !important;
+  background-color: transparent !important;
 }
 
 .react-tel-input input:focus {

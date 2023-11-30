@@ -42,7 +42,7 @@ function Shop() {
             ? [...Array(8).keys()].map((product) => (
                 <Skeleton
                   key={product}
-                  height={390}
+                  height={480}
                   sx={(t) => ({
                     width: "calc(25% - 12px)",
                     borderRadius: 2,

@@ -1,9 +1,10 @@
 import { createTheme } from "@mui/material";
 
-export default createTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: "#67AA36",
+      contrastText: "#FFFFFF",
     },
     secondary: {
       main: "#214820",
@@ -110,6 +111,11 @@ export default createTheme({
         },
       },
     },
+    MuiStack: {
+      defaultProps: {
+        useFlexGap: true,
+      },
+    },
     MuiInputBase: {
       defaultProps: {
         sx: {
@@ -185,5 +191,18 @@ export default createTheme({
     header: {
       main: 72,
     },
+  },
+});
+
+export default createTheme(theme, {
+  palette: {
+    customWhite: theme.palette.augmentColor({
+      color: {
+        main: "#FFFFFF",
+        light: "#FFFFFF",
+        dark: "#DDDDDD",
+      },
+      name: "white",
+    }),
   },
 });

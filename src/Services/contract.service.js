@@ -51,4 +51,8 @@ export default class ContractService {
   async delete({ id }) {
     return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/${id}`, this.config)).data);
   }
+
+  async export() {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/all/excel`, this.config)).data);
+  }
 }

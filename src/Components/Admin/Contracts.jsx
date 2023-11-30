@@ -282,38 +282,41 @@ const Contracts = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
-  const handleExportData = () => {
-    exportWorksheet(
-      contracts.map((c) => ({
-        "Fecha de Pago": c.first_payment_date,
-        "Valor de Pago inicial": c.first_payment,
-        "Cantidad de Vites Comprados": c.contract_vites,
-        "Nombre completo": c.fullname,
-        "Tipo de documento": c.id_type,
-        "Numero Documento": c.id_number,
-        "Lugar de Expedición del documento": c.id_location_expedition,
-        "Ciudad y país de Residencia": "-",
-        "Dirección de Residencia": c.address_residence,
-        "Correo Electrónico": c.email,
-        "Teléfono de contacto": c.cellphone,
-        "Estado Civil": c.civil_status,
-        "Actividad Económica Principal (diferente a la profesión)": c.economy_activity,
-        Banco: c.user_id_bank,
-        "Tipo de cuenta": c.user_bank_account_type,
-        "Número de cuenta": c.user_bank_account_number,
-        "Nombre completo Beneficiario:": c.beneficiary_fullname,
-        "Tipo de documento Beneficiario": c.beneficiary_id_type,
-        "Numero Documento Beneficiario": c.beneficiary_id_number,
-        "Lugar de Expedición del documento Beneficiario": c.beneficiary_id_location_expedition,
-        "Ciudad y país de Residencia Beneficiario": "-",
-        "Dirección de Residencia Beneficiario": c.address_residence_beneficiary,
-        "Estado Civil Beneficiario": c.civil_status_beneficiary,
-        "Actividad Económica Principal (diferente a la profesión) Beneficiario": c.economy_activity_beneficiary,
-        "Correo Electrónico Beneficiario": c.email_beneficiary,
-        "Teléfono de contacto Beneficiario": c.cellphone_beneficiary,
-      })),
-      "contracts.xlsx"
-    );
+  const handleExportData = async () => {
+    const { status, data } = await $Contract.export();
+
+    if (status) {
+      exportWorksheet(data.data, `${formatDate(new Date())} Datos_Form & Excel.xlsx`);
+    }
+
+    /* contracts.map((c) => ({
+      "Fecha de Pago": c.first_payment_date,
+      "Valor de Pago inicial": c.first_payment,
+      "Cantidad de Vites Comprados": c.contract_vites,
+      "Nombre completo": c.fullname,
+      "Tipo de documento": c.id_type,
+      "Numero Documento": c.id_number,
+      "Lugar de Expedición del documento": c.id_location_expedition,
+      "Ciudad y país de Residencia": "-",
+      "Dirección de Residencia": c.address_residence,
+      "Correo Electrónico": c.email,
+      "Teléfono de contacto": c.cellphone,
+      "Estado Civil": c.civil_status,
+      "Actividad Económica Principal (diferente a la profesión)": c.economy_activity,
+      Banco: c.user_id_bank,
+      "Tipo de cuenta": c.user_bank_account_type,
+      "Número de cuenta": c.user_bank_account_number,
+      "Nombre completo Beneficiario:": c.beneficiary_fullname,
+      "Tipo de documento Beneficiario": c.beneficiary_id_type,
+      "Numero Documento Beneficiario": c.beneficiary_id_number,
+      "Lugar de Expedición del documento Beneficiario": c.beneficiary_id_location_expedition,
+      "Ciudad y país de Residencia Beneficiario": "-",
+      "Dirección de Residencia Beneficiario": c.address_residence_beneficiary,
+      "Estado Civil Beneficiario": c.civil_status_beneficiary,
+      "Actividad Económica Principal (diferente a la profesión) Beneficiario": c.economy_activity_beneficiary,
+      "Correo Electrónico Beneficiario": c.email_beneficiary,
+      "Teléfono de contacto Beneficiario": c.cellphone_beneficiary,
+    })) */
   };
 
   useEffect(() => {

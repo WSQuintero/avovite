@@ -19,6 +19,24 @@ export default class AuthService {
     );
   }
 
+  async add({ id, ...body } = {}) {
+    return await handleCall(async () => (await axios.post(`${this.API_URL}/users`, body, this.config)).data);
+  }
+
+  async update({ id, ...body } = {}) {
+    return await handleCall(async () => (await axios.put(`${this.API_URL}/users/update/${id}`, body, this.config)).data);
+  }
+
+  async updateRole({ id, role } = {}) {
+    return await handleCall(
+      async () => (await axios.put(`${this.API_URL}/users/update/rol/${id}`, { rol: role }, this.config)).data
+    );
+  }
+
+  async delete({ id }) {
+    return await handleCall(async () => (await axios.delete(`${this.API_URL}/users/${id}`, this.config)).data);
+  }
+
   async getProfits() {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/users/profits`, this.config)).data);
   }

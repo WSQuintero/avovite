@@ -38,7 +38,7 @@ function ShoppingCart() {
       description: name,
       invoice: `AV-${uuid()}`,
       currency: "cop",
-      amount: 150000,
+      amount: subTotal,
       tax_base: "4000",
       tax: "500",
       tax_ico: "500",
