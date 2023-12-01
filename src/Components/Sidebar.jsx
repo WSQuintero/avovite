@@ -114,12 +114,12 @@ function Sidebar({ collapseOn = "" }) {
         route: "/transactions",
         show: !user?.isAdmin(),
       },
-      {
+      /* {
         icon: <GraphIcon />,
         name: "Ganancias",
         route: "/earnings",
         show: !user?.isAdmin(),
-      },
+      }, */
       {
         icon: <ProtectionIcon />,
         name: "Administrador",
