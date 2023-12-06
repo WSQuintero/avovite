@@ -881,7 +881,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
           marginX={-3}
           sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
         >
-          Beneficiario
+          Información del beneficiario
           <Typography variant="caption" display="block">
             Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento
             fortuito.
