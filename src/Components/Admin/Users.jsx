@@ -48,7 +48,7 @@ function Users() {
     cellphone: "",
     rol: "-1",
     email_validated: "",
-    birthday: "",
+    birthdate: "",
     id_type: "-1",
     id_number: "",
     id_location_expedition: "",
@@ -126,7 +126,7 @@ function Users() {
       cellphone: "",
       rol: "-1",
       email_validated: "",
-      birthday: "",
+      birthdate: "",
       id_type: "",
       id_number: "",
       id_location_expedition: "",
@@ -185,7 +185,7 @@ function Users() {
         "email",
         "cellphone",
         "email_validated",
-        "birthday",
+        "birthdate",
         "id_type",
         "id_number",
         "id_location_expedition",
@@ -203,7 +203,7 @@ function Users() {
       cellphone: user.cellphone,
       email: user.email,
       email_validated: user.email_validated,
-      birthday: dayjs(user.birthday).format("YYYY-MM-DD"),
+      birthdate: dayjs(user.birthdate).format("YYYY-MM-DD"),
       id_type: user.id_type,
       id_number: user.id_number,
       id_location_expedition: user.id_location_expedition,
@@ -321,7 +321,7 @@ function Users() {
           >
             <Stack spacing={2}>
               <TextField fullWidth label="Nombre" name="fullname" value={user.fullname} onChange={handleInputChange} />
-              <TextField fullWidth label="Correo" name="email" value={user.email} onChange={handleInputChange} />
+              <TextField fullWidth disabled={modal === 'user-update'} label="Correo" name="email" value={user.email} onChange={handleInputChange} />
               <FormControl fullWidth>
                 <FormLabel id="user_email_validated">Correo validado</FormLabel>
                 <RadioGroup
@@ -359,10 +359,16 @@ function Users() {
               />
               <FormControl fullWidth>
                 <DatePicker
+                  disableFuture
                   label="Fecha de nacimiento"
-                  name="birthday"
-                  value={dayjs(user.birthday)}
-                  onChange={(value) => handleInputChange({ target: { name: "birthday", value: value.toDate() } })}
+                  name="birthdate"
+                  slotProps={{
+                    textField: {
+                      error: false
+                    }
+                  }}
+                  value={dayjs(user.birthdate)}
+                  onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
                 />
               </FormControl>
               <TextField
