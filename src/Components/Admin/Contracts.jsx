@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import {
   Box,
   Button,
+  Collapse,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -117,6 +118,7 @@ const Contracts = () => {
     firstPaymentValue: "",
     firstPaymentDate: new Date(),
     financing: false,
+    mortgage_contract: 0,
     mortgage_contract_aditional_text: "",
     enable_to_pay_epayco: false,
   });
@@ -192,6 +194,7 @@ const Contracts = () => {
       firstPaymentValue: "",
       firstPaymentDate: new Date(),
       financing: false,
+      mortgage_contract: 0,
       mortgage_contract_aditional_text: "",
       enable_to_pay_epayco: false,
     });
@@ -288,35 +291,6 @@ const Contracts = () => {
     if (status) {
       exportWorksheet(data.data, `${formatDate(new Date())} Datos_Form & Excel.xlsx`);
     }
-
-    /* contracts.map((c) => ({
-      "Fecha de Pago": c.first_payment_date,
-      "Valor de Pago inicial": c.first_payment,
-      "Cantidad de Vites Comprados": c.contract_vites,
-      "Nombre completo": c.fullname,
-      "Tipo de documento": c.id_type,
-      "Numero Documento": c.id_number,
-      "Lugar de Expedición del documento": c.id_location_expedition,
-      "Ciudad y país de Residencia": "-",
-      "Dirección de Residencia": c.address_residence,
-      "Correo Electrónico": c.email,
-      "Teléfono de contacto": c.cellphone,
-      "Estado Civil": c.civil_status,
-      "Actividad Económica Principal (diferente a la profesión)": c.economy_activity,
-      Banco: c.user_id_bank,
-      "Tipo de cuenta": c.user_bank_account_type,
-      "Número de cuenta": c.user_bank_account_number,
-      "Nombre completo Beneficiario:": c.beneficiary_fullname,
-      "Tipo de documento Beneficiario": c.beneficiary_id_type,
-      "Numero Documento Beneficiario": c.beneficiary_id_number,
-      "Lugar de Expedición del documento Beneficiario": c.beneficiary_id_location_expedition,
-      "Ciudad y país de Residencia Beneficiario": "-",
-      "Dirección de Residencia Beneficiario": c.address_residence_beneficiary,
-      "Estado Civil Beneficiario": c.civil_status_beneficiary,
-      "Actividad Económica Principal (diferente a la profesión) Beneficiario": c.economy_activity_beneficiary,
-      "Correo Electrónico Beneficiario": c.email_beneficiary,
-      "Teléfono de contacto Beneficiario": c.cellphone_beneficiary,
-    })) */
   };
 
   useEffect(() => {
@@ -349,7 +323,8 @@ const Contracts = () => {
             onClick={() => {
               closeMenu();
               original.status_contracts === 0
-                ? setSelectedContract(original)
+                ? (setSelectedContract(original),
+                  setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 })))
                 : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
             }}
           >
@@ -665,15 +640,27 @@ const Contracts = () => {
               </Grid>
             </Grid>
             <FormControlLabel
+              label="Habilitar pago con Epayco"
               control={
                 <Checkbox
                   checked={contract.enable_to_pay_epayco}
                   onChange={({ target }) => setContract((prev) => ({ ...prev, enable_to_pay_epayco: target.checked }))}
                 />
               }
-              label="Habilitar pago con Epayco"
             />
-            {selectedContract?.mortgage_contract === 1 && (
+            <FormControlLabel
+              label="Habilitar pago hipotecario"
+              control={
+                <Checkbox
+                  checked={contract.mortgage_contract === 1}
+                  onChange={({ target }) =>
+                    setContract((prev) => ({ ...prev, mortgage_contract: target.checked ? 1 : 0 }))
+                  }
+                />
+              }
+            />
+
+            <Collapse in={contract?.mortgage_contract === 1}>
               <TiptapEditor
                 placeholder="Texto Adicional"
                 value={contract.mortgage_contract_aditional_text}
@@ -684,7 +671,8 @@ const Contracts = () => {
                   }))
                 }
               />
-            )}
+            </Collapse>
+
             {totalFinancingValue !== 0 && (
               <>
                 <Divider />
