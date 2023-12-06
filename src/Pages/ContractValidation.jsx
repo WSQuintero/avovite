@@ -37,6 +37,7 @@ import ContractService from "../Services/contract.service";
 import UtilsService from "../Services/utils.service";
 import PageWrapper from "../Components/PageWrapper";
 import { formatDate, validateJSON } from "../utilities";
+import { DOCUMENT_TYPES } from "../utilities/constants";
 
 const Row = ({ children }) => (
   <Grid
@@ -400,12 +401,11 @@ function ContractValidation() {
                       <MenuItem value="-" selected disabled>
                         Seleccione una opción
                       </MenuItem>
-                      <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                      <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                      <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                      <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                      <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                      <MenuItem value="dni">DNI</MenuItem>
+                      {Object.keys(DOCUMENT_TYPES).map((key) => (
+                        <MenuItem key={key} value={key}>
+                          {DOCUMENT_TYPES[key]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Column>
@@ -645,12 +645,11 @@ function ContractValidation() {
                       <MenuItem value="-" selected disabled>
                         Seleccione una opción
                       </MenuItem>
-                      <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                      <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                      <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                      <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                      <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                      <MenuItem value="dni">DNI</MenuItem>
+                      {Object.keys(DOCUMENT_TYPES).map((key) => (
+                        <MenuItem key={key} value={key}>
+                          {DOCUMENT_TYPES[key]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Column>

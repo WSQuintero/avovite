@@ -35,6 +35,7 @@ import { LoadingButton } from "@mui/lab";
 import PhoneField from "react-phone-input-2";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { DOCUMENT_TYPES } from "../../utilities/constants";
 
 function Users() {
   const [{ token }] = useSession();
@@ -376,12 +377,11 @@ function Users() {
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
-                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                <MenuItem value="dni">DNI</MenuItem>
+                {Object.keys(DOCUMENT_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {DOCUMENT_TYPES[key]}
+                  </MenuItem>
+                ))}
               </TextField>
               <TextField
                 required

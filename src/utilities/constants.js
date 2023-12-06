@@ -1,11 +1,18 @@
 export const IMAGE_PLACEHOLDER = "https://cutewallpaper.org/24/image-placeholder-png/emoji.png";
 
+export const DOCUMENT_TYPES = {
+  cedula: "Cédula de Ciudadanía",
+  pasaporte: "Pasaporte",
+  dni: "DNI",
+  nit: "NIT",
+};
+
 export const CIVIL_STATUS = {
-  "Casado(a)": "Casado(a)",
-  "Viudo(a)": "Viudo(a)",
   "Soltero(a)": "Soltero(a)",
-  "Union Libre": "Union Libre",
+  "Casado(a)": "Casado(a)",
   "Separado(a)": "Separado(a)",
+  "Divorciado(a)  ": "Divorciado(a) ",
+  "Viudo(a)": "Viudo(a)",
 };
 
 export const OCCUPATION = {
@@ -24,4 +31,13 @@ export const EDUCATIONAL_LEVEL = {
   Tecnólogo: "Tecnólogo",
   Profesional: "Profesional",
   Especialización: "Especialización",
+  Maestría: "Maestría",
+  Doctorado: "Doctorado",
+};
+
+export const HOW_DID_YOU_HEAR_ABOUT_US = {
+  "facebook-instagram-ad": "Anuncio Facebook / Instagram",
+  "youtube-ad": "Anuncio YouTube",
+  referral: "Referido",
+  influencer: "Influencer - Youtuber",
 };
