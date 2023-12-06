@@ -68,7 +68,7 @@ const InitialState = {
   civil_status_beneficiary: "-",
   economy_activity_beneficiary: "",
 
-  how_did_you_hear_about_us: "",
+  how_did_you_hear_about_us: "-",
 };
 
 const InitialStateErrors = {
@@ -374,6 +374,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
             <Label error={errors.birthdate}>Fecha de Nacimiento</Label>
             <DatePicker
               disableFuture
+              slotProps={{ textField: { error: errors.birthdate } }}
               value={dayjs(formData.birthdate)}
               format="DD MMMM YYYY"
               onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
@@ -745,6 +746,31 @@ function Form({ title, isMortgage = false, onSubmit }) {
           </Column>
         </Row>
 
+        <Row>
+          <Column>
+            <Label error={errors.how_did_you_hear_about_us}>¿Cómo te enteraste de nosotros?</Label>
+            <TextField
+              select
+              fullWidth
+              name="how_did_you_hear_about_us"
+              value={formData.how_did_you_hear_about_us}
+              onChange={handleInputChange}
+            >
+              <MenuItem disabled value="-">
+                Seleccione una opción
+              </MenuItem>
+              <MenuItem value="social-networks">Redes Sociales (Facebook, Twitter, Instagram, etc.)</MenuItem>
+              <MenuItem value="search-engine">Buscador en Internet (Google, Bing, etc.)</MenuItem>
+              <MenuItem value="recommendation">Recomendación de Amigos/Familiares</MenuItem>
+              <MenuItem value="online-ad">Publicidad en Línea (Anuncios en sitios web)</MenuItem>
+              <MenuItem value="event">Eventos/Conferencias</MenuItem>
+              <MenuItem value="email">Email Marketing/Boletín</MenuItem>
+              <MenuItem value="media">Medios de Comunicación (TV, radio, prensa)</MenuItem>
+              <MenuItem value="website">Búsqueda Directa en el Sitio Web</MenuItem>
+            </TextField>
+          </Column>
+        </Row>
+
         <Typography
           fontSize={24}
           textAlign="center"
@@ -1039,31 +1065,6 @@ function Form({ title, isMortgage = false, onSubmit }) {
               error={errors.economy_activity_beneficiary}
               required
               fullWidth
-              onChange={handleInputChange}
-            />
-          </Column>
-        </Row>
-
-        <Typography
-          fontSize={24}
-          textAlign="center"
-          fontWeight={600}
-          color="primary"
-          paddingY={1}
-          marginX={-3}
-          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-        >
-          ¿Cómo te enteraste de nosotros?
-        </Typography>
-
-        <Row>
-          <Column>
-            <TextField
-              fullWidth
-              multiline
-              rows={6}
-              name="how_did_you_hear_about_us"
-              value={formData.how_did_you_hear_about_us}
               onChange={handleInputChange}
             />
           </Column>
