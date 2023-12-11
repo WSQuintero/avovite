@@ -9,6 +9,7 @@ import PageWrapper from "../Components/PageWrapper";
 import { IMAGE_PLACEHOLDER } from "../utilities/constants";
 import useSession from "../Hooks/useSession";
 import DiscountService from "../Services/discount.service";
+import PaymentService from "../Services/payment.service";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -17,7 +18,9 @@ function ShoppingCart() {
   const [shoppingCart, { remove, updateQuantity }] = useCart();
   const [discountCode, setDiscountCode] = useState({ value: "", total: 0 });
   const [loadingDiscountCode, setLoadingDiscountCode] = useState(false);
+  const [loadingPayment, setLoadingPayment] = useState(false);
   const $Discount = useMemo(() => new DiscountService(token), [token]);
+  const $Payment = useMemo(() => new PaymentService(token), [token]);
   const subTotal = useMemo(
     () =>
       shoppingCart.reduce(
@@ -48,46 +51,61 @@ function ShoppingCart() {
     }
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!shoppingCart || !shoppingCart.length) {
       return;
     }
 
-    const name = shoppingCart
-      .map((p) => `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`)
-      .join(", ");
+    setLoadingPayment(true);
 
-    const mandatory = {
-      name,
-      description: name,
-      invoice: `AV-${uuid()}`,
-      currency: "cop",
-      amount: subTotal,
-      tax_base: "4000",
-      tax: "500",
-      tax_ico: "500",
-      country: "co",
-      lang: "es",
-    };
-
-    const aditional = {
-      extra1: JSON.stringify(
-        shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))
-      ),
-      extra2: token,
-      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
-      response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
-      acepted: `${APP_URL}/payment/accepted`,
-      rejected: `${APP_URL}/payment/rejected`,
-      pending: `${APP_URL}/payment/pending`,
-    };
-
-    const handler = window.ePayco.checkout.configure({
-      key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-      test: true,
+    const { status } = await $Payment.validate({
+      payments: shoppingCart.map((item) => ({
+        ...item,
+        total: Math.round(
+          item.package.quantity * item.package.unitary_price * (1 - item.package.percent_discount / 100) * item.quantity
+        ),
+      })),
     });
 
-    handler.open({ ...mandatory, ...aditional });
+    setLoadingPayment(false);
+
+    if (status) {
+      const name = shoppingCart
+        .map((p) => `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`)
+        .join(", ");
+
+      const mandatory = {
+        name,
+        description: name,
+        invoice: `AV-${uuid()}`,
+        currency: "cop",
+        amount: subTotal,
+        tax_base: "4000",
+        tax: "500",
+        tax_ico: "500",
+        country: "co",
+        lang: "es",
+      };
+
+      const aditional = {
+        extra1: JSON.stringify(
+          shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))
+        ),
+        extra2: token,
+        confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
+        response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
+        acepted: `${APP_URL}/payment/accepted`,
+        rejected: `${APP_URL}/payment/rejected`,
+        pending: `${APP_URL}/payment/pending`,
+      };
+
+      const handler = window.ePayco.checkout.configure({
+        key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
+        test: true,
+      });
+
+      handler.open({ ...mandatory, ...aditional });
+    }
   };
 
   return (
@@ -240,9 +258,9 @@ function ShoppingCart() {
                   </Typography>
                 </Grid>
               </Box>
-              <Button variant="contained" onClick={handlePayment}>
+              <LoadingButton loading={loadingPayment} variant="contained" onClick={handlePayment}>
                 Proceder a pago
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         </Grid>
