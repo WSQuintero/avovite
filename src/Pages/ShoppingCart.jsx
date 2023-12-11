@@ -1,16 +1,23 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
 import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as DeleteIcon } from "@mui/icons-material";
-import { alpha, Box, Button, Container, Grid, IconButton, Typography } from "@mui/material";
+import { alpha, Box, Button, Container, Grid, IconButton, Typography, TextField } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
 import { IMAGE_PLACEHOLDER } from "../utilities/constants";
 import useSession from "../Hooks/useSession";
+import DiscountService from "../Services/discount.service";
+
+const APP_URL = import.meta.env.VITE_APP_URL;
 
 function ShoppingCart() {
   const [{ token }] = useSession();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
+  const [discountCode, setDiscountCode] = useState({ value: "", total: 0 });
+  const [loadingDiscountCode, setLoadingDiscountCode] = useState(false);
+  const $Discount = useMemo(() => new DiscountService(token), [token]);
   const subTotal = useMemo(
     () =>
       shoppingCart.reduce(
@@ -20,9 +27,26 @@ function ShoppingCart() {
             c.package.quantity * c.package.unitary_price * (1 - c.package.percent_discount / 100) * c.quantity
           ),
         0
-      ),
+      ) *
+      (1 - discountCode.total / 100),
     [shoppingCart]
   );
+
+  const handleDiscountCode = async () => {
+    if (!discountCode.value) {
+      return;
+    }
+
+    setLoadingDiscountCode(true);
+
+    const { data, status } = await $Discount.get({ code: discountCode });
+
+    setLoadingDiscountCode(false);
+
+    if (status) {
+      setDiscountCode((prev) => ({ ...prev, total: data.data.total }));
+    }
+  };
 
   const handlePayment = () => {
     if (!shoppingCart || !shoppingCart.length) {
@@ -52,9 +76,10 @@ function ShoppingCart() {
       ),
       extra2: token,
       confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
-      response: `${import.meta.env.VITE_APP_URL}/checkout?products=${JSON.stringify(
-        shoppingCart.map((p) => ({ id: p.id }))
-      )}`,
+      response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
+      acepted: `${APP_URL}/payment/accepted`,
+      rejected: `${APP_URL}/payment/rejected`,
+      pending: `${APP_URL}/payment/pending`,
     };
 
     const handler = window.ePayco.checkout.configure({
@@ -101,14 +126,14 @@ function ShoppingCart() {
                   paddingX={2}
                   borderRadius={2}
                   sx={(t) => ({
-                    transition: t.transitions.create(["background-color"], { duration: 200, easing: "ease-out" }),
+                    transition: t.transitions.create(["background-color"]),
                     "&:hover": {
                       backgroundColor: t.palette.grey[100],
                     },
+                    border: 1,
+                    borderColor: "primary.main",
                     [t.breakpoints.down("xl")]: {
                       flexDirection: "column",
-                      border: 1,
-                      borderColor: "primary.main",
                     },
                   })}
                 >
@@ -188,9 +213,21 @@ function ShoppingCart() {
             })}
           >
             <Grid position="sticky" top={32} display="flex" flexDirection="column" gap={2} width="100%">
+              <Box display="flex" flexDirection="column" borderRadius={1}>
+                <TextField
+                  size="small"
+                  placeholder="Código promocional"
+                  value={discountCode.value}
+                  onChange={({ target }) => setDiscountCode((prev) => ({ ...prev, value: target.value }))}
+                />
+              </Box>
+              <LoadingButton loading={loadingDiscountCode} variant="contained" onClick={handleDiscountCode}>
+                Verificar código
+              </LoadingButton>
               <Box
                 display="flex"
                 flexDirection="column"
+                mt={2}
                 padding={2}
                 borderRadius={1}
                 sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}

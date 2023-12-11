@@ -69,9 +69,9 @@ function CardProduct({ product, sx, onBuy }) {
         >
           Añadir al Carrito
         </Button>
-        {/* <Link component={RouterLink} color={color} to={`/package/${product.id}`} fontSize={12}>
+        <Link component={RouterLink} color={color} to={`/production/${product.id_product}`} fontSize={12}>
           Producción del paquete
-        </Link> */}
+        </Link>
       </Grid>
     </Box>
   );

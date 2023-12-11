@@ -58,7 +58,7 @@ function Shop() {
               ))
             : products.map((product) => (
                 <CardProduct
-                  key={product.id}
+                  key={product.id_product}
                   product={product}
                   sx={(t) => ({
                     width: "calc(25% - 12px)",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Container,
@@ -13,15 +13,21 @@ import {
 import { HighlightOff as ErrorIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
+import ContractService from "../Services/contract.service";
 
 const BookingForm = () => {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+  const [resetForm, setResetForm] = useState(() => () => {});
+  const $Contract = useMemo(() => new ContractService(), []);
 
-  const handleSubmit = async ({ status }) => {
-    if (status === "success") {
+  const handleSubmit = async (body) => {
+    const { status } = await $Contract.add(body);
+
+    if (status) {
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      resetForm();
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
@@ -33,7 +39,7 @@ const BookingForm = () => {
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-      <Form title="Aplicación Standard" onSubmit={handleSubmit} />
+      <Form title="Aplicación Standard" onSubmit={handleSubmit} onLoad={({ reset }) => setResetForm(reset)} />
 
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">

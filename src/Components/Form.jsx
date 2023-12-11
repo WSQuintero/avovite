@@ -56,6 +56,7 @@ const InitialState = {
   profession: "",
   economy_activity: "",
   monthly_income: "",
+  how_did_you_hear_about_us: "-",
 
   user_id_bank: "-",
   user_bank_account_type: "-",
@@ -76,8 +77,6 @@ const InitialState = {
   address_residence_beneficiary: "",
   civil_status_beneficiary: "-",
   economy_activity_beneficiary: "",
-
-  how_did_you_hear_about_us: "-",
 };
 
 const InitialStateErrors = {
@@ -160,7 +159,7 @@ const Column = ({ children }) => (
 
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
-function Form({ title, isMortgage = false, onSubmit }) {
+function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
   const [{ constants }] = useConfig();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -180,7 +179,6 @@ function Form({ title, isMortgage = false, onSubmit }) {
     state_beneficiary: false,
   });
   const $Utils = useMemo(() => new UtilsService(), []);
-  const $Contract = useMemo(() => new ContractService(), []);
 
   const handleInputChange = async (event) => {
     const { name, value } = event.target;
@@ -268,7 +266,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
       return;
     }
 
-    const { status } = await $Contract.add({
+    onSubmit({
       body: {
         ...formData,
         birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
@@ -276,13 +274,6 @@ function Form({ title, isMortgage = false, onSubmit }) {
       },
       mortgage: isMortgage,
     });
-
-    if (status) {
-      setFormData(InitialState);
-      onSubmit({ status: "success" });
-    } else {
-      onSubmit({ status: "error" });
-    }
   };
 
   useEffect(() => {
@@ -293,6 +284,12 @@ function Form({ title, isMortgage = false, onSubmit }) {
         setCountries(data.data);
       }
     })();
+
+    onLoad({
+      reset() {
+        setFormData(InitialState);
+      },
+    });
   }, []);
 
   return (
@@ -300,12 +297,14 @@ function Form({ title, isMortgage = false, onSubmit }) {
       <Grid display="flex" justifyContent="center">
         <Grid display="flex" flexDirection="column" alignItems="center">
           <img src={LogoImage} width={160} height={160} alt="photo" />
-          <Typography variant="h2" fontSize={25}>
-            {title}
-          </Typography>
+          {title && (
+            <Typography variant="h2" fontSize={24}>
+              {title}
+            </Typography>
+          )}
         </Grid>
       </Grid>
-      <Box height={64} />
+      <Box height={title ? 64 : 32} />
       <Grid display="flex" flexDirection="column" gap={3}>
         <Typography
           fontSize={24}
