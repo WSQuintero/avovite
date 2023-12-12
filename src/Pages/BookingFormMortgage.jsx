@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Container,
@@ -13,13 +13,18 @@ import {
 import { HighlightOff as ErrorIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
+import ContractService from "../Services/contract.service";
 
 const BookingFormMortgage = () => {
+
   const navigate = useNavigate();
+  const $Contract = useMemo(() => new ContractService(), []);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
-  const handleSubmit = async ({ status }) => {
-    if (status === "success") {
+  const handleSubmit = async (body) => {
+    const { status } = await $Contract.add(body);
+
+    if (status) {
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } else {

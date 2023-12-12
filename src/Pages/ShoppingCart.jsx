@@ -10,13 +10,14 @@ import { IMAGE_PLACEHOLDER } from "../utilities/constants";
 import useSession from "../Hooks/useSession";
 import DiscountService from "../Services/discount.service";
 import PaymentService from "../Services/payment.service";
+import Theme from "../Theme";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
 function ShoppingCart() {
   const [{ token }] = useSession();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
-  const [discountCode, setDiscountCode] = useState({ value: "", total: 0 });
+  const [discountCode, setDiscountCode] = useState({ value: "", total: 0, id: null, isValid: false });
   const [loadingDiscountCode, setLoadingDiscountCode] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const $Discount = useMemo(() => new DiscountService(token), [token]);
@@ -30,10 +31,10 @@ function ShoppingCart() {
             c.package.quantity * c.package.unitary_price * (1 - c.package.percent_discount / 100) * c.quantity
           ),
         0
-      ) *
-      (1 - discountCode.total / 100),
+      ),
     [shoppingCart]
   );
+  const total = useMemo(() => subTotal * (1 - discountCode.total / 100), [subTotal, discountCode.total]);
 
   const handleDiscountCode = async () => {
     if (!discountCode.value) {
@@ -42,12 +43,17 @@ function ShoppingCart() {
 
     setLoadingDiscountCode(true);
 
-    const { data, status } = await $Discount.get({ code: discountCode });
+    const { data, status } = await $Discount.get({ code: discountCode.value });
 
     setLoadingDiscountCode(false);
 
     if (status) {
-      setDiscountCode((prev) => ({ ...prev, total: data.data.total }));
+      setDiscountCode((prev) => ({
+        ...prev,
+        isValid: true,
+        id: data.data.find((d) => d.name === discountCode.value.trim()).id,
+        total: data.data.find((d) => d.name === discountCode.value.trim()).discountPercentage,
+      }));
     }
   };
 
@@ -59,11 +65,17 @@ function ShoppingCart() {
     setLoadingPayment(true);
 
     const { status } = await $Payment.validate({
+      ...(discountCode.isValid ? { codeDiscount: discountCode.id } : {}),
       payments: shoppingCart.map((item) => ({
         ...item,
-        total: Math.round(
-          item.package.quantity * item.package.unitary_price * (1 - item.package.percent_discount / 100) * item.quantity
-        ),
+        total:
+          Math.round(
+            item.package.quantity *
+              item.package.unitary_price *
+              (1 - item.package.percent_discount / 100) *
+              item.quantity
+          ) *
+          (1 - discountCode.total / 100),
       })),
     });
 
@@ -111,27 +123,8 @@ function ShoppingCart() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        <Grid
-          display="flex"
-          gap={2}
-          flexDirection="row"
-          sx={(t) => ({
-            [t.breakpoints.down("xl")]: {
-              flexDirection: "column",
-            },
-          })}
-        >
-          <Grid
-            display="flex"
-            flexDirection="column"
-            gap={4}
-            width="75%"
-            sx={(t) => ({
-              [t.breakpoints.down("xl")]: {
-                width: "100%",
-              },
-            })}
-          >
+        <Grid display="flex" gap={2} flexDirection="column">
+          <Grid display="flex" flexDirection="column" gap={4}>
             <Typography variant="h3">Carrito</Typography>
             <Grid display="flex" flexDirection="column" gap={2}>
               {shoppingCart.map((element, index) => (
@@ -143,20 +136,15 @@ function ShoppingCart() {
                   paddingY={1}
                   paddingX={2}
                   borderRadius={2}
+                  bgcolor={alpha(Theme.palette.primary.main, 0.1)}
                   sx={(t) => ({
-                    transition: t.transitions.create(["background-color"]),
-                    "&:hover": {
-                      backgroundColor: t.palette.grey[100],
-                    },
-                    border: 1,
-                    borderColor: "primary.main",
                     [t.breakpoints.down("xl")]: {
                       flexDirection: "column",
                     },
                   })}
                 >
                   <Box
-                    width="25%"
+                    width={128}
                     sx={(t) => ({
                       [t.breakpoints.down("xl")]: {
                         width: "100%",
@@ -181,14 +169,14 @@ function ShoppingCart() {
                     </Typography>
                     <Grid display="flex" alignItems="center" justifyContent="space-between" gap={4}>
                       <Typography>Cantidad:</Typography>
-                      <Box display="flex" border={1} borderRadius={10} borderColor="primary.main">
-                        <IconButton color="primary" onClick={() => updateQuantity("decrease", element.id)}>
+                      <Box display="flex" alignItems="center" border={1} borderRadius={10} borderColor="primary.main">
+                        <IconButton color="primary" size="small" onClick={() => updateQuantity("decrease", element.id)}>
                           <RemoveIcon />
                         </IconButton>
-                        <Box paddingX={2} paddingY={1} color="primary.main">
+                        <Box display="flex" justifyContent="center" paddingX={0.5} color="primary.main" width={32}>
                           {element.quantity}
                         </Box>
-                        <IconButton color="primary" onClick={() => updateQuantity("increase", element.id)}>
+                        <IconButton color="primary" size="small" onClick={() => updateQuantity("increase", element.id)}>
                           <AddIcon />
                         </IconButton>
                       </Box>
@@ -218,43 +206,68 @@ function ShoppingCart() {
                   </Grid>
                 </Grid>
               ))}
-            </Grid>
-          </Grid>
-          <Grid
-            display="flex"
-            alignItems="flex-start"
-            width="25%"
-            sx={(t) => ({
-              [t.breakpoints.down("xl")]: {
-                width: "100%",
-              },
-            })}
-          >
-            <Grid position="sticky" top={32} display="flex" flexDirection="column" gap={2} width="100%">
-              <Box display="flex" flexDirection="column" borderRadius={1}>
+              <Grid display="flex" gap={2}>
                 <TextField
+                  fullWidth
                   size="small"
-                  placeholder="Código promocional"
+                  placeholder="Código de cupón"
                   value={discountCode.value}
                   onChange={({ target }) => setDiscountCode((prev) => ({ ...prev, value: target.value }))}
                 />
-              </Box>
-              <LoadingButton loading={loadingDiscountCode} variant="contained" onClick={handleDiscountCode}>
-                Verificar código
-              </LoadingButton>
+                <LoadingButton loading={loadingDiscountCode} variant="contained" onClick={handleDiscountCode}>
+                  Aplicar
+                </LoadingButton>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Container>
+
+      <Container maxWidth="md" sx={{mt: 4}}>
+        <Grid display="flex" gap={2} flexDirection="column">
+          <Grid display="flex" alignItems="flex-start">
+            <Grid display="flex" flexDirection="column" gap={2} width="100%">
               <Box
                 display="flex"
                 flexDirection="column"
                 mt={2}
                 padding={2}
                 borderRadius={1}
-                sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+                bgcolor={alpha(Theme.palette.primary.main, 0.1)}
               >
-                <Grid display="flex" justifyContent="space-between" alignItems="flex-end">
-                  <Typography color="primary">Subtotal:</Typography>
+                <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
+                  <Typography color="primary" fontSize={16}>
+                    Subtotal:
+                  </Typography>
                   <Typography color="primary" fontWeight={600} fontSize={22}>
                     $
                     <NumericFormat displayType="text" value={subTotal} thousandSeparator disabled />
+                  </Typography>
+                </Grid>
+                <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
+                  <Typography color="primary" fontSize={16}>
+                    Descuento:
+                  </Typography>
+                  <Typography color="primary" fontWeight={600} fontSize={22}>
+                    {discountCode.total}%
+                  </Typography>
+                </Grid>
+                {discountCode.isValid && (
+                  <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
+                    <Typography color="primary" fontSize={16}>
+                      Cupón:
+                    </Typography>
+                    <Typography color="primary" fontWeight={600} fontSize={22}>
+                      {discountCode.value.trim()}
+                    </Typography>
+                  </Grid>
+                )}
+                <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33} mt={2}>
+                  <Typography color="primary" fontWeight={600}>
+                    Total:
+                  </Typography>
+                  <Typography color="primary" fontWeight={600} fontSize={22}>
+                    $<NumericFormat displayType="text" value={total} thousandSeparator disabled />
                   </Typography>
                 </Grid>
               </Box>

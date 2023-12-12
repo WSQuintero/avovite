@@ -259,21 +259,30 @@ function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const validation = validateJSON(formData, ["how_did_you_hear_about_us"]);
+    const validation = validateJSON(formData, [
+      "how_did_you_hear_about_us",
+      ...(formData.he_has_children === "No" ? ["he_has_children_count"] : []),
+      ...(formData.does_account_belong_to_holder === "Yes"
+        ? ["full_name_of_account_holder", "account_holder_document_type", "document_number_of_the_account_holder"]
+        : []),
+    ]);
 
     if (validation.length) {
-      validation.forEach((key) => setErrors((prev) => ({ ...prev, [key]: true })));
+      const fails = {};
+      validation.forEach((key) => (fails[key] = true));
+      setErrors((prev) => ({ ...prev, ...fails }));
       return;
     }
 
-    onSubmit({
-      body: {
-        ...formData,
-        birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
-        ...(isMortgage ? { mortgage_contract: 1 } : {}),
-      },
-      mortgage: isMortgage,
-    });
+    const body = {
+      ...formData,
+      he_has_children: formData.he_has_children === "Yes",
+      does_account_belong_to_holder: formData.does_account_belong_to_holder === "Yes",
+      birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
+      ...(isMortgage ? { mortgage_contract: 1 } : {}),
+    };
+
+    onSubmit({ body, mortgage: isMortgage });
   };
 
   useEffect(() => {
@@ -421,7 +430,7 @@ function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
               }}
               isValid={(value, country) => {
                 if (value.match(/12345/) || errors.cellphone) {
-                  return "Invalid value:" + value + ", " + country.name;
+                  return false;
                 } else {
                   return true;
                 }
@@ -430,7 +439,7 @@ function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
             />
           </Column>
           <Column>
-            <Label>Nacionalidad</Label>
+            <Label error={errors.nationality}>Nacionalidad</Label>
             <FormControl variant="outlined">
               <Select
                 required
@@ -598,7 +607,7 @@ function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.he_has_children}>¿Actualmente tiene hijos?</Label>
+            <Label error={errors.he_has_children || errors.he_has_children_count}>¿Actualmente tiene hijos?</Label>
             <Stack direction="row" spacing={1}>
               <RadioGroup row name="he_has_children" value={formData.he_has_children} onChange={handleInputChange}>
                 <FormControlLabel value="No" control={<Radio />} label="No" />
@@ -610,6 +619,7 @@ function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
                   type="number"
                   placeholder="¿Cuantos?"
                   name="he_has_children_count"
+                  error={errors.he_has_children_count}
                   value={formData.he_has_children_count}
                   onChange={handleInputChange}
                 />

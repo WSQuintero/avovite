@@ -49,7 +49,7 @@ export default class AuthService {
     return await handleCall(
       async () =>
         (
-          await axios.put(`${this.API_URL}/users/user`, body, {
+          await axios.put(`${this.API_URL}/users/update/null`, body, {
             headers: { Authorization: this.token },
           })
         ).data

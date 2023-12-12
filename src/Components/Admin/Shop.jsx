@@ -11,7 +11,7 @@ import {
   FormControl,
   Grid,
   IconButton,
-  Input,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -20,6 +20,7 @@ import {
   Tabs,
   TextField,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
 import useShop from "../../Hooks/useShop";
 import EnhancedTable from "../EnhancedTable";
@@ -28,6 +29,7 @@ import { formatCurrency } from "../../utilities";
 import { IMAGE_PLACEHOLDER } from "../../utilities/constants";
 import { NumericFormat } from "react-number-format";
 import { MuiFileInput } from "mui-file-input";
+import dayjs from "dayjs";
 
 function Products({ service: $Shop, state, feedback }) {
   const [products, setProducts] = state;
@@ -515,10 +517,187 @@ function Discounts({ service: $Shop, state, products, feedback }) {
   );
 }
 
+function Coupons({ service: $Shop, state, feedback }) {
+  const [coupons, setCoupons] = state;
+  const [, setFeedback] = feedback;
+  const [coupon, setCoupon] = useState({
+    id: null,
+    name: "",
+    discountPercentage: "",
+    expires_at: "",
+  });
+  const [modal, setModal] = useState(null);
+  const isValidProduct = useMemo(() => coupon.name && coupon.expires_at && coupon.discountPercentage, [coupon]);
+
+  const tableHeadCells = useMemo(
+    () => [
+      {
+        id: "name",
+        label: "Nombre",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value,
+      },
+      {
+        id: "discountPercentage",
+        label: "% Descuento",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value,
+      },
+      {
+        id: "expires_at",
+        label: "Vence el",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value ? dayjs(value).format("DD/MM/YYYY") : '-',
+      },
+    ],
+    []
+  );
+
+  const onChangeFields = ({ target }) => {
+    const { name, value } = target;
+    setCoupon((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const onClearFields = () => {
+    setModal(null);
+    setCoupon({ id: null, name: "", discountPercentage: "", contadorTime: "", tipo: "hora" });
+  };
+
+  const onCreate = async (event) => {
+    event.preventDefault();
+
+    if (!isValidProduct) {
+      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
+      return;
+    }
+
+    const { status, data } = await $Shop.coupon.add(coupon);
+
+    if (status) {
+      setCoupons((prev) => [...prev, { ...coupon, id: data.data }]);
+      setFeedback({ open: true, message: "Cupón creado exitosamente.", status: "success" });
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  const onUpdate = async (event) => {
+    event.preventDefault();
+
+    if (!isValidProduct) {
+      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
+      return;
+    }
+
+    const { status } = await $Shop.coupon.update(coupon);
+
+    if (status) {
+      setCoupons((prev) => prev.map((p) => (p.id === coupon.id ? coupon : p)));
+      setFeedback({ open: true, message: "Cupón actualizado exitosamente.", status: "success" });
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  const onDelete = async () => {
+    const { status } = await $Shop.coupon.delete(coupon);
+
+    if (status) {
+      setCoupons((prev) => prev.filter((p) => p.id !== coupon.id));
+      setFeedback({ open: true, message: "Cupón eliminado exitosamente.", status: "success" });
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  return (
+    <>
+      <Grid display="flex" flexDirection="column" gap={2}>
+        <Grid display="flex" justifyContent="flex-end">
+          <Button variant="contained" size="small" onClick={() => setModal("create")}>
+            Crear
+          </Button>
+        </Grid>
+        <EnhancedTable headCells={tableHeadCells} rows={coupons} />
+      </Grid>
+
+      <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
+        <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} cupón</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            display="flex"
+            flexDirection="column"
+            gap={3}
+            padding={1}
+            onSubmit={modal === "create" ? onCreate : onUpdate}
+          >
+            <Grid display="flex" flexDirection="column" gap={2}>
+              <Grid display="flex" gap={2}>
+                <TextField label="Cupón" name="name" value={coupon.name} onChange={onChangeFields} fullWidth />
+                <TextField
+                  label="Descuento"
+                  name="discountPercentage"
+                  value={coupon.discountPercentage}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  }}
+                  onChange={onChangeFields}
+                  fullWidth
+                />
+              </Grid>
+              <Grid display="flex" gap={2}>
+                <DatePicker
+                  label="Fecha de expiración"
+                  value={dayjs(coupon.expires_at)}
+                  format="DD MMMM YYYY"
+                  sx={{ width: "100%" }}
+                  slotProps={{ textField: { error: false } }}
+                  onChange={(value) => onChangeFields({ target: { name: "expires_at", value: value.toDate() } })}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+            <Button onClick={onClearFields}>Cancelar</Button>
+            <Button onClick={modal === "create" ? onCreate : onUpdate} variant="contained" disabled={!isValidProduct}>
+              {modal === "create" ? "Crear" : "Editar"}
+            </Button>
+          </Grid>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog maxWidth="sm" open={modal === "delete"} onClose={onClearFields} fullWidth>
+        <DialogTitle>Eliminar cupón</DialogTitle>
+        <DialogContent>
+          <DialogContentText>¿Estás seguro que quieres eliminar este cupón?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClearFields}>
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={onDelete}>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
 function Shop() {
   const $Shop = useShop();
   const [products, setProducts] = useState([]);
   const [discounts, setDiscounts] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
@@ -538,6 +717,14 @@ function Shop() {
     }
   };
 
+  const fetchCoupons = async () => {
+    const { status, data } = await $Shop.coupon.get();
+
+    if (status) {
+      setCoupons(data.data);
+    }
+  };
+
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -547,6 +734,7 @@ function Shop() {
       (async () => {
         await fetchProducts();
         await fetchDiscounts();
+        await fetchCoupons();
       })();
     }
   }, [$Shop]);
@@ -557,6 +745,7 @@ function Shop() {
         <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
           <Tab label="Productos" />
           <Tab label="Descuentos" />
+          <Tab label="Cupones" />
         </Tabs>
       </Box>
       <TabPanel value={currentTab} index={0}>
@@ -569,6 +758,9 @@ function Shop() {
           products={products}
           feedback={[feedback, setFeedback]}
         />
+      </TabPanel>
+      <TabPanel value={currentTab} index={2}>
+        <Coupons service={$Shop} state={[coupons, setCoupons]} feedback={[feedback, setFeedback]} />
       </TabPanel>
 
       <Snackbar

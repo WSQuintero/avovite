@@ -161,9 +161,16 @@ function Header({ isInvalidSession = false }) {
       <Menu
         anchorEl={profileMenu}
         open={!!profileMenu}
-        elevation={2}
+        elevation={8}
         onClose={() => setProfileMenu(null)}
         sx={{ top: 16, minWidth: 200 }}
+        slotProps={{
+          paper: {
+            sx: {
+              bgcolor: "white",
+            },
+          },
+        }}
       >
         <MenuItem sx={{ display: "flex", gap: 2 }} onClick={() => !isInvalidSession && navigate("/profile")}>
           <Avatar alt={session.user.fullname} src={session.user.avatar} />
