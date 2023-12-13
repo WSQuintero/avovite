@@ -1,9 +1,10 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Box, Grid, Button, Typography, Link, Badge } from "@mui/material";
+import { Box, Grid, Button, Typography, Link, alpha } from "@mui/material";
 import { ShoppingCartOutlined as ShoppingCartIcon } from "@mui/icons-material";
 
 import { NumericFormat } from "react-number-format";
 import { IMAGE_PLACEHOLDER } from "../utilities/constants";
+import Theme from "../Theme";
 
 function CardProduct({ product, sx, onBuy }) {
   const color = "primary.main";
@@ -14,29 +15,34 @@ function CardProduct({ product, sx, onBuy }) {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      border={1}
       borderRadius={2}
-      borderColor="primary.main"
       padding={2}
+      bgcolor={alpha(Theme.palette.primary.main, 0.1)}
       sx={sx}
     >
-      <Box
-        position="absolute"
-        zIndex={1}
-        right={8}
-        top={8}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        width={48}
-        height={48}
-        borderRadius="50%"
-        sx={{ backgroundColor: color, color: "white" }}
-      >
-        -{product.percent_discount}%
-      </Box>
+      {product.percent_discount > 0 && (
+        <Box
+          position="absolute"
+          zIndex={1}
+          right={8}
+          top={8}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          width={48}
+          height={48}
+          borderRadius="50%"
+          sx={{ backgroundColor: color, color: "white" }}
+        >
+          -{product.percent_discount}%
+        </Box>
+      )}
       <Box display="flex" justifyContent="center" alignItems="center" gap={7} width="100%">
-        <img src={product.url_image || IMAGE_PLACEHOLDER} alt="logo" style={{ width: "100%", aspectRatio: 1, objectFit: "contain"  }} />
+        <img
+          src={product.url_image || IMAGE_PLACEHOLDER}
+          alt="logo"
+          style={{ width: "100%", aspectRatio: 1, objectFit: "contain" }}
+        />
       </Box>
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
         <Typography fontWeight={600} sx={{ color }}>
@@ -69,9 +75,9 @@ function CardProduct({ product, sx, onBuy }) {
         >
           Añadir al Carrito
         </Button>
-        {/* <Link component={RouterLink} color={color} to={`/package/${product.id}`} fontSize={12}>
+        <Link component={RouterLink} color={color} to={`/production/${product.id_product}`} fontSize={12}>
           Producción del paquete
-        </Link> */}
+        </Link>
       </Grid>
     </Box>
   );

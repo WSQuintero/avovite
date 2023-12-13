@@ -1,47 +1,28 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Typography, Container, Box, Stack } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
-
-const data = [
-  {
-    vites_quantity: 30,
-    id: "AV-155",
-    purchased_at: new Date(),
-    sown_at: new Date(),
-    status: "Estado óptimo",
-  },
-  {
-    vites_quantity: 10,
-    id: "AV-174",
-    purchased_at: new Date(),
-    sown_at: new Date(),
-    status: "Estado óptimo",
-  },
-  {
-    vites_quantity: 1,
-    id: "AV-305",
-    purchased_at: new Date(),
-    sown_at: new Date(),
-    status: "Estado óptimo",
-  },
-];
+import ContractService from "../Services/contract.service";
+import useSession from "../Hooks/useSession";
 
 function Vites() {
+  const [{ token }] = useSession();
+  const [rows, setRows] = useState([]);
+  const $Contract = useMemo(() => new ContractService(token), [token]);
   const columns = useMemo(
     () => [
       {
-        accessorKey: "vites_quantity",
+        accessorKey: "contract_vites",
         header: "Número de vites",
       },
       {
-        accessorKey: "id",
+        accessorKey: "contract_number",
         header: "Número de contrato",
       },
       {
-        accessorKey: "purchased_at",
+        accessorKey: "first_payment_date",
         header: "Fecha de compra",
         Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
       },
@@ -57,6 +38,17 @@ function Vites() {
     ],
     []
   );
+
+  useEffect(() => {
+    (async () => {
+      const { status, data } = await $Contract.get();
+
+      if (status) {
+        setRows(data.data);
+      }
+    })();
+  }, [$Contract]);
+
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
@@ -68,7 +60,7 @@ function Vites() {
             VITES
           </Typography>
         </Stack>
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={rows} />
       </Container>
     </PageWrapper>
   );

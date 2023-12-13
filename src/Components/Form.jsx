@@ -13,8 +13,10 @@ import {
   Stack,
   TextField,
   Typography,
+  Zoom,
   alpha,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { Clear as ClearIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useMemo, useState } from "react";
@@ -22,7 +24,13 @@ import PhoneField from "react-phone-input-2";
 import useConfig from "../Hooks/useConfig";
 import UtilsService from "../Services/utils.service";
 import LogoImage from "../assets/img/common/logo.svg";
-import { CIVIL_STATUS, EDUCATIONAL_LEVEL, OCCUPATION } from "../utilities/constants";
+import {
+  CIVIL_STATUS,
+  DOCUMENT_TYPES,
+  EDUCATIONAL_LEVEL,
+  HOW_DID_YOU_HEAR_ABOUT_US,
+  OCCUPATION,
+} from "../utilities/constants";
 import { validateJSON } from "../utilities";
 import ContractService from "../Services/contract.service";
 import dayjs from "dayjs";
@@ -44,14 +52,17 @@ const InitialState = {
   civil_status: "-",
   education_level: "-",
   he_has_children: "No",
-  occupation: "",
+  he_has_children_count: "1",
+  occupation: "-",
   profession: "",
   economy_activity: "",
   monthly_income: "",
+  how_did_you_hear_about_us: "-",
+
   user_id_bank: "-",
   user_bank_account_type: "-",
   user_bank_account_number: "",
-
+  does_account_belong_to_holder: "Yes",
   full_name_of_account_holder: "",
   account_holder_document_type: "-",
   document_number_of_the_account_holder: "",
@@ -67,8 +78,6 @@ const InitialState = {
   address_residence_beneficiary: "",
   civil_status_beneficiary: "-",
   economy_activity_beneficiary: "",
-
-  how_did_you_hear_about_us: "",
 };
 
 const InitialStateErrors = {
@@ -87,14 +96,16 @@ const InitialStateErrors = {
   civil_status: false,
   education_level: false,
   he_has_children: false,
+  he_has_children_count: false,
   occupation: false,
   profession: false,
   economy_activity: false,
   monthly_income: false,
+
   user_id_bank: false,
   user_bank_account_type: false,
   user_bank_account_number: false,
-
+  does_account_belong_to_holder: false,
   full_name_of_account_holder: false,
   account_holder_document_type: false,
   document_number_of_the_account_holder: false,
@@ -149,7 +160,7 @@ const Column = ({ children }) => (
 
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
-function Form({ title, isMortgage = false, onSubmit }) {
+function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = () => {} }) {
   const [{ constants }] = useConfig();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -169,7 +180,6 @@ function Form({ title, isMortgage = false, onSubmit }) {
     state_beneficiary: false,
   });
   const $Utils = useMemo(() => new UtilsService(), []);
-  const $Contract = useMemo(() => new ContractService(), []);
 
   const handleInputChange = async (event) => {
     const { name, value } = event.target;
@@ -250,28 +260,30 @@ function Form({ title, isMortgage = false, onSubmit }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const validation = validateJSON(formData, "how_did_you_hear_about_us");
+    const validation = validateJSON(formData, [
+      "how_did_you_hear_about_us",
+      ...(formData.he_has_children === "No" ? ["he_has_children_count"] : []),
+      ...(formData.does_account_belong_to_holder === "Yes"
+        ? ["full_name_of_account_holder", "account_holder_document_type", "document_number_of_the_account_holder"]
+        : []),
+    ]);
 
     if (validation.length) {
-      validation.forEach((key) => setErrors((prev) => ({ ...prev, [key]: true })));
+      const fails = {};
+      validation.forEach((key) => (fails[key] = true));
+      setErrors((prev) => ({ ...prev, ...fails }));
       return;
     }
 
-    const { status } = await $Contract.add({
-      body: {
-        ...formData,
-        birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
-        ...(isMortgage ? { mortgage_contract: 1 } : {}),
-      },
-      mortgage: isMortgage,
-    });
+    const body = {
+      ...formData,
+      he_has_children: formData.he_has_children === "Yes",
+      does_account_belong_to_holder: formData.does_account_belong_to_holder === "Yes",
+      birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
+      ...(isMortgage ? { mortgage_contract: 1 } : {}),
+    };
 
-    if (status) {
-      setFormData(InitialState);
-      onSubmit({ status: "success" });
-    } else {
-      onSubmit({ status: "error" });
-    }
+    onSubmit({ body, mortgage: isMortgage });
   };
 
   useEffect(() => {
@@ -282,6 +294,12 @@ function Form({ title, isMortgage = false, onSubmit }) {
         setCountries(data.data);
       }
     })();
+
+    onLoad({
+      reset() {
+        setFormData(InitialState);
+      },
+    });
   }, []);
 
   return (
@@ -289,12 +307,14 @@ function Form({ title, isMortgage = false, onSubmit }) {
       <Grid display="flex" justifyContent="center">
         <Grid display="flex" flexDirection="column" alignItems="center">
           <img src={LogoImage} width={160} height={160} alt="photo" />
-          <Typography variant="h2" fontSize={25}>
-            {title}
-          </Typography>
+          {title && (
+            <Typography variant="h2" fontSize={24}>
+              {title}
+            </Typography>
+          )}
         </Grid>
       </Grid>
-      <Box height={64} />
+      <Box height={title ? 64 : 32} />
       <Grid display="flex" flexDirection="column" gap={3}>
         <Typography
           fontSize={24}
@@ -305,7 +325,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
           marginX={-3}
           sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
         >
-          Información personal
+          Información del titular
         </Typography>
 
         <Row>
@@ -333,12 +353,11 @@ function Form({ title, isMortgage = false, onSubmit }) {
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
-                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                <MenuItem value="dni">DNI</MenuItem>
+                {Object.keys(DOCUMENT_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {DOCUMENT_TYPES[key]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Column>
@@ -374,6 +393,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
             <Label error={errors.birthdate}>Fecha de Nacimiento</Label>
             <DatePicker
               disableFuture
+              slotProps={{ textField: { error: errors.birthdate } }}
               value={dayjs(formData.birthdate)}
               format="DD MMMM YYYY"
               onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
@@ -411,7 +431,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
               }}
               isValid={(value, country) => {
                 if (value.match(/12345/) || errors.cellphone) {
-                  return "Invalid value:" + value + ", " + country.name;
+                  return false;
                 } else {
                   return true;
                 }
@@ -420,7 +440,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
             />
           </Column>
           <Column>
-            <Label>Nacionalidad</Label>
+            <Label error={errors.nationality}>Nacionalidad</Label>
             <FormControl variant="outlined">
               <Select
                 required
@@ -588,11 +608,24 @@ function Form({ title, isMortgage = false, onSubmit }) {
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.he_has_children}>¿Actualmente tiene hijos?</Label>
-            <RadioGroup row name="he_has_children" value={formData.he_has_children} onChange={handleInputChange}>
-              <FormControlLabel value="No" control={<Radio />} label="No" />
-              <FormControlLabel value="Yes" control={<Radio />} label="Si" />
-            </RadioGroup>
+            <Label error={errors.he_has_children || errors.he_has_children_count}>¿Actualmente tiene hijos?</Label>
+            <Stack direction="row" spacing={1}>
+              <RadioGroup row name="he_has_children" value={formData.he_has_children} onChange={handleInputChange}>
+                <FormControlLabel value="No" control={<Radio />} label="No" />
+                <FormControlLabel value="Yes" control={<Radio />} label="Si" />
+              </RadioGroup>
+              <Zoom in={formData.he_has_children === "Yes"}>
+                <TextField
+                  size="small"
+                  type="number"
+                  placeholder="¿Cuantos?"
+                  name="he_has_children_count"
+                  error={errors.he_has_children_count}
+                  value={formData.he_has_children_count}
+                  onChange={handleInputChange}
+                />
+              </Zoom>
+            </Stack>
           </Column>
         </Row>
 
@@ -642,9 +675,6 @@ function Form({ title, isMortgage = false, onSubmit }) {
               onChange={handleInputChange}
             />
           </Column>
-        </Row>
-
-        <Row>
           <Column>
             <Label error={errors.monthly_income}>Ingreso Mensual</Label>
             <NumericFormat
@@ -665,6 +695,46 @@ function Form({ title, isMortgage = false, onSubmit }) {
               onChange={handleInputChange}
             />
           </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Label error={errors.how_did_you_hear_about_us}>¿Cómo te enteraste de nosotros?</Label>
+            <TextField
+              select
+              fullWidth
+              name="how_did_you_hear_about_us"
+              value={formData.how_did_you_hear_about_us}
+              onChange={handleInputChange}
+            >
+              <MenuItem disabled value="-">
+                Seleccione una opción
+              </MenuItem>
+              {Object.values(HOW_DID_YOU_HEAR_ABOUT_US).map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Column>
+        </Row>
+
+        <Typography
+          fontSize={24}
+          textAlign="center"
+          fontWeight={600}
+          color="primary"
+          paddingY={1}
+          marginX={-3}
+          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
+        >
+          Información bancaria
+          <Typography variant="caption" display="block">
+            Cuenta bancaria donde deseas recibir tus rendimientos.
+          </Typography>
+        </Typography>
+
+        <Row>
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>
             <FormControl variant="outlined">
@@ -686,10 +756,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
               </Select>
             </FormControl>
           </Column>
-        </Row>
-
-        {formData.user_id_bank === "-1" && (
-          <Row>
+          {formData.user_id_bank === "-1" && (
             <Column>
               <Label error={errorControlFormData.bank_name}>Especifique Cuál Banco</Label>
               <TextField
@@ -708,8 +775,8 @@ function Form({ title, isMortgage = false, onSubmit }) {
                 }}
               />
             </Column>
-          </Row>
-        )}
+          )}
+        </Row>
 
         <Row>
           <Column>
@@ -745,6 +812,76 @@ function Form({ title, isMortgage = false, onSubmit }) {
           </Column>
         </Row>
 
+        <Row>
+          <Column>
+            <Label error={errors.does_account_belong_to_holder}>¿La cuenta le pertenece al titular del contrato?</Label>
+            <RadioGroup
+              row
+              name="does_account_belong_to_holder"
+              value={formData.does_account_belong_to_holder}
+              onChange={handleInputChange}
+            >
+              <FormControlLabel value="Yes" control={<Radio />} label="Si" />
+              <FormControlLabel value="No" control={<Radio />} label="No" />
+            </RadioGroup>
+          </Column>
+        </Row>
+
+        {formData.does_account_belong_to_holder === "No" && (
+          <>
+            <Row>
+              <Column>
+                <Label error={errors.full_name_of_account_holder}>Nombre Completo del titular de la cuenta</Label>
+                <TextField
+                  required
+                  fullWidth
+                  name="full_name_of_account_holder"
+                  value={formData.full_name_of_account_holder}
+                  error={errors.full_name_of_account_holder}
+                  onChange={handleInputChange}
+                />
+              </Column>
+              <Column>
+                <Label error={errors.account_holder_document_type}>Tipo de Documento del titular de la cuenta</Label>
+                <FormControl variant="outlined" fullWidth>
+                  <Select
+                    required
+                    name="account_holder_document_type"
+                    value={formData.account_holder_document_type}
+                    error={errors.account_holder_document_type}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="-" selected disabled>
+                      Seleccione una opción
+                    </MenuItem>
+                    {Object.keys(DOCUMENT_TYPES).map((key) => (
+                      <MenuItem key={key} value={key}>
+                        {DOCUMENT_TYPES[key]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Column>
+            </Row>
+
+            <Row>
+              <Column>
+                <Label error={errors.document_number_of_the_account_holder}>
+                  Número de Documento del titular de la cuenta
+                </Label>
+                <TextField
+                  required
+                  fullWidth
+                  name="document_number_of_the_account_holder"
+                  value={formData.document_number_of_the_account_holder}
+                  onChange={handleInputChange}
+                  error={errors.document_number_of_the_account_holder}
+                />
+              </Column>
+            </Row>
+          </>
+        )}
+
         <Typography
           fontSize={24}
           textAlign="center"
@@ -754,69 +891,7 @@ function Form({ title, isMortgage = false, onSubmit }) {
           marginX={-3}
           sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
         >
-          Titular
-        </Typography>
-
-        <Row>
-          <Column>
-            <Label error={errors.full_name_of_account_holder}>Nombre Completo</Label>
-            <TextField
-              required
-              fullWidth
-              name="full_name_of_account_holder"
-              value={formData.full_name_of_account_holder}
-              error={errors.full_name_of_account_holder}
-              onChange={handleInputChange}
-            />
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
-            <Label error={errors.account_holder_document_type}>Tipo de Documento</Label>
-            <FormControl variant="outlined" fullWidth>
-              <Select
-                required
-                name="account_holder_document_type"
-                value={formData.account_holder_document_type}
-                error={errors.account_holder_document_type}
-                onChange={handleInputChange}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                <MenuItem value="dni">DNI</MenuItem>
-              </Select>
-            </FormControl>
-          </Column>
-          <Column>
-            <Label error={errors.document_number_of_the_account_holder}>Número de Documento</Label>
-            <TextField
-              required
-              fullWidth
-              name="document_number_of_the_account_holder"
-              value={formData.document_number_of_the_account_holder}
-              onChange={handleInputChange}
-              error={errors.document_number_of_the_account_holder}
-            />
-          </Column>
-        </Row>
-
-        <Typography
-          fontSize={24}
-          textAlign="center"
-          fontWeight={600}
-          color="primary"
-          paddingY={1}
-          marginX={-3}
-          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-        >
-          Beneficiario
+          Información del beneficiario
           <Typography variant="caption" display="block">
             Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento
             fortuito.
@@ -871,12 +946,11 @@ function Form({ title, isMortgage = false, onSubmit }) {
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
-                <MenuItem value="cedula">Cédula de Ciudadanía</MenuItem>
-                <MenuItem value="tarjetaIdentidad">Tarjeta de Identidad</MenuItem>
-                <MenuItem value="cedulaExtranjeria">Cédula de Extranjería</MenuItem>
-                <MenuItem value="pasaporte">Pasaporte</MenuItem>
-                <MenuItem value="registroCivil">Registro Civil</MenuItem>
-                <MenuItem value="dni">DNI</MenuItem>
+                {Object.keys(DOCUMENT_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {DOCUMENT_TYPES[key]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Column>
@@ -1044,40 +1118,17 @@ function Form({ title, isMortgage = false, onSubmit }) {
           </Column>
         </Row>
 
-        <Typography
-          fontSize={24}
-          textAlign="center"
-          fontWeight={600}
-          color="primary"
-          paddingY={1}
-          marginX={-3}
-          sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-        >
-          ¿Cómo te enteraste de nosotros?
-        </Typography>
-
-        <Row>
-          <Column>
-            <TextField
-              fullWidth
-              multiline
-              rows={6}
-              name="how_did_you_hear_about_us"
-              value={formData.how_did_you_hear_about_us}
-              onChange={handleInputChange}
-            />
-          </Column>
-        </Row>
-
-        <Button
+        <LoadingButton
+          fullWidth
           type="submit"
           size="large"
           variant="contained"
+          loading={loading}
           disabled={Object.values(errors).reduce((a, c) => a || c, false)}
           onClick={handleSubmit}
         >
           Enviar
-        </Button>
+        </LoadingButton>
       </Grid>
     </Stack>
   );

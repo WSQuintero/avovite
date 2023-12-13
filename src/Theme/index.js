@@ -51,9 +51,8 @@ const theme = createTheme({
       color: "#67AA36",
     },
   },
-  shape: {
-    borderRadius: 10,
-  },
+  shadows: Array.from({ length: 24 }, (_, i) => i === 0 ? "none" : `0px 4px ${i}px 0px #45549229`),
+  shape: { borderRadius: 10 },
   components: {
     MuiDialogTitle: {
       defaultProps: { color: "#67AA36" },
@@ -138,7 +137,6 @@ const theme = createTheme({
         list: {
           '&[role="menu"]': {
             backgroundColor: "#ffffff",
-            border: "1px solid #C0C0C0",
           },
         },
       },
