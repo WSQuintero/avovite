@@ -106,9 +106,6 @@ function ShoppingCart() {
         extra2: token,
         confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
         response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
-        acepted: `${APP_URL}/payment/accepted`,
-        rejected: `${APP_URL}/payment/rejected`,
-        pending: `${APP_URL}/payment/pending`,
       };
 
       const handler = window.ePayco.checkout.configure({
@@ -158,6 +155,7 @@ function ShoppingCart() {
                     display="flex"
                     flexDirection="column"
                     justifyContent="center"
+                    gap={2}
                     sx={(t) => ({
                       [t.breakpoints.down("xl")]: {
                         alignItems: "center",
@@ -181,7 +179,7 @@ function ShoppingCart() {
                         </IconButton>
                       </Box>
                     </Grid>
-                    <Typography color="primary" marginTop={4}>
+                    <Typography color="primary">
                       Precio:{" "}
                       <Typography component="span" fontWeight={600} fontSize={22}>
                         $
@@ -223,7 +221,7 @@ function ShoppingCart() {
         </Grid>
       </Container>
 
-      <Container maxWidth="md" sx={{mt: 4}}>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
         <Grid display="flex" gap={2} flexDirection="column">
           <Grid display="flex" alignItems="flex-start">
             <Grid display="flex" flexDirection="column" gap={2} width="100%">

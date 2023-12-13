@@ -66,7 +66,7 @@ function ContractValidation() {
   const handleFormSubmit = async (body) => {
     setLoadingSubmit(true);
 
-    const { status } = await $Contract.complete({ id: contract.id, body, pending: true });
+    const { status } = await $Contract.complete({ id: contract.id, pending: true, ...body });
 
     if (status) {
       setContracts((prev) => ({ ...prev, pendings: prev.pendings.filter((c) => c.id !== contract.id) }));
@@ -144,7 +144,7 @@ function ContractValidation() {
       >
         <DialogContent>
           <Container maxWidth="xxl" sx={{ padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-            <Form onSubmit={handleFormSubmit} onLoad={({ reset }) => setResetForm(reset)} />
+            <Form loading={loadingSubmit} onSubmit={handleFormSubmit} onLoad={({ reset }) => setResetForm(reset)} />
           </Container>
         </DialogContent>
       </Dialog>

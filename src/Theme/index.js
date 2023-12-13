@@ -129,6 +129,31 @@ const theme = createTheme({
         },
       },
     },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: "#ffffff",
+        },
+        list: {
+          '&[role="menu"]': {
+            backgroundColor: "#ffffff",
+          },
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "white",
+          color: "#757575",
+          fontSize: 18,
+          "&:hover": {
+            borderWidth: 3,
+            backgroundColor: "#EEEEEE",
+          },
+        },
+      },
+    },
     MuiTableHead: {
       styleOverrides: {
         root: {

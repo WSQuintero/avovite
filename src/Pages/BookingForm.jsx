@@ -19,10 +19,15 @@ const BookingForm = () => {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [resetForm, setResetForm] = useState(() => () => {});
+  const [loading, setLoading] = useState(false);
   const $Contract = useMemo(() => new ContractService(), []);
 
   const handleSubmit = async (body) => {
+    setLoading(true);
+
     const { status } = await $Contract.add(body);
+
+    setLoading(false);
 
     if (status) {
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
@@ -39,7 +44,12 @@ const BookingForm = () => {
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-      <Form title="Aplicación Standard" onSubmit={handleSubmit} onLoad={({ reset }) => setResetForm(reset)} />
+      <Form
+        title="Aplicación Standard"
+        loading={loading}
+        onSubmit={handleSubmit}
+        onLoad={({ reset }) => setResetForm(reset)}
+      />
 
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">

@@ -16,6 +16,7 @@ import {
   Zoom,
   alpha,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { Clear as ClearIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useMemo, useState } from "react";
@@ -159,7 +160,7 @@ const Column = ({ children }) => (
 
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
-function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
+function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = () => {} }) {
   const [{ constants }] = useConfig();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -1117,15 +1118,17 @@ function Form({ title, isMortgage = false, onSubmit, onLoad = () => {} }) {
           </Column>
         </Row>
 
-        <Button
+        <LoadingButton
+          fullWidth
           type="submit"
           size="large"
           variant="contained"
+          loading={loading}
           disabled={Object.values(errors).reduce((a, c) => a || c, false)}
           onClick={handleSubmit}
         >
           Enviar
-        </Button>
+        </LoadingButton>
       </Grid>
     </Stack>
   );
