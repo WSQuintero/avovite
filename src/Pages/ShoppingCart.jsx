@@ -1,8 +1,21 @@
 import { useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
-import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as DeleteIcon } from "@mui/icons-material";
-import { alpha, Box, Button, Container, Grid, IconButton, Typography, TextField } from "@mui/material";
+import {
+  AddOutlined as AddIcon,
+  RemoveOutlined as RemoveIcon,
+  DeleteOutline as DeleteIcon,
+} from "@mui/icons-material";
+import {
+  alpha,
+  Box,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  Typography,
+  TextField,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
@@ -17,7 +30,12 @@ const APP_URL = import.meta.env.VITE_APP_URL;
 function ShoppingCart() {
   const [{ token }] = useSession();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
-  const [discountCode, setDiscountCode] = useState({ value: "", total: 0, id: null, isValid: false });
+  const [discountCode, setDiscountCode] = useState({
+    value: "",
+    total: 0,
+    id: null,
+    isValid: false,
+  });
   const [loadingDiscountCode, setLoadingDiscountCode] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const $Discount = useMemo(() => new DiscountService(token), [token]);
@@ -28,13 +46,19 @@ function ShoppingCart() {
         (a, c) =>
           a +
           Math.round(
-            c.package.quantity * c.package.unitary_price * (1 - c.package.percent_discount / 100) * c.quantity
+            c.package.quantity *
+              c.package.unitary_price *
+              (1 - c.package.percent_discount / 100) *
+              c.quantity
           ),
         0
       ),
     [shoppingCart]
   );
-  const total = useMemo(() => subTotal * (1 - discountCode.total / 100), [subTotal, discountCode.total]);
+  const total = useMemo(
+    () => subTotal * (1 - discountCode.total / 100),
+    [subTotal, discountCode.total]
+  );
 
   const handleDiscountCode = async () => {
     if (!discountCode.value) {
@@ -48,12 +72,18 @@ function ShoppingCart() {
     setLoadingDiscountCode(false);
 
     if (status) {
-      setDiscountCode((prev) => ({
-        ...prev,
-        isValid: true,
-        id: data.data.find((d) => d.name === discountCode.value.trim()).id,
-        total: data.data.find((d) => d.name === discountCode.value.trim()).discountPercentage,
-      }));
+      const discount = data.data.find(
+        (d) => d.name === discountCode.value.trim()
+      );
+
+      if (discount) {
+        setDiscountCode((prev) => ({
+          ...prev,
+          isValid: true,
+          id: discount.id,
+          total: discount.discountPercentage,
+        }));
+      }
     }
   };
 
@@ -65,7 +95,7 @@ function ShoppingCart() {
     setLoadingPayment(true);
 
     const { status } = await $Payment.validate({
-      ...(discountCode.isValid ? { codeDiscount: discountCode.id } : {}),
+      ...(discountCode.isValid ? { codeDiscount: discountCode.value } : {}),
       payments: shoppingCart.map((item) => ({
         ...item,
         total:
@@ -83,7 +113,10 @@ function ShoppingCart() {
 
     if (status) {
       const name = shoppingCart
-        .map((p) => `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`)
+        .map(
+          (p) =>
+            `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`
+        )
         .join(", ");
 
       const mandatory = {
@@ -101,11 +134,20 @@ function ShoppingCart() {
 
       const aditional = {
         extra1: JSON.stringify(
-          shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))
+          shoppingCart.map((p) => ({
+            id_discount: p.package.id_discount,
+            id_product: p.package.id_product,
+          }))
         ),
         extra2: token,
-        confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
-        response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
+        extra3: null,
+        extra4: discountCode.isValid ? discountCode.id : null,
+        confirmation: `${
+          import.meta.env.VITE_API_URL
+        }/contract-transactional-payments`,
+        response: `${APP_URL}/checkout?products=${JSON.stringify(
+          shoppingCart.map((p) => ({ id: p.id }))
+        )}`,
       };
 
       const handler = window.ePayco.checkout.configure({
@@ -148,7 +190,11 @@ function ShoppingCart() {
                       },
                     })}
                   >
-                    <img src={element.package.url_image || IMAGE_PLACEHOLDER} alt="plant logo" width="100%" />
+                    <img
+                      src={element.package.url_image || IMAGE_PLACEHOLDER}
+                      alt="plant logo"
+                      width="100%"
+                    />
                   </Box>
 
                   <Grid
@@ -165,23 +211,52 @@ function ShoppingCart() {
                     <Typography fontSize={24} fontWeight={600}>
                       {element.package.quantity} {element.package.product_name}
                     </Typography>
-                    <Grid display="flex" alignItems="center" justifyContent="space-between" gap={4}>
+                    <Grid
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      gap={4}
+                    >
                       <Typography>Cantidad:</Typography>
-                      <Box display="flex" alignItems="center" border={1} borderRadius={10} borderColor="primary.main">
-                        <IconButton color="primary" size="small" onClick={() => updateQuantity("decrease", element.id)}>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        border={1}
+                        borderRadius={10}
+                        borderColor="primary.main"
+                      >
+                        <IconButton
+                          color="primary"
+                          size="small"
+                          onClick={() => updateQuantity("decrease", element.id)}
+                        >
                           <RemoveIcon />
                         </IconButton>
-                        <Box display="flex" justifyContent="center" paddingX={0.5} color="primary.main" width={32}>
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          paddingX={0.5}
+                          color="primary.main"
+                          width={32}
+                        >
                           {element.quantity}
                         </Box>
-                        <IconButton color="primary" size="small" onClick={() => updateQuantity("increase", element.id)}>
+                        <IconButton
+                          color="primary"
+                          size="small"
+                          onClick={() => updateQuantity("increase", element.id)}
+                        >
                           <AddIcon />
                         </IconButton>
                       </Box>
                     </Grid>
                     <Typography color="primary">
                       Precio:{" "}
-                      <Typography component="span" fontWeight={600} fontSize={22}>
+                      <Typography
+                        component="span"
+                        fontWeight={600}
+                        fontSize={22}
+                      >
                         $
                         <NumericFormat
                           displayType="text"
@@ -198,7 +273,10 @@ function ShoppingCart() {
                     </Typography>
                   </Grid>
                   <Grid marginLeft="auto">
-                    <IconButton color="error" onClick={() => remove(element.id)}>
+                    <IconButton
+                      color="error"
+                      onClick={() => remove(element.id)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Grid>
@@ -210,9 +288,18 @@ function ShoppingCart() {
                   size="small"
                   placeholder="Código de cupón"
                   value={discountCode.value}
-                  onChange={({ target }) => setDiscountCode((prev) => ({ ...prev, value: target.value }))}
+                  onChange={({ target }) =>
+                    setDiscountCode((prev) => ({
+                      ...prev,
+                      value: target.value,
+                    }))
+                  }
                 />
-                <LoadingButton loading={loadingDiscountCode} variant="contained" onClick={handleDiscountCode}>
+                <LoadingButton
+                  loading={loadingDiscountCode}
+                  variant="contained"
+                  onClick={handleDiscountCode}
+                >
                   Aplicar
                 </LoadingButton>
               </Grid>
@@ -233,16 +320,31 @@ function ShoppingCart() {
                 borderRadius={1}
                 bgcolor={alpha(Theme.palette.primary.main, 0.1)}
               >
-                <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
+                <Grid
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="flex-end"
+                  height={33}
+                >
                   <Typography color="primary" fontSize={16}>
                     Subtotal:
                   </Typography>
                   <Typography color="primary" fontWeight={600} fontSize={22}>
                     $
-                    <NumericFormat displayType="text" value={subTotal} thousandSeparator disabled />
+                    <NumericFormat
+                      displayType="text"
+                      value={subTotal}
+                      thousandSeparator
+                      disabled
+                    />
                   </Typography>
                 </Grid>
-                <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
+                <Grid
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="flex-end"
+                  height={33}
+                >
                   <Typography color="primary" fontSize={16}>
                     Descuento:
                   </Typography>
@@ -251,7 +353,12 @@ function ShoppingCart() {
                   </Typography>
                 </Grid>
                 {discountCode.isValid && (
-                  <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
+                  <Grid
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="flex-end"
+                    height={33}
+                  >
                     <Typography color="primary" fontSize={16}>
                       Cupón:
                     </Typography>
@@ -260,16 +367,32 @@ function ShoppingCart() {
                     </Typography>
                   </Grid>
                 )}
-                <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33} mt={2}>
+                <Grid
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="flex-end"
+                  height={33}
+                  mt={2}
+                >
                   <Typography color="primary" fontWeight={600}>
                     Total:
                   </Typography>
                   <Typography color="primary" fontWeight={600} fontSize={22}>
-                    $<NumericFormat displayType="text" value={total} thousandSeparator disabled />
+                    $
+                    <NumericFormat
+                      displayType="text"
+                      value={total}
+                      thousandSeparator
+                      disabled
+                    />
                   </Typography>
                 </Grid>
               </Box>
-              <LoadingButton loading={loadingPayment} variant="contained" onClick={handlePayment}>
+              <LoadingButton
+                loading={loadingPayment}
+                variant="contained"
+                onClick={handlePayment}
+              >
                 Proceder a pago
               </LoadingButton>
             </Grid>

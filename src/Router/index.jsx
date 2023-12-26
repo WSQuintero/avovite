@@ -25,6 +25,7 @@ import Transactions from "../Pages/Transactions";
 import Harvests from "../Pages/Harvests";
 import HarvestDetail from "../Pages/HarvestDetail";
 import HarvestCertificates from "../Pages/HarvestCertificates";
+import ForgotPassword from "../Pages/ForgotPassword";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -98,6 +99,10 @@ function Router() {
       element: <PrivateRoute component={Signup} meta={[HIDE_FOR_AUTH]} />,
     },
     {
+      path: "/forgot-password",
+      element: <PrivateRoute component={ForgotPassword} />,
+    },
+    {
       path: "/privacy-policy",
       element: <PrivacyPolicy />,
     },
@@ -107,37 +112,75 @@ function Router() {
     },
     {
       path: "/dashboard",
-      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Dashboard}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/vites",
-      element: <PrivateRoute component={Vites} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Vites}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/transactions",
-      element: <PrivateRoute component={Transactions} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Transactions}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/harvests",
-      element: <PrivateRoute component={Harvests} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Harvests}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/harvests/:contractId",
-      element: <PrivateRoute component={HarvestDetail} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={HarvestDetail}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/harvests/:contractId/certificates",
       element: (
-        <PrivateRoute component={HarvestCertificates} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />
+        <PrivateRoute
+          component={HarvestCertificates}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
       ),
     },
     {
       path: "/profile",
-      element: <PrivateRoute component={Profile} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+      element: (
+        <PrivateRoute
+          component={Profile}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]}
+        />
+      ),
     },
     {
       path: "/wallet",
-      element: <PrivateRoute component={Wallet} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+      element: (
+        <PrivateRoute
+          component={Wallet}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]}
+        />
+      ),
       children: [
         {
           path: "transfer/:bank?",
@@ -147,43 +190,90 @@ function Router() {
     },
     {
       path: "/info/:category?",
-      element: <PrivateRoute component={Info} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+      element: (
+        <PrivateRoute
+          component={Info}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]}
+        />
+      ),
     },
     {
       path: "/earnings",
-      element: <PrivateRoute component={Earnings} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Earnings}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/shop",
-      element: <PrivateRoute component={Shop} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Shop}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/cart",
-      element: <PrivateRoute component={ShoppingCart} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={ShoppingCart}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/checkout",
-      element: <PrivateRoute component={Checkout} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Checkout}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/admin/:section?",
-      element: <PrivateRoute component={Admin} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+      element: (
+        <PrivateRoute
+          component={Admin}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]}
+        />
+      ),
     },
     {
       path: "/posts/:id",
-      element: <PrivateRoute component={Post} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: (
+        <PrivateRoute
+          component={Post}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]}
+        />
+      ),
     },
     {
       path: "/contact-us",
-      element: <PrivateRoute component={Contact} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+      element: (
+        <PrivateRoute
+          component={Contact}
+          meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]}
+        />
+      ),
     },
     {
       path: "/validation/payment",
-      element: <PrivateRoute component={ContractPaymentValidation} meta={[REQUIRES_AUTH]} />,
+      element: (
+        <PrivateRoute
+          component={ContractPaymentValidation}
+          meta={[REQUIRES_AUTH]}
+        />
+      ),
     },
     {
       path: "/validation/confirmation",
-      element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />,
+      element: (
+        <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />
+      ),
     },
   ]);
 }
