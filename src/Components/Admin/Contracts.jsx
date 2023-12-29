@@ -648,7 +648,7 @@ const Contracts = () => {
                 />
               }
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               label="Habilitar pago hipotecario"
               control={
                 <Checkbox
@@ -658,7 +658,7 @@ const Contracts = () => {
                   }
                 />
               }
-            />
+            /> */}
 
             <Collapse in={contract?.mortgage_contract === 1}>
               <TiptapEditor

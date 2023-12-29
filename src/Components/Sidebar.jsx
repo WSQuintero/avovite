@@ -151,6 +151,10 @@ function Sidebar({ collapseOn = "" }) {
             name: "Usuarios",
             route: "/admin/users",
           },
+          {
+            name: "Whitelist",
+            route: "/admin/whitelist",
+          },
         ],
       },
       {
