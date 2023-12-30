@@ -35,7 +35,7 @@ function ContractPaymentValidation() {
 
     if (status) {
       if (!data.data?.payment?.length) {
-        // navigate("/");
+        navigate("/");
       }
 
       setContracts(data.data.payment);
