@@ -39,6 +39,10 @@ function Header({ isInvalidSession = false }) {
   const location = useLocation();
   const rutaActual = location.pathname;
 
+  console.log("rutaActual");
+  console.log(rutaActual);
+  console.log(location);
+
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
