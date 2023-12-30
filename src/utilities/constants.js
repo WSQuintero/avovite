@@ -41,3 +41,8 @@ export const HOW_DID_YOU_HEAR_ABOUT_US = {
   referral: "Referido",
   influencer: "Influencer - Youtuber",
 };
+
+export const CONTRACT_TYPES = {
+  mortgage: "Con Hipoteca",
+  standard: "Sin Hipoteca",
+};

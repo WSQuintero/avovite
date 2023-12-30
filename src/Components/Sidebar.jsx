@@ -1,18 +1,6 @@
 import { NavLink } from "react-router-dom";
-import {
-  Avatar,
-  Collapse,
-  Drawer,
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  Toolbar,
-  Typography,
-  alpha,
-} from "@mui/material";
-import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon, RecieptIcon } from "./Icons";
+import { Avatar, Collapse, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, Toolbar, Typography, alpha } from "@mui/material";
+import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon, RecieptIcon, AnnualIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -20,6 +8,7 @@ import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
 
 import background from "../assets/img/sidebar/background.png";
+import { CONTRACT_TYPES } from "../utilities/constants";
 
 const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   return (
@@ -82,13 +71,15 @@ function Sidebar({ collapseOn = "" }) {
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
 
+  console.log(user?.isWhitelisted());
+
   const routes = useMemo(
     () => [
       {
         icon: <EcommerceIcon />,
         name: "Comprar Vites",
         route: "/shop",
-        show: !user?.isAdmin(),
+        show: !user?.isAdmin() && !user?.isWhitelisted(),
       },
       {
         icon: <LoanIcon />,
@@ -113,6 +104,12 @@ function Sidebar({ collapseOn = "" }) {
         name: "Transacciones",
         route: "/transactions",
         show: !user?.isAdmin(),
+      },
+      {
+        icon: <AnnualIcon />,
+        name: "Pago por cuotas",
+        route: user?.isWhitelisted() === CONTRACT_TYPES.mortgage ? "/registro-contrato-hipoteca" : "/registro-contrato",
+        show: !user?.isAdmin() && user?.isWhitelisted(),
       },
       /* {
         icon: <GraphIcon />,
@@ -150,6 +147,10 @@ function Sidebar({ collapseOn = "" }) {
           {
             name: "Usuarios",
             route: "/admin/users",
+          },
+          {
+            name: "Whitelist",
+            route: "/admin/whitelist",
           },
         ],
       },
@@ -211,9 +212,7 @@ function Sidebar({ collapseOn = "" }) {
       <List>
         {routes.map(
           ({ icon, name, route, show, collapse, children }) =>
-            show && (
-              <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
-            )
+            show && <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
         )}
       </List>
     </Drawer>

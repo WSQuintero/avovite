@@ -9,6 +9,7 @@ import DateRanges from "../Components/Admin/DateRanges";
 import Shop from "../Components/Admin/Shop";
 import Concepts from "../Components/Admin/Concepts";
 import Users from "../Components/Admin/Users";
+import Whitelist from "../Components/Admin/Whitelist";
 
 function Admin() {
   const { section } = useParams();
@@ -39,6 +40,8 @@ function Admin() {
         <Concepts />
       ) : section === "users" ? (
         <Users />
+      ) : section === "whitelist" ? (
+        <Whitelist />
       ) : (
         <Contracts />
       )}

@@ -25,6 +25,7 @@ import Transactions from "../Pages/Transactions";
 import Harvests from "../Pages/Harvests";
 import HarvestDetail from "../Pages/HarvestDetail";
 import HarvestCertificates from "../Pages/HarvestCertificates";
+import ForgotPassword from "../Pages/ForgotPassword";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -98,6 +99,10 @@ function Router() {
       element: <PrivateRoute component={Signup} meta={[HIDE_FOR_AUTH]} />,
     },
     {
+      path: "/forgot-password",
+      element: <PrivateRoute component={ForgotPassword} />,
+    },
+    {
       path: "/privacy-policy",
       element: <PrivacyPolicy />,
     },
@@ -127,9 +132,7 @@ function Router() {
     },
     {
       path: "/harvests/:contractId/certificates",
-      element: (
-        <PrivateRoute component={HarvestCertificates} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />
-      ),
+      element: <PrivateRoute component={HarvestCertificates} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/profile",

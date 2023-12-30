@@ -17,7 +17,12 @@ const APP_URL = import.meta.env.VITE_APP_URL;
 function ShoppingCart() {
   const [{ token }] = useSession();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
-  const [discountCode, setDiscountCode] = useState({ value: "", total: 0, id: null, isValid: false });
+  const [discountCode, setDiscountCode] = useState({
+    value: "",
+    total: 0,
+    id: null,
+    isValid: false,
+  });
   const [loadingDiscountCode, setLoadingDiscountCode] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const $Discount = useMemo(() => new DiscountService(token), [token]);
@@ -25,11 +30,7 @@ function ShoppingCart() {
   const subTotal = useMemo(
     () =>
       shoppingCart.reduce(
-        (a, c) =>
-          a +
-          Math.round(
-            c.package.quantity * c.package.unitary_price * (1 - c.package.percent_discount / 100) * c.quantity
-          ),
+        (a, c) => a + Math.round(c.package.quantity * c.package.unitary_price * (1 - c.package.percent_discount / 100) * c.quantity),
         0
       ),
     [shoppingCart]
@@ -48,12 +49,16 @@ function ShoppingCart() {
     setLoadingDiscountCode(false);
 
     if (status) {
-      setDiscountCode((prev) => ({
-        ...prev,
-        isValid: true,
-        id: data.data.find((d) => d.name === discountCode.value.trim()).id,
-        total: data.data.find((d) => d.name === discountCode.value.trim()).discountPercentage,
-      }));
+      const discount = data.data.find((d) => d.name === discountCode.value.trim());
+
+      if (discount) {
+        setDiscountCode((prev) => ({
+          ...prev,
+          isValid: true,
+          id: discount.id,
+          total: discount.discountPercentage,
+        }));
+      }
     }
   };
 
@@ -65,16 +70,11 @@ function ShoppingCart() {
     setLoadingPayment(true);
 
     const { status } = await $Payment.validate({
-      ...(discountCode.isValid ? { codeDiscount: discountCode.id } : {}),
+      ...(discountCode.isValid ? { codeDiscount: discountCode.value } : {}),
       payments: shoppingCart.map((item) => ({
         ...item,
         total:
-          Math.round(
-            item.package.quantity *
-              item.package.unitary_price *
-              (1 - item.package.percent_discount / 100) *
-              item.quantity
-          ) *
+          Math.round(item.package.quantity * item.package.unitary_price * (1 - item.package.percent_discount / 100) * item.quantity) *
           (1 - discountCode.total / 100),
       })),
     });
@@ -82,9 +82,7 @@ function ShoppingCart() {
     setLoadingPayment(false);
 
     if (status) {
-      const name = shoppingCart
-        .map((p) => `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`)
-        .join(", ");
+      const name = shoppingCart.map((p) => `${p.package.quantity} ${p.package.product_name} (${p.package.discount_name})`).join(", ");
 
       const mandatory = {
         name,
@@ -100,17 +98,17 @@ function ShoppingCart() {
       };
 
       const aditional = {
-        extra1: JSON.stringify(
-          shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))
-        ),
+        extra1: JSON.stringify(shoppingCart.map((p) => ({ id_discount: p.package.id_discount, id_product: p.package.id_product }))),
         extra2: token,
+        extra3: null,
+        extra4: discountCode.isValid ? discountCode.id : null,
         confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
         response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
       };
 
       const handler = window.ePayco.checkout.configure({
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-        test: true,
+        // test: true,
       });
 
       handler.open({ ...mandatory, ...aditional });
@@ -210,7 +208,12 @@ function ShoppingCart() {
                   size="small"
                   placeholder="Código de cupón"
                   value={discountCode.value}
-                  onChange={({ target }) => setDiscountCode((prev) => ({ ...prev, value: target.value }))}
+                  onChange={({ target }) =>
+                    setDiscountCode((prev) => ({
+                      ...prev,
+                      value: target.value,
+                    }))
+                  }
                 />
                 <LoadingButton loading={loadingDiscountCode} variant="contained" onClick={handleDiscountCode}>
                   Aplicar
@@ -265,7 +268,8 @@ function ShoppingCart() {
                     Total:
                   </Typography>
                   <Typography color="primary" fontWeight={600} fontSize={22}>
-                    $<NumericFormat displayType="text" value={total} thousandSeparator disabled />
+                    $
+                    <NumericFormat displayType="text" value={total} thousandSeparator disabled />
                   </Typography>
                 </Grid>
               </Box>

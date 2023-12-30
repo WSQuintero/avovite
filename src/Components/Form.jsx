@@ -24,15 +24,8 @@ import PhoneField from "react-phone-input-2";
 import useConfig from "../Hooks/useConfig";
 import UtilsService from "../Services/utils.service";
 import LogoImage from "../assets/img/common/logo.svg";
-import {
-  CIVIL_STATUS,
-  DOCUMENT_TYPES,
-  EDUCATIONAL_LEVEL,
-  HOW_DID_YOU_HEAR_ABOUT_US,
-  OCCUPATION,
-} from "../utilities/constants";
+import { CIVIL_STATUS, DOCUMENT_TYPES, EDUCATIONAL_LEVEL, HOW_DID_YOU_HEAR_ABOUT_US, OCCUPATION } from "../utilities/constants";
 import { validateJSON } from "../utilities";
-import ContractService from "../Services/contract.service";
 import dayjs from "dayjs";
 import { NumericFormat } from "react-number-format";
 
@@ -160,7 +153,7 @@ const Column = ({ children }) => (
 
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
-function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = () => {} }) {
+function Form({ title, isMortgage = false, loading = false, initialState = null, onSubmit, onLoad = () => {} }) {
   const [{ constants }] = useConfig();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -297,10 +290,16 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
 
     onLoad({
       reset() {
-        setFormData(InitialState);
+        setFormData({ ...InitialState, ...(initialState || {}) });
       },
     });
   }, []);
+
+  useEffect(() => {
+    if (initialState) {
+      setFormData((prev) => ({ ...prev, ...initialState }));
+    }
+  }, [initialState]);
 
   return (
     <Stack>
@@ -331,25 +330,12 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
         <Row>
           <Column>
             <Label error={errors.fullname}>Nombre Completo</Label>
-            <TextField
-              required
-              fullWidth
-              name="fullname"
-              value={formData.fullname}
-              error={errors.fullname}
-              onChange={handleInputChange}
-            />
+            <TextField required fullWidth name="fullname" value={formData.fullname} error={errors.fullname} onChange={handleInputChange} />
           </Column>
           <Column>
             <Label error={errors.id_type}>Tipo de Documento</Label>
             <FormControl variant="outlined" fullWidth>
-              <Select
-                required
-                name="id_type"
-                value={formData.id_type}
-                error={errors.id_type}
-                onChange={handleInputChange}
-              >
+              <Select required name="id_type" value={formData.id_type} error={errors.id_type} onChange={handleInputChange}>
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -402,14 +388,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
 
           <Column>
             <Label error={errors.email}>Correo Electrónico</Label>
-            <TextField
-              required
-              fullWidth
-              name="email"
-              value={formData.email}
-              error={errors.email}
-              onChange={handleInputChange}
-            />
+            <TextField required fullWidth name="email" value={formData.email} error={errors.email} onChange={handleInputChange} />
           </Column>
         </Row>
 
@@ -488,12 +467,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
             <Column>
               <Label error={errorControlFormData.state}>Departamento de residencia</Label>
               <FormControl variant="outlined" fullWidth>
-                <Select
-                  name="state"
-                  value={controlFormData.state}
-                  onChange={handleControlInputChange}
-                  error={errorControlFormData.state}
-                >
+                <Select name="state" value={controlFormData.state} onChange={handleControlInputChange} error={errorControlFormData.state}>
                   <MenuItem value="-" selected disabled>
                     Seleccione una opción
                   </MenuItem>
@@ -513,12 +487,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
             <Label error={errors.cod_municipio}>Ciudad de residencia</Label>
             {formData.country_of_residence === "-" || formData.country_of_residence === "169" ? (
               <FormControl variant="outlined" fullWidth>
-                <Select
-                  name="cod_municipio"
-                  value={formData.cod_municipio}
-                  onChange={handleInputChange}
-                  error={errors.cod_municipio}
-                >
+                <Select name="cod_municipio" value={formData.cod_municipio} onChange={handleInputChange} error={errors.cod_municipio}>
                   <MenuItem value="-" selected disabled>
                     Seleccione una opción
                   </MenuItem>
@@ -530,12 +499,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
                 </Select>
               </FormControl>
             ) : (
-              <TextField
-                name="cod_municipio"
-                value={formData.cod_municipio}
-                onChange={handleInputChange}
-                error={errors.cod_municipio}
-              />
+              <TextField name="cod_municipio" value={formData.cod_municipio} onChange={handleInputChange} error={errors.cod_municipio} />
             )}
           </Column>
           <Column>
@@ -566,12 +530,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
           <Column>
             <Label error={errors.civil_status}>Estado civil</Label>
             <FormControl variant="outlined" fullWidth>
-              <Select
-                name="civil_status"
-                value={formData.civil_status}
-                error={errors.civil_status}
-                onChange={handleInputChange}
-              >
+              <Select name="civil_status" value={formData.civil_status} error={errors.civil_status} onChange={handleInputChange}>
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -633,12 +592,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
           <Column>
             <Label error={errors.occupation}>Usted es - Ocupación</Label>
             <FormControl variant="outlined" fullWidth>
-              <Select
-                name="occupation"
-                value={formData.occupation}
-                error={errors.occupation}
-                onChange={handleInputChange}
-              >
+              <Select name="occupation" value={formData.occupation} error={errors.occupation} onChange={handleInputChange}>
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -738,12 +692,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
           <Column>
             <Label error={errors.user_id_bank}>Banco</Label>
             <FormControl variant="outlined">
-              <Select
-                name="user_id_bank"
-                value={formData.user_id_bank}
-                onChange={handleInputChange}
-                error={errors.user_id_bank}
-              >
+              <Select name="user_id_bank" value={formData.user_id_bank} onChange={handleInputChange} error={errors.user_id_bank}>
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -866,9 +815,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
 
             <Row>
               <Column>
-                <Label error={errors.document_number_of_the_account_holder}>
-                  Número de Documento del titular de la cuenta
-                </Label>
+                <Label error={errors.document_number_of_the_account_holder}>Número de Documento del titular de la cuenta</Label>
                 <TextField
                   required
                   fullWidth
@@ -893,8 +840,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
         >
           Información del beneficiario
           <Typography variant="caption" display="block">
-            Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento
-            fortuito.
+            Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento fortuito.
           </Typography>
         </Typography>
 
@@ -1042,8 +988,7 @@ function Form({ title, isMortgage = false, loading = false, onSubmit, onLoad = (
         <Row>
           <Column>
             <Label error={errors.cod_municipio_beneficiary}>Ciudad de residencia</Label>
-            {formData.country_of_residence_beneficiary === "-" ||
-            formData.country_of_residence_beneficiary === "169" ? (
+            {formData.country_of_residence_beneficiary === "-" || formData.country_of_residence_beneficiary === "169" ? (
               <FormControl variant="outlined">
                 <Select
                   name="cod_municipio_beneficiary"
