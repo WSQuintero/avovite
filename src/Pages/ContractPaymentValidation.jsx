@@ -66,6 +66,9 @@ function ContractPaymentValidation() {
       response: `${import.meta.env.VITE_APP_URL}/validation/payment`,
     };
 
+    console.log("import.meta.env.VITE_EPAYCO_PUBLIC_KEY");
+    console.log(import.meta.env.VITE_EPAYCO_PUBLIC_KEY);
+
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
       // test: true,
