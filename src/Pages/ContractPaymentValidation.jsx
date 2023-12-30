@@ -67,8 +67,7 @@ function ContractPaymentValidation() {
     };
 
     const keyDebug = import.meta.env.VITE_EPAYCO_PUBLIC_KEY;
-
-    console.log("import.meta.env.VITE_EPAYCO_PUBLIC_KEY");
+    
     console.log(keyDebug);
 
     const handler = window.ePayco.checkout.configure({
