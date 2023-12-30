@@ -21,12 +21,12 @@ import { Warning as WarningIcon, HistoryEdu as ContractIcon } from "@mui/icons-m
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
-import { formatDate } from "../utilities";
+import { formatCurrency, formatDate } from "../utilities";
 
 function ContractPaymentValidation() {
   const navigate = useNavigate();
   const [{ token }] = useSession();
-  const [contracts, setContracts] = useState({});
+  const [contracts, setContracts] = useState([]);
   const [modal, setModal] = useState("warning");
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
 
@@ -34,21 +34,21 @@ function ContractPaymentValidation() {
     const { status, data } = await $Contract.get({ pendingToPay: true });
 
     if (status) {
-      if (!data.data?.pendings?.length) {
-        navigate("/");
+      if (!data.data?.payment?.length) {
+        // navigate("/");
       }
 
-      setContracts(data.data);
+      setContracts(data.data.payment);
     }
   };
 
   const handlePayment = async (contract) => {
     const mandatory = {
-      name: "Contrato pendiente",
-      description: "Contrato pendiente",
+      name: "Page del contrato pendiente",
+      description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
       invoice: `AV-${uuid()}`,
       currency: "cop",
-      amount: 150000,
+      amount: contract.payment,
       tax_base: "4000",
       tax: "500",
       tax_ico: "500",
@@ -59,10 +59,14 @@ function ContractPaymentValidation() {
     const aditional = {
       extra1: null,
       extra2: token,
-      extra3: contract.id,
-      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
+      extra3: contract.idcontrato,
+      extra4: null,
+      extra5: contract.dues,
+      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments/financed`,
       response: `${import.meta.env.VITE_APP_URL}/validation/payment`,
     };
+
+    console.log(aditional)
 
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
@@ -86,12 +90,12 @@ function ContractPaymentValidation() {
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">Pagos pendientes:</Typography>
           <List>
-            {(contracts.pendings || []).map((contract, index) => (
+            {contracts.map((contract, index) => (
               <ListItem
-                key={contract.id}
+                key={index}
                 onClick={() => handlePayment(contract)}
                 secondaryAction={
-                  <Button edge="end" variant="outlined" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Button edge="end" variant="outlined" color="warning" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     Pagar con
                     <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
                   </Button>
@@ -103,8 +107,8 @@ function ContractPaymentValidation() {
                     <ContractIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Contrato ${index + 1}`}
-                    secondary={`válido hasta el ${formatDate(contract.first_payment_date)}`}
+                    primary={contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente"}
+                    secondary={formatCurrency(contract.payment, "$")}
                     primaryTypographyProps={{ fontSize: 20, color: "primary" }}
                     secondaryTypographyProps={{ color: "text.main" }}
                   />
