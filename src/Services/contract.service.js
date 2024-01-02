@@ -17,9 +17,7 @@ export default class ContractService {
       } else if (id) {
         return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
       } else if (dateRangeId) {
-        return (
-          await axios.get(`${this.API_URL}/contract-date-range-profit/split/contracts/${dateRangeId}`, this.config)
-        ).data;
+        return (await axios.get(`${this.API_URL}/contract-date-range-profit/split/contracts/${dateRangeId}`, this.config)).data;
       } else {
         return (await axios.get(`${this.API_URL}/contracts`, this.config)).data;
       }
@@ -50,6 +48,10 @@ export default class ContractService {
 
   async delete({ id }) {
     return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/${id}`, this.config)).data);
+  }
+
+  async requestDelete({ id }) {
+    return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/request/cancel/contract/${id}`, this.config)).data);
   }
 
   async export() {

@@ -39,6 +39,7 @@ import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
 import DueService from "../../Services/due.service";
 import Image from "../Image";
+import { useSnackbar } from "notistack";
 
 const columns = [
   {
@@ -101,6 +102,7 @@ function formatDate(dateString) {
 }
 
 const Contracts = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [{ constants }] = useConfig();
   const [{ token }] = useSession();
   const $Shop = useShop();
@@ -164,8 +166,6 @@ const Contracts = () => {
 
   const fetchContractDues = async (contractId) => {
     const { status, data } = await $Due.get({ contractId });
-
-    console.log(data);
 
     if (status) {
       setContractDues({ id: contractId, dues: data.data });
@@ -255,14 +255,24 @@ const Contracts = () => {
     }
   };
 
-  const onDeleteContract = async (contractId) => {
-    const { status } = await $Contract.delete({ id: contractId });
+  const onDeleteContract = async (contractId, permanently) => {
+    if (permanently) {
+      const { status } = await $Contract.delete({ id: contractId });
 
-    if (status) {
-      setFeedback({ open: true, message: "Contrato eliminado exitosamente.", status: "success" });
-      setContracts((prev) => prev.filter((c) => c.id !== contractId));
+      if (status) {
+        enqueueSnackbar("Contrato eliminado exitosamente.", { variant: "success" });
+        setContracts((prev) => prev.filter((c) => c.id !== contractId));
+      } else {
+        enqueueSnackbar("Error al eliminar contrato.", { variant: "error" });
+      }
     } else {
-      setFeedback({ open: true, message: "Error al eliminar contrato.", status: "error" });
+      const { status } = await $Contract.requestDelete({ id: contractId });
+
+      if (status) {
+        enqueueSnackbar("Se ha notificado al usuario para eliminar el contrato.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Error al eliminar contrato.", { variant: "error" });
+      }
     }
   };
 
@@ -350,17 +360,29 @@ const Contracts = () => {
           >
             Ver cuotas
           </MenuItem>,
-          <MenuItem
-            key={0}
-            disabled={original.status_contracts !== 0}
-            sx={{ color: "error.main" }}
-            onClick={async () => {
-              closeMenu();
-              await onDeleteContract(original.id);
-            }}
-          >
-            Eliminar contrato
-          </MenuItem>,
+          original.status_contracts !== 0 ? (
+            <MenuItem
+              key={0}
+              sx={{ color: "error.main" }}
+              onClick={async () => {
+                closeMenu();
+                await onDeleteContract(original.id);
+              }}
+            >
+              Solicitar eliminar
+            </MenuItem>
+          ) : (
+            <MenuItem
+              key={0}
+              sx={{ color: "error.main" }}
+              onClick={async () => {
+                closeMenu();
+                await onDeleteContract(original.id, true);
+              }}
+            >
+              Eliminar contrato
+            </MenuItem>
+          ),
         ]}
         renderDetailPanel={({ row: { original: row } }) => (
           <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>

@@ -26,6 +26,7 @@ import Harvests from "../Pages/Harvests";
 import HarvestDetail from "../Pages/HarvestDetail";
 import HarvestCertificates from "../Pages/HarvestCertificates";
 import ForgotPassword from "../Pages/ForgotPassword";
+import Callback from "../Pages/Callback";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -187,6 +188,10 @@ function Router() {
     {
       path: "/validation/confirmation",
       element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/callback/:section",
+      element: <Callback />,
     },
   ]);
 }
