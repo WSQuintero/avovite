@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import {
   AppBar,
@@ -36,6 +36,9 @@ import useConfig from "../Hooks/useConfig";
 import useCart from "../Hooks/useCart";
 
 function Header({ isInvalidSession = false }) {
+  const location = useLocation();
+  const rutaActual = location.pathname;
+
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -135,7 +138,7 @@ function Header({ isInvalidSession = false }) {
             </Grid>
           </Toolbar>
 
-          {!isInvalidSession && (
+          {!isInvalidSession && rutaActual!="/dashboard" && (
             <Box
               position="absolute"
               zIndex={1}

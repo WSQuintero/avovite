@@ -68,7 +68,7 @@ function ContractPaymentValidation() {
 
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-      // test: true,
+      test: false
     });
 
     handler.open({ ...mandatory, ...aditional });

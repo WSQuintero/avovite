@@ -226,7 +226,7 @@ function Dashboard() {
                           Valor aprx de mis cosechas
                         </Typography>
                         <Typography fontSize={32} fontWeight={600} color="white">
-                          {formatCurrency(5000000, "$") || 0}
+                          {formatCurrency(0, "$") || 0}
                         </Typography>
                       </Stack>
                     </Stack>
