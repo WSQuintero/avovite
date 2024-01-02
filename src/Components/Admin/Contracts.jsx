@@ -24,6 +24,7 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
+  Stack,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
@@ -37,6 +38,7 @@ import useSession from "../../Hooks/useSession";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
 import DueService from "../../Services/due.service";
+import Image from "../Image";
 
 const columns = [
   {
@@ -125,20 +127,14 @@ const Contracts = () => {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
   const subTotalValue = useMemo(() => Math.round(contract.vites * unitValue), [contract.vites, unitValue]);
-  const discountValue = useMemo(
-    () => Math.round(subTotalValue * (contract.discount / 100)),
-    [subTotalValue, contract.discount]
-  );
+  const discountValue = useMemo(() => Math.round(subTotalValue * (contract.discount / 100)), [subTotalValue, contract.discount]);
   const totalValue = useMemo(() => subTotalValue - discountValue, [subTotalValue, discountValue]);
   const totalFinancingValue = useMemo(
     () => Math.round(totalValue - (contract.firstPaymentValue || 0)),
     [contract.firstPaymentValue, totalValue]
   );
   const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value || 0), 0), [dues]);
-  const totalSubDuesValue = useMemo(
-    () => totalFinancingValue - (totalDuesValue || 0),
-    [totalDuesValue, totalFinancingValue]
-  );
+  const totalSubDuesValue = useMemo(() => totalFinancingValue - (totalDuesValue || 0), [totalDuesValue, totalFinancingValue]);
   const contractIsDisabledToCreate = useMemo(
     () =>
       totalDuesValue !== totalFinancingValue ||
@@ -270,17 +266,6 @@ const Contracts = () => {
     }
   };
 
-  const onCheckDue = async ({ id, status }) => {
-    setLoadingDue(true);
-    const { status: reqStatus, data } = await $Due.updateStatus({ id, status });
-
-    if (reqStatus) {
-      setContractDues((prev) => ({ ...prev, dues: prev.dues.map((d) => (d.id === id ? { ...d, status } : d)) }));
-    }
-
-    setLoadingDue(false);
-  };
-
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -323,8 +308,7 @@ const Contracts = () => {
             onClick={() => {
               closeMenu();
               original.status_contracts === 0
-                ? (setSelectedContract(original),
-                  setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 })))
+                ? (setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 })))
                 : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
             }}
           >
@@ -683,35 +667,25 @@ const Contracts = () => {
                     </Typography>
                     <Grid display="flex" flexDirection="column" alignItems="flex-end">
                       <Typography fontSize={18} fontWeight={500} color="primary">
-                        Total: $
-                        <NumericFormat displayType="text" value={totalDuesValue} thousandSeparator></NumericFormat>
+                        Total: $<NumericFormat displayType="text" value={totalDuesValue} thousandSeparator></NumericFormat>
                       </Typography>
                       {totalSubDuesValue !== 0 && (
                         <Typography fontSize={12} color="error">
-                          Faltante: $
-                          <NumericFormat displayType="text" value={totalSubDuesValue} thousandSeparator></NumericFormat>
+                          Faltante: $<NumericFormat displayType="text" value={totalSubDuesValue} thousandSeparator></NumericFormat>
                         </Typography>
                       )}
                     </Grid>
                   </Grid>
                   {dues.map((due, index) => (
                     <Grid key={due.id} display="flex" gap={1}>
-                      <TextField
-                        label="ID"
-                        variant="outlined"
-                        defaultValue={index + 1}
-                        disabled
-                        sx={{ width: "100%" }}
-                      />
+                      <TextField label="ID" variant="outlined" defaultValue={index + 1} disabled sx={{ width: "100%" }} />
                       <DatePicker
                         label="Fecha"
                         value={dayjs(due.date)}
                         format="DD/MM/YYYY"
                         sx={{ width: "100%" }}
                         disablePast
-                        onChange={(value) =>
-                          setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, date: value.toDate() } : d)))
-                        }
+                        onChange={(value) => setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, date: value.toDate() } : d)))}
                       />
                       <NumericFormat
                         customInput={TextField}
@@ -732,10 +706,7 @@ const Contracts = () => {
                         }
                       />
                       <Box display="flex" justifyContent="center" alignItems="center">
-                        <IconButton
-                          color="error"
-                          onClick={() => setDues((prev) => prev.filter((d) => d.id !== due.id))}
-                        >
+                        <IconButton color="error" onClick={() => setDues((prev) => prev.filter((d) => d.id !== due.id))}>
                           <DeleteIcon />
                         </IconButton>
                       </Box>
@@ -797,29 +768,22 @@ const Contracts = () => {
               }
             >
               <Grid display="flex" gap={4} alignItems="center">
-                <ListItemText
-                  primary="Cuota"
-                  primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
-                />
+                <ListItemText primary="Cuota" primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
               </Grid>
             </ListItem>
             {contractDues.dues.map((due) => (
               <ListItem
                 key={due.id}
                 secondaryAction={
-                  <Checkbox
-                    edge="end"
-                    disabled={loadingDue}
-                    checked={due.status}
-                    onChange={({ target }) => onCheckDue({ id: due.id, status: target.checked ? 1 : 0 })}
-                  />
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <Box position="relative">
+                      <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
+                    </Box>
+                  </Stack>
                 }
               >
                 <Grid display="flex" gap={4} alignItems="center">
-                  <ListItemText
-                    primary={due.quota_number}
-                    primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
-                  />
+                  <ListItemText primary={due.quota_number} primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
                   <ListItemText
                     primary={formatCurrency(due.payment_amount, "$")}
                     secondary={formatLongDate(due.date_payment)}
