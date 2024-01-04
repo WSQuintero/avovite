@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon, RecieptIcon, AnnualIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
@@ -81,13 +81,11 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   );
 };
 
-function Sidebar({ collapseOn = "" }) {
+const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
-
-  console.log(user?.isWhitelisted());
 
   const routes = useMemo(
     () => [
@@ -243,6 +241,6 @@ function Sidebar({ collapseOn = "" }) {
       </Stack>
     </Drawer>
   );
-}
+});
 
 export default Sidebar;

@@ -15,7 +15,6 @@ function Callback() {
 
     if (section === "contract") {
       const action = searchParams.get("action");
-      const id = searchParams.get("id");
       const token = searchParams.get("token");
 
       setMessages({
@@ -25,7 +24,7 @@ function Callback() {
       });
 
       if (action === "delete-approved") {
-        const { status } = await $Callback.contract.delete({ id, token });
+        const { status } = await $Callback.contract.delete({ token });
 
         if (status) {
           setStep("success");

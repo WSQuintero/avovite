@@ -109,7 +109,7 @@ function ContractValidation() {
                     <ContractIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Contrato ${index + 1}`}
+                    primary={`Contrato AV-${contract.id}`}
                     secondary={`válido hasta el ${formatDate(contract.first_payment_date)}`}
                     primaryTypographyProps={{ fontSize: 20, color: "primary" }}
                     secondaryTypographyProps={{ color: "text.main" }}

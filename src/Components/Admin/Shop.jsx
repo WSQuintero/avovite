@@ -524,10 +524,10 @@ function Coupons({ service: $Shop, state, feedback }) {
     id: null,
     name: "",
     discountPercentage: "",
-    expires_at: "",
+    expirationDate: "",
   });
   const [modal, setModal] = useState(null);
-  const isValidProduct = useMemo(() => coupon.name && coupon.expires_at && coupon.discountPercentage, [coupon]);
+  const isValidProduct = useMemo(() => coupon.name && coupon.expirationDate && coupon.discountPercentage, [coupon]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -546,7 +546,7 @@ function Coupons({ service: $Shop, state, feedback }) {
         format: (value) => value,
       },
       {
-        id: "expires_at",
+        id: "expirationDate",
         label: "Vence el",
         align: "left",
         disablePadding: false,
@@ -655,11 +655,11 @@ function Coupons({ service: $Shop, state, feedback }) {
               <Grid display="flex" gap={2}>
                 <DatePicker
                   label="Fecha de expiración"
-                  value={dayjs(coupon.expires_at)}
+                  value={dayjs(coupon.expirationDate)}
                   format="DD MMMM YYYY"
                   sx={{ width: "100%" }}
                   slotProps={{ textField: { error: false } }}
-                  onChange={(value) => onChangeFields({ target: { name: "expires_at", value: value.toDate() } })}
+                  onChange={(value) => onChangeFields({ target: { name: "expirationDate", value: value.toDate() } })}
                 />
               </Grid>
             </Grid>

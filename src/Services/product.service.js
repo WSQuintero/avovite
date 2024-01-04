@@ -35,7 +35,7 @@ export default class ShopService {
       get: async () =>
         await handleCall(async () => (await axios.get(`${this.API_URL}/discountCode`, config)).data),
       add: async ({ id, ...body }) =>
-        await handleCall(async () => (await axios.postForm(`${this.API_URL}/discountCode`, body, config)).data),
+        await handleCall(async () => (await axios.post(`${this.API_URL}/discountCode`, body, config)).data),
       update: async ({ id, ...body }) =>
         await handleCall(
           async () => (await axios.putForm(`${this.API_URL}/discountCode/${id}`, body, config)).data
