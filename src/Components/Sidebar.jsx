@@ -149,6 +149,10 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             route: "/admin/contracts",
           },
           {
+            name: "Cosechas",
+            route: "/admin/harvests",
+          },
+          {
             name: "Lapsos",
             route: "/admin/date-ranges",
           },

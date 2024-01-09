@@ -10,8 +10,10 @@ import Concepts from "../Components/Admin/Concepts";
 import Suppliers from "../Components/Admin/Suppliers";
 import Users from "../Components/Admin/Users";
 import Whitelist from "../Components/Admin/Whitelist";
+import Harvests from "../Components/Admin/Harvests";
 
 const SECTIONS = {
+  harvests: <Harvests />,
   "date-ranges": <DateRanges />,
   blog: <Blog />,
   shop: <Shop />,
