@@ -387,6 +387,13 @@ const Contracts = () => {
         renderDetailPanel={({ row: { original: row } }) => (
           <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
             <Grid display="flex" flexDirection="column" gap={1}>
+              <Typography variant="h4">Información general</Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de contrato:{" "}
+                </Typography>
+                AV-{row.id}
+              </Typography>
               <Typography variant="h4">Información financiera</Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
@@ -400,6 +407,14 @@ const Contracts = () => {
                 </Typography>
                 {row.percentage_discount}%
               </Typography>
+              {row.discountCodeId !== 0 && (
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Cupón de descuento:{" "}
+                  </Typography>
+                  {row.discountCodeId}%
+                </Typography>
+              )}
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Valor descontado:{" "}
@@ -463,12 +478,6 @@ const Contracts = () => {
                   Banco:{" "}
                 </Typography>
                 {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
-              </Typography>
-              <Typography>
-                <Typography component="span" fontWeight={600}>
-                  Número de contrato:{" "}
-                </Typography>
-                {row.contract_number}
               </Typography>
             </Grid>
           </Grid>

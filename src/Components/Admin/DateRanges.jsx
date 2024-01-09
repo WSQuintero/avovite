@@ -807,23 +807,13 @@ function DateRanges() {
                 multiple
                 label="Contratos"
                 labelId="label-bill-splitting-select-contract"
-                renderValue={(selected) => selected.join(", ")}
+                renderValue={(selected) => selected.map(c => `AV-${c}`).join(", ")}
                 value={billSplitting.contracts}
-                IconComponent={() =>
-                  loading.contracts ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" marginRight={2}>
-                      <CircularProgress size={24} />
-                    </Box>
-                  ) : (
-                    <ArrowDownIcon sx={{ marginRight: 0.8 }} />
-                  )
-                }
-              >
                 onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}>
                 {contracts.map((c) => (
                   <MenuItem key={c.id_contract} value={c.id_contract}>
                     <Checkbox checked={billSplitting.contracts.indexOf(c.id_contract) > -1} />
-                    <ListItemText primary={`${c.contract_number || "-"} ${c.fullname}`} />
+                    <ListItemText primary={`AV-${c.id_contract || "-"} ${c.fullname}`} />
                   </MenuItem>
                 ))}
               </Select>

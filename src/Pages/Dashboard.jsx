@@ -156,7 +156,7 @@ function Dashboard() {
                           VITES
                         </Typography>
                         <Typography fontSize={40} fontWeight={700} color="white" lineHeight={1} textAlign="center">
-                          {user.vites_balance}
+                          {user.totalVites}
                         </Typography>
                       </Stack>
                     </Box>

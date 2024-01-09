@@ -120,6 +120,12 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         show: !user?.isAdmin(),
       },
       {
+        icon: <RecieptIcon />,
+        name: "Pagos",
+        route: "/payments",
+        show: !user?.isAdmin(),
+      },
+      {
         icon: <AnnualIcon />,
         name: "Pago por cuotas",
         route: user?.isWhitelisted() === CONTRACT_TYPES.mortgage ? "/registro-contrato-hipoteca" : "/registro-contrato",
@@ -157,6 +163,10 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
           {
             name: "Tienda",
             route: "/admin/shop",
+          },
+          {
+            name: "Proveedores",
+            route: "/admin/suppliers",
           },
           {
             name: "Usuarios",

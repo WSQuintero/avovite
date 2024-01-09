@@ -27,6 +27,7 @@ import HarvestDetail from "../Pages/HarvestDetail";
 import HarvestCertificates from "../Pages/HarvestCertificates";
 import ForgotPassword from "../Pages/ForgotPassword";
 import Callback from "../Pages/Callback";
+import Payments from "../Pages/Payments";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -122,6 +123,10 @@ function Router() {
     {
       path: "/transactions",
       element: <PrivateRoute component={Transactions} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+    },
+    {
+      path: "/payments",
+      element: <PrivateRoute component={Payments} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/harvests",

@@ -97,7 +97,7 @@ function ShoppingCart() {
     setLoadingPayment(false);
 
     if (status) {
-      const name = `${selectedProduct.package.quantity} ${selectedProduct.package.product_name}`;
+      const name = `${selectedProduct.package.quantity} ${selectedProduct.package.product_name} (×${selectedProduct.quantity})`;
 
       const mandatory = {
         name,
@@ -113,15 +113,19 @@ function ShoppingCart() {
       };
 
       const aditional = {
-        extra1: JSON.stringify([{ id_discount: selectedProduct.package.id_discount, id_product: selectedProduct.package.id_product }]),
+        extra1: JSON.stringify([
+          {
+            id_discount: selectedProduct.package.id_discount,
+            id_product: selectedProduct.package.id_product,
+            quantity: selectedProduct.quantity,
+          },
+        ]),
         extra2: token,
         extra3: null,
         extra4: discountCode.isValid ? JSON.stringify(discountCode) : null,
         confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
         response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
       };
-
-      console.log(aditional);
 
       const handler = window.ePayco.checkout.configure({
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,

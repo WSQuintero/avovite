@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Tab, Tabs } from "@mui/material";
 import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
 import Contracts from "../Components/Admin/Contracts";
@@ -8,8 +7,19 @@ import Blog from "../Components/Admin/Blog";
 import DateRanges from "../Components/Admin/DateRanges";
 import Shop from "../Components/Admin/Shop";
 import Concepts from "../Components/Admin/Concepts";
+import Suppliers from "../Components/Admin/Suppliers";
 import Users from "../Components/Admin/Users";
 import Whitelist from "../Components/Admin/Whitelist";
+
+const SECTIONS = {
+  "date-ranges": <DateRanges />,
+  blog: <Blog />,
+  shop: <Shop />,
+  concepts: <Concepts />,
+  suppliers: <Suppliers />,
+  users: <Users />,
+  whitelist: <Whitelist />,
+};
 
 function Admin() {
   const { section } = useParams();
@@ -28,25 +38,7 @@ function Admin() {
     }
   }, [session.user]);
 
-  return (
-    <PageWrapper collapseSidebar="admin">
-      {section === "date-ranges" ? (
-        <DateRanges />
-      ) : section === "blog" ? (
-        <Blog />
-      ) : section === "shop" ? (
-        <Shop />
-      ) : section === "concepts" ? (
-        <Concepts />
-      ) : section === "users" ? (
-        <Users />
-      ) : section === "whitelist" ? (
-        <Whitelist />
-      ) : (
-        <Contracts />
-      )}
-    </PageWrapper>
-  );
+  return <PageWrapper collapseSidebar="admin">{SECTIONS[section] || <Contracts />}</PageWrapper>;
 }
 
 export default Admin;
