@@ -11,13 +11,13 @@ function EnhancedTableRow({ headCells, row, collapse = null }) {
       <TableRow tabIndex={-1} hover>
         {headCells.map((headCell, index) => (
           <TableCell key={index} align={headCell.align} style={{ width: headCell.width }}>
-            {headCell.format(row[headCell.id], row, onCollapse)}
+            {headCell.format ? headCell.format(row[headCell.id], row, onCollapse) : row[headCell.id]}
           </TableCell>
         ))}
       </TableRow>
       {collapse && (
         <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12} >
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               {collapse(row)}
             </Collapse>

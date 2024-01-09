@@ -113,12 +113,12 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         route: "/harvests",
         show: !user?.isAdmin(),
       },
-      {
-        icon: <RecieptIcon />,
-        name: "Transacciones",
-        route: "/transactions",
-        show: !user?.isAdmin(),
-      },
+      // {
+      //   icon: <RecieptIcon />,
+      //   name: "Transacciones",
+      //   route: "/transactions",
+      //   show: !user?.isAdmin(),
+      // },
       {
         icon: <RecieptIcon />,
         name: "Pagos",

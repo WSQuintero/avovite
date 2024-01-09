@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Alert,
   Box,
   Button,
   Checkbox,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -26,13 +24,7 @@ import {
   Typography,
   alpha,
 } from "@mui/material";
-import {
-  DeleteOutlined as DeleteIcon,
-  EditOutlined as EditIcon,
-  AddOutlined as AddIcon,
-  KeyboardArrowDown as CollapseIcon,
-  ArrowDropDown as ArrowDownIcon,
-} from "@mui/icons-material";
+import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, KeyboardArrowDown as CollapseIcon } from "@mui/icons-material";
 import { NumericFormat } from "react-number-format";
 import useSession from "../../Hooks/useSession";
 import DateRangeService from "../../Services/daterange.service";
@@ -385,10 +377,7 @@ function DateRanges() {
       profits[currentProfit.id_contract_date_range] &&
         setProfits((prev) => ({
           ...prev,
-          [currentProfit.id_contract_date_range]: [
-            ...prev[currentProfit.id_contract_date_range],
-            { id: data.data, ...body },
-          ],
+          [currentProfit.id_contract_date_range]: [...prev[currentProfit.id_contract_date_range], { id: data.data, ...body }],
         }));
       setShowModal(null);
       clearFields("Profit");
@@ -633,11 +622,7 @@ function DateRanges() {
           >
             Cancelar
           </Button>
-          <Button
-            variant="contained"
-            onClick={newDateRange.id ? onUpdateDateRange : onCreateDateRange}
-            disabled={!isValidDateRange}
-          >
+          <Button variant="contained" onClick={newDateRange.id ? onUpdateDateRange : onCreateDateRange} disabled={!isValidDateRange}>
             {newDateRange.id ? "Actualizar" : "Crear"}
           </Button>
         </DialogActions>
@@ -807,9 +792,10 @@ function DateRanges() {
                 multiple
                 label="Contratos"
                 labelId="label-bill-splitting-select-contract"
-                renderValue={(selected) => selected.map(c => `AV-${c}`).join(", ")}
+                renderValue={(selected) => selected.map((c) => `AV-${c}`).join(", ")}
                 value={billSplitting.contracts}
-                onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}>
+                onChange={(event) => setBillSplitting((prev) => ({ ...prev, contracts: event.target.value }))}
+              >
                 {contracts.map((c) => (
                   <MenuItem key={c.id_contract} value={c.id_contract}>
                     <Checkbox checked={billSplitting.contracts.indexOf(c.id_contract) > -1} />

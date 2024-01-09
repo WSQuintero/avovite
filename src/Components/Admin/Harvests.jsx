@@ -9,29 +9,46 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemText,
+  MenuItem,
   Snackbar,
   TextField,
+  Typography,
+  alpha,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, KeyboardArrowDown as CollapseIcon } from "@mui/icons-material";
 import HarvestService from "../../Services/harvest.service";
+import ContractService from "../../Services/contract.service";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import { formatCurrency } from "../../utilities";
+import { LoadingButton } from "@mui/lab";
 
-const InitialState = { id: null, total_kilograms: "", harvest_date: "" };
+const RowState = { id: null, total_kilograms: "", harvest_date: "" };
+const CollapseState = { id: null, contract_number: "", harvest_id: "" };
 
 function Harvests() {
   const [session] = useSession();
+  const [contracts, setContracts] = useState({});
   const [rows, setRows] = useState([]);
-  const [newRow, setNewRow] = useState(InitialState);
+  const [collapse, setCollapse] = useState({});
+  const [newRow, setNewRow] = useState(RowState);
+  const [newCollapse, setNewCollapse] = useState(CollapseState);
   const [modal, setModal] = useState(null);
-  const [loading, setLoading] = useState({ fetching: true });
+  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_date, [newRow]);
+  const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
+
   const $Harvest = useMemo(() => (session.token ? new HarvestService(session.token) : null), [session.token]);
+  const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
+
   const tableHeadCells = useMemo(
     () => [
       {
@@ -60,8 +77,19 @@ function Harvests() {
         label: "",
         align: "left",
         disablePadding: false,
-        format: (value, row) => (
-          <Grid display="flex" justifyContent="flex-end" gap={1}>
+        format: (value, row, onCollapse) => (
+          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+            <IconButton
+              onClick={async () => {
+                onCollapse();
+
+                if (!collapse[row.id]) {
+                  fetchCollapse(row.id);
+                }
+              }}
+            >
+              <CollapseIcon />
+            </IconButton>
             <IconButton
               onClick={() => {
                 setNewRow({ id: row.id, total_kilograms: row.total_kilograms, harvest_date: row.harvest_date });
@@ -79,11 +107,74 @@ function Harvests() {
             >
               <DeleteIcon />
             </IconButton>
+            <LoadingButton loading={loading.split === row.id} size="small" variant="contained" onClick={() => onSplit(row.id)}>
+              Split
+            </LoadingButton>
           </Grid>
         ),
       },
     ],
-    []
+    [collapse, loading.split]
+  );
+  const tableCollapse = useCallback(
+    (row) => (
+      <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
+        <Grid display="flex" justifyContent="space-between">
+          <Typography variant="h4">Rentabilidades de cosecha</Typography>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              setNewCollapse((prev) => ({ ...prev, harvest_id: row.id }));
+              setModal("collapse.create");
+            }}
+          >
+            Crear
+          </Button>
+        </Grid>
+        {loading.collapse === row.id ? (
+          <LinearProgress />
+        ) : (
+          <List>
+            {(collapse[row.id] || []).map((p) => (
+              <ListItem
+                key={p.id}
+                secondaryAction={
+                  <Grid display="flex" justifyContent="flex-end" gap={1}>
+                    <IconButton
+                      onClick={() => {
+                        setNewCollapse(p);
+                        setModal("collapse.update");
+                      }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() => {
+                        setNewCollapse(p);
+                        setModal("collapse.delete");
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
+                }
+                sx={(t) => ({
+                  borderRadius: 1,
+                  "&:hover": {
+                    backgroundColor: alpha(t.palette.primary.main, 0.1),
+                  },
+                })}
+              >
+                <ListItemText primary={`AV-${p.contract_number}`} />
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Grid>
+    ),
+    [collapse, loading.collapse]
   );
 
   const resetFeedback = () => {
@@ -95,9 +186,15 @@ function Harvests() {
     setNewRow((prev) => ({ ...prev, [name]: value }));
   };
 
+  const onChangeFieldsCollapse = ({ target }) => {
+    const { name, value } = target;
+    setNewCollapse((prev) => ({ ...prev, [name]: value }));
+  };
+
   const onClearFields = () => {
     setModal(null);
-    setNewRow(InitialState);
+    setNewRow(RowState);
+    setNewCollapse(CollapseState);
   };
 
   const onCreate = async (event) => {
@@ -150,13 +247,104 @@ function Harvests() {
     }
   };
 
-  const fetchData = async () => {
-    const { status, data } = await $Harvest.get();
+  const onCreateCollapse = async (event) => {
+    event.preventDefault();
+
+    if (!isValidFormCollapse) {
+      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
+      return;
+    }
+
+    const { status } = await $Harvest.profitability.add(newCollapse);
 
     if (status) {
-      setRows(data.data);
-      setLoading((prev) => ({ ...prev, fetching: false }));
+      setFeedback({ open: true, message: "Rentabilidad de cosecha creada exitosamente.", status: "success" });
+      fetchCollapse(newCollapse.harvest_id);
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+  };
+
+  const onUpdateCollapse = async (event) => {
+    event.preventDefault();
+
+    if (!isValidFormCollapse) {
+      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
+      return;
+    }
+
+    const { status } = await $Harvest.profitability.update({
+      id: newCollapse.id,
+      contract_number: newCollapse.contract_number,
+      harvest_id: newCollapse.harvest_id,
+    });
+
+    if (status) {
+      setFeedback({ open: true, message: "Rentabilidad de cosecha actualizada exitosamente.", status: "success" });
+      fetchCollapse(newCollapse.harvest_id);
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  const onDeleteCollapse = async () => {
+    const { status } = await $Harvest.profitability.delete(newCollapse);
+
+    if (status) {
+      setFeedback({ open: true, message: "Rentabilidad de cosecha eliminada exitosamente.", status: "success" });
+      fetchCollapse(newCollapse.harvest_id);
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  const onSplit = async (id) => {
+    setLoading((prev) => ({ ...prev, split: id }));
+
+    const { status } = await $Harvest.split({ id });
+
+    if (status) {
+      setFeedback({ open: true, message: "Split generado exitosamente.", status: "success" });
+      fetchCollapse(id);
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, split: null }));
+  };
+
+  const fetchData = async () => {
+    await (async () => {
+      const { status, data } = await $Harvest.get();
+
+      if (status) {
+        setRows(data.data);
+      }
+    })();
+    await (async () => {
+      const { status, data } = await $Contract.get();
+
+      if (status) {
+        setContracts(data.data.reduce((acc, c) => ({ ...acc, [c.id]: c }), {}));
+      }
+    })();
+
+    setLoading((prev) => ({ ...prev, fetching: false }));
+  };
+
+  const fetchCollapse = async (id_harvest) => {
+    setLoading((prev) => ({ ...prev, collapse: id_harvest }));
+
+    const { status, data } = await $Harvest.profitability.get({ id_harvest });
+
+    if (status) {
+      setCollapse((prev) => ({ ...prev, [id_harvest]: data.data }));
+    }
+
+    setLoading((prev) => ({ ...prev, collapse: null }));
   };
 
   useEffect(() => {
@@ -175,7 +363,7 @@ function Harvests() {
             Crear
           </Button>
         </Grid>
-        <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
+        <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} collapse={tableCollapse} />
       </Grid>
 
       <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
@@ -236,6 +424,64 @@ function Harvests() {
             Cancelar
           </Button>
           <Button variant="contained" onClick={onDelete}>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={modal === "collapse.create" || modal === "collapse.update"} onClose={onClearFields} maxWidth="md" fullWidth>
+        <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} rentabilidad de la cosecha</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            display="flex"
+            flexDirection="column"
+            gap={3}
+            padding={1}
+            onSubmit={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
+          >
+            <Grid display="flex" flexDirection="column" gap={2}>
+              <TextField
+                select
+                fullWidth
+                label="Contrato"
+                name="contract_number"
+                value={newCollapse.contract_number}
+                onChange={onChangeFieldsCollapse}
+              >
+                {Object.values(contracts).map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    AV-{c.id}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+            <Button onClick={onClearFields}>Cancelar</Button>
+            <Button
+              onClick={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
+              variant="contained"
+              disabled={!isValidFormCollapse}
+            >
+              {modal === "collapse.create" ? "Crear" : "Editar"}
+            </Button>
+          </Grid>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog maxWidth="sm" open={modal === "collapse.delete"} onClose={onClearFields} fullWidth>
+        <DialogTitle>Eliminar rentabilidad de la cosecha de la lista</DialogTitle>
+        <DialogContent>
+          <DialogContentText>¿Estás seguro que quieres eliminar esta rentabilidad de la cosecha de la lista?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClearFields}>
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={onDeleteCollapse}>
             Eliminar
           </Button>
         </DialogActions>
