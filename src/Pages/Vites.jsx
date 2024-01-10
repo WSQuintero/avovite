@@ -18,8 +18,9 @@ function Vites() {
         header: "Número de vites",
       },
       {
-        accessorKey: "contract_number",
+        accessorKey: "id",
         header: "Número de contrato",
+        Cell: ({ renderedCellValue }) => <>AV-{renderedCellValue}</>,
       },
       {
         accessorKey: "first_payment_date",

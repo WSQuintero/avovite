@@ -1,74 +1,51 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Typography, Container, Stack, Box, Button, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import { formatCurrency } from "../utilities";
-import { Link as RouterLink } from "react-router-dom";
-
-const data = [
-  {
-    id: "7159",
-    date: new Date(),
-    weight: 280,
-    value: 2200000,
-    contract_id: "4010",
-    contract_vites: 50,
-  },
-  {
-    id: "3122",
-    date: new Date(),
-    weight: 300,
-    value: 2200000,
-    contract_id: "7616",
-    contract_vites: 20,
-  },
-  {
-    id: "3880",
-    date: new Date(),
-    weight: 750,
-    value: 2200000,
-    contract_id: "4578",
-    contract_vites: 1,
-  },
-];
+import ContractService from "../Services/contract.service";
+import useSession from "../Hooks/useSession";
+import useAsyncEffect from "../Hooks/useAsyncEffect";
+import EnhancedTable from "../Components/EnhancedTable";
 
 function Harvests() {
+  const [{ token }] = useSession();
+  const [contracts, setContracts] = useState([]);
+  const [loading, setLoading] = useState({ fetching: true });
+  const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
   const columns = useMemo(
     () => [
       {
-        accessorKey: "contract_id",
-        header: "Numero de contrato",
-        Cell: ({ renderedCellValue }) => (
-          <Link component={RouterLink} to={`/harvests/${renderedCellValue}`}>
-            {renderedCellValue}
-          </Link>
-        ),
+        id: "contract_number",
+        label: "Numero de contrato",
+        format: (value) => `AV-${value}`,
       },
       {
-        accessorKey: "contract_vites",
-        header: "Numero de VITE",
+        id: "total_vite",
+        label: "Numero de VITE",
       },
       {
-        accessorKey: "date",
-        header: "Fecha de Cosecha",
-        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
+        id: "dateCreate",
+        label: "Fecha de Cosecha",
+        format: (value) => dayjs(new Date(new Date())).format("DD MMMM YYYY"),
       },
       {
-        accessorKey: "weight",
-        header: "Kg Cosechados",
-        Cell: ({ renderedCellValue }) => <>{renderedCellValue} Kg</>,
+        id: "kg_correspondence",
+        label: "Kg Cosechados",
+        format: (value) => formatCurrency(Number(value || 0).toFixed(2)),
       },
       {
-        accessorKey: "value",
-        header: "Valor de Cosecha",
-        Cell: ({ renderedCellValue }) => <>${formatCurrency(renderedCellValue)} COP</>,
+        id: "value",
+        label: "Valor de Cosecha",
+        format: (value) => <>-</>,
       },
       {
-        accessorKey: "id",
-        header: "",
-        Cell: ({ renderedCellValue }) => (
+        id: "id",
+        label: "",
+        format: (value) => (
           <Stack direction="row" spacing={1}>
             <Button
               component={RouterLink}
@@ -76,15 +53,11 @@ function Harvests() {
               target="_blank"
               size="small"
               variant="contained"
+              sx={{ flexShrink: 0 }}
             >
               Descargar factura
             </Button>
-            <Button
-              component={RouterLink}
-              to={`/harvests/${renderedCellValue}/certificates`}
-              size="small"
-              variant="contained"
-            >
+            <Button component={RouterLink} to={`/harvests/${value}/certificates`} size="small" variant="contained" sx={{ flexShrink: 0 }}>
               Certificados
             </Button>
           </Stack>
@@ -93,10 +66,26 @@ function Harvests() {
     ],
     []
   );
+
+  const fetchContracts = async () => {
+    const { status, data } = await $Contract.get({ harvest: true });
+
+    if (status) {
+      setContracts(data.data);
+    }
+  };
+
+  useAsyncEffect(async () => {
+    console.log("Fetching");
+    await fetchContracts();
+
+    setLoading((prev) => ({ ...prev, fetching: false }));
+  }, []);
+
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
           </Box>
@@ -104,7 +93,7 @@ function Harvests() {
             Cosechas
           </Typography>
         </Stack>
-        <Table columns={columns} data={data} />
+        <EnhancedTable loading={loading.fetching} headCells={columns} rows={contracts} />
       </Container>
     </PageWrapper>
   );

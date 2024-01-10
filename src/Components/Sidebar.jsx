@@ -145,6 +145,14 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         collapse: collapseOn === "admin",
         children: [
           {
+            name: "Blog",
+            route: "/admin/blog",
+          },
+          {
+            name: "Conceptos",
+            route: "/admin/concepts",
+          },
+          {
             name: "Contratos",
             route: "/admin/contracts",
           },
@@ -157,24 +165,16 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             route: "/admin/date-ranges",
           },
           {
-            name: "Conceptos",
-            route: "/admin/concepts",
+            name: "Proveedores",
+            route: "/admin/suppliers",
           },
           {
             name: "Split de pagos",
             route: "/admin/payment-split",
           },
           {
-            name: "Blog",
-            route: "/admin/blog",
-          },
-          {
             name: "Tienda",
             route: "/admin/shop",
-          },
-          {
-            name: "Proveedores",
-            route: "/admin/suppliers",
           },
           {
             name: "Usuarios",

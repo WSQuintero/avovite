@@ -7,26 +7,26 @@ import IconWhite from "../assets/img/common/icon_white.svg";
 import Flex from "../utilities/Flex";
 import Theme from "../Theme";
 
-const data = [
-  {
-    id: 1,
-    name: "Contrato",
-    url: "https://sccrtc.org/wp-content/uploads/2010/09/SampleContract-Shuttle.pdf",
-  },
-  {
-    id: 2,
-    name: "Recibo de compra",
-    url: "https://sccrtc.org/wp-content/uploads/2010/09/SampleContract-Shuttle.pdf",
-  },
-  {
-    id: 2,
-    name: "Certificado de cosecha",
-    url: "https://sccrtc.org/wp-content/uploads/2010/09/SampleContract-Shuttle.pdf",
-  },
-];
-
 function HarvestCertificates() {
   const { contractId } = useParams();
+
+  const certificates = [
+    {
+      id: 1,
+      name: "Contrato",
+      url: `${import.meta.env.VITE_API_URL}/contracts/files/${contractId}`,
+    },
+    {
+      id: 2,
+      name: "Recibo de compra",
+      url: `${import.meta.env.VITE_API_URL}/contracts/files/${contractId}`,
+    },
+    {
+      id: 2,
+      name: "Certificado de cosecha",
+      url: `${import.meta.env.VITE_API_URL}/contracts/certificado/depropiedad/${contractId}`,
+    },
+  ];
 
   return (
     <PageWrapper>
@@ -41,11 +41,11 @@ function HarvestCertificates() {
             </Typography>
           </Stack>
           <Stack direction="row" spacing={4} flexWrap="wrap">
-            {data.map((item) => (
+            {certificates.map((certificate) => (
               <Stack
-                key={item.id}
+                key={certificate.id}
                 component={Link}
-                href={item.url}
+                href={certificate.url}
                 target="_blank"
                 underline="none"
                 position="relative"
@@ -61,7 +61,7 @@ function HarvestCertificates() {
                   <AnnualIcon color={Theme.palette.primary.main} sx={{ fontSize: 48 }}></AnnualIcon>
                 </Box>
                 <Typography fontWeight={600} color="white" maxWidth="calc(100% - 64px)">
-                  {item.name}
+                  {certificate.name}
                 </Typography>
                 <Typography variant="caption" color="white" maxWidth="calc(100% - 64px)">
                   Haz clic para descargar Contrato

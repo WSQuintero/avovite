@@ -185,12 +185,14 @@ function Suppliers() {
             <Grid display="flex" flexDirection="column" gap={2}>
               <TextField label="Nombre" name="name" value={newRow.name} onChange={onChangeFields} fullWidth />
               <TextField
+                multiline
+                fullWidth
+                rows={12}
                 label="Descripción"
                 name="asWork"
                 value={newRow.asWork}
                 onChange={onChangeFields}
-                helperText="Al menos 10 caracteres."
-                fullWidth
+                helperText="Mínimo 10 caracteres"
               />
             </Grid>
           </Box>

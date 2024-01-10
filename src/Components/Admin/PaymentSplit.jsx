@@ -16,6 +16,7 @@ import {
   LinearProgress,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   MenuItem,
   Snackbar,
@@ -141,6 +142,14 @@ function PaymentSplit() {
           <LinearProgress />
         ) : (
           <List>
+            <ListItem>
+              <ListItemIcon sx={{ minWidth: 128 + 8 }}>
+                <Typography color="primary.main" fontWeight={600}>
+                  Contrato
+                </Typography>
+              </ListItemIcon>
+              <ListItemText primary="Correspondencia" primaryTypographyProps={{ color: "primary.main", fontWeight: 600 }} />
+            </ListItem>
             {(collapse[row.id] || []).map((p) => (
               <ListItem
                 key={p.id}
@@ -172,7 +181,10 @@ function PaymentSplit() {
                   },
                 })}
               >
-                <ListItemText primary={`AV-${p.contract_number}`} />
+                <ListItemIcon sx={{ minWidth: 128 + 8 }}>
+                  <Typography color="text.primary">AV-{p.contract_number}</Typography>
+                </ListItemIcon>
+                <ListItemText primary={formatCurrency(p.payment_correspondence, "$")} />
               </ListItem>
             ))}
           </List>

@@ -17,7 +17,7 @@ function EnhancedTableRow({ headCells, row, collapse = null }) {
       </TableRow>
       {collapse && (
         <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+          <TableCell sx={{ borderColor: open ? "divider" : "transparent" }} style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               {collapse(row)}
             </Collapse>

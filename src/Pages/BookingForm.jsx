@@ -14,6 +14,7 @@ import { HighlightOff as ErrorIcon, CheckCircle as CheckIcon } from "@mui/icons-
 import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
 import ContractService from "../Services/contract.service";
+import { DEV_FORMS } from "../utilities/constants";
 
 const BookingForm = () => {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ const BookingForm = () => {
       <Form
         title="Aplicación Standard"
         loading={loading}
+        initialState={DEV_FORMS[0]}
         onSubmit={handleSubmit}
         onLoad={({ reset }) => setResetForm(reset)}
       />

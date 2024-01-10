@@ -1,4 +1,4 @@
-const testing = false;
+const testing = true;
 
 export default {
   async pay({

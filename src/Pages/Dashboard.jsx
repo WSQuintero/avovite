@@ -30,6 +30,7 @@ import RechartsTooltip from "../Components/RechartsTooltip";
 import DialogRequestAvocados from "../Components/Dialogs/RequestAvocados";
 import { useSnackbar } from "notistack";
 import DialogSellAvocados from "../Components/Dialogs/SellAvocados";
+import SaleService from "../Services/sale.service";
 
 const data = [
   {
@@ -63,6 +64,7 @@ const data = [
 ];
 
 function Dashboard() {
+  const [{ token }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const [{ user }] = useSession();
   const [config, { setOnboarding }] = useConfig();
@@ -70,12 +72,26 @@ function Dashboard() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState("");
+  const $Sale = useMemo(() => (token ? new SaleService(token) : null), [token]);
 
-  const handleUpdateSellingMode = (mode, formData) => {
-    setModal("");
-    enqueueSnackbar("Se ha actualizado para el contrato seleccionado", {
-      variant: "success",
-    });
+  const handleUpdateSellingMode = async (mode, formData) => {
+    const methods = {
+      "request-avocados": "request",
+      "sell-avocados": "sell",
+    };
+
+    console.log(mode);
+
+    const { status, data } = await $Sale[methods[mode]](formData);
+
+    console.log(status, data);
+
+    if (status) {
+      setModal("");
+      enqueueSnackbar(`Se ha creado petición para ${mode === "request-avocados" ? "solicitar" : "vender a terceros"} tus VITES`, {
+        variant: "success",
+      });
+    }
   };
 
   const fetchPosts = async () => {
@@ -230,12 +246,7 @@ function Dashboard() {
                         </Typography>
                       </Stack>
                     </Stack>
-                    <img
-                      src={IconWhite}
-                      alt="Icon white"
-                      height={64}
-                      style={{ position: "absolute", right: 16, bottom: 16 }}
-                    />
+                    <img src={IconWhite} alt="Icon white" height={64} style={{ position: "absolute", right: 16, bottom: 16 }} />
                   </Box>
                 </Grid>
                 <Grid
@@ -326,9 +337,7 @@ function Dashboard() {
                 <Typography variant="h2">Recientes</Typography>
                 <Grid display="flex" flexDirection="column" gap={2}>
                   {loading
-                    ? [...Array(3).keys()].map((post) => (
-                        <Skeleton key={post} height={240} sx={{ transform: "none" }} />
-                      ))
+                    ? [...Array(3).keys()].map((post) => <Skeleton key={post} height={240} sx={{ transform: "none" }} />)
                     : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} />)}
                 </Grid>
               </Grid>
@@ -352,15 +361,14 @@ function Dashboard() {
               Términos y Condiciones
             </Typography>
             <Typography textAlign="justify">
-              Términos y Condiciones de Uso de la Aplicación Avovite app Por favor, lea detenidamente los siguientes
-              términos y condiciones antes de utilizar la aplicación (&quot; Avovite app&quot;). Estos Términos
-              constituyen un acuerdo legalmente vinculante entre usted (&quot;el Usuario&quot;) y [Avovite S.A.S] Al
-              utilizar la Aplicación, usted acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con
-              alguno de los términos o condiciones aquí establecidos, le pedimos que no utilice la Aplicación.
-              Aplicación, usted acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con alguno de
-              los términos o condiciones aquí establecidos, le pedimos que no utilice la Aplicación. Aplicación, usted
-              acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con alguno de los términos o
-              condiciones aquí establecidos, le pedimos que no utilice la Aplicación.
+              Términos y Condiciones de Uso de la Aplicación Avovite app Por favor, lea detenidamente los siguientes términos y condiciones
+              antes de utilizar la aplicación (&quot; Avovite app&quot;). Estos Términos constituyen un acuerdo legalmente vinculante entre
+              usted (&quot;el Usuario&quot;) y [Avovite S.A.S] Al utilizar la Aplicación, usted acepta cumplir con estos Términos en su
+              totalidad. Si no está de acuerdo con alguno de los términos o condiciones aquí establecidos, le pedimos que no utilice la
+              Aplicación. Aplicación, usted acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con alguno de los
+              términos o condiciones aquí establecidos, le pedimos que no utilice la Aplicación. Aplicación, usted acepta cumplir con estos
+              Términos en su totalidad. Si no está de acuerdo con alguno de los términos o condiciones aquí establecidos, le pedimos que no
+              utilice la Aplicación.
             </Typography>
             <Grid display="flex" gap={2}>
               <Button variant="contained" size="large" fullWidth onClick={() => setOnboarding(false)}>

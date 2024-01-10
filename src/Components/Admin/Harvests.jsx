@@ -12,9 +12,15 @@ import {
   LinearProgress,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   MenuItem,
   Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
   alpha,
@@ -63,7 +69,7 @@ function Harvests() {
         label: "Kilogramos",
         align: "left",
         disablePadding: false,
-        format: (value) => formatCurrency(value),
+        format: (value) => formatCurrency(value, "", " Kg"),
       },
       {
         id: "harvest_date",
@@ -135,42 +141,46 @@ function Harvests() {
         {loading.collapse === row.id ? (
           <LinearProgress />
         ) : (
-          <List>
-            {(collapse[row.id] || []).map((p) => (
-              <ListItem
-                key={p.id}
-                secondaryAction={
-                  <Grid display="flex" justifyContent="flex-end" gap={1}>
-                    <IconButton
-                      onClick={() => {
-                        setNewCollapse(p);
-                        setModal("collapse.update");
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setNewCollapse(p);
-                        setModal("collapse.delete");
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                }
-                sx={(t) => ({
-                  borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: alpha(t.palette.primary.main, 0.1),
-                  },
-                })}
-              >
-                <ListItemText primary={`AV-${p.contract_number}`} />
-              </ListItem>
-            ))}
-          </List>
+          <Table size="small" sx={{ "& th, & td": { paddingY: 0, border: "none" } }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Contrato</TableCell>
+                <TableCell>Kilogramos</TableCell>
+                <TableCell>Estado</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(collapse[row.id] || []).map((row) => (
+                <TableRow hover key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                  <TableCell>AV-{row.contract_number}</TableCell>
+                  <TableCell>{row.kg_correspondence ? formatCurrency(row.kg_correspondence || 0, "", " Kg") : "-"}</TableCell>
+                  <TableCell>Estado</TableCell>
+                  <TableCell>
+                    <Grid display="flex" justifyContent="flex-end" gap={1}>
+                      {/* <IconButton
+                        onClick={() => {
+                          setNewCollapse(row);
+                          setModal("collapse.update");
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton> */}
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setNewCollapse(row);
+                          setModal("collapse.delete");
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </Grid>
     ),
@@ -358,7 +368,27 @@ function Harvests() {
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
+          <Box position="relative">
+            <Button variant="contained" size="small">
+              Importar
+            </Button>
+            <input
+              type="file"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+                aspectRatio: 1,
+                opacity: 0,
+              }}
+              // onChange={({ target }) => onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })}
+            />
+          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
