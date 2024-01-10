@@ -11,10 +11,12 @@ import Suppliers from "../Components/Admin/Suppliers";
 import Users from "../Components/Admin/Users";
 import Whitelist from "../Components/Admin/Whitelist";
 import Harvests from "../Components/Admin/Harvests";
+import PaymentSplit from "../Components/Admin/PaymentSplit";
 
 const SECTIONS = {
   harvests: <Harvests />,
   "date-ranges": <DateRanges />,
+  "payment-split": <PaymentSplit />,
   blog: <Blog />,
   shop: <Shop />,
   concepts: <Concepts />,

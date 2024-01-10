@@ -24,6 +24,8 @@ import useSession from "../Hooks/useSession";
 import EnhancedTable from "../Components/EnhancedTable";
 import DueService from "../Services/due.service";
 import { NumericFormat } from "react-number-format";
+import $Epayco from "../Services/epayco.service";
+import { v4 as uuid } from "uuid";
 
 const data = [
   {
@@ -68,6 +70,7 @@ function Payments() {
         label: "Vites",
         align: "left",
         disablePadding: false,
+        format: (value) => Number(value),
       },
       {
         id: "fullname",
@@ -139,17 +142,25 @@ function Payments() {
   const tableCollapse = useCallback(
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
-        <Typography variant="h4">Pagos del contrato</Typography>
         {loading.collapse === row.id ? (
           <LinearProgress />
         ) : (
-          <List>
+          <List sx={{ mb: 2 }}>
             {(history[row.id] || []).map((p) => (
               <ListItem
                 key={p.id}
                 secondaryAction={
                   <Grid display="flex" justifyContent="flex-end" gap={1}>
-                    <Button disabled={p.status === 1}>{p.status === 0 ? "Pagar" : "Pagado"}</Button>
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      sx={{ alignItems: "center", gap: 1 }}
+                      disabled={p.status === 1}
+                      onClick={() => handlePlayment(p)}
+                    >
+                      {p.status === 0 ? "Pagar" : "Pagado"}
+                      <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
+                    </Button>
                   </Grid>
                 }
                 sx={(t) => ({
@@ -173,6 +184,22 @@ function Payments() {
     ),
     [history, loading.collapse]
   );
+
+  const handlePlayment = async (due) => {
+    await $Epayco.pay({
+      name: `Pago del contrato AV-${due.id_contracts}`,
+      description: due.quota_number !== 0 ? "Cuota del contrato" : "Primer pago del contrato",
+      invoice: `AV-${uuid()}`,
+      amount: due.payment_amount,
+      extra1: null,
+      extra2: token,
+      extra3: due.id_contracts,
+      extra4: null,
+      extra5: due.quota_number,
+      confirmation: `contract-transactional-payments/financed`,
+      response: `validation/payment`,
+    });
+  };
 
   const fetchContractDues = async (contractId) => {
     setLoading((prev) => ({ ...prev, collapse: contractId }));

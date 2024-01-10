@@ -161,6 +161,10 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             route: "/admin/concepts",
           },
           {
+            name: "Split de pagos",
+            route: "/admin/payment-split",
+          },
+          {
             name: "Blog",
             route: "/admin/blog",
           },
