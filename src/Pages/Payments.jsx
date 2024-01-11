@@ -174,7 +174,7 @@ function Payments() {
       extra2: token,
       extra3: due.id_contracts,
       extra4: null,
-      extra5: due.quota_number,
+      extra5: due.id,
       confirmationUrl: `contract-transactional-payments/financed`,
       redirectionUrl: `validation/payment`,
     });

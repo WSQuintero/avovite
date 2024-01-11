@@ -16,6 +16,7 @@ import {
   ListItemText,
   MenuItem,
   Snackbar,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -36,7 +37,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 
-const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "" };
+const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
 
 function Harvests() {
@@ -49,7 +50,7 @@ function Harvests() {
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_date, [newRow]);
+  const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_state && newRow.sowing_date && newRow.harvest_date, [newRow]);
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
 
   const $Harvest = useMemo(() => (session.token ? new HarvestService(session.token) : null), [session.token]);
@@ -84,6 +85,12 @@ function Harvests() {
         align: "left",
         disablePadding: false,
         format: (value) => dayjs(value).format("DD MMMM YYYY"),
+      },
+      {
+        id: "harvest_state",
+        label: "Estado",
+        align: "left",
+        disablePadding: false,
       },
       {
         id: "",
@@ -436,44 +443,49 @@ function Harvests() {
             onSubmit={modal === "create" ? onCreate : onUpdate}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
-              <TextField
-                label="Kilogramos"
-                name="total_kilograms"
-                type="number"
-                value={newRow.total_kilograms}
-                onChange={onChangeFields}
-                fullWidth
-              />
-              <DatePicker
-                label="Fecha de siembra"
-                value={dayjs(newRow.sowing_date)}
-                format="DD/MM/YYYY"
-                slotProps={{ textField: { error: false } }}
-                onChange={(value) =>
-                  onChangeFields({
-                    target: {
-                      name: "sowing_date",
-                      value: value.toDate(),
-                    },
-                  })
-                }
-                sx={{ width: "100%" }}
-              />
-              <DatePicker
-                label="Fecha de cosecha"
-                value={dayjs(newRow.harvest_date)}
-                format="DD/MM/YYYY"
-                slotProps={{ textField: { error: false } }}
-                onChange={(value) =>
-                  onChangeFields({
-                    target: {
-                      name: "harvest_date",
-                      value: value.toDate(),
-                    },
-                  })
-                }
-                sx={{ width: "100%" }}
-              />
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                <TextField
+                  label="Kilogramos"
+                  name="total_kilograms"
+                  type="number"
+                  value={newRow.total_kilograms}
+                  onChange={onChangeFields}
+                  fullWidth
+                />
+                <TextField label="Estado" name="harvest_state" value={newRow.harvest_state} onChange={onChangeFields} fullWidth />
+              </Stack>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                <DatePicker
+                  label="Fecha de siembra"
+                  value={dayjs(newRow.sowing_date)}
+                  format="DD/MM/YYYY"
+                  slotProps={{ textField: { error: false } }}
+                  onChange={(value) =>
+                    onChangeFields({
+                      target: {
+                        name: "sowing_date",
+                        value: value.toDate(),
+                      },
+                    })
+                  }
+                  sx={{ width: "100%" }}
+                />
+                <DatePicker
+                  label="Fecha de cosecha"
+                  value={dayjs(newRow.harvest_date)}
+                  format="DD/MM/YYYY"
+                  slotProps={{ textField: { error: false } }}
+                  onChange={(value) =>
+                    onChangeFields({
+                      target: {
+                        name: "harvest_date",
+                        value: value.toDate(),
+                      },
+                    })
+                  }
+                  sx={{ width: "100%" }}
+                />
+              </Stack>
             </Grid>
           </Box>
         </DialogContent>

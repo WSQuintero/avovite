@@ -93,37 +93,6 @@ function ShoppingCart() {
       return;
     }
 
-    const mandatory = {
-      name,
-      description: name,
-      invoice: `AV-${uuid()}`,
-      currency: "cop",
-      amount: total,
-      tax_base: "4000",
-      tax: "500",
-      tax_ico: "500",
-      country: "co",
-      lang: "es",
-    };
-
-    const aditional = {
-      extra1: JSON.stringify([
-        {
-          id_discount: selectedProduct.package.id_discount,
-          id_product: selectedProduct.package.id_product,
-          quantity: selectedProduct.quantity,
-        },
-      ]),
-      extra2: token,
-      extra3: null,
-      extra4: discountCode.isValid ? JSON.stringify(discountCode) : null,
-      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
-      response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
-    };
-
-    console.log(mandatory);
-    console.log(aditional);
-
     setLoadingPayment(true);
 
     const { status } = await $Payment.validate({

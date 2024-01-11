@@ -1,31 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Skeleton,
-  Typography,
-  Stack,
-  Grow,
-  TextField,
-} from "@mui/material";
-import { ResponsiveContainer, Legend, Tooltip, LineChart, CartesianGrid, XAxis, YAxis, Line } from "recharts";
+import { Box, Button, Container, Grid, Skeleton, Typography, Stack, Icon, Tooltip as MuiTooltip } from "@mui/material";
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, Line, Tooltip } from "recharts";
 import useConfig from "../Hooks/useConfig";
 import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import Post from "../Components/Post";
 import useSession from "../Hooks/useSession";
-import { BriefcaseIcon, BrokenIcon, InvestIcon, Statistic2Icon, TargetIcon } from "../Components/Icons";
+import { BrokenIcon, InvestIcon, Statistic2Icon, TargetIcon } from "../Components/Icons";
 import Theme from "../Theme";
 import { formatCurrency, formatDate } from "../utilities";
-import VitesImage from "../assets/img/common/vites.png";
 import IconWhite from "../assets/img/common/icon_white.svg";
-import { Check } from "@mui/icons-material";
 import RechartsTooltip from "../Components/RechartsTooltip";
 import DialogRequestAvocados from "../Components/Dialogs/RequestAvocados";
 import { useSnackbar } from "notistack";
@@ -64,9 +48,8 @@ const data = [
 ];
 
 function Dashboard() {
-  const [{ token }] = useSession();
+  const [{ user, token }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
-  const [{ user }] = useSession();
   const [config, { setOnboarding }] = useConfig();
   const $Post = usePost();
   const [posts, setPosts] = useState([]);
@@ -308,30 +291,54 @@ function Dashboard() {
                       },
                     })}
                   >
-                    <Button
-                      color="customWhite"
-                      size="large"
-                      variant="contained"
-                      sx={{ justifyContent: "flex-start" }}
-                      startIcon={<BrokenIcon color={Theme.palette.primary.main} />}
-                      onClick={() => setModal("request-avocados")}
-                    >
-                      <Typography textAlign="left" lineHeight={1} py={1} color="primary.main">
-                        Solicitar mis frutos
-                      </Typography>
-                    </Button>
-                    <Button
-                      color="customWhite"
-                      size="large"
-                      variant="contained"
-                      sx={{ justifyContent: "flex-start" }}
-                      startIcon={<TargetIcon color={Theme.palette.primary.main} />}
-                      onClick={() => setModal("sell-avocados")}
-                    >
-                      <Typography textAlign="left" lineHeight={1} py={1} color="primary.main">
-                        Autorizo vender mis frutos por Avovite o un tercero
-                      </Typography>
-                    </Button>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Button
+                        fullWidth
+                        color="customWhite"
+                        size="large"
+                        variant="contained"
+                        sx={{ justifyContent: "flex-start" }}
+                        startIcon={<BrokenIcon color={Theme.palette.primary.main} />}
+                        onClick={() => setModal("request-avocados")}
+                      >
+                        <Typography textAlign="left" lineHeight={1} py={1} color="primary.main">
+                          Solicitar mis frutos
+                        </Typography>
+                      </Button>
+                      {user.sales_request.length > 0 && (
+                        <MuiTooltip
+                          title={`Ya has creado previamente una solicitud de retiro para los contratos ${user.sales_request
+                            .map((sale) => `AV-${sale.id_contract}`)
+                            .join(", ")}`}
+                        >
+                          <Icon className="fa-info-circle" sx={{ color: "white" }}></Icon>
+                        </MuiTooltip>
+                      )}
+                    </Stack>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Button
+                        fullWidth
+                        color="customWhite"
+                        size="large"
+                        variant="contained"
+                        sx={{ justifyContent: "flex-start" }}
+                        startIcon={<TargetIcon color={Theme.palette.primary.main} />}
+                        onClick={() => setModal("sell-avocados")}
+                      >
+                        <Typography textAlign="left" lineHeight={1} py={1} color="primary.main">
+                          Autorizo vender mis frutos por Avovite o un tercero
+                        </Typography>
+                      </Button>
+                      {user.sales_third_party_selling.length > 0 && (
+                        <MuiTooltip
+                          title={`Ya has creado previamente una solicitud de venta para los contratos ${user.sales_third_party_selling
+                            .map((sale) => `AV-${sale.id_contract}`)
+                            .join(", ")}`}
+                        >
+                          <Icon className="fa-info-circle" sx={{ color: "white" }}></Icon>
+                        </MuiTooltip>
+                      )}
+                    </Stack>
                   </Box>
                 </Grid>
               </Stack>
