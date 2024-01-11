@@ -14,6 +14,9 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Stack,
+  Collapse,
+  Alert,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import useCart from "../Hooks/useCart";
@@ -55,7 +58,10 @@ function ShoppingCart() {
         : 0,
     [selectedProduct]
   );
-  const total = useMemo(() => subTotal * (1 - discountCode.total / 100), [subTotal, discountCode.total]);
+  const total = useMemo(
+    () => subTotal * (selectedProduct?.package.percent_discount <= discountCode.total ? 1 - discountCode.total / 100 : 1),
+    [subTotal, selectedProduct?.package.percent_discount, discountCode.total]
+  );
 
   const handleDiscountCode = async () => {
     if (!discountCode.value) {
@@ -86,6 +92,37 @@ function ShoppingCart() {
     if (!shoppingCart || !shoppingCart.length || !product) {
       return;
     }
+
+    const mandatory = {
+      name,
+      description: name,
+      invoice: `AV-${uuid()}`,
+      currency: "cop",
+      amount: total,
+      tax_base: "4000",
+      tax: "500",
+      tax_ico: "500",
+      country: "co",
+      lang: "es",
+    };
+
+    const aditional = {
+      extra1: JSON.stringify([
+        {
+          id_discount: selectedProduct.package.id_discount,
+          id_product: selectedProduct.package.id_product,
+          quantity: selectedProduct.quantity,
+        },
+      ]),
+      extra2: token,
+      extra3: null,
+      extra4: discountCode.isValid ? JSON.stringify(discountCode) : null,
+      confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments`,
+      response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
+    };
+
+    console.log(mandatory);
+    console.log(aditional);
 
     setLoadingPayment(true);
 
@@ -134,7 +171,7 @@ function ShoppingCart() {
 
       handler.open({ ...mandatory, ...aditional });
     } else {
-      enqueueSnackbar("Ha ocurrido un error inesperado. Ponte en contacto con el administrador.", { variant: "error" });
+      enqueueSnackbar("Ha ocurrido un error validando el pago. Ponte en contacto con el administrador.", { variant: "error" });
     }
   };
 
@@ -156,6 +193,7 @@ function ShoppingCart() {
                       label={
                         <Grid
                           className={product === element.id ? "active" : ""}
+                          position="relative"
                           display="flex"
                           alignItems="center"
                           gap={4}
@@ -185,6 +223,25 @@ function ShoppingCart() {
                           >
                             <img src={element.package.url_image || IMAGE_PLACEHOLDER} alt="plant logo" width="100%" />
                           </Box>
+                          {element.package.percent_discount > 0 && (
+                            <Box
+                              position="absolute"
+                              zIndex={1}
+                              bottom={8}
+                              left={8}
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                              width={32}
+                              height={32}
+                              borderRadius={2}
+                              bgcolor="primary.main"
+                            >
+                              <Typography fontSize={12} fontWeight={500} color="white">
+                                -{element.package.percent_discount}%
+                              </Typography>
+                            </Box>
+                          )}
 
                           <Grid
                             display="flex"
@@ -200,7 +257,7 @@ function ShoppingCart() {
                             <Typography fontSize={24} fontWeight={600}>
                               {element.package.quantity} {element.package.product_name}
                             </Typography>
-                            <Grid display="flex" alignItems="center" justifyContent="space-between" gap={4}>
+                            <Grid display="flex" alignItems="center" gap={2}>
                               <Typography>Cantidad:</Typography>
                               <Box display="flex" alignItems="center" border={1} borderRadius={10} borderColor="primary.main">
                                 <IconButton color="primary" size="small" onClick={() => updateQuantity("decrease", element.id)}>
@@ -214,8 +271,8 @@ function ShoppingCart() {
                                 </IconButton>
                               </Box>
                             </Grid>
-                            <Typography color="primary">
-                              Precio:{" "}
+                            <Stack direction="row" spacing={1} alignItems="center" color="primary.main">
+                              Precio:
                               <Typography component="span" fontWeight={600} fontSize={22}>
                                 $
                                 <NumericFormat
@@ -230,7 +287,18 @@ function ShoppingCart() {
                                   disabled
                                 />
                               </Typography>
-                            </Typography>
+                              {element.package.percent_discount > 0 && (
+                                <Typography component="span" fontWeight={600} fontSize={16} sx={{ textDecoration: "line-through" }}>
+                                  $
+                                  <NumericFormat
+                                    displayType="text"
+                                    value={Math.round(element.package.quantity * element.package.unitary_price * element.quantity)}
+                                    thousandSeparator
+                                    disabled
+                                  />
+                                </Typography>
+                              )}
+                            </Stack>
                           </Grid>
                           <Grid marginLeft="auto">
                             <IconButton
@@ -251,23 +319,24 @@ function ShoppingCart() {
                   ))}
                 </RadioGroup>
               </FormControl>
-              <Grid display="flex" gap={2}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="Código de cupón"
-                  value={discountCode.value}
-                  onChange={({ target }) =>
-                    setDiscountCode((prev) => ({
-                      ...prev,
-                      value: target.value,
-                    }))
-                  }
-                />
-                <LoadingButton loading={loadingDiscountCode} variant="contained" onClick={handleDiscountCode}>
-                  Aplicar
-                </LoadingButton>
-              </Grid>
+            </Grid>
+            <Grid display="flex" gap={2} mx={4}>
+              <TextField
+                fullWidth
+                disabled={discountCode.isValid}
+                size="small"
+                placeholder="Código de cupón"
+                value={discountCode.value}
+                onChange={({ target }) =>
+                  setDiscountCode((prev) => ({
+                    ...prev,
+                    value: target.value,
+                  }))
+                }
+              />
+              <LoadingButton loading={loadingDiscountCode} disabled={discountCode.isValid} variant="contained" onClick={handleDiscountCode}>
+                Aplicar
+              </LoadingButton>
             </Grid>
           </Grid>
         </Grid>
@@ -289,7 +358,7 @@ function ShoppingCart() {
                   <Typography color="primary" fontSize={16}>
                     Subtotal:
                   </Typography>
-                  <Typography color="primary" fontWeight={600} fontSize={22}>
+                  <Typography color="primary" fontSize={18}>
                     $
                     <NumericFormat displayType="text" value={subTotal} thousandSeparator disabled />
                   </Typography>
@@ -298,20 +367,23 @@ function ShoppingCart() {
                   <Typography color="primary" fontSize={16}>
                     Descuento:
                   </Typography>
-                  <Typography color="primary" fontWeight={600} fontSize={22}>
-                    {discountCode.total}%
+                  <Typography color="primary" fontSize={18}>
+                    {selectedProduct?.package.percent_discount > discountCode.total
+                      ? selectedProduct?.package.percent_discount
+                      : discountCode.total}
+                    %
                   </Typography>
                 </Grid>
-                {discountCode.isValid && (
+                <Collapse in={discountCode.isValid && selectedProduct?.package.percent_discount <= discountCode.total}>
                   <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33}>
                     <Typography color="primary" fontSize={16}>
                       Cupón:
                     </Typography>
-                    <Typography color="primary" fontWeight={600} fontSize={22}>
+                    <Typography color="primary" fontSize={18}>
                       {discountCode.value.trim()}
                     </Typography>
                   </Grid>
-                )}
+                </Collapse>
                 <Grid display="flex" justifyContent="space-between" alignItems="flex-end" height={33} mt={2}>
                   <Typography color="primary" fontWeight={600}>
                     Total:
@@ -322,6 +394,12 @@ function ShoppingCart() {
                   </Typography>
                 </Grid>
               </Box>
+              <Collapse in={discountCode.isValid && selectedProduct?.package.percent_discount > discountCode.total}>
+                <Alert severity="warning" sx={{ "& .MuiAlert-icon": { alignSelf: "center" } }}>
+                  Dado que has seleccionado un artículo con un descuento y has introducido un código de cupón, se aplicará solo el descuento
+                  de mayor valor.
+                </Alert>
+              </Collapse>
               <LoadingButton loading={loadingPayment} disabled={!product} variant="contained" onClick={handlePayment}>
                 {product ? "Proceder a pago" : "Seleccione un producto para realizar el pago"}
               </LoadingButton>

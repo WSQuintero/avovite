@@ -36,7 +36,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 
-const RowState = { id: null, total_kilograms: "", harvest_date: "" };
+const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
 
 function Harvests() {
@@ -47,7 +47,7 @@ function Harvests() {
   const [newRow, setNewRow] = useState(RowState);
   const [newCollapse, setNewCollapse] = useState(CollapseState);
   const [modal, setModal] = useState(null);
-  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null });
+  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_date, [newRow]);
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
@@ -70,6 +70,13 @@ function Harvests() {
         align: "left",
         disablePadding: false,
         format: (value) => formatCurrency(value, "", " Kg"),
+      },
+      {
+        id: "sowing_date",
+        label: "Fecha de siembra",
+        align: "left",
+        disablePadding: false,
+        format: (value) => dayjs(value).format("DD MMMM YYYY"),
       },
       {
         id: "harvest_date",
@@ -145,6 +152,7 @@ function Harvests() {
             <TableHead>
               <TableRow>
                 <TableCell>Contrato</TableCell>
+                <TableCell>Vites</TableCell>
                 <TableCell>Kilogramos</TableCell>
                 <TableCell>Estado</TableCell>
                 <TableCell></TableCell>
@@ -154,8 +162,13 @@ function Harvests() {
               {(collapse[row.id] || []).map((row) => (
                 <TableRow hover key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                   <TableCell>AV-{row.contract_number}</TableCell>
+                  <TableCell>
+                    <Typography fontSize={row.total_vite ? 16 : 12} color={row.total_vite ? "text.main" : "error.main"}>
+                      {row.total_vite || "No ha pagado"}
+                    </Typography>
+                  </TableCell>
                   <TableCell>{row.kg_correspondence ? formatCurrency(row.kg_correspondence || 0, "", " Kg") : "-"}</TableCell>
-                  <TableCell>Estado</TableCell>
+                  <TableCell>{row.payment_status}</TableCell>
                   <TableCell>
                     <Grid display="flex" justifyContent="flex-end" gap={1}>
                       {/* <IconButton
@@ -326,6 +339,21 @@ function Harvests() {
     setLoading((prev) => ({ ...prev, split: null }));
   };
 
+  const onImport = async (file) => {
+    setLoading((prev) => ({ ...prev, importing: true }));
+
+    const { status } = await $Harvest.import(file);
+
+    if (status) {
+      setFeedback({ open: true, message: "Cosechas importadas exitosamente.", status: "success" });
+      fetchData();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, importing: false }));
+  };
+
   const fetchData = async () => {
     await (async () => {
       const { status, data } = await $Harvest.get();
@@ -370,9 +398,9 @@ function Harvests() {
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" gap={1} justifyContent="flex-end">
           <Box position="relative">
-            <Button variant="contained" size="small">
+            <LoadingButton loading={loading.importing} variant="contained" size="small">
               Importar
-            </Button>
+            </LoadingButton>
             <input
               type="file"
               style={{
@@ -386,7 +414,7 @@ function Harvests() {
                 aspectRatio: 1,
                 opacity: 0,
               }}
-              // onChange={({ target }) => onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })}
+              onChange={({ target }) => onImport(target.files[0])}
             />
           </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
@@ -415,6 +443,21 @@ function Harvests() {
                 value={newRow.total_kilograms}
                 onChange={onChangeFields}
                 fullWidth
+              />
+              <DatePicker
+                label="Fecha de siembra"
+                value={dayjs(newRow.sowing_date)}
+                format="DD/MM/YYYY"
+                slotProps={{ textField: { error: false } }}
+                onChange={(value) =>
+                  onChangeFields({
+                    target: {
+                      name: "sowing_date",
+                      value: value.toDate(),
+                    },
+                  })
+                }
+                sx={{ width: "100%" }}
               />
               <DatePicker
                 label="Fecha de cosecha"

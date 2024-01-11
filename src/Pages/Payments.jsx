@@ -27,27 +27,6 @@ import { NumericFormat } from "react-number-format";
 import $Epayco from "../Services/epayco.service";
 import { v4 as uuid } from "uuid";
 
-const data = [
-  {
-    id: "2924",
-    type: "Pago",
-    created_at: new Date(),
-    value: 2200000,
-  },
-  {
-    id: "4728",
-    type: "Ganancia",
-    created_at: new Date(),
-    value: 2200000,
-  },
-  {
-    id: "5497",
-    type: "Retiro",
-    created_at: new Date(),
-    value: 2200000,
-  },
-];
-
 function Payments() {
   const [{ token }] = useSession();
   const [contracts, setContracts] = useState([]);
@@ -196,8 +175,8 @@ function Payments() {
       extra3: due.id_contracts,
       extra4: null,
       extra5: due.quota_number,
-      confirmation: `contract-transactional-payments/financed`,
-      response: `validation/payment`,
+      confirmationUrl: `contract-transactional-payments/financed`,
+      redirectionUrl: `validation/payment`,
     });
   };
 
@@ -236,7 +215,7 @@ function Payments() {
             Pagos
           </Typography>
         </Stack>
-        <EnhancedTable loading={loading.fetching} headCells={columns} rows={contracts} collapse={tableCollapse} />
+        <EnhancedTable loading={loading.fetching} headCells={columns} rows={contracts} collapse={tableCollapse} initialOrder="desc" />
       </Container>
     </PageWrapper>
   );

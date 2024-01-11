@@ -22,14 +22,14 @@ import { LoadingButton } from "@mui/lab";
 import useSession from "../Hooks/useSession";
 import ContractService from "../Services/contract.service";
 import PageWrapper from "../Components/PageWrapper";
-import { formatCurrency, formatDate } from "../utilities";
+import { formatDate } from "../utilities";
 import Form from "../Components/Form";
 import { DEV_FORMS } from "../utilities/constants";
 
 function ContractValidation() {
   const navigate = useNavigate();
   const [{ token }] = useSession();
-  const [contracts, setContracts] = useState([]);
+  const [contracts, setContracts] = useState({});
   const [contract, setContract] = useState({});
   const [modal, setModal] = useState("warning");
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -40,11 +40,11 @@ function ContractValidation() {
     const { status, data } = await $Contract.get({ pending: true });
 
     if (status) {
-      if (!data.data?.payment?.length) {
+      if (!data.data?.pendings?.length) {
         navigate("/");
       }
 
-      setContracts(data.data.payment);
+      setContracts(data.data);
     }
   };
 
@@ -94,7 +94,7 @@ function ContractValidation() {
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">Contratos pendientes:</Typography>
           <List>
-            {(contracts || []).map((contract, index) => (
+            {(contracts.pendings || []).map((contract, index) => (
               <ListItem
                 key={contract.id}
                 onClick={() => handleSelectContract(contract)}
@@ -110,8 +110,8 @@ function ContractValidation() {
                     <ContractIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Contrato AV-${contract.idcontrato}`}
-                    secondary={`Pago de ${formatCurrency(contract.payment, "$")}`}
+                    primary={`Contrato AV-${contract.id}`}
+                    secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
                     primaryTypographyProps={{ fontSize: 20, color: "primary" }}
                     secondaryTypographyProps={{ color: "text.main" }}
                   />

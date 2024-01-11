@@ -11,6 +11,6 @@ export default class SaleService {
     return await handleCall(async () => (await this.axios.post(`${this.API_URL}/saleOfVite`, body)).data);
   }
   async request(body) {
-    // return await handleCall(async () => (await this.axios.post(`${this.API_URL}/saleOfVite`, body)).data);
+    return await handleCall(async () => (await this.axios.post(`${this.API_URL}/shipping_of_vites`, body)).data);
   }
 }

@@ -16,11 +16,11 @@ function HarvestCertificates() {
       name: "Contrato",
       url: `${import.meta.env.VITE_API_URL}/contracts/files/${contractId}`,
     },
-    {
-      id: 2,
-      name: "Recibo de compra",
-      url: `${import.meta.env.VITE_API_URL}/contracts/files/${contractId}`,
-    },
+    // {
+    //   id: 2,
+    //   name: "Recibo de compra",
+    //   url: `${import.meta.env.VITE_API_URL}/contracts/files/${contractId}`,
+    // },
     {
       id: 2,
       name: "Certificado de cosecha",

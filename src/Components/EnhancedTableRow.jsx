@@ -1,4 +1,4 @@
-import { Box, Collapse, Table, TableCell, TableRow, Typography } from "@mui/material";
+import { Box, Collapse, Table, TableCell, TableRow, Typography, alpha } from "@mui/material";
 import React, { useState } from "react";
 
 function EnhancedTableRow({ headCells, row, collapse = null }) {
@@ -8,7 +8,7 @@ function EnhancedTableRow({ headCells, row, collapse = null }) {
 
   return (
     <>
-      <TableRow tabIndex={-1} hover>
+      <TableRow hover tabIndex={-1} sx={{ bgcolor: (theme) => (open ? alpha(theme.palette.primary.main, 0.1) : "transparent") }}>
         {headCells.map((headCell, index) => (
           <TableCell key={index} align={headCell.align} style={{ width: headCell.width }}>
             {headCell.format ? headCell.format(row[headCell.id], row, onCollapse) : row[headCell.id]}

@@ -80,16 +80,18 @@ function Dashboard() {
       "sell-avocados": "sell",
     };
 
-    console.log(mode);
-
     const { status, data } = await $Sale[methods[mode]](formData);
 
-    console.log(status, data);
+    console.log(data);
 
     if (status) {
       setModal("");
       enqueueSnackbar(`Se ha creado petición para ${mode === "request-avocados" ? "solicitar" : "vender a terceros"} tus VITES`, {
         variant: "success",
+      });
+    } else {
+      enqueueSnackbar(`Error al ${mode === "request-avocados" ? "solicitar" : "vender a terceros"} tus VITES`, {
+        variant: "error",
       });
     }
   };

@@ -25,12 +25,12 @@ function Vites() {
       {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
-        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
+        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>,
       },
       {
         accessorKey: "sown_at",
         header: "Fecha de siembra",
-        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
+        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>,
       },
       {
         accessorKey: "status",

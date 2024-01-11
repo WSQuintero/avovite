@@ -16,8 +16,8 @@ import {
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableRow from "./EnhancedTableRow";
 
-function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, collapse = null, loading = false }) {
-  const [order, setOrder] = useState("asc");
+function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy = "", footer = <></>, collapse = null, loading = false }) {
+  const [order, setOrder] = useState(initialOrder);
   const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);

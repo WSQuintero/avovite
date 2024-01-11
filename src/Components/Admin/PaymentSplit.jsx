@@ -20,6 +20,11 @@ import {
   ListItemText,
   MenuItem,
   Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
   alpha,
@@ -77,6 +82,20 @@ function PaymentSplit() {
         align: "left",
         disablePadding: false,
         format: (value) => dayjs(value).format("DD MMMM YYYY"),
+      },
+      {
+        id: "paid",
+        label: "Pagado",
+        align: "left",
+        disablePadding: false,
+        format: (value) => (value === 0 ? "No" : "Si"),
+      },
+      {
+        id: "is_Cronjob",
+        label: "Pago automático",
+        align: "left",
+        disablePadding: false,
+        format: (value) => (value === 0 ? "No" : "Si"),
       },
       {
         id: "",
@@ -141,53 +160,52 @@ function PaymentSplit() {
         {loading.collapse === row.id ? (
           <LinearProgress />
         ) : (
-          <List>
-            <ListItem>
-              <ListItemIcon sx={{ minWidth: 128 + 8 }}>
-                <Typography color="primary.main" fontWeight={600}>
-                  Contrato
-                </Typography>
-              </ListItemIcon>
-              <ListItemText primary="Correspondencia" primaryTypographyProps={{ color: "primary.main", fontWeight: 600 }} />
-            </ListItem>
-            {(collapse[row.id] || []).map((p) => (
-              <ListItem
-                key={p.id}
-                secondaryAction={
-                  <Grid display="flex" justifyContent="flex-end" gap={1}>
-                    <IconButton
-                      onClick={() => {
-                        setNewCollapse(p);
-                        setModal("collapse.update");
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setNewCollapse(p);
-                        setModal("collapse.delete");
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Grid>
-                }
-                sx={(t) => ({
-                  borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: alpha(t.palette.primary.main, 0.1),
-                  },
-                })}
-              >
-                <ListItemIcon sx={{ minWidth: 128 + 8 }}>
-                  <Typography color="text.primary">AV-{p.contract_number}</Typography>
-                </ListItemIcon>
-                <ListItemText primary={formatCurrency(p.payment_correspondence, "$")} />
-              </ListItem>
-            ))}
-          </List>
+          <Table size="small" sx={{ "& th, & td": { paddingY: 0, border: "none" } }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Contrato</TableCell>
+                <TableCell>Correspondencia</TableCell>
+                <TableCell>Vites</TableCell>
+                <TableCell>Vites (correspondencia)</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(collapse[row.id] || []).map((row) => (
+                <TableRow hover key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                  <TableCell>AV-{row.contract_number}</TableCell>
+                  <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence || 0, "$") : "-"}</TableCell>
+                  <TableCell>
+                    <Typography fontSize={row.total_vite ? 16 : 12} color={row.total_vite ? "text.main" : "error.main"}>
+                      {row.total_vite || "No ha pagado"}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{row.vite_correspondence || "-"}</TableCell>
+                  <TableCell>
+                    <Grid display="flex" justifyContent="flex-end" gap={1}>
+                      {/* <IconButton
+                        onClick={() => {
+                          setNewCollapse(row);
+                          setModal("collapse.update");
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton> */}
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setNewCollapse(row);
+                          setModal("collapse.delete");
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </Grid>
     ),
@@ -441,7 +459,7 @@ function PaymentSplit() {
                       onChange={({ target }) => onChangeFields({ target: { name: "is_Cronjob", value: target.checked } })}
                     />
                   }
-                  label="Cronjob"
+                  label="Pago automático"
                 />
               </FormGroup>
             </Grid>

@@ -40,6 +40,9 @@ export default {
       response: `${import.meta.env.VITE_APP_URL}/${redirectionUrl}`,
     };
 
+    console.log(mandatory);
+    console.log(aditional);
+
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
       test: testing,
