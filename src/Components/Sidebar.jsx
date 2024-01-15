@@ -160,10 +160,10 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             name: "Cosechas",
             route: "/admin/harvests",
           },
-          {
-            name: "Lapsos",
-            route: "/admin/date-ranges",
-          },
+          // {
+          //   name: "Lapsos",
+          //   route: "/admin/date-ranges",
+          // },
           {
             name: "Proveedores",
             route: "/admin/suppliers",
@@ -179,6 +179,10 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
           {
             name: "Usuarios",
             route: "/admin/users",
+          },
+          {
+            name: "Verifik",
+            route: "/admin/verifik",
           },
           {
             name: "Whitelist",

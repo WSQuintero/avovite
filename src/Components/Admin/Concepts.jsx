@@ -30,14 +30,18 @@ function Concepts() {
   const conceptsHeadCells = useMemo(
     () => [
       {
+        id: "id",
+        label: "ID",
+        align: "left",
+        disablePadding: false,
+      },
+      {
         id: "title",
         label: "Título",
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
-            {value}
-          </Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
         ),
       },
       {
@@ -46,17 +50,8 @@ function Concepts() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
-            {value}
-          </Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
         ),
-      },
-      {
-        id: "updated_at",
-        label: "Actualizado en",
-        align: "left",
-        disablePadding: false,
-        format: (value, row) => formatDate(value || row.created_at),
       },
       {
         id: "actions",
@@ -177,15 +172,10 @@ function Concepts() {
             Crear
           </Button>
         </Grid>
-        <EnhancedTable headCells={conceptsHeadCells} rows={concepts} initialOrderBy="title" />
+        <EnhancedTable headCells={conceptsHeadCells} rows={concepts} />
       </Grid>
 
-      <Dialog
-        open={currentModal === "create" || currentModal === "update"}
-        onClose={onClearFields}
-        maxWidth="xl"
-        fullWidth
-      >
+      <Dialog open={currentModal === "create" || currentModal === "update"} onClose={onClearFields} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">{currentModal === "create" ? "Crear" : "Editar"} concepto</DialogTitle>
         <DialogContent>
           <Box
@@ -198,13 +188,7 @@ function Concepts() {
           >
             <Grid display="flex" flexDirection="column" gap={2}>
               <Grid display="flex" gap={2}>
-                <TextField
-                  label="Título"
-                  name="title"
-                  value={selectedConcept.title}
-                  onChange={onChangeFields}
-                  fullWidth
-                />
+                <TextField label="Título" name="title" value={selectedConcept.title} onChange={onChangeFields} fullWidth />
               </Grid>
               <Grid display="flex" gap={2}>
                 <TextField
@@ -223,11 +207,7 @@ function Concepts() {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={currentModal === "create" ? onCreateConcept : onUpdateConcept}
-              variant="contained"
-              disabled={!isValidConcept}
-            >
+            <Button onClick={currentModal === "create" ? onCreateConcept : onUpdateConcept} variant="contained" disabled={!isValidConcept}>
               {currentModal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>

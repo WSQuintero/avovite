@@ -47,7 +47,7 @@ function Harvests() {
         label: "",
         format: (value) => (
           <Stack direction="row" spacing={1}>
-            <Button
+            {/* <Button
               component={RouterLink}
               to="https://sccrtc.org/wp-content/uploads/2010/09/SampleContract-Shuttle.pdf"
               target="_blank"
@@ -56,7 +56,7 @@ function Harvests() {
               sx={{ flexShrink: 0 }}
             >
               Descargar factura
-            </Button>
+            </Button> */}
             <Button component={RouterLink} to={`/harvests/${value}/certificates`} size="small" variant="contained" sx={{ flexShrink: 0 }}>
               Certificados
             </Button>

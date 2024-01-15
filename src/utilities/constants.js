@@ -90,3 +90,61 @@ export const DEV_FORMS = [
     economy_activity_beneficiary: "Empresario",
   },
 ];
+
+export const VERIFIK_DOCUMENTS = {
+  CC: {
+    for: [
+      "disciplinary-records-procuraduria",
+      "police-background-check",
+      "police-enforcement-corrective-measures",
+      "international-criminal-records",
+    ],
+    label: "Cedula de Ciudadanía",
+  },
+  CE: {
+    for: [
+      "disciplinary-records-procuraduria",
+      "police-background-check",
+      "police-enforcement-corrective-measures",
+      "international-criminal-records",
+    ],
+    label: "Cedula de Extranjería",
+  },
+  PEP: {
+    for: ["disciplinary-records-procuraduria", "international-criminal-records"],
+    label: "Pasaporte",
+  },
+  PA: {
+    for: ["international-criminal-records"],
+    label: "Permiso de Asistencia",
+  },
+  RC: {
+    for: ["international-criminal-records"],
+    label: "Registro Civil",
+  },
+  CCVE: {
+    for: ["international-criminal-records"],
+    label: "Cuenta Corriente Virtual",
+  },
+  NIT: {
+    for: ["international-criminal-records"],
+    label: "NIT",
+  },
+  CURP: {
+    for: ["international-criminal-records"],
+    label: "CURP",
+  },
+  DNI: {
+    for: ["international-criminal-records"],
+    label: "DNI",
+  },
+  CCEC: {
+    for: ["international-criminal-records"],
+    label: "Cuenta Corriente Electroconmutador",
+  },
+};
+
+export const VERIFIK_INTERNATIONAL = {
+  // dea: "DEA",
+  interpol: "Interpol",
+};

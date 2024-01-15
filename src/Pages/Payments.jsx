@@ -138,7 +138,7 @@ function Payments() {
                       onClick={() => handlePlayment(p)}
                     >
                       {p.status === 0 ? "Pagar" : "Pagado"}
-                      <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
+                      {p.status === 0 && <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />}
                     </Button>
                   </Grid>
                 }
