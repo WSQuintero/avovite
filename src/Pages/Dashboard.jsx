@@ -6,7 +6,7 @@ import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import Post from "../Components/Post";
 import useSession from "../Hooks/useSession";
-import { BrokenIcon, InvestIcon, Statistic2Icon, TargetIcon } from "../Components/Icons";
+import { BrokenIcon, InvestIcon, InvestmentIcon, Statistic2Icon, TargetIcon } from "../Components/Icons";
 import Theme from "../Theme";
 import { formatCurrency, formatDate } from "../utilities";
 import IconWhite from "../assets/img/common/icon_white.svg";
@@ -15,37 +15,7 @@ import DialogRequestAvocados from "../Components/Dialogs/RequestAvocados";
 import { useSnackbar } from "notistack";
 import DialogSellAvocados from "../Components/Dialogs/SellAvocados";
 import SaleService from "../Services/sale.service";
-
-const data = [
-  {
-    name: "Enero",
-    pv: 2000000,
-  },
-  {
-    name: "Febrero",
-    pv: 4000000,
-  },
-  {
-    name: "Marzo",
-    pv: 2000000,
-  },
-  {
-    name: "Abril",
-    pv: 8314000,
-  },
-  {
-    name: "Mayo",
-    pv: 2483000,
-  },
-  {
-    name: "Junio",
-    pv: 6730000,
-  },
-  {
-    name: "Julio",
-    pv: 10000000,
-  },
-];
+import dayjs from "dayjs";
 
 function Dashboard() {
   const [{ user, token }] = useSession();
@@ -56,6 +26,15 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState("");
   const $Sale = useMemo(() => (token ? new SaleService(token) : null), [token]);
+  const chartData = useMemo(
+    () =>
+      user?.cost_effectiveness.map((data) => ({
+        x: dayjs(data.dateCreate).format("DD MMMM"),
+        y: data.kg_correspondence,
+        tooltip: data.payment_correspondence,
+      })) || [],
+    [user]
+  );
 
   const handleUpdateSellingMode = async (mode, formData) => {
     const methods = {
@@ -63,9 +42,7 @@ function Dashboard() {
       "sell-avocados": "sell",
     };
 
-    const { status, data } = await $Sale[methods[mode]](formData);
-
-    console.log(data);
+    const { status } = await $Sale[methods[mode]](formData);
 
     if (status) {
       setModal("");
@@ -107,40 +84,19 @@ function Dashboard() {
           <>
             <Grid display="flex" flexDirection="column" gap={8} width="100%">
               <Stack spacing={2}>
-                <Grid
-                  display="flex"
-                  gap={2}
-                  sx={(t) => ({
-                    [t.breakpoints.down("lg")]: {
-                      flexDirection: "column",
-                    },
-                  })}
-                >
-                  <Grid
-                    display="flex"
-                    gap={2}
-                    width="50%"
-                    sx={(t) => ({
-                      [t.breakpoints.down("lg")]: {
-                        flexDirection: "column",
-                        width: "100%",
-                      },
-                    })}
-                  >
+                <Grid display="flex" flexDirection={{ xs: "column", lg: "row" }} gap={2}>
+                  <Grid display="flex" flexDirection={{ xs: "column", lg: "row" }} gap={2} width={{ xs: "100%", xl: "66%" }}>
                     <Box
                       display="flex"
                       flexDirection="column"
                       justifyContent="center"
                       alignItems="center"
                       gap={4}
-                      width="50%"
+                      width={{ xs: "100%", lg: "50%" }}
                       padding={4}
                       borderRadius={2}
                       sx={(t) => ({
                         backgroundColor: "secondary.main",
-                        [t.breakpoints.down("lg")]: {
-                          width: "100%",
-                        },
                       })}
                     >
                       <Stack>
@@ -165,14 +121,11 @@ function Dashboard() {
                       display="flex"
                       flexDirection="column"
                       gap={2}
-                      width="50%"
+                      width={{ xs: "100%", lg: "50%" }}
                       padding={4}
                       borderRadius={2}
                       sx={(t) => ({
                         backgroundColor: "primary.main",
-                        [t.breakpoints.down("lg")]: {
-                          width: "100%",
-                        },
                       })}
                     >
                       <Typography fontWeight={600} textAlign="center" color="common.white">
@@ -189,7 +142,7 @@ function Dashboard() {
                         <Typography fontWeight={600} color="primary">
                           Maduros
                         </Typography>
-                        <Typography color="primary">{user.trees_balance}</Typography>
+                        <Typography color="primary">{user.vites_mature}</Typography>
                       </Box>
                       <Box
                         display="flex"
@@ -202,76 +155,59 @@ function Dashboard() {
                         <Typography fontWeight={600} textAlign="center" color="primary">
                           En crecimiento
                         </Typography>
-                        <Typography color="primary">{user.trees_balance}</Typography>
+                        <Typography color="primary">{user.vites_growth}</Typography>
                       </Box>
                     </Box>
                   </Grid>
                   <Box
                     position="relative"
-                    width="50%"
+                    width={{ xs: "100%", lg: "33%" }}
                     padding={4}
                     borderRadius={2}
                     sx={(t) => ({
                       backgroundColor: "secondary.main",
-                      [t.breakpoints.down("lg")]: {
-                        width: "100%",
-                      },
                     })}
                   >
-                    <Stack direction="row" spacing={2}>
-                      <Box width={80} height={80} padding={1} borderRadius={1} bgcolor="white">
-                        <Statistic2Icon color={Theme.palette.primary.main} sx={{ fontSize: 64 }} />
-                      </Box>
-                      <Stack>
-                        <Typography fontSize={24} color="white">
-                          Valor aprx de mis cosechas
-                        </Typography>
-                        <Typography fontSize={32} fontWeight={600} color="white">
-                          {formatCurrency(0, "$") || 0}
-                        </Typography>
-                      </Stack>
+                    <Stack alignItems="center" justifyContent="center" spacing={3}>
+                      <Typography fontSize={24} color="white">
+                        Kg aprx de mis cosechas
+                      </Typography>
+                      <InvestmentIcon sx={{ fontSize: 128 }} />
+                      <Typography fontSize={40} fontWeight={600} color="white">
+                        {formatCurrency(user.vites_approx_kg) || 0}
+                      </Typography>
                     </Stack>
                     <img src={IconWhite} alt="Icon white" height={64} style={{ position: "absolute", right: 16, bottom: 16 }} />
                   </Box>
                 </Grid>
-                <Grid
-                  display="flex"
-                  gap={2}
-                  sx={(t) => ({
-                    [t.breakpoints.down("lg")]: {
-                      flexDirection: "column",
-                    },
-                  })}
-                >
+                <Grid display="flex" flexDirection={{ xs: "column", lg: "row" }} gap={2}>
                   <Box
                     position="relative"
                     display="flex"
                     flexDirection="column"
                     gap={2}
-                    width="50%"
+                    width={{ xs: "100%", lg: "50%" }}
                     padding={4}
                     borderRadius={2}
                     sx={(t) => ({
                       backgroundColor: "secondary.main",
-                      [t.breakpoints.down("lg")]: {
-                        width: "100%",
-                      },
+                      [t.breakpoints.down("lg")]: {},
                     })}
                   >
                     <Stack>
                       <Typography fontWeight={600} color="white">
                         Cosechas
                       </Typography>
-                      <Typography color="white">80 Kg</Typography>
-                      <Typography color="white">{formatDate(new Date())}</Typography>
+                      <Typography color="white">{chartData.reduce((a, b) => a + b.y, 0)} Kg</Typography>
+                      <Typography color="white">{dayjs(new Date()).format("DD MMMM YYYY")}</Typography>
                     </Stack>
                     <Box sx={{ aspectRatio: 2.5 }}>
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart width={500} height={300} data={data}>
+                        <LineChart width={500} height={300} data={chartData.length === 1 ? [...chartData, ...chartData] : chartData}>
                           <CartesianGrid strokeDasharray="0" vertical={false} stroke="#ffffff44" />
-                          <XAxis dataKey="name" fontSize={14} stroke="white" />
+                          <XAxis dataKey="x" fontSize={14} stroke="white" />
                           <Tooltip content={<RechartsTooltip />} />
-                          <Line type="monotone" dataKey="pv" stroke={Theme.palette.primary.main} activeDot={{ r: 8 }} />
+                          <Line type="monotone" dataKey="y" stroke={Theme.palette.primary.main} activeDot={{ r: 8 }} />
                         </LineChart>
                       </ResponsiveContainer>
                     </Box>
@@ -281,14 +217,12 @@ function Dashboard() {
                     display="flex"
                     flexDirection="column"
                     gap={2}
-                    width="50%"
+                    width={{ xs: "100%", lg: "50%" }}
                     padding={4}
                     borderRadius={2}
                     sx={(t) => ({
                       backgroundColor: "primary.main",
-                      [t.breakpoints.down("lg")]: {
-                        width: "100%",
-                      },
+                      [t.breakpoints.down("lg")]: {},
                     })}
                   >
                     <Stack direction="row" spacing={2} alignItems="center">

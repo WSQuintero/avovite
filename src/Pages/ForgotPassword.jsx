@@ -1,4 +1,4 @@
-import { Button, Container, Stack, TextField, Typography } from "@mui/material";
+import { Button, Container, Grow, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import BackgroundImage from "../assets/img/signin/background.jpg";
 import { useSnackbar } from "notistack";
@@ -37,21 +37,25 @@ function ForgotPassword() {
       }}
     >
       <Container maxWidth="md" sx={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <Stack zIndex={1} width="100%" spacing={2} padding={2} bgcolor="white" borderRadius={2}>
-          <Stack>
-            <Typography fontSize={32} fontWeight={500} textAlign="center">
-              New Password
-            </Typography>
-            <Typography textAlign="center">You Forgot Your Password? Here you can easily retrieve a new password.</Typography>
-          </Stack>
+        <Grow in>
+          <Stack zIndex={1} width="100%" spacing={2} padding={2} bgcolor="white" borderRadius={2}>
+            <Stack>
+              <Typography fontSize={24} fontWeight={500} textAlign="center">
+                ¿Olvidaste tu contraseña?
+              </Typography>
+              <Typography textAlign="center" fontSize={16}>
+                Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+              </Typography>
+            </Stack>
 
-          <Stack component="form" spacing={2} width="100%" onSubmit={handleSubmitForm}>
-            <TextField fullWidth label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Button fullWidth variant="contained" type="submit" size="large">
-              Request new password
-            </Button>
+            <Stack component="form" spacing={2} width="100%" onSubmit={handleSubmitForm}>
+              <TextField fullWidth label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Button fullWidth variant="contained" type="submit" size="large">
+                Request new password
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
+        </Grow>
       </Container>
     </Stack>
   );

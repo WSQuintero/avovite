@@ -51,7 +51,7 @@ const theme = createTheme({
       color: "#67AA36",
     },
   },
-  shadows: Array.from({ length: 30 }, (_, i) => i === 0 ? "none" : `0px 4px ${i}px 0px #45549229`),
+  shadows: Array.from({ length: 30 }, (_, i) => (i === 0 ? "none" : `0px 4px ${i}px 0px #45549229`)),
   shape: { borderRadius: 10 },
   components: {
     MuiDialogTitle: {
@@ -174,6 +174,7 @@ const theme = createTheme({
   },
   breakpoints: {
     values: {
+      xs: 0,
       xsm: 400,
       sm: 576,
       md: 768,

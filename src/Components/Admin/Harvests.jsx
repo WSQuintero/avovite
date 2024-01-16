@@ -9,6 +9,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  InputAdornment,
   LinearProgress,
   List,
   ListItem,
@@ -36,9 +37,11 @@ import EnhancedTable from "../EnhancedTable";
 import { DatePicker } from "@mui/x-date-pickers";
 import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
+import { NumericFormat } from "react-number-format";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
+const PaymentState = { harvest_profitability_id: null, harvest_id: null, contract_id: null, value: "" };
 
 function Harvests() {
   const [session] = useSession();
@@ -47,8 +50,9 @@ function Harvests() {
   const [collapse, setCollapse] = useState({});
   const [newRow, setNewRow] = useState(RowState);
   const [newCollapse, setNewCollapse] = useState(CollapseState);
+  const [payment, setPayment] = useState(PaymentState);
   const [modal, setModal] = useState(null);
-  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false });
+  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_state && newRow.sowing_date && newRow.harvest_date, [newRow]);
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
@@ -161,6 +165,7 @@ function Harvests() {
                 <TableCell>Contrato</TableCell>
                 <TableCell>Vites</TableCell>
                 <TableCell>Kilogramos</TableCell>
+                <TableCell>Pago</TableCell>
                 <TableCell>Estado</TableCell>
                 <TableCell></TableCell>
               </TableRow>
@@ -175,9 +180,10 @@ function Harvests() {
                     </Typography>
                   </TableCell>
                   <TableCell>{row.kg_correspondence ? formatCurrency(row.kg_correspondence || 0, "", " Kg") : "-"}</TableCell>
+                  <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence, "$") : "-"}</TableCell>
                   <TableCell>{row.payment_status}</TableCell>
                   <TableCell>
-                    <Grid display="flex" justifyContent="flex-end" gap={1}>
+                    <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
                       {/* <IconButton
                         onClick={() => {
                           setNewCollapse(row);
@@ -195,6 +201,22 @@ function Harvests() {
                       >
                         <DeleteIcon />
                       </IconButton>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => {
+                          console.log(row);
+                          setPayment({
+                            harvest_profitability_id: row.id,
+                            contract_id: row.contract_number,
+                            harvest_id: row.harvest_id,
+                            value: "",
+                          });
+                          setModal("collapse.payment");
+                        }}
+                      >
+                        Pagar
+                      </Button>
                     </Grid>
                   </TableCell>
                 </TableRow>
@@ -225,6 +247,7 @@ function Harvests() {
     setModal(null);
     setNewRow(RowState);
     setNewCollapse(CollapseState);
+    setPayment(PaymentState);
   };
 
   const onCreate = async (event) => {
@@ -359,6 +382,22 @@ function Harvests() {
     }
 
     setLoading((prev) => ({ ...prev, importing: false }));
+  };
+
+  const onPayment = async () => {
+    setLoading((prev) => ({ ...prev, payment: true }));
+
+    const { status } = await $Harvest.payment({ id: payment.harvest_profitability_id, payment_correspondence: payment.value });
+
+    if (status) {
+      setFeedback({ open: true, message: "Cosecha pagada exitosamente.", status: "success" });
+      fetchCollapse(payment.harvest_id);
+      onClearFields();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, payment: false }));
   };
 
   const fetchData = async () => {
@@ -569,6 +608,43 @@ function Harvests() {
           <Button variant="contained" onClick={onDeleteCollapse}>
             Eliminar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog maxWidth="sm" open={modal === "collapse.payment"} onClose={onClearFields} fullWidth>
+        <DialogTitle>Pago de la cosecha para el contrato AV-{payment.contract_id}</DialogTitle>
+        <DialogContent>
+          <Stack pt={1}>
+            <NumericFormat
+              customInput={TextField}
+              label="Valor"
+              variant="outlined"
+              value={payment.value}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Typography>$</Typography>
+                  </InputAdornment>
+                ),
+              }}
+              thousandSeparator
+              sx={{ width: "100%" }}
+              onValueChange={({ floatValue }) =>
+                setPayment((prev) => ({
+                  ...prev,
+                  value: floatValue,
+                }))
+              }
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClearFields}>
+            Cancelar
+          </Button>
+          <LoadingButton loading={loading.payment} variant="contained" onClick={onPayment}>
+            Pagar
+          </LoadingButton>
         </DialogActions>
       </Dialog>
 

@@ -38,9 +38,9 @@ function Harvests() {
         format: (value) => formatCurrency(Number(value || 0).toFixed(2)),
       },
       {
-        id: "value",
+        id: "payment_correspondence",
         label: "Valor de Cosecha",
-        format: (value) => <>-</>,
+        format: (value) => (value ? formatCurrency(Number(value || 0), "$") : "-"),
       },
       {
         id: "id",

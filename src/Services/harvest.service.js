@@ -48,4 +48,7 @@ export default class HarvestService {
   async import(file) {
     return await handleCall(async () => (await this.axios.postForm(`${this.API_URL}/harvest-profitability/import/xlsx`, { file })).data);
   }
+  async payment({ id, ...body } = {}) {
+    return await handleCall(async () => (await this.axios.put(`${this.API_URL}/harvest-profitability/payment/${id}`, body)).data);
+  }
 }
