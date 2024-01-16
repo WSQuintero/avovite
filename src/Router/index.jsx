@@ -28,6 +28,7 @@ import HarvestCertificates from "../Pages/HarvestCertificates";
 import ForgotPassword from "../Pages/ForgotPassword";
 import Callback from "../Pages/Callback";
 import Payments from "../Pages/Payments";
+import Production from "../Pages/Production";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -105,6 +106,10 @@ function Router() {
       element: <PrivateRoute component={ForgotPassword} />,
     },
     {
+      path: "/reset-password",
+      element: <PrivateRoute component={ForgotPassword} />,
+    },
+    {
       path: "/privacy-policy",
       element: <PrivacyPolicy />,
     },
@@ -165,6 +170,10 @@ function Router() {
     {
       path: "/shop",
       element: <PrivateRoute component={Shop} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+    },
+    {
+      path: "/production/:id",
+      element: <PrivateRoute component={Production} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/cart",

@@ -10,10 +10,6 @@ const theme = createTheme({
       main: "#214820",
       light: "#79C941",
     },
-    premium: {
-      main: "#D0A723",
-      dark: "#8B620D",
-    },
     text: {
       primary: "#979797",
       light: "#D2D2D2",
@@ -202,6 +198,13 @@ export default createTheme(theme, {
         dark: "#DDDDDD",
       },
       name: "white",
+    }),
+    premium: theme.palette.augmentColor({
+      color: {
+        main: "#D0A723",
+        dark: "#8B620D",
+      },
+      name: "premium",
     }),
   },
 });

@@ -43,6 +43,12 @@ import { useSnackbar } from "notistack";
 
 const columns = [
   {
+    accessorKey: "id",
+    id: "id",
+    header: "Número de contrato",
+    Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
+  },
+  {
     accessorKey: "fullname",
     id: "fullname",
     header: "Nombre del pagador",
@@ -340,18 +346,27 @@ const Contracts = () => {
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
-            // disabled={!!original.id_user_contract_transactional_payment}
+            disabled={original.status_contracts === 0}
             onClick={() => {
               closeMenu();
-              original.status_contracts === 0
-                ? (setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 })))
-                : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
+              window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
             }}
           >
-            {original.status_contracts === 0 ? "Crear" : " Ver"} contrato
+            Ver contrato
           </MenuItem>,
           <MenuItem
             key={1}
+            disabled={original.status_contracts !== 0}
+            onClick={() => {
+              closeMenu();
+              setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
+            }}
+          >
+            Crear contrato
+          </MenuItem>,
+          <MenuItem
+            key={2}
+            disabled={original.status_contracts === 0}
             onClick={async () => {
               closeMenu();
               await fetchContractDues(original.id);
@@ -362,7 +377,7 @@ const Contracts = () => {
           </MenuItem>,
           original.status_contracts !== 0 ? (
             <MenuItem
-              key={0}
+              key={3}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -373,7 +388,7 @@ const Contracts = () => {
             </MenuItem>
           ) : (
             <MenuItem
-              key={0}
+              key={4}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -387,14 +402,9 @@ const Contracts = () => {
         renderDetailPanel={({ row: { original: row } }) => (
           <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
             <Grid display="flex" flexDirection="column" gap={1}>
-              <Typography variant="h4">Información general</Typography>
-              <Typography>
-                <Typography component="span" fontWeight={600}>
-                  Número de contrato:{" "}
-                </Typography>
-                AV-{row.id}
+              <Typography variant="h4" mt={4}>
+                Información financiera
               </Typography>
-              <Typography variant="h4">Información financiera</Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Financiado:{" "}
@@ -407,14 +417,6 @@ const Contracts = () => {
                 </Typography>
                 {row.percentage_discount}%
               </Typography>
-              {row.discountCodeId !== 0 && (
-                <Typography>
-                  <Typography component="span" fontWeight={600}>
-                    Cupón de descuento:{" "}
-                  </Typography>
-                  {row.discountCodeId}%
-                </Typography>
-              )}
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Valor descontado:{" "}
@@ -428,7 +430,9 @@ const Contracts = () => {
                 ${formatCurrency(row.total_contract_with_discount)}
               </Typography>
 
-              <Typography variant="h4">Información de primer pago</Typography>
+              <Typography variant="h4" mt={4}>
+                Información de primer pago
+              </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Valor:{" "}
@@ -442,7 +446,9 @@ const Contracts = () => {
                 {formatLongDate(row.first_payment_date)}
               </Typography>
 
-              <Typography variant="h4">Información del titular</Typography>
+              <Typography variant="h4" mt={4}>
+                Información del titular
+              </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Teléfono:{" "}
@@ -459,7 +465,7 @@ const Contracts = () => {
                 <Typography component="span" fontWeight={600}>
                   Número de documento:{" "}
                 </Typography>
-                {row.beneficiary_id_number}
+                {row.id_number}
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>

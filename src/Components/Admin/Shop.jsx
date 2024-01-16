@@ -123,10 +123,7 @@ function Products({ service: $Shop, state, feedback }) {
     const { status, data } = await $Shop.product.add(product);
 
     if (status) {
-      setProducts((prev) => [
-        ...prev,
-        { ...product, id: data.data, url_image: URL.createObjectURL(product.url_image) },
-      ]);
+      setProducts((prev) => [...prev, { ...product, id: data.data, url_image: URL.createObjectURL(product.url_image) }]);
       setFeedback({ open: true, message: "Producto creado exitosamente.", status: "success" });
       onClearFields();
     } else {
@@ -219,11 +216,7 @@ function Products({ service: $Shop, state, feedback }) {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={modal === "create" ? onCreateProduct : onUpdateProduct}
-              variant="contained"
-              disabled={!isValidProduct}
-            >
+            <Button onClick={modal === "create" ? onCreateProduct : onUpdateProduct} variant="contained" disabled={!isValidProduct}>
               {modal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>
@@ -253,14 +246,23 @@ function Discounts({ service: $Shop, state, products, feedback }) {
   const [discount, setDiscount] = useState({
     id: null,
     id_product: null,
-    name: "",
+    name: "-",
     quantity: "",
     percent_discount: "",
+    production_in_kilograms: "",
+    tir: "",
     url_image: "",
   });
   const [modal, setModal] = useState(null);
   const isValidProduct = useMemo(
-    () => discount.name && discount.quantity && discount.percent_discount && discount.url_image && discount.id_product,
+    () =>
+      discount.name !== "-" &&
+      discount.quantity &&
+      discount.percent_discount !== "" &&
+      discount.production_in_kilograms &&
+      discount.tir &&
+      discount.url_image &&
+      discount.id_product,
     [discount]
   );
 
@@ -303,6 +305,20 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         align: "left",
         disablePadding: false,
         format: (value) => value,
+      },
+      {
+        id: "tir",
+        label: "Tir",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value || "-",
+      },
+      {
+        id: "production_in_kilograms",
+        label: "Producción en kg",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value || "-",
       },
       {
         id: "",
@@ -356,7 +372,16 @@ function Discounts({ service: $Shop, state, products, feedback }) {
 
   const onClearFields = () => {
     setModal(null);
-    setDiscount({ id: null, id_product: null, name: "", quantity: "", percent_discount: "", url_image: "" });
+    setDiscount({
+      id: null,
+      id_product: null,
+      name: "-",
+      quantity: "",
+      percent_discount: "",
+      production_in_kilograms: "",
+      tir: "",
+      url_image: "",
+    });
   };
 
   const onCreateDiscount = async (event) => {
@@ -370,10 +395,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     const { status, data } = await $Shop.discount.add(discount);
 
     if (status) {
-      setDiscounts((prev) => [
-        ...prev,
-        { ...discount, id: data.data, url_image: URL.createObjectURL(discount.url_image) },
-      ]);
+      setDiscounts((prev) => [...prev, { ...discount, id: data.data, url_image: URL.createObjectURL(discount.url_image) }]);
       setFeedback({ open: true, message: "Descuento creado exitosamente.", status: "success" });
       onClearFields();
     } else {
@@ -435,8 +457,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
             onSubmit={modal === "create" ? onCreateDiscount : onUpdateDiscount}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
-              <Grid display="flex" gap={2}>
-                <TextField label="Nombre" name="name" value={discount.name} onChange={onChangeFields} fullWidth />
+              <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
+                <TextField fullWidth select label="Tipo" name="name" value={discount.name} onChange={onChangeFields}>
+                  <MenuItem disabled value="-">
+                    Selecciona una opción
+                  </MenuItem>
+                  <MenuItem value="PACK STANDARD">PACK STANDARD</MenuItem>
+                  <MenuItem value="PACK PREMIUM">PACK PREMIUM</MenuItem>
+                </TextField>
                 <FormControl fullWidth>
                   <InputLabel id="label-product-select">Producto</InputLabel>
                   <Select
@@ -458,7 +486,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid display="flex" gap={2}>
+              <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
                 <TextField
                   label="% Descuento"
                   name="percent_discount"
@@ -466,10 +494,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                   onChange={onChangeFields}
                   fullWidth
                 />
+                <TextField label="Cantidad" name="quantity" value={discount.quantity} onChange={onChangeFields} fullWidth />
+              </Grid>
+              <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
+                <TextField label="Tir" name="tir" value={discount.tir} onChange={onChangeFields} fullWidth />
                 <TextField
-                  label="Cantidad"
-                  name="quantity"
-                  value={discount.quantity}
+                  label="Producción en kg"
+                  name="production_in_kilograms"
+                  value={discount.production_in_kilograms}
                   onChange={onChangeFields}
                   fullWidth
                 />
@@ -488,11 +520,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={modal === "create" ? onCreateDiscount : onUpdateDiscount}
-              variant="contained"
-              disabled={!isValidProduct}
-            >
+            <Button onClick={modal === "create" ? onCreateDiscount : onUpdateDiscount} variant="contained" disabled={!isValidProduct}>
               {modal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>
@@ -550,7 +578,7 @@ function Coupons({ service: $Shop, state, feedback }) {
         label: "Vence el",
         align: "left",
         disablePadding: false,
-        format: (value) => value ? dayjs(value).format("DD/MM/YYYY") : '-',
+        format: (value) => (value ? dayjs(value).format("DD/MM/YYYY") : "-"),
       },
     ],
     []
@@ -752,12 +780,7 @@ function Shop() {
         <Products service={$Shop} state={[products, setProducts]} feedback={[feedback, setFeedback]} />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <Discounts
-          service={$Shop}
-          state={[discounts, setDiscounts]}
-          products={products}
-          feedback={[feedback, setFeedback]}
-        />
+        <Discounts service={$Shop} state={[discounts, setDiscounts]} products={products} feedback={[feedback, setFeedback]} />
       </TabPanel>
       <TabPanel value={currentTab} index={2}>
         <Coupons service={$Shop} state={[coupons, setCoupons]} feedback={[feedback, setFeedback]} />

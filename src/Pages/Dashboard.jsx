@@ -6,9 +6,9 @@ import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import Post from "../Components/Post";
 import useSession from "../Hooks/useSession";
-import { BrokenIcon, InvestIcon, InvestmentIcon, Statistic2Icon, TargetIcon } from "../Components/Icons";
+import { BrokenIcon, InvestIcon, InvestmentIcon, TargetIcon } from "../Components/Icons";
 import Theme from "../Theme";
-import { formatCurrency, formatDate } from "../utilities";
+import { formatCurrency } from "../utilities";
 import IconWhite from "../assets/img/common/icon_white.svg";
 import RechartsTooltip from "../Components/RechartsTooltip";
 import DialogRequestAvocados from "../Components/Dialogs/RequestAvocados";
@@ -16,10 +16,14 @@ import { useSnackbar } from "notistack";
 import DialogSellAvocados from "../Components/Dialogs/SellAvocados";
 import SaleService from "../Services/sale.service";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
+
+let wasRedirected = false;
 
 function Dashboard() {
   const [{ user, token }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const [config, { setOnboarding }] = useConfig();
   const $Post = usePost();
   const [posts, setPosts] = useState([]);
@@ -65,6 +69,11 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    if (!user?.totalVites && !wasRedirected) {
+      navigate("/shop");
+      wasRedirected = true;
+    }
+
     if ($Post) {
       (async () => {
         await fetchPosts();

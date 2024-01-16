@@ -7,7 +7,7 @@ import { IMAGE_PLACEHOLDER } from "../utilities/constants";
 import Theme from "../Theme";
 
 function CardProduct({ product, sx, onBuy }) {
-  const color = "primary.main";
+  const color = product.discount_name === "PACK STANDARD" ? "primary.main" : "premium.main";
 
   return (
     <Box
@@ -38,22 +38,21 @@ function CardProduct({ product, sx, onBuy }) {
         </Box>
       )}
       <Box display="flex" justifyContent="center" alignItems="center" gap={7} width="100%">
-        <img
-          src={product.url_image || IMAGE_PLACEHOLDER}
-          alt="logo"
-          style={{ width: "100%", aspectRatio: 1, objectFit: "contain" }}
-        />
+        <img src={product.url_image || IMAGE_PLACEHOLDER} alt="logo" style={{ width: "100%", aspectRatio: 1, objectFit: "contain" }} />
       </Box>
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
         <Typography fontWeight={600} sx={{ color }}>
-          {product.quantity} {product.product_name}
+          {product.quantity} Vite{product.quantity > 1 ? "s" : ""}
         </Typography>
-        <Typography>
+        <Typography color={color} fontWeight={600}>
+          {product.product_name}
+        </Typography>
+        {/* <Typography>
           Paquete:{" "}
           <Typography component="span" color={color} fontWeight={600}>
             {product.discount_name}
           </Typography>
-        </Typography>
+        </Typography> */}
         <Typography>
           Precio:{" "}
           <Typography component="span" color={color} fontWeight={600}>
@@ -68,7 +67,7 @@ function CardProduct({ product, sx, onBuy }) {
         <Box height={8} />
         <Button
           variant="contained"
-          color="primary"
+          color={product.discount_name === "PACK STANDARD" ? "primary" : "premium"}
           fullWidth
           startIcon={<ShoppingCartIcon color="white" />}
           onClick={() => onBuy(product)}
