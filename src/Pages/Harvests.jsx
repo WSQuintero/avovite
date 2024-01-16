@@ -43,7 +43,7 @@ function Harvests() {
         format: (value) => (value ? formatCurrency(Number(value || 0), "$") : "-"),
       },
       {
-        id: "id",
+        id: "contract_number",
         label: "",
         format: (value) => (
           <Stack direction="row" spacing={1}>
