@@ -36,6 +36,8 @@ const HIDE_FOR_AUTH = "HIDE_FOR_AUTH";
 const HIDE_FOR_ADMIN = "HIDE_FOR_ADMIN";
 const REQUIRES_VALIDATION = "REQUIRES_VALIDATION";
 
+let wasRedirected = false;
+
 function PrivateRoute({ component: Component, meta = [], ...props }) {
   const [session] = useSession();
   const isAuthenticated = useMemo(() => session.token, [session.token]);
@@ -43,6 +45,11 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 
   if (isAuthenticated === false) {
     return <></>;
+  }
+
+  if (session.user?.totalVites === 0 && !wasRedirected) {
+    wasRedirected = true;
+    return <Navigate to="/shop" />;
   }
 
   if (meta.includes(REQUIRES_VALIDATION)) {

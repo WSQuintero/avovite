@@ -16,14 +16,10 @@ import { useSnackbar } from "notistack";
 import DialogSellAvocados from "../Components/Dialogs/SellAvocados";
 import SaleService from "../Services/sale.service";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
-
-let wasRedirected = false;
 
 function Dashboard() {
   const [{ user, token }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
   const [config, { setOnboarding }] = useConfig();
   const $Post = usePost();
   const [posts, setPosts] = useState([]);
@@ -69,11 +65,6 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (!user?.totalVites && !wasRedirected) {
-      navigate("/shop");
-      wasRedirected = true;
-    }
-
     if ($Post) {
       (async () => {
         await fetchPosts();
