@@ -117,7 +117,13 @@ function Harvests() {
             </IconButton>
             <IconButton
               onClick={() => {
-                setNewRow({ id: row.id, total_kilograms: row.total_kilograms, harvest_date: row.harvest_date });
+                setNewRow({
+                  id: row.id,
+                  total_kilograms: row.total_kilograms,
+                  harvest_date: row.harvest_date,
+                  harvest_state: row.harvest_state,
+                  sowing_date: row.sowing_date,
+                });
                 setModal("update");
               }}
             >
@@ -126,7 +132,13 @@ function Harvests() {
             <IconButton
               color="error"
               onClick={() => {
-                setNewRow({ id: row.id, total_kilograms: row.total_kilograms, harvest_date: row.harvest_date });
+                setNewRow({
+                  id: row.id,
+                  total_kilograms: row.total_kilograms,
+                  harvest_date: row.harvest_date,
+                  harvest_state: row.harvest_state,
+                  sowing_date: row.sowing_date,
+                });
                 setModal("delete");
               }}
             >
@@ -144,8 +156,7 @@ function Harvests() {
   const tableCollapse = useCallback(
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
-        <Grid display="flex" justifyContent="space-between">
-          <Typography variant="h4">Rentabilidades de cosecha</Typography>
+        <Grid display="flex" justifyContent="flex-end">
           <Button
             variant="contained"
             size="small"
@@ -154,17 +165,22 @@ function Harvests() {
               setModal("collapse.create");
             }}
           >
-            Crear
+            Asignar contratos
           </Button>
         </Grid>
         {loading.collapse === row.id ? (
           <LinearProgress />
+        ) : (collapse[row.id] || []).length === 0 ? (
+          <Typography fontWeight={600} textAlign="center" color='success.main'>
+            No tiene contratos asignados
+          </Typography>
         ) : (
           <Table size="small" sx={{ "& th, & td": { paddingY: 0, border: "none" } }}>
             <TableHead>
               <TableRow>
                 <TableCell>Contrato</TableCell>
                 <TableCell>Vites</TableCell>
+                <TableCell>Correspondencia Vites</TableCell>
                 <TableCell>Kilogramos</TableCell>
                 <TableCell>Pago</TableCell>
                 <TableCell>Estado</TableCell>
@@ -196,9 +212,12 @@ function Harvests() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    {row.kg_correspondence ? formatCurrency(Number(row.kg_correspondence).toFixed(2) || 0, "", " Kg") : "-"}
+                    <Typography>{row.vite_correspondence || "0"}</Typography>
                   </TableCell>
-                  <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence, "$") : "-"}</TableCell>
+                  <TableCell>
+                    {row.kg_correspondence ? formatCurrency(Number(row.kg_correspondence).toFixed(2) || 0, "", " Kg") : "0"}
+                  </TableCell>
+                  <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence, "$") : "0"}</TableCell>
                   <TableCell>{row.payment_status}</TableCell>
                   <TableCell>
                     <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
@@ -220,10 +239,10 @@ function Harvests() {
                         <DeleteIcon />
                       </IconButton>
                       <Button
+                        disabled={!row.vite_correspondence}
                         variant="contained"
                         size="small"
                         onClick={() => {
-                          console.log(row);
                           setPayment({
                             harvest_profitability_id: row.id,
                             contract_id: row.contract_number,

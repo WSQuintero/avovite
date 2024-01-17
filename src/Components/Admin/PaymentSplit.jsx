@@ -140,8 +140,7 @@ function PaymentSplit() {
   const tableCollapse = useCallback(
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
-        <Grid display="flex" justifyContent="space-between">
-          <Typography variant="h4">Split de pagos</Typography>
+        <Grid display="flex" justifyContent="flex-end">
           <Button
             variant="contained"
             size="small"
@@ -150,7 +149,7 @@ function PaymentSplit() {
               setModal("collapse.create");
             }}
           >
-            Crear
+            Asignar contratos
           </Button>
         </Grid>
         {loading.collapse === row.id ? (
@@ -162,7 +161,7 @@ function PaymentSplit() {
                 <TableCell>Contrato</TableCell>
                 <TableCell>Correspondencia</TableCell>
                 <TableCell>Vites</TableCell>
-                <TableCell>Vites (correspondencia)</TableCell>
+                <TableCell>Correspondencia Vites</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -181,13 +180,15 @@ function PaymentSplit() {
                       AV-{row.contract_number}
                     </Button>
                   </TableCell>
-                  <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence || 0, "$") : "-"}</TableCell>
+                  <TableCell>
+                    {row.payment_correspondence ? formatCurrency(Number(row.payment_correspondence).toFixed(2) || 0, "$") : "0"}
+                  </TableCell>
                   <TableCell>
                     <Typography fontSize={row.total_vite ? 16 : 12} color={row.total_vite ? "text.main" : "error.main"}>
                       {row.total_vite || "No ha pagado"}
                     </Typography>
                   </TableCell>
-                  <TableCell>{row.vite_correspondence || "-"}</TableCell>
+                  <TableCell>{row.vite_correspondence || "0"}</TableCell>
                   <TableCell>
                     <Grid display="flex" justifyContent="flex-end" gap={1}>
                       {/* <IconButton

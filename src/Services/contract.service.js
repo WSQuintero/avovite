@@ -59,4 +59,12 @@ export default class ContractService {
   async export() {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/all/excel`, this.config)).data);
   }
+
+  async sendSignature({ id }) {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/signature/${id}`, this.config)).data);
+  }
+
+  async refreshSignatures() {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/update/allstatus/validocus`, this.config)).data);
+  }
 }

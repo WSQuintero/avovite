@@ -28,7 +28,7 @@ import {
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
-import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
+import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon, SyncOutlined as RefreshIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
@@ -98,6 +98,11 @@ const columns = [
     id: "overdue_quotas",
     header: "Cuotas en mora",
   },
+  {
+    accessorKey: "stateFignature",
+    id: "stateFignature",
+    header: "Estado de la firma",
+  },
 ];
 
 function formatDate(dateString) {
@@ -116,6 +121,8 @@ const Contracts = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingCreating, setLoadingCreating] = useState(false);
+  const [loadingSigning, setLoadingSigning] = useState(false);
+  const [loadingRefreshing, setLoadingRefreshing] = useState(false);
   const [modal, setModal] = useState(null);
 
   const [services, setServices] = useState([]);
@@ -315,6 +322,34 @@ const Contracts = () => {
     setLoadingDue(false);
   };
 
+  const onSendSignature = async ({ id }) => {
+    setLoadingSigning(true);
+
+    const { status } = await $Contract.sendSignature({ id });
+
+    if (status) {
+      enqueueSnackbar("Se ha notificado al usuario para firmar el contrato.", { variant: "success" });
+    } else {
+      enqueueSnackbar("Error al notificar al usuario para firmar el contrato.", { variant: "error" });
+    }
+
+    setLoadingSigning(false);
+  };
+
+  const onRefreshSignatures = async () => {
+    setLoadingRefreshing(true);
+
+    const { status } = await $Contract.refreshSignatures();
+
+    if (status) {
+      enqueueSnackbar("El estado de las firmas ha sido refrescado.", { variant: "success" });
+    } else {
+      enqueueSnackbar("Error al refrescar el estado de las firmas.", { variant: "error" });
+    }
+
+    setLoadingRefreshing(false);
+  };
+
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -369,7 +404,7 @@ const Contracts = () => {
               setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
             }}
           >
-            Crear contrato
+            Completar contrato
           </MenuItem>,
           <MenuItem
             key={2}
@@ -382,6 +417,30 @@ const Contracts = () => {
           >
             Ver cuotas
           </MenuItem>,
+          <Divider key="divider-1" />,
+          <MenuItem
+            key={1.5}
+            disabled={loadingSigning}
+            onClick={() => {
+              closeMenu();
+              onSendSignature(original);
+            }}
+            sx={{ gap: 1, alignItems: "center" }}
+          >
+            {loadingSigning && <CircularProgress size={16} />} Envia firma
+          </MenuItem>,
+          <MenuItem
+            key={1.75}
+            disabled={!original.urlValidocus}
+            onClick={() => {
+              closeMenu();
+              window.open(original.urlValidocus, "_blank");
+            }}
+            sx={{ gap: 1, alignItems: "center" }}
+          >
+            Ver firma
+          </MenuItem>,
+          <Divider key="divider-2" />,
           original.status_contracts !== 0 ? (
             <MenuItem
               key={3}
@@ -500,12 +559,21 @@ const Contracts = () => {
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
               Exportar a Excel
             </Button>
+            <LoadingButton
+              loading={loadingRefreshing}
+              variant={loadingRefreshing ? "contained" : "text"}
+              color="primary"
+              onClick={onRefreshSignatures}
+              startIcon={<RefreshIcon />}
+            >
+              Refrescar firmas
+            </LoadingButton>
           </Box>
         )}
       />
 
       <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
-        <DialogTitle color="primary.main">Crear contrato</DialogTitle>
+        <DialogTitle color="primary.main">Completar contrato</DialogTitle>
         <DialogContent>
           <Box component="form" display="flex" flexDirection="column" gap={3} padding={1} onSubmit={onCreateContract}>
             <Grid

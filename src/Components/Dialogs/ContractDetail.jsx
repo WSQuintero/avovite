@@ -40,7 +40,7 @@ function ContractDetail({ open, contractId = null, onClose }) {
           <LinearProgress />
         ) : (
           <Stack display="flex" flexDirection="column" gap={1}>
-            {contract.status_contracts === 0 && <Alert severity="error">El contrato no ha sido creado aún.</Alert>}
+            {contract.status_contracts === 0 && <Alert severity="error">El contrato no ha sido completado aún.</Alert>}
             <Typography variant="h4" mt={4}>
               Información financiera
             </Typography>
