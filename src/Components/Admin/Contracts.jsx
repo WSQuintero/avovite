@@ -40,6 +40,7 @@ import useShop from "../../Hooks/useShop";
 import DueService from "../../Services/due.service";
 import Image from "../Image";
 import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 
 const columns = [
   {
@@ -114,6 +115,7 @@ const Contracts = () => {
   const $Shop = useShop();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCreating, setLoadingCreating] = useState(false);
   const [modal, setModal] = useState(null);
 
   const [services, setServices] = useState([]);
@@ -204,52 +206,55 @@ const Contracts = () => {
   };
 
   const onCreateContract = async () => {
+    const body = {
+      ...(totalFinancingValue !== 0
+        ? {
+            // Financing
+            financed: 1,
+            with_guarantee: 0,
+            contract_vites: parseFloat(contract.vites),
+            contract_amount: parseFloat(subTotalValue),
+            id_services: services[contract.service].id_product,
+            percentage_discount: parseFloat(contract.discount),
+            contract_discount: parseFloat(discountValue),
+            total_contract_with_discount: parseFloat(totalValue),
+            first_payment: parseFloat(contract.firstPaymentValue),
+            first_payment_date: formatDate(contract.firstPaymentDate),
+            total_financed: parseFloat(totalDuesValue),
+            payment_numbers: dues.length,
+            financed_contracts: dues.map((d, index) => ({
+              quota_number: index + 1,
+              payment_amount: d.value,
+              date_payment: formatDate(d.date),
+            })),
+            enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
+          }
+        : {
+            //  Financingn't
+            financed: 0,
+            with_guarantee: 0,
+            contract_vites: parseFloat(contract.vites),
+            contract_amount: parseFloat(subTotalValue),
+            id_services: services[contract.service].id_product,
+            percentage_discount: parseFloat(contract.discount),
+            contract_discount: parseFloat(discountValue),
+            total_contract_with_discount: parseFloat(totalValue),
+            first_payment: parseFloat(contract.firstPaymentValue),
+            first_payment_date: formatDate(contract.firstPaymentDate),
+            enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
+          }),
+      ...{
+        mortgage_contract_aditional_text: contract.mortgage_contract === 1 ? contract.mortgage_contract_aditional_text : "",
+        mortgage_contract: contract.mortgage_contract,
+      },
+    };
+
+    setLoadingCreating(true);
+
     const { status } = await $Contract.complete({
       id: selectedContract.id,
-      mortgage: selectedContract.mortgage_contract === 1,
-      body: {
-        ...(totalFinancingValue !== 0
-          ? {
-              // Financing
-              financed: 1,
-              with_guarantee: 0,
-              contract_vites: parseFloat(contract.vites),
-              contract_amount: parseFloat(subTotalValue),
-              id_services: services[contract.service].id_product,
-              percentage_discount: parseFloat(contract.discount),
-              contract_discount: parseFloat(discountValue),
-              total_contract_with_discount: parseFloat(totalValue),
-              first_payment: parseFloat(contract.firstPaymentValue),
-              first_payment_date: formatDate(contract.firstPaymentDate),
-              total_financed: parseFloat(totalDuesValue),
-              payment_numbers: dues.length,
-              financed_contracts: dues.map((d, index) => ({
-                quota_number: index + 1,
-                payment_amount: d.value,
-                date_payment: formatDate(d.date),
-              })),
-              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
-            }
-          : {
-              //  Financingn't
-              financed: 0,
-              with_guarantee: 0,
-              contract_vites: parseFloat(contract.vites),
-              contract_amount: parseFloat(subTotalValue),
-              id_services: services[contract.service].id_product,
-              percentage_discount: parseFloat(contract.discount),
-              contract_discount: parseFloat(discountValue),
-              total_contract_with_discount: parseFloat(totalValue),
-              first_payment: parseFloat(contract.firstPaymentValue),
-              first_payment_date: formatDate(contract.firstPaymentDate),
-              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
-            }),
-        ...(selectedContract.mortgage_contract === 1
-          ? {
-              mortgage_contract_aditional_text: contract.mortgage_contract_aditional_text,
-            }
-          : {}),
-      },
+      mortgage: contract.mortgage_contract === 1,
+      body: body,
     });
 
     if (status) {
@@ -259,6 +264,8 @@ const Contracts = () => {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoadingCreating(false);
   };
 
   const onDeleteContract = async (contractId, permanently) => {
@@ -686,7 +693,7 @@ const Contracts = () => {
                 />
               </Grid>
             </Grid>
-            <FormControlLabel
+            {/* <FormControlLabel
               label="Habilitar pago con Epayco"
               control={
                 <Checkbox
@@ -694,18 +701,16 @@ const Contracts = () => {
                   onChange={({ target }) => setContract((prev) => ({ ...prev, enable_to_pay_epayco: target.checked }))}
                 />
               }
-            />
-            {/* <FormControlLabel
+            /> */}
+            <FormControlLabel
               label="Habilitar pago hipotecario"
               control={
                 <Checkbox
                   checked={contract.mortgage_contract === 1}
-                  onChange={({ target }) =>
-                    setContract((prev) => ({ ...prev, mortgage_contract: target.checked ? 1 : 0 }))
-                  }
+                  onChange={({ target }) => setContract((prev) => ({ ...prev, mortgage_contract: target.checked ? 1 : 0 }))}
                 />
               }
-            /> */}
+            />
 
             <Collapse in={contract?.mortgage_contract === 1}>
               <TiptapEditor
@@ -800,9 +805,9 @@ const Contracts = () => {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onCancelCreateContract}>Cancelar</Button>
-            <Button onClick={onCreateContract} variant="contained" disabled={contractIsDisabledToCreate}>
+            <LoadingButton loading={loadingCreating} onClick={onCreateContract} variant="contained" disabled={contractIsDisabledToCreate}>
               Crear contrato
-            </Button>
+            </LoadingButton>
           </Grid>
         </DialogActions>
       </Dialog>

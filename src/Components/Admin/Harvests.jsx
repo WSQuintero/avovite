@@ -38,6 +38,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
+import DialogContractDetail from "../Dialogs/ContractDetail";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
@@ -173,13 +174,30 @@ function Harvests() {
             <TableBody>
               {(collapse[row.id] || []).map((row) => (
                 <TableRow hover key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                  <TableCell>AV-{row.contract_number}</TableCell>
                   <TableCell>
-                    <Typography fontSize={row.total_vite ? 16 : 12} color={row.total_vite ? "text.main" : "error.main"}>
+                    <Button
+                      variant="text"
+                      size="small"
+                      onClick={() => {
+                        setModal("collapse.contract.details");
+                        setNewCollapse((prev) => ({ ...prev, contract_number: row.contract_number }));
+                      }}
+                    >
+                      AV-{row.contract_number}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      fontSize={row.total_vite ? 16 : 12}
+                      color={row.total_vite ? "text.main" : "error.main"}
+                      sx={{ opacity: row.total_vite ? 1 : 0.5 }}
+                    >
                       {row.total_vite || "No ha pagado"}
                     </Typography>
                   </TableCell>
-                  <TableCell>{row.kg_correspondence ? formatCurrency(row.kg_correspondence || 0, "", " Kg") : "-"}</TableCell>
+                  <TableCell>
+                    {row.kg_correspondence ? formatCurrency(Number(row.kg_correspondence).toFixed(2) || 0, "", " Kg") : "-"}
+                  </TableCell>
                   <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence, "$") : "-"}</TableCell>
                   <TableCell>{row.payment_status}</TableCell>
                   <TableCell>
@@ -647,6 +665,8 @@ function Harvests() {
           </LoadingButton>
         </DialogActions>
       </Dialog>
+
+      <DialogContractDetail open={modal === "collapse.contract.details"} contractId={newCollapse.contract_number} onClose={onClearFields} />
 
       <Snackbar
         open={feedback.open}

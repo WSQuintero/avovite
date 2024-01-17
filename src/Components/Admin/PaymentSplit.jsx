@@ -14,10 +14,6 @@ import {
   IconButton,
   InputAdornment,
   LinearProgress,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   MenuItem,
   Snackbar,
   Table,
@@ -27,7 +23,6 @@ import {
   TableRow,
   TextField,
   Typography,
-  alpha,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -40,6 +35,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
+import DialogContractDetail from "../Dialogs/ContractDetail";
 
 const RowState = { id: null, total_money: "", payment_date: "", is_Cronjob: false };
 const CollapseState = { id: null, contract_number: "", split_payment_id: "" };
@@ -145,7 +141,7 @@ function PaymentSplit() {
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
         <Grid display="flex" justifyContent="space-between">
-          <Typography variant="h4">Split de pagos aprobados</Typography>
+          <Typography variant="h4">Split de pagos</Typography>
           <Button
             variant="contained"
             size="small"
@@ -173,7 +169,18 @@ function PaymentSplit() {
             <TableBody>
               {(collapse[row.id] || []).map((row) => (
                 <TableRow hover key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                  <TableCell>AV-{row.contract_number}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="text"
+                      size="small"
+                      onClick={() => {
+                        setModal("collapse.contract.details");
+                        setNewCollapse((prev) => ({ ...prev, contract_number: row.contract_number }));
+                      }}
+                    >
+                      AV-{row.contract_number}
+                    </Button>
+                  </TableCell>
                   <TableCell>{row.payment_correspondence ? formatCurrency(row.payment_correspondence || 0, "$") : "-"}</TableCell>
                   <TableCell>
                     <Typography fontSize={row.total_vite ? 16 : 12} color={row.total_vite ? "text.main" : "error.main"}>
@@ -547,6 +554,8 @@ function PaymentSplit() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <DialogContractDetail open={modal === "collapse.contract.details"} contractId={newCollapse.contract_number} onClose={onClearFields} />
 
       <Snackbar
         open={feedback.open}

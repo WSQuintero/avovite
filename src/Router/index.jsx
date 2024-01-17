@@ -47,7 +47,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
     return <></>;
   }
 
-  if (session.user?.totalVites === 0 && !wasRedirected) {
+  if (!isAdmin && session.user?.totalVites === 0 && !wasRedirected) {
     wasRedirected = true;
     return <Navigate to="/shop" />;
   }

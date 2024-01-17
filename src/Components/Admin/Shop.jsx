@@ -30,6 +30,7 @@ import { IMAGE_PLACEHOLDER } from "../../utilities/constants";
 import { NumericFormat } from "react-number-format";
 import { MuiFileInput } from "mui-file-input";
 import dayjs from "dayjs";
+import { LoadingButton } from "@mui/lab";
 
 function Products({ service: $Shop, state, feedback }) {
   const [products, setProducts] = state;
@@ -555,6 +556,7 @@ function Coupons({ service: $Shop, state, feedback }) {
     expirationDate: "",
   });
   const [modal, setModal] = useState(null);
+  const [loading, setLoading] = useState(false);
   const isValidProduct = useMemo(() => coupon.name && coupon.expirationDate && coupon.discountPercentage, [coupon]);
 
   const tableHeadCells = useMemo(
@@ -578,7 +580,34 @@ function Coupons({ service: $Shop, state, feedback }) {
         label: "Vence el",
         align: "left",
         disablePadding: false,
-        format: (value) => (value ? dayjs(value).format("DD/MM/YYYY") : "-"),
+        format: (value) => (value ? dayjs(value).format("DD MMMM YYYY") : "-"),
+      },
+      {
+        id: "id",
+        label: "",
+        align: "left",
+        disablePadding: false,
+        format: (value, row) => (
+          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+            <IconButton
+              onClick={() => {
+                setCoupon(row);
+                setModal("update");
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => {
+                setCoupon(row);
+                setModal("delete");
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        ),
       },
     ],
     []
@@ -602,7 +631,13 @@ function Coupons({ service: $Shop, state, feedback }) {
       return;
     }
 
-    const { status, data } = await $Shop.coupon.add(coupon);
+    setLoading(true);
+
+    const { status, data } = await $Shop.coupon.add({
+      name: coupon.name,
+      discountPercentage: coupon.discountPercentage,
+      expirationDate: coupon.expirationDate,
+    });
 
     if (status) {
       setCoupons((prev) => [...prev, { ...coupon, id: data.data }]);
@@ -611,6 +646,8 @@ function Coupons({ service: $Shop, state, feedback }) {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoading(false);
   };
 
   const onUpdate = async (event) => {
@@ -621,7 +658,14 @@ function Coupons({ service: $Shop, state, feedback }) {
       return;
     }
 
-    const { status } = await $Shop.coupon.update(coupon);
+    setLoading(true);
+
+    const { status } = await $Shop.coupon.update({
+      id: coupon.id,
+      name: coupon.name,
+      discountPercentage: coupon.discountPercentage,
+      expirationDate: coupon.expirationDate,
+    });
 
     if (status) {
       setCoupons((prev) => prev.map((p) => (p.id === coupon.id ? coupon : p)));
@@ -630,9 +674,13 @@ function Coupons({ service: $Shop, state, feedback }) {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoading(false);
   };
 
   const onDelete = async () => {
+    setLoading(true);
+
     const { status } = await $Shop.coupon.delete(coupon);
 
     if (status) {
@@ -642,6 +690,8 @@ function Coupons({ service: $Shop, state, feedback }) {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoading(false);
   };
 
   return (
@@ -696,9 +746,14 @@ function Coupons({ service: $Shop, state, feedback }) {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button onClick={modal === "create" ? onCreate : onUpdate} variant="contained" disabled={!isValidProduct}>
+            <LoadingButton
+              loading={loading}
+              onClick={modal === "create" ? onCreate : onUpdate}
+              variant="contained"
+              disabled={!isValidProduct}
+            >
               {modal === "create" ? "Crear" : "Editar"}
-            </Button>
+            </LoadingButton>
           </Grid>
         </DialogActions>
       </Dialog>
@@ -712,9 +767,9 @@ function Coupons({ service: $Shop, state, feedback }) {
           <Button variant="outlined" onClick={onClearFields}>
             Cancelar
           </Button>
-          <Button variant="contained" onClick={onDelete}>
+          <LoadingButton loading={loading} variant="contained" onClick={onDelete}>
             Eliminar
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </>
