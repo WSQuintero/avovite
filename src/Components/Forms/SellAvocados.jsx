@@ -70,9 +70,15 @@ function SellAvocados({ onSubmit, onCancel }) {
   return (
     <Stack component="form" spacing={2} onSubmit={handleSubmit}>
       <TextField required select fullWidth label="Contrato" name="id_contract" value={formData.id_contract} onChange={handleInputChange}>
-        <MenuItem disabled value="-">
-          Selecciona el contrato
-        </MenuItem>
+        {contracts.length > 0 ? (
+          <MenuItem disabled value="-">
+            Selecciona el contrato
+          </MenuItem>
+        ) : (
+          <MenuItem disabled value="-">
+            No tienes contratos en cosecha
+          </MenuItem>
+        )}
         {contracts.map((contract) => (
           <MenuItem key={contract.contract_number} value={contract.contract_number}>
             AV-{contract.contract_number}
@@ -80,24 +86,26 @@ function SellAvocados({ onSubmit, onCancel }) {
         ))}
       </TextField>
 
-      <TextField
-        required
-        select
-        fullWidth
-        label="Terceros disponibles"
-        name="id_suppliers"
-        value={formData.id_suppliers}
-        onChange={handleInputChange}
-      >
-        <MenuItem disabled value="-">
-          Selecciona un tercero
-        </MenuItem>
-        {suppliers.map((supplier) => (
-          <MenuItem key={supplier.id} value={supplier.id}>
-            {supplier.name}
+      <Collapse in={formData.id_contract !== "-"}>
+        <TextField
+          required
+          select
+          fullWidth
+          label="Terceros disponibles"
+          name="id_suppliers"
+          value={formData.id_suppliers}
+          onChange={handleInputChange}
+        >
+          <MenuItem disabled value="-">
+            Selecciona un tercero
           </MenuItem>
-        ))}
-      </TextField>
+          {suppliers.map((supplier) => (
+            <MenuItem key={supplier.id} value={supplier.id}>
+              {supplier.name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Collapse>
 
       <Collapse unmountOnExit in={formData.id_suppliers !== "-"}>
         <TextField

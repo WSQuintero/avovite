@@ -29,6 +29,7 @@ import ForgotPassword from "../Pages/ForgotPassword";
 import Callback from "../Pages/Callback";
 import Payments from "../Pages/Payments";
 import Production from "../Pages/Production";
+import { ContractDetail } from "../Components/Admin";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -193,6 +194,10 @@ function Router() {
     {
       path: "/admin/:section?",
       element: <PrivateRoute component={Admin} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+    },
+    {
+      path: "/admin/contracts/:id",
+      element: <PrivateRoute component={ContractDetail} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/posts/:id",

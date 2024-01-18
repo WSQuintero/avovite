@@ -91,9 +91,15 @@ function RequestAvocados({ onSubmit, onCancel }) {
     <Stack component="form" spacing={2} onSubmit={handleSubmit}>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
         <TextField required select fullWidth label="Contrato" name="id_contract" value={formData.id_contract} onChange={handleInputChange}>
-          <MenuItem disabled value="-">
-            Selecciona el contrato
-          </MenuItem>
+          {contracts.length > 0 ? (
+            <MenuItem disabled value="-">
+              Selecciona el contrato
+            </MenuItem>
+          ) : (
+            <MenuItem disabled value="-">
+              No tienes contratos en cosecha
+            </MenuItem>
+          )}
           {contracts.map((contract) => (
             <MenuItem key={contract.contract_number} value={contract.contract_number}>
               AV-{contract.contract_number}
@@ -102,53 +108,57 @@ function RequestAvocados({ onSubmit, onCancel }) {
         </TextField>
       </Stack>
 
-      <TextField required fullWidth label="Nombre completo" name="full_name" value={formData.full_name} onChange={handleInputChange} />
+      <Collapse in={formData.id_contract !== "-"}>
+        <Stack spacing={2}>
+          <TextField required fullWidth label="Nombre completo" name="full_name" value={formData.full_name} onChange={handleInputChange} />
 
-      <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-        <TextField
-          required
-          select
-          fullWidth
-          label="Tipo de documento"
-          name="document_type"
-          value={formData.document_type}
-          onChange={handleInputChange}
-        >
-          <MenuItem disabled value="-">
-            Selecciona una opción
-          </MenuItem>
-          {Object.keys(DOCUMENT_TYPES).map((key) => (
-            <MenuItem key={key} value={key}>
-              {DOCUMENT_TYPES[key]}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          required
-          fullWidth
-          label="Documento"
-          name="Document_number"
-          value={formData.Document_number}
-          onChange={handleInputChange}
-        />
-      </Stack>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <TextField
+              required
+              select
+              fullWidth
+              label="Tipo de documento"
+              name="document_type"
+              value={formData.document_type}
+              onChange={handleInputChange}
+            >
+              <MenuItem disabled value="-">
+                Selecciona una opción
+              </MenuItem>
+              {Object.keys(DOCUMENT_TYPES).map((key) => (
+                <MenuItem key={key} value={key}>
+                  {DOCUMENT_TYPES[key]}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              required
+              fullWidth
+              label="Documento"
+              name="Document_number"
+              value={formData.Document_number}
+              onChange={handleInputChange}
+            />
+          </Stack>
 
-      <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-        <TextField
-          required
-          fullWidth
-          select
-          label="Recibir puerta de finca"
-          name="reside_farm_door"
-          value={formData.reside_farm_door}
-          onChange={handleInputChange}
-        >
-          <MenuItem value={false}>No</MenuItem>
-          <MenuItem value={true}>Si</MenuItem>
-        </TextField>
-      </Stack>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <TextField
+              required
+              fullWidth
+              select
+              label="Recibir puerta de finca"
+              name="reside_farm_door"
+              value={formData.reside_farm_door}
+              onChange={handleInputChange}
+            >
+              <MenuItem value={false}>No</MenuItem>
+              <MenuItem value={true}>Si</MenuItem>
+            </TextField>
+          </Stack>
+        </Stack>
+      </Collapse>
 
-      <Collapse unmountOnExit in={!formData.reside_farm_door}>
+      <Collapse unmountOnExit in={!formData.reside_farm_door && formData.id_contract !== "-"}>
         <Stack spacing={2}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <TextField

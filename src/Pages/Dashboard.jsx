@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Box, Button, Container, Grid, Skeleton, Typography, Stack, Icon, Tooltip as MuiTooltip } from "@mui/material";
-import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, Line, Tooltip } from "recharts";
+import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, Line, Tooltip, YAxis, Label } from "recharts";
 import useConfig from "../Hooks/useConfig";
 import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
@@ -206,6 +206,16 @@ function Dashboard() {
                         <LineChart width={500} height={300} data={chartData.length === 1 ? [...chartData, ...chartData] : chartData}>
                           <CartesianGrid strokeDasharray="0" vertical={false} stroke="#ffffff44" />
                           <XAxis dataKey="x" fontSize={14} stroke="white" />
+                          <YAxis fontSize={14} stroke="transparent" width={24}>
+                            <Label
+                              style={{
+                                fontSize: 12,
+                                fill: "white",
+                              }}
+                              angle={270}
+                              value={"Kilogramos (ft.)"}
+                            />
+                          </YAxis>
                           <Tooltip content={<RechartsTooltip />} />
                           <Line type="monotone" dataKey="y" stroke={Theme.palette.primary.main} activeDot={{ r: 8 }} />
                         </LineChart>

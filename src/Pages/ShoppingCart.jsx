@@ -95,7 +95,7 @@ function ShoppingCart() {
 
     setLoadingPayment(true);
 
-    const { status } = await $Payment.validate({
+    const { status, data } = await $Payment.validate({
       ...(discountCode.isValid ? { codeDiscount: discountCode.value } : {}),
       payments: [{ ...selectedProduct, total }],
     });
@@ -140,7 +140,7 @@ function ShoppingCart() {
 
       handler.open({ ...mandatory, ...aditional });
     } else {
-      enqueueSnackbar("Ha ocurrido un error validando el pago. Ponte en contacto con el administrador.", { variant: "error" });
+      enqueueSnackbar(data.response.data.message, { variant: "error", autoHideDuration: 10000 });
     }
   };
 

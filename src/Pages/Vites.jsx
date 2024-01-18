@@ -31,12 +31,23 @@ function Vites() {
         accessorKey: "earliest_sowing_date",
         header: "Fecha de siembra",
         Cell: ({ renderedCellValue }) =>
-          renderedCellValue ? <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</> : "No se ha sembrado",
+          renderedCellValue ? (
+            <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>
+          ) : (
+            <Typography fontSize={12} color="warning.light">
+              No se ha sembrado
+            </Typography>
+          ),
       },
       {
-        accessorKey: "status",
+        accessorKey: "harvest_state",
         header: "Estado",
-        Cell: ({ renderedCellValue }) => "-",
+        Cell: ({ renderedCellValue }) =>
+          renderedCellValue || (
+            <Typography fontSize={12} color="warning.light">
+              No se ha cosechado
+            </Typography>
+          ),
       },
     ],
     []

@@ -137,7 +137,15 @@ function Harvests() {
             >
               <DeleteIcon />
             </IconButton>
-            <LoadingButton loading={loading.split === row.id} size="small" variant="contained" onClick={() => onSplit(row.id)}>
+            <LoadingButton
+              loading={loading.split === row.id}
+              size="small"
+              variant="contained"
+              onClick={() => {
+                setModal("split");
+                setNewRow((prev) => ({ ...prev, id: row.id }));
+              }}
+            >
               Split
             </LoadingButton>
           </Grid>
@@ -383,14 +391,15 @@ function Harvests() {
     }
   };
 
-  const onSplit = async (id) => {
-    setLoading((prev) => ({ ...prev, split: id }));
+  const onSplit = async () => {
+    setLoading((prev) => ({ ...prev, split: newRow.id }));
 
-    const { status } = await $Harvest.split({ id });
+    const { status } = await $Harvest.split({ id: newRow.id });
 
     if (status) {
       setFeedback({ open: true, message: "Split generado exitosamente.", status: "success" });
-      fetchCollapse(id);
+      onClearFields();
+      fetchCollapse(newRow.id);
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
@@ -572,6 +581,21 @@ function Harvests() {
           <Button variant="contained" onClick={onDelete}>
             Eliminar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog maxWidth="sm" open={modal === "split"} onClose={onClearFields} fullWidth>
+        <DialogTitle>Split de la cosecha</DialogTitle>
+        <DialogContent>
+          <DialogContentText>¿Estás seguro que desea hacer split de la cosecha?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClearFields}>
+            Cancelar
+          </Button>
+          <LoadingButton loading={loading.split} variant="contained" onClick={onSplit}>
+            Split
+          </LoadingButton>
         </DialogActions>
       </Dialog>
 

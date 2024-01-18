@@ -25,6 +25,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Stack,
+  DialogContentText,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
@@ -41,6 +42,7 @@ import DueService from "../../Services/due.service";
 import Image from "../Image";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
@@ -114,6 +116,7 @@ function formatDate(dateString) {
 }
 
 const Contracts = () => {
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [{ constants }] = useConfig();
   const [{ token }] = useSession();
@@ -343,6 +346,7 @@ const Contracts = () => {
 
     if (status) {
       enqueueSnackbar("El estado de las firmas ha sido refrescado.", { variant: "success" });
+      await fetchContracts();
     } else {
       enqueueSnackbar("Error al refrescar el estado de las firmas.", { variant: "error" });
     }
@@ -441,6 +445,16 @@ const Contracts = () => {
             Ver firma
           </MenuItem>,
           <Divider key="divider-2" />,
+          // <MenuItem
+          //   key={4}
+          //   onClick={async () => {
+          //     closeMenu();
+          //     setContract(original);
+          //     setModal("edit-contract");
+          //   }}
+          // >
+          //   Editar contrato
+          // </MenuItem>,
           original.status_contracts !== 0 ? (
             <MenuItem
               key={3}
@@ -454,7 +468,7 @@ const Contracts = () => {
             </MenuItem>
           ) : (
             <MenuItem
-              key={4}
+              key={5}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -950,6 +964,35 @@ const Contracts = () => {
             ))}
           </List>
         </DialogContent>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={modal === "edit-contract"}
+        onClose={() => {
+          setModal(null);
+          onCancelCreateContract();
+        }}
+      >
+        <DialogTitle>Editar contrato</DialogTitle>
+        <DialogContent>
+          <DialogContentText>¿Estás seguro que deseas editar el contrato AV-{contract?.id}?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setModal(null);
+              onCancelCreateContract();
+            }}
+          >
+            Cancelar
+          </Button>
+          <LoadingButton variant="contained" onClick={() => navigate(`/admin/contracts/${contract?.id}?editing=true`)}>
+            Editar
+          </LoadingButton>
+        </DialogActions>
       </Dialog>
 
       <Snackbar

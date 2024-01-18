@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Typography, Container, Stack, Box, Button } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
@@ -6,28 +6,8 @@ import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import { formatCurrency } from "../utilities";
 
-const data = [
-  {
-    id: "2924",
-    type: "Pago",
-    created_at: new Date(),
-    value: 2200000,
-  },
-  {
-    id: "4728",
-    type: "Ganancia",
-    created_at: new Date(),
-    value: 2200000,
-  },
-  {
-    id: "5497",
-    type: "Retiro",
-    created_at: new Date(),
-    value: 2200000,
-  },
-];
-
 function Transactions() {
+  const [rows, setRows] = useState([]);
   const columns = useMemo(
     () => [
       {
@@ -62,6 +42,9 @@ function Transactions() {
     ],
     []
   );
+
+    
+
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
@@ -73,7 +56,7 @@ function Transactions() {
             Transacciones
           </Typography>
         </Stack>
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={rows} />
       </Container>
     </PageWrapper>
   );
