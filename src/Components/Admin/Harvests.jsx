@@ -11,11 +11,6 @@ import {
   IconButton,
   InputAdornment,
   LinearProgress,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
   Snackbar,
   Stack,
   Table,
@@ -25,13 +20,11 @@ import {
   TableRow,
   TextField,
   Typography,
-  alpha,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon, KeyboardArrowDown as CollapseIcon } from "@mui/icons-material";
 import HarvestService from "../../Services/harvest.service";
-import ContractService from "../../Services/contract.service";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -39,6 +32,7 @@ import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
+import ContractSelector from "../ContractSelector";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
@@ -46,11 +40,11 @@ const PaymentState = { harvest_profitability_id: null, harvest_id: null, contrac
 
 function Harvests() {
   const [session] = useSession();
-  const [contracts, setContracts] = useState({});
   const [rows, setRows] = useState([]);
   const [collapse, setCollapse] = useState({});
   const [newRow, setNewRow] = useState(RowState);
   const [newCollapse, setNewCollapse] = useState(CollapseState);
+  const [multiple, setMultiple] = useState([]);
   const [payment, setPayment] = useState(PaymentState);
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
@@ -59,7 +53,6 @@ function Harvests() {
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
 
   const $Harvest = useMemo(() => (session.token ? new HarvestService(session.token) : null), [session.token]);
-  const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -171,11 +164,11 @@ function Harvests() {
         {loading.collapse === row.id ? (
           <LinearProgress />
         ) : (collapse[row.id] || []).length === 0 ? (
-          <Typography fontWeight={600} textAlign="center" color='success.main'>
+          <Typography fontWeight={600} textAlign="center" color="success.main">
             No tiene contratos asignados
           </Typography>
         ) : (
-          <Table size="small" sx={{ "& th, & td": { paddingY: 0, border: "none" } }}>
+          <Table size="small" sx={{ mb: 6, "& th, & td": { paddingY: 0, border: "none" } }}>
             <TableHead>
               <TableRow>
                 <TableCell>Contrato</TableCell>
@@ -275,16 +268,15 @@ function Harvests() {
     setNewRow((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onChangeFieldsCollapse = ({ target }) => {
-    const { name, value } = target;
-    setNewCollapse((prev) => ({ ...prev, [name]: value }));
-  };
-
   const onClearFields = () => {
     setModal(null);
     setNewRow(RowState);
     setNewCollapse(CollapseState);
     setPayment(PaymentState);
+
+    if (multiple.length) {
+      setMultiple([]);
+    }
   };
 
   const onCreate = async (event) => {
@@ -340,15 +332,15 @@ function Harvests() {
   const onCreateCollapse = async (event) => {
     event.preventDefault();
 
-    if (!isValidFormCollapse) {
-      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
+    if (!multiple.length) {
+      setFeedback({ open: true, message: "Seleccione al menos un contrato.", status: "error" });
       return;
     }
 
-    const { status } = await $Harvest.profitability.add(newCollapse);
+    const { status } = await $Harvest.profitability.add({ harvest_id: newCollapse.harvest_id, contract_numbers: multiple });
 
     if (status) {
-      setFeedback({ open: true, message: "Rentabilidad de cosecha creada exitosamente.", status: "success" });
+      setFeedback({ open: true, message: "Se asignaron los contratos a la cosecha exitosamente.", status: "success" });
       fetchCollapse(newCollapse.harvest_id);
       onClearFields();
     } else {
@@ -443,13 +435,6 @@ function Harvests() {
 
       if (status) {
         setRows(data.data);
-      }
-    })();
-    await (async () => {
-      const { status, data } = await $Contract.get();
-
-      if (status) {
-        setContracts(data.data.reduce((acc, c) => ({ ...acc, [c.id]: c }), {}));
       }
     })();
 
@@ -591,7 +576,7 @@ function Harvests() {
       </Dialog>
 
       <Dialog open={modal === "collapse.create" || modal === "collapse.update"} onClose={onClearFields} maxWidth="md" fullWidth>
-        <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} rentabilidad de la cosecha</DialogTitle>
+        <DialogTitle color="primary.main">Asignar contratos</DialogTitle>
         <DialogContent>
           <Box
             component="form"
@@ -602,20 +587,7 @@ function Harvests() {
             onSubmit={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
-              <TextField
-                select
-                fullWidth
-                label="Contrato"
-                name="contract_number"
-                value={newCollapse.contract_number}
-                onChange={onChangeFieldsCollapse}
-              >
-                {Object.values(contracts).map((c) => (
-                  <MenuItem key={c.id} value={c.id}>
-                    AV-{c.id}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <ContractSelector initialValue={multiple} onChange={(value) => setMultiple(value)} />
             </Grid>
           </Box>
         </DialogContent>
@@ -625,9 +597,9 @@ function Harvests() {
             <Button
               onClick={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
               variant="contained"
-              disabled={!isValidFormCollapse}
+              disabled={!multiple.length}
             >
-              {modal === "collapse.create" ? "Crear" : "Editar"}
+              Asignar
             </Button>
           </Grid>
         </DialogActions>

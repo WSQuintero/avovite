@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import $Callback from "../Services/callback.service";
 import { Button, Stack, Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 function Callback() {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const { section } = useParams();
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState("loading");
@@ -28,8 +30,10 @@ function Callback() {
 
         if (status) {
           setStep("success");
+          enqueueSnackbar("Será redirigido al formulario de creación de contrato.", { variant: "success" });
+
           setTimeout(() => {
-            navigate("/");
+            navigate("/registro-contrato");
           }, 3000);
         } else {
           setStep("error");

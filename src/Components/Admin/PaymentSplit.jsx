@@ -14,6 +14,7 @@ import {
   IconButton,
   InputAdornment,
   LinearProgress,
+  ListItemText,
   MenuItem,
   Snackbar,
   Table,
@@ -36,6 +37,7 @@ import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
+import ContractSelector from "../ContractSelector";
 
 const RowState = { id: null, total_money: "", payment_date: "", is_Cronjob: false };
 const CollapseState = { id: null, contract_number: "", split_payment_id: "" };
@@ -45,6 +47,7 @@ function PaymentSplit() {
   const [contracts, setContracts] = useState({});
   const [rows, setRows] = useState([]);
   const [collapse, setCollapse] = useState({});
+  const [multiple, setMultiple] = useState([]);
   const [newRow, setNewRow] = useState(RowState);
   const [newCollapse, setNewCollapse] = useState(CollapseState);
   const [modal, setModal] = useState(null);
@@ -147,6 +150,7 @@ function PaymentSplit() {
             onClick={() => {
               setNewCollapse((prev) => ({ ...prev, split_payment_id: row.id }));
               setModal("collapse.create");
+              setMultiple(collapse[row.id].map((c) => c.contract_number) || []);
             }}
           >
             Asignar contratos
@@ -155,7 +159,7 @@ function PaymentSplit() {
         {loading.collapse === row.id ? (
           <LinearProgress />
         ) : (
-          <Table size="small" sx={{ "& th, & td": { paddingY: 0, border: "none" } }}>
+          <Table size="small" sx={{ mb: 6, "& th, & td": { paddingY: 0, border: "none" } }}>
             <TableHead>
               <TableRow>
                 <TableCell>Contrato</TableCell>
@@ -229,15 +233,14 @@ function PaymentSplit() {
     setNewRow((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onChangeFieldsCollapse = ({ target }) => {
-    const { name, value } = target;
-    setNewCollapse((prev) => ({ ...prev, [name]: value }));
-  };
-
   const onClearFields = () => {
     setModal(null);
     setNewRow(RowState);
     setNewCollapse(CollapseState);
+
+    if (multiple.length) {
+      setMultiple([]);
+    }
   };
 
   const onCreate = async (event) => {
@@ -293,15 +296,15 @@ function PaymentSplit() {
   const onCreateCollapse = async (event) => {
     event.preventDefault();
 
-    if (!isValidFormCollapse) {
-      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
+    if (!multiple.length) {
+      setFeedback({ open: true, message: "Seleccione al menos un contrato.", status: "error" });
       return;
     }
 
-    const { status } = await $Split.approved.add(newCollapse);
+    const { status } = await $Split.approved.add({ split_payment_id: newCollapse.split_payment_id, contract_numbers: multiple });
 
     if (status) {
-      setFeedback({ open: true, message: "Split de pagos aprobados creado exitosamente.", status: "success" });
+      setFeedback({ open: true, message: "Se asignaron los contratos al split de pagos exitosamente.", status: "success" });
       fetchCollapse(newCollapse.split_payment_id);
       onClearFields();
     } else {
@@ -397,6 +400,8 @@ function PaymentSplit() {
       })();
     }
   }, [$Split]);
+
+  console.log(multiple);
 
   return (
     <>
@@ -499,7 +504,7 @@ function PaymentSplit() {
       </Dialog>
 
       <Dialog open={modal === "collapse.create" || modal === "collapse.update"} onClose={onClearFields} maxWidth="md" fullWidth>
-        <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} split de pagos aprobados</DialogTitle>
+        <DialogTitle color="primary.main">Asignar contratos</DialogTitle>
         <DialogContent>
           <Box
             component="form"
@@ -510,20 +515,7 @@ function PaymentSplit() {
             onSubmit={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
-              <TextField
-                select
-                fullWidth
-                label="Contrato"
-                name="contract_number"
-                value={newCollapse.contract_number}
-                onChange={onChangeFieldsCollapse}
-              >
-                {Object.values(contracts).map((c) => (
-                  <MenuItem key={c.id} value={c.id}>
-                    AV-{c.id}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <ContractSelector initialValue={multiple} onChange={(value) => setMultiple(value)} />
             </Grid>
           </Box>
         </DialogContent>
@@ -533,9 +525,9 @@ function PaymentSplit() {
             <Button
               onClick={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
               variant="contained"
-              disabled={!isValidFormCollapse}
+              disabled={!multiple.length}
             >
-              {modal === "collapse.create" ? "Crear" : "Editar"}
+              Asignar
             </Button>
           </Grid>
         </DialogActions>
