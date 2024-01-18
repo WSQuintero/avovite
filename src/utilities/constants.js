@@ -148,3 +148,9 @@ export const VERIFIK_INTERNATIONAL = {
   // dea: "DEA",
   interpol: "Interpol",
 };
+
+export const TRANSACTION_TYPES = {
+  pay: "Pago",
+  revenue: "Ganancia",
+  withdrawal: "Retiro",
+};

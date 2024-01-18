@@ -174,7 +174,7 @@ function Dashboard() {
                       </Typography>
                       <InvestmentIcon sx={{ fontSize: 128 }} />
                       <Typography fontSize={40} fontWeight={600} color="white">
-                        {formatCurrency(user.vites_approx_kg) || 0}
+                        {formatCurrency(Number(user.vites_approx_kg).toFixed(2)) || 0}
                       </Typography>
                     </Stack>
                     <img src={IconWhite} alt="Icon white" height={64} style={{ position: "absolute", right: 16, bottom: 16 }} />

@@ -176,7 +176,7 @@ function Payments() {
       extra4: null,
       extra5: due.id,
       confirmationUrl: `contract-transactional-payments/financed`,
-      redirectionUrl: `validation/payment`,
+      redirectionUrl: `transactions`,
     });
   };
 

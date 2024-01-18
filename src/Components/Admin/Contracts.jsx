@@ -217,6 +217,7 @@ const Contracts = () => {
 
   const onCreateContract = async () => {
     const body = {
+      mortgage_contract: contract.mortgage_contract,
       ...(totalFinancingValue !== 0
         ? {
             // Financing
@@ -253,10 +254,9 @@ const Contracts = () => {
             first_payment_date: formatDate(contract.firstPaymentDate),
             enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
           }),
-      ...{
-        mortgage_contract_aditional_text: contract.mortgage_contract === 1 ? contract.mortgage_contract_aditional_text : "",
-        mortgage_contract: contract.mortgage_contract,
-      },
+      ...(contract.mortgage_contract === 1
+        ? { mortgage_contract_aditional_text: contract.mortgage_contract === 1 ? contract.mortgage_contract_aditional_text : "" }
+        : {}),
     };
 
     setLoadingCreating(true);
