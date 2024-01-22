@@ -133,6 +133,7 @@ function PaymentSplit() {
             </IconButton>
             <LoadingButton
               loading={loading.split === row.id}
+              disabled={!row.can_split}
               size="small"
               variant="contained"
               onClick={() => {
@@ -166,6 +167,10 @@ function PaymentSplit() {
         </Grid>
         {loading.collapse === row.id ? (
           <LinearProgress />
+          ) : (collapse[row.id] || []).length === 0 ? (
+            <Typography fontWeight={600} textAlign="center" color="success.main">
+              No tiene contratos asignados
+            </Typography>
         ) : (
           <Table size="small" sx={{ mb: 6, "& th, & td": { paddingY: 0, border: "none" } }}>
             <TableHead>
