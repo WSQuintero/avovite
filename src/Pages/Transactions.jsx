@@ -56,8 +56,6 @@ function Transactions() {
     []
   );
 
-  console.log(rows)
-
   useAsyncEffect(async () => {
     if ($Movement) {
       const { status, data } = await $Movement.get();

@@ -139,6 +139,7 @@ function Harvests() {
             </IconButton>
             <LoadingButton
               loading={loading.split === row.id}
+              disabled={!row.can_split}
               size="small"
               variant="contained"
               onClick={() => {

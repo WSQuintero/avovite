@@ -102,10 +102,13 @@ function ContractSelector({ initialValue = [], onChange }) {
               primary={
                 <Stack direction="row" spacing={1}>
                   <Typography noWrap width={{ xs: "100%", sm: "20%" }}>{`AV-${c.id}`}</Typography>
+                  <Typography noWrap width={{ xs: "100%", sm: "10%" }}>
+                    {Number(c.contract_vites)}
+                  </Typography>
                   <Typography noWrap width={{ xs: "100%", sm: "40%" }}>
                     {c.fullname}
                   </Typography>
-                  <Typography noWrap width={{ xs: "100%", sm: "40%" }}>
+                  <Typography noWrap width={{ xs: "100%", sm: "30%" }}>
                     {c.id_number}
                   </Typography>
                 </Stack>
