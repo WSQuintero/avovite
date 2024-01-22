@@ -38,6 +38,7 @@ function Products({ service: $Shop, state, feedback }) {
   const [product, setProduct] = useState({ id: null, name: "", unitary_price: "", url_image: "" });
   const [modal, setModal] = useState(null);
   const isValidProduct = useMemo(() => product.name && product.unitary_price && product.url_image, [product]);
+  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
 
   const productsHeadCells = useMemo(
     () => [
@@ -166,7 +167,27 @@ function Products({ service: $Shop, state, feedback }) {
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
+          <Box position="relative">
+            <LoadingButton loading={loading.importing} variant="contained" size="small">
+              Importar
+            </LoadingButton>
+            <input
+              type="file"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+                aspectRatio: 1,
+                opacity: 0,
+              }}
+              onChange={({ target }) => onImport(target.files[0])}
+            />
+          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -242,6 +263,7 @@ function Products({ service: $Shop, state, feedback }) {
   );
 }
 function Discounts({ service: $Shop, state, products, feedback }) {
+  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
   const [discounts, setDiscounts] = state;
   const [, setFeedback] = feedback;
   const [discount, setDiscount] = useState({
@@ -385,6 +407,21 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     });
   };
 
+  const onImport = async (file) => {
+    setLoading((prev) => ({ ...prev, importing: true }));
+
+    const { status } = await $Harvest.import(file);
+
+    if (status) {
+      setFeedback({ open: true, message: "Cosechas importadas exitosamente.", status: "success" });
+      fetchData();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, importing: false }));
+  };
+
   const onCreateDiscount = async (event) => {
     event.preventDefault();
 
@@ -438,7 +475,27 @@ function Discounts({ service: $Shop, state, products, feedback }) {
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
+          <Box position="relative">
+            <LoadingButton loading={loading.importing} variant="contained" size="small">
+              Importar
+            </LoadingButton>
+            <input
+              type="file"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+                aspectRatio: 1,
+                opacity: 0,
+              }}
+              onChange={({ target }) => onImport(target.files[0])}
+            />
+          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -697,7 +754,27 @@ function Coupons({ service: $Shop, state, feedback }) {
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
+          <Box position="relative">
+            <LoadingButton loading={loading.importing} variant="contained" size="small">
+              Importar
+            </LoadingButton>
+            <input
+              type="file"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                width: "100%",
+                height: "100%",
+                cursor: "pointer",
+                aspectRatio: 1,
+                opacity: 0,
+              }}
+              onChange={({ target }) => onImport(target.files[0])}
+            />
+          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
