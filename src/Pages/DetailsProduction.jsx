@@ -19,11 +19,11 @@ function DetailsProduction() {
   const $Production = useMemo(() => (token ? new ProductionService(token) : null), [token]);
 
   const handleImportClick = () => {
-    document.getElementById("xlsx-input").click();
+    document.getElementById("file-input").click();
   };
-
   const handleFileUpload = (event) => {
     setFile(event.target.files[0]);
+    importXLSX();
   };
 
   const importXLSX = async () => {
@@ -140,7 +140,7 @@ function DetailsProduction() {
               <AddIcon />
             </IconButton>
           </Box>
-          <input type="file" id="xlsx-input" style={{ display: "none" }} accept=".xlsx" onChange={handleFileUpload} />
+          <input type="file" id="file-input" style={{ display: "none" }} accept=".xlsx,.ods" onChange={handleFileUpload} />
           <Button variant="contained" color="primary" onClick={handleImportClick} disabled={importing}>
             {importing ? "Importando..." : "Importar"}
           </Button>
