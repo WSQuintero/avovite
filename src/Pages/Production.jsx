@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import PageWrapper from "../Components/PageWrapper";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import useSession from "../Hooks/useSession";
@@ -6,6 +7,7 @@ import useShop from "../Hooks/useShop";
 import EnhancedTable from "../Components/EnhancedTable";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import { formatCurrency } from "../utilities";
+import DetailsProduction from "./DetailsProduction";
 
 function Production() {
   const [{ token }] = useSession();
@@ -58,7 +60,7 @@ function Production() {
         disablePadding: false,
         format: () => (
           <Stack direction="row" spacing={1}>
-            <Button disabled size="small" variant="contained">
+            <Button component={RouterLink} to="/details-production "size="small" variant="contained">
               Ver detalles
             </Button>
           </Stack>

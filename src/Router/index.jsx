@@ -30,6 +30,7 @@ import Callback from "../Pages/Callback";
 import Payments from "../Pages/Payments";
 import Production from "../Pages/Production";
 import { ContractDetail } from "../Components/Admin";
+import DetailsProduction from "../Pages/DetailsProduction";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -183,6 +184,11 @@ function Router() {
       path: "/production/:id",
       element: <PrivateRoute component={Production} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
+    {
+      path: "/details-production",
+      element: <PrivateRoute component={DetailsProduction} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+    },
+
     {
       path: "/cart",
       element: <PrivateRoute component={ShoppingCart} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
