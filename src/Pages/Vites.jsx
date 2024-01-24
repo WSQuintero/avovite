@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Typography, Container, Box, Stack } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Typography, Container, Box, Stack, Button } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
@@ -50,13 +51,19 @@ function Vites() {
           ),
       },
       {
-        accessorKey: "stateFignature", 
+        accessorKey: "stateFignature",
         header: "Estado firma",
-        Cell: ({ renderedCellValue }) =>
-          renderedCellValue || (
-            <Typography fontSize={12} color="warning.light">
-              No firmado
-            </Typography>
+        Cell: ({ renderedCellValue, row: { original } }) =>
+          original.urlValidocus ? (
+            <Button component={RouterLink} to={original.urlValidocus} target="_blank" size="small" variant="contained">
+              Ver firma
+            </Button>
+          ) : (
+            renderedCellValue || (
+              <Typography fontSize={12} color="warning.light">
+                No firmado
+              </Typography>
+            )
           ),
       },
     ],

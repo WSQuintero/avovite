@@ -817,6 +817,11 @@ function Shop() {
   };
 
   const onImport = async (file) => {
+    if (!file) {
+      setFeedback({ open: true, message: "Debe seleccionar un archivo.", status: "error" });
+      return;
+    }
+
     setLoading((prev) => ({ ...prev, importing: true }));
 
     const { status } = await $Production.import({ file });
