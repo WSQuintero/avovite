@@ -16,6 +16,7 @@ import {
   MenuItem,
   Select,
   Snackbar,
+  Stack,
   Tab,
   Tabs,
   TextField,
@@ -31,6 +32,7 @@ import { NumericFormat } from "react-number-format";
 import { MuiFileInput } from "mui-file-input";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
+import ProductionService from "../../Services/production.service";
 
 function Products({ service: $Shop, state, feedback }) {
   const [products, setProducts] = state;
@@ -38,7 +40,6 @@ function Products({ service: $Shop, state, feedback }) {
   const [product, setProduct] = useState({ id: null, name: "", unitary_price: "", url_image: "" });
   const [modal, setModal] = useState(null);
   const isValidProduct = useMemo(() => product.name && product.unitary_price && product.url_image, [product]);
-  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
 
   const productsHeadCells = useMemo(
     () => [
@@ -168,26 +169,6 @@ function Products({ service: $Shop, state, feedback }) {
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" gap={1} justifyContent="flex-end">
-          <Box position="relative">
-            <LoadingButton loading={loading.importing} variant="contained" size="small">
-              Importar
-            </LoadingButton>
-            <input
-              type="file"
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                zIndex: 1,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-                aspectRatio: 1,
-                opacity: 0,
-              }}
-              onChange={({ target }) => onImport(target.files[0])}
-            />
-          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -263,7 +244,6 @@ function Products({ service: $Shop, state, feedback }) {
   );
 }
 function Discounts({ service: $Shop, state, products, feedback }) {
-  const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
   const [discounts, setDiscounts] = state;
   const [, setFeedback] = feedback;
   const [discount, setDiscount] = useState({
@@ -407,21 +387,6 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     });
   };
 
-  const onImport = async (file) => {
-    setLoading((prev) => ({ ...prev, importing: true }));
-
-    const { status } = await $Harvest.import(file);
-
-    if (status) {
-      setFeedback({ open: true, message: "Cosechas importadas exitosamente.", status: "success" });
-      fetchData();
-    } else {
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-    }
-
-    setLoading((prev) => ({ ...prev, importing: false }));
-  };
-
   const onCreateDiscount = async (event) => {
     event.preventDefault();
 
@@ -476,26 +441,6 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" gap={1} justifyContent="flex-end">
-          <Box position="relative">
-            <LoadingButton loading={loading.importing} variant="contained" size="small">
-              Importar
-            </LoadingButton>
-            <input
-              type="file"
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                zIndex: 1,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-                aspectRatio: 1,
-                opacity: 0,
-              }}
-              onChange={({ target }) => onImport(target.files[0])}
-            />
-          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -755,26 +700,6 @@ function Coupons({ service: $Shop, state, feedback }) {
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" gap={1} justifyContent="flex-end">
-          <Box position="relative">
-            <LoadingButton loading={loading.importing} variant="contained" size="small">
-              Importar
-            </LoadingButton>
-            <input
-              type="file"
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                zIndex: 1,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-                aspectRatio: 1,
-                opacity: 0,
-              }}
-              onChange={({ target }) => onImport(target.files[0])}
-            />
-          </Box>
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -860,6 +785,8 @@ function Shop() {
   const [coupons, setCoupons] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+  const [loading, setLoading] = useState({ importing: false });
+  const $Production = useMemo(() => ($Shop.token ? new ProductionService($Shop.token) : null), [$Shop.token]);
 
   const fetchProducts = async () => {
     const { status, data } = await $Shop.product.get();
@@ -889,6 +816,20 @@ function Shop() {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
+  const onImport = async (file) => {
+    setLoading((prev) => ({ ...prev, importing: true }));
+
+    const { status } = await $Production.import({ file });
+
+    if (status) {
+      setFeedback({ open: true, message: "Producción importada exitosamente.", status: "success" });
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, importing: false }));
+  };
+
   useEffect(() => {
     if ($Shop) {
       (async () => {
@@ -901,6 +842,28 @@ function Shop() {
 
   return (
     <>
+      <Stack direction="row" justifyContent="flex-end" alignItems="center">
+        <Box position="relative">
+          <LoadingButton loading={loading.importing} variant="contained" size="small">
+            Importar producción
+          </LoadingButton>
+          <input
+            type="file"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 1,
+              width: "100%",
+              height: "100%",
+              cursor: "pointer",
+              aspectRatio: 1,
+              opacity: 0,
+            }}
+            onChange={({ target }) => onImport(target.files[0])}
+          />
+        </Box>
+      </Stack>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
           <Tab label="Productos" />
@@ -909,7 +872,7 @@ function Shop() {
         </Tabs>
       </Box>
       <TabPanel value={currentTab} index={0}>
-        <Products service={$Shop} state={[products, setProducts]} feedback={[feedback, setFeedback]} />
+        <Products token={$Shop.token} service={$Shop} state={[products, setProducts]} feedback={[feedback, setFeedback]} />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
         <Discounts service={$Shop} state={[discounts, setDiscounts]} products={products} feedback={[feedback, setFeedback]} />

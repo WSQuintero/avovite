@@ -188,7 +188,6 @@ function Router() {
       path: "/details-production",
       element: <PrivateRoute component={DetailsProduction} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
-
     {
       path: "/cart",
       element: <PrivateRoute component={ShoppingCart} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,

@@ -57,7 +57,7 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
           {loading ? (
             <TableRow tabIndex={-1} hover>
               {headCells.map((headCell, index) => (
-                <TableCell key={index} align={headCell.align} style={{ width: headCell.width }}>
+                <TableCell key={index} align={headCell.align} style={{ minWidth: headCell.width }}>
                   <Skeleton />
                 </TableCell>
               ))}

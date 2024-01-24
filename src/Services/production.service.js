@@ -8,20 +8,12 @@ export default class ProductionService {
     this.axios = axios.create({ headers: { Authorization: this.token } });
   }
 
-  async get(key) {
-    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/production/${key}`, { responseType: "arraybuffer" })).data);
+  async get({ vites }) {
+    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/production/${vites}`)).data);
   }
-  async post(file) {
-    let formData = new FormData();
-    formData.append("xlsx", file); // Changed from "File" to "xlsx"
+  async import({ file }) {
     return await handleCall(async () => {
-      const response = await this.axios.post(`${this.API_URL}/production`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: this.token,
-        },
-      });
-      return response.data;
+      return await this.axios.postForm(`${this.API_URL}/production`, { xslx: file });
     });
   }
 }

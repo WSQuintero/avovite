@@ -10,7 +10,7 @@ function EnhancedTableRow({ headCells, row, collapse = null }) {
     <>
       <TableRow hover tabIndex={-1} sx={{ bgcolor: (theme) => (open ? alpha(theme.palette.primary.main, 0.1) : "transparent") }}>
         {headCells.map((headCell, index) => (
-          <TableCell key={index} align={headCell.align} style={{ width: headCell.width }}>
+          <TableCell key={index} align={headCell.align} sx={{ minWidth: headCell.width }}>
             {headCell.format ? headCell.format(row[headCell.id], row, onCollapse) : row[headCell.id]}
           </TableCell>
         ))}
