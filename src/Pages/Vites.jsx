@@ -49,6 +49,16 @@ function Vites() {
             </Typography>
           ),
       },
+      {
+        accessorKey: "stateFignature", 
+        header: "Estado firma",
+        Cell: ({ renderedCellValue }) =>
+          renderedCellValue || (
+            <Typography fontSize={12} color="warning.light">
+              No firmado
+            </Typography>
+          ),
+      },
     ],
     []
   );
