@@ -17,6 +17,14 @@ function Vites() {
       {
         accessorKey: "contract_vites",
         header: "Número de vites",
+        Cell: ({ renderedCellValue }) =>
+          Number(renderedCellValue) !== 0 ? (
+            renderedCellValue
+          ) : (
+            <Typography fontSize={12} color="warning.light">
+              En proceso
+            </Typography>
+          ),
       },
       {
         accessorKey: "id",
@@ -26,7 +34,14 @@ function Vites() {
       {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
-        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>,
+        Cell: ({ renderedCellValue }) =>
+          renderedCellValue ? (
+            <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>
+          ) : (
+            <Typography fontSize={12} color="warning.light">
+              En proceso
+            </Typography>
+          ),
       },
       {
         accessorKey: "earliest_sowing_date",

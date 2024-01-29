@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Box,
   Button,
   Container,
   Dialog,
@@ -18,16 +17,17 @@ import {
   Typography,
 } from "@mui/material";
 import { Warning as WarningIcon, CheckCircle as CheckIcon, HistoryEdu as ContractIcon } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
 import useSession from "../Hooks/useSession";
 import ContractService from "../Services/contract.service";
 import PageWrapper from "../Components/PageWrapper";
 import { formatDate } from "../utilities";
 import Form from "../Components/Form";
+import useLastContract from "../Hooks/useLastContract";
 
 function ContractValidation() {
   const navigate = useNavigate();
   const [{ token }] = useSession();
+  const initialFormData = useLastContract();
   const [contracts, setContracts] = useState({});
   const [contract, setContract] = useState({});
   const [modal, setModal] = useState("warning");
@@ -144,7 +144,12 @@ function ContractValidation() {
       >
         <DialogContent>
           <Container maxWidth="xxl" sx={{ padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-            <Form loading={loadingSubmit} onSubmit={handleFormSubmit} onLoad={({ reset }) => setResetForm(reset)} />
+            <Form
+              loading={loadingSubmit}
+              initialState={initialFormData}
+              onSubmit={handleFormSubmit}
+              onLoad={({ reset }) => setResetForm(reset)}
+            />
           </Container>
         </DialogContent>
       </Dialog>

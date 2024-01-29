@@ -1,16 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button, Container, Grid, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { HighlightOff as ErrorIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
+import useLastContract from "../Hooks/useLastContract";
 
 const BookingFormMortgage = () => {
   const navigate = useNavigate();
-  const [{ token, user }] = useSession();
+  const initialFormData = useLastContract();
+  const [{ token }] = useSession();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const [initialFormData, setInitialFormData] = useState({});
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
 
   const handleSubmit = async (body) => {
@@ -27,19 +28,6 @@ const BookingFormMortgage = () => {
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
-
-  useEffect(() => {
-    if (user) {
-      setInitialFormData({
-        fullname: user.fullname,
-        id_type: user.id_type,
-        id_number: user.id_number,
-        id_location_expedition: user.id_location_expedition,
-        email: user.email,
-        cellphone: user.cellphone,
-      });
-    }
-  }, [user]);
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>

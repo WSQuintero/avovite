@@ -253,8 +253,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData)
-
     const validation = validateJSON(formData, [
       "how_did_you_hear_about_us",
       ...(formData.he_has_children === "No" ? ["he_has_children_count"] : []),

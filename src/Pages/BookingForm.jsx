@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
+import useLastContract from "../Hooks/useLastContract";
 
 const BookingForm = () => {
   const [{ token }] = useSession();
   const navigate = useNavigate();
+  const initialFormData = useLastContract();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [resetForm, setResetForm] = useState(() => () => {});
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,13 @@ const BookingForm = () => {
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-      <Form title="Aplicación Standard" loading={loading} onSubmit={handleSubmit} onLoad={({ reset }) => setResetForm(reset)} />
+      <Form
+        title="Aplicación Standard"
+        initialState={initialFormData}
+        loading={loading}
+        onSubmit={handleSubmit}
+        onLoad={({ reset }) => setResetForm(reset)}
+      />
 
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
