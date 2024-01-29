@@ -1,26 +1,20 @@
 import { useMemo, useState } from "react";
-import {
-  Button,
-  Container,
-  Grid,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from "@mui/material";
+import { Button, Container, Grid, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { HighlightOff as ErrorIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
 import ContractService from "../Services/contract.service";
+import useSession from "../Hooks/useSession";
+import useLastContract from "../Hooks/useLastContract";
 
 const BookingForm = () => {
+  const [{ token }] = useSession();
   const navigate = useNavigate();
+  const initialFormData = useLastContract();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [resetForm, setResetForm] = useState(() => () => {});
   const [loading, setLoading] = useState(false);
-  const $Contract = useMemo(() => new ContractService(), []);
+  const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
 
   const handleSubmit = async (body) => {
     setLoading(true);
@@ -46,6 +40,7 @@ const BookingForm = () => {
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
       <Form
         title="Aplicación Standard"
+        initialState={initialFormData}
         loading={loading}
         onSubmit={handleSubmit}
         onLoad={({ reset }) => setResetForm(reset)}

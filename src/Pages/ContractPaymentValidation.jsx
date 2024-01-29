@@ -68,7 +68,7 @@ function ContractPaymentValidation() {
 
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-      test: false
+      test: false,
     });
 
     handler.open({ ...mandatory, ...aditional });
@@ -105,8 +105,12 @@ function ContractPaymentValidation() {
                     <ContractIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente"}
-                    secondary={formatCurrency(contract.payment, "$")}
+                    primary={
+                      contract.dues
+                        ? `Cuota del contrato AV-${contract.idcontrato} pendiente`
+                        : `Primer pago del contrato AV-${contract.idcontrato} pendiente`
+                    }
+                    secondary={formatCurrency(contract.payment, "Valor: $")}
                     primaryTypographyProps={{ fontSize: 20, color: "primary" }}
                     secondaryTypographyProps={{ color: "text.main" }}
                   />

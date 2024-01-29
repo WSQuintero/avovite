@@ -1,5 +1,5 @@
 import { Button, Container, Grow, Stack, TextField, Typography } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BackgroundImage from "../assets/img/signin/background.jpg";
 import { useSnackbar } from "notistack";
 import AuthService from "../Services/auth.service";
@@ -15,6 +15,7 @@ function ForgotPassword() {
   const [password, setPassword] = useState("");
 
   const token = useMemo(() => searchParams.get("token"), [searchParams]);
+  const currentEmail = useMemo(() => searchParams.get("email"), [searchParams]);
 
   const handleForgotPassword = async (event) => {
     event.preventDefault();
@@ -53,6 +54,10 @@ function ForgotPassword() {
       enqueueSnackbar("Ha ocurrido un error", { variant: "error" });
     }
   };
+
+  useEffect(() => {
+    setEmail(currentEmail);
+  }, [currentEmail]);
 
   return (
     <Stack

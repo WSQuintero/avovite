@@ -37,6 +37,7 @@ const REQUIRES_ADMIN = "REQUIRES_ADMIN";
 const HIDE_FOR_AUTH = "HIDE_FOR_AUTH";
 const HIDE_FOR_ADMIN = "HIDE_FOR_ADMIN";
 const REQUIRES_VALIDATION = "REQUIRES_VALIDATION";
+const REQUIRES_CONTRACTS = "REQUIRES_CONTRACTS";
 
 let wasRedirected = false;
 
@@ -49,7 +50,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
     return <></>;
   }
 
-  if (!isAdmin && session.user?.totalVites === 0 && !wasRedirected) {
+  if (!isAdmin && session.user?.totalVites === 0 && !wasRedirected && meta.includes(REQUIRES_CONTRACTS)) {
     wasRedirected = true;
     return <Navigate to="/shop" />;
   }
@@ -96,11 +97,11 @@ function Router() {
   return useRoutes([
     {
       path: "/registro-contrato",
-      element: <BookingForm />,
+      element: <PrivateRoute component={BookingForm} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/registro-contrato-hipoteca",
-      element: <BookingFormMortgage />,
+      element: <PrivateRoute component={BookingFormMortgage} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/signin",
@@ -128,7 +129,7 @@ function Router() {
     },
     {
       path: "/dashboard",
-      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN, REQUIRES_CONTRACTS]} />,
     },
     {
       path: "/vites",
