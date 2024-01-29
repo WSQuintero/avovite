@@ -94,4 +94,10 @@ export default class AuthService {
         ).data
     );
   }
+
+  async createPassword({ email, password } = {}) {
+    return await handleCall(
+      async () => await axios.post(`${this.API_URL}/users/reset-password/with/token`, { password, password2: password }).data
+    );
+  }
 }

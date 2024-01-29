@@ -332,8 +332,8 @@ function Users() {
         initialState={{ density: "compact" }}
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
         state={{ showSkeletons: loading.fetching, rowSelection: selectedContacts }}
-        renderBottomToolbarCustomActions={() => (
-          <Box gap={16} sx={{ display: "flex", gap: 1 }}>
+        renderTopToolbarCustomActions={() => (
+          <Stack direction="row" spacing={1}>
             <Box position="relative">
               <LoadingButton loading={loading.importing} variant="contained" size="small" onClick={() => importInputRef.current.click()}>
                 Importar usuarios
@@ -343,15 +343,17 @@ function Users() {
             <Button variant="contained" size="small" color="primary" onClick={handleExportData}>
               Exportar usuarios
             </Button>
-          </Box>
+            <Button
+              disabled={selectedContactsValues.length === 0}
+              variant="contained"
+              size="small"
+              sx={{ gap: 1 }}
+              onClick={() => setModal("users-send-email-sms")}
+            >
+              Enviar email o sms
+            </Button>
+          </Stack>
         )}
-        // renderToolbarInternalActions={() =>
-        //   selectedContactsValues.length === 0 ? null : (
-        //     <Button variant="contained" size="small" sx={{ gap: 1 }} onClick={() => setModal("users-send-email-sms")}>
-        //       Enviar email
-        //     </Button>
-        //   )
-        // }
         onRowSelectionChange={setSelectedContacts}
       />
 

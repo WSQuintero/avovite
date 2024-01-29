@@ -16,7 +16,7 @@ import { LoadingButton } from "@mui/lab";
 
 function SendEmailAndSMS({ open, loading, onClose, onSubmit }) {
   const [formData, setFormData] = useState({ email: "", sms: "" });
-  const [status, setStatus] = useState({ email: false, sms: false });
+  const [status, setStatus] = useState({ email: false, sms: false, massive: false });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -61,6 +61,10 @@ function SendEmailAndSMS({ open, loading, onClose, onSubmit }) {
               onChange={({ target }) => setFormData((prev) => ({ ...prev, sms: target.value.length <= 160 ? target.value : prev.sms }))}
             />
           </Collapse>
+          <FormControlLabel
+            control={<Checkbox checked={status.massive} onChange={({ target }) => setStatus({ ...status, massive: target.checked })} />}
+            label="Envío masivo"
+          />
         </Stack>
       </DialogContent>
       <DialogActions>
