@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MaterialReactTable } from "material-react-table";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
 import {
   Alert,
   Box,
@@ -13,6 +14,7 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  Icon,
   IconButton,
   MenuItem,
   Radio,
@@ -36,10 +38,12 @@ import PhoneField from "react-phone-input-2";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { DOCUMENT_TYPES } from "../../utilities/constants";
+import DialogSendEmailAndSMS from "../Dialogs/SendEmailAndSMS";
 
 function Users() {
   const [{ token }] = useSession();
   const $User = useUser();
+  const importInputRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({
     id: null,
@@ -53,9 +57,11 @@ function Users() {
     id_number: "",
     id_location_expedition: "",
   });
-  const [loading, setLoading] = useState({ fetching: true, importing: false });
+  const [loading, setLoading] = useState({ fetching: true, importing: false, sending: false });
   const [modal, setModal] = useState(null);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+  const [selectedContacts, setSelectedContacts] = useState({});
+  const selectedContactsValues = useMemo(() => Object.keys(selectedContacts), [selectedContacts]);
 
   const columns = useMemo(
     () => [
@@ -277,6 +283,22 @@ function Users() {
     setLoading((prev) => ({ ...prev, importing: false }));
   };
 
+  const handleSendEmailAndSMS = async () => {
+    setLoading((prev) => ({ ...prev, sending: true }));
+
+    const { status } = await new Promise((resolve) => setTimeout(() => resolve({ status: false }), 3000));
+
+    if (status) {
+      setFeedback({ open: true, message: "Emails enviados con exito.", status: "success" });
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, sending: false }));
+
+    return status;
+  };
+
   const fetchData = async () => {
     setLoading((prev) => ({ ...prev, fetching: true }));
 
@@ -299,44 +321,38 @@ function Users() {
 
   return (
     <>
-      <Stack direction="row" justifyContent="flex-end" alignItems="center">
-        <Box position="relative">
-          <LoadingButton loading={loading.importing} variant="contained" size="small">
-            Importar usuarios
-          </LoadingButton>
-          <input
-            type="file"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              zIndex: 1,
-              width: "100%",
-              height: "100%",
-              cursor: "pointer",
-              aspectRatio: 1,
-              opacity: 0,
-            }}
-            onChange={handleImportUsers}
-          />
-        </Box>
-      </Stack>
       <MaterialReactTable
         columns={columns}
         data={users}
         enableColumnFilterModes
         enableColumnOrdering
+        enableRowSelection
+        localization={MRT_Localization_ES}
         muiTablePaperProps={{ elevation: 0 }}
         initialState={{ density: "compact" }}
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
-        state={{ showSkeletons: loading.fetching }}
+        state={{ showSkeletons: loading.fetching, rowSelection: selectedContacts }}
         renderBottomToolbarCustomActions={() => (
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
-              Exportar a Excel
+          <Box gap={16} sx={{ display: "flex", gap: 1 }}>
+            <Box position="relative">
+              <LoadingButton loading={loading.importing} variant="contained" size="small" onClick={() => importInputRef.current.click()}>
+                Importar usuarios
+              </LoadingButton>
+              <input hidden ref={importInputRef} type="file" onChange={handleImportUsers} />
+            </Box>
+            <Button variant="contained" size="small" color="primary" onClick={handleExportData}>
+              Exportar usuarios
             </Button>
           </Box>
         )}
+        // renderToolbarInternalActions={() =>
+        //   selectedContactsValues.length === 0 ? null : (
+        //     <Button variant="contained" size="small" sx={{ gap: 1 }} onClick={() => setModal("users-send-email-sms")}>
+        //       Enviar email
+        //     </Button>
+        //   )
+        // }
+        onRowSelectionChange={setSelectedContacts}
       />
 
       <Dialog
@@ -535,6 +551,13 @@ function Users() {
           </LoadingButton>
         </DialogActions>
       </Dialog>
+
+      <DialogSendEmailAndSMS
+        open={modal === "users-send-email-sms"}
+        loading={loading.sending}
+        onClose={() => setModal(null)}
+        onSubmit={handleSendEmailAndSMS}
+      />
 
       <Snackbar
         open={feedback.open}
