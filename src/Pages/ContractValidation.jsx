@@ -93,7 +93,7 @@ function ContractValidation() {
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">Contratos pendientes:</Typography>
           <List>
-            {(contracts.pendings || []).map((contract, index) => (
+            {(contracts.pendings || []).map((contract) => (
               <ListItem
                 key={contract.id}
                 onClick={() => handleSelectContract(contract)}

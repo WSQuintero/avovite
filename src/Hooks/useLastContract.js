@@ -7,7 +7,7 @@ function useLastContract() {
 
   useEffect(() => {
     if (user && user.last_contract) {
-      const contract = user.last_contract[0];
+      const contract = user.last_contract;
 
       setData({
         fullname: contract.fullname || "",
