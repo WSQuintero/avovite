@@ -1,23 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Container, Grid, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
 import { ContentCopy as CopyIcon } from "@mui/icons-material";
 import PageWrapper from "../Components/PageWrapper";
 import useCart from "../Hooks/useCart";
-import { formatCurrency } from "../utilities";
-import { IMAGE_PLACEHOLDER } from "../utilities/constants";
 import { useSearchParams } from "react-router-dom";
 
 function Checkout() {

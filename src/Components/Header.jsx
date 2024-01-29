@@ -61,7 +61,7 @@ function Header({ isInvalidSession = false }) {
               <Link fontSize={24} fontWeight={500} component={RouterLink} to="/" sx={{ textDecoration: "none" }}>
                 Avovite
               </Link>
-              {!isInvalidSession && (
+              {/* {!isInvalidSession && (
                 <TextField
                   label="Buscar"
                   size="small"
@@ -78,7 +78,7 @@ function Header({ isInvalidSession = false }) {
                   }}
                   sx={{ marginLeft: 2 }}
                 />
-              )}
+              )} */}
               <Box flexGrow={1} />
               {!session.user?.isAdmin() && !isInvalidSession && (
                 <Badge color="error" badgeContent={shoppingCart.length}>

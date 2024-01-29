@@ -8,18 +8,18 @@ export default class ContractService {
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
   }
 
-  async get({ id = null, dateRangeId = null, pending = false, pendingToPay = false } = {}) {
+  async get({ id = null, dateRangeId = null, pending = false, pendingToPay = false, harvest = false } = {}) {
     return await handleCall(async () => {
       if (pendingToPay) {
         return (await axios.get(`${this.API_URL}/contract-transactional-payments/pending-to-pay`, this.config)).data;
       } else if (pending) {
         return (await axios.get(`${this.API_URL}/contract-transactional-payments/pending`, this.config)).data;
+      } else if (dateRangeId) {
+        return (await axios.get(`${this.API_URL}/contract-date-range-profit/split/contracts/${dateRangeId}`, this.config)).data;
+      } else if (harvest) {
+        return (await axios.get(`${this.API_URL}/contracts/harvest`, this.config)).data;
       } else if (id) {
         return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
-      } else if (dateRangeId) {
-        return (
-          await axios.get(`${this.API_URL}/contract-date-range-profit/split/contracts/${dateRangeId}`, this.config)
-        ).data;
       } else {
         return (await axios.get(`${this.API_URL}/contracts`, this.config)).data;
       }
@@ -52,7 +52,19 @@ export default class ContractService {
     return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/${id}`, this.config)).data);
   }
 
+  async requestDelete({ id }) {
+    return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/request/cancel/contract/${id}`, this.config)).data);
+  }
+
   async export() {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/all/excel`, this.config)).data);
+  }
+
+  async sendSignature({ id }) {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/signature/${id}`, this.config)).data);
+  }
+
+  async refreshSignatures() {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/update/allstatus/validocus`, this.config)).data);
   }
 }

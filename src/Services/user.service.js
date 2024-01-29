@@ -12,10 +12,7 @@ export default class AuthService {
   async get({ id = null } = {}) {
     return await handleCall(
       async () =>
-        (id
-          ? await axios.get(`${this.API_URL}/users/${id}`, this.config)
-          : await axios.get(`${this.API_URL}/users`, this.config)
-        ).data
+        (id ? await axios.get(`${this.API_URL}/users/${id}`, this.config) : await axios.get(`${this.API_URL}/users`, this.config)).data
     );
   }
 
@@ -28,9 +25,7 @@ export default class AuthService {
   }
 
   async updateRole({ id, role } = {}) {
-    return await handleCall(
-      async () => (await axios.put(`${this.API_URL}/users/update/rol/${id}`, { rol: role }, this.config)).data
-    );
+    return await handleCall(async () => (await axios.put(`${this.API_URL}/users/update/rol/${id}`, { rol: role }, this.config)).data);
   }
 
   async delete({ id }) {
@@ -39,5 +34,9 @@ export default class AuthService {
 
   async getProfits() {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/users/profits`, this.config)).data);
+  }
+
+  async import({ file }) {
+    return await handleCall(async () => (await axios.postForm(`${this.API_URL}/users/importData`, file, this.config)).data);
   }
 }

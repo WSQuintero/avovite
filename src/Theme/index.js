@@ -10,10 +10,6 @@ const theme = createTheme({
       main: "#214820",
       light: "#79C941",
     },
-    premium: {
-      main: "#D0A723",
-      dark: "#8B620D",
-    },
     text: {
       primary: "#979797",
       light: "#D2D2D2",
@@ -51,7 +47,7 @@ const theme = createTheme({
       color: "#67AA36",
     },
   },
-  shadows: Array.from({ length: 24 }, (_, i) => i === 0 ? "none" : `0px 4px ${i}px 0px #45549229`),
+  shadows: Array.from({ length: 30 }, (_, i) => (i === 0 ? "none" : `0px 4px ${i}px 0px #45549229`)),
   shape: { borderRadius: 10 },
   components: {
     MuiDialogTitle: {
@@ -174,6 +170,7 @@ const theme = createTheme({
   },
   breakpoints: {
     values: {
+      xs: 0,
       xsm: 400,
       sm: 576,
       md: 768,
@@ -201,6 +198,13 @@ export default createTheme(theme, {
         dark: "#DDDDDD",
       },
       name: "white",
+    }),
+    premium: theme.palette.augmentColor({
+      color: {
+        main: "#D0A723",
+        dark: "#8B620D",
+      },
+      name: "premium",
     }),
   },
 });

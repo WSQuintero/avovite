@@ -16,6 +16,7 @@ import {
   MenuItem,
   Select,
   Snackbar,
+  Stack,
   Tab,
   Tabs,
   TextField,
@@ -30,6 +31,8 @@ import { IMAGE_PLACEHOLDER } from "../../utilities/constants";
 import { NumericFormat } from "react-number-format";
 import { MuiFileInput } from "mui-file-input";
 import dayjs from "dayjs";
+import { LoadingButton } from "@mui/lab";
+import ProductionService from "../../Services/production.service";
 
 function Products({ service: $Shop, state, feedback }) {
   const [products, setProducts] = state;
@@ -123,10 +126,7 @@ function Products({ service: $Shop, state, feedback }) {
     const { status, data } = await $Shop.product.add(product);
 
     if (status) {
-      setProducts((prev) => [
-        ...prev,
-        { ...product, id: data.data, url_image: URL.createObjectURL(product.url_image) },
-      ]);
+      setProducts((prev) => [...prev, { ...product, id: data.data, url_image: URL.createObjectURL(product.url_image) }]);
       setFeedback({ open: true, message: "Producto creado exitosamente.", status: "success" });
       onClearFields();
     } else {
@@ -168,7 +168,7 @@ function Products({ service: $Shop, state, feedback }) {
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -219,11 +219,7 @@ function Products({ service: $Shop, state, feedback }) {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={modal === "create" ? onCreateProduct : onUpdateProduct}
-              variant="contained"
-              disabled={!isValidProduct}
-            >
+            <Button onClick={modal === "create" ? onCreateProduct : onUpdateProduct} variant="contained" disabled={!isValidProduct}>
               {modal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>
@@ -253,14 +249,23 @@ function Discounts({ service: $Shop, state, products, feedback }) {
   const [discount, setDiscount] = useState({
     id: null,
     id_product: null,
-    name: "",
+    name: "-",
     quantity: "",
     percent_discount: "",
+    production_in_kilograms: "",
+    tir: "",
     url_image: "",
   });
   const [modal, setModal] = useState(null);
   const isValidProduct = useMemo(
-    () => discount.name && discount.quantity && discount.percent_discount && discount.url_image && discount.id_product,
+    () =>
+      discount.name !== "-" &&
+      discount.quantity &&
+      discount.percent_discount !== "" &&
+      discount.production_in_kilograms &&
+      discount.tir &&
+      discount.url_image &&
+      discount.id_product,
     [discount]
   );
 
@@ -303,6 +308,20 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         align: "left",
         disablePadding: false,
         format: (value) => value,
+      },
+      {
+        id: "tir",
+        label: "Tir",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value || "-",
+      },
+      {
+        id: "production_in_kilograms",
+        label: "Producción en kg",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value || "-",
       },
       {
         id: "",
@@ -356,7 +375,16 @@ function Discounts({ service: $Shop, state, products, feedback }) {
 
   const onClearFields = () => {
     setModal(null);
-    setDiscount({ id: null, id_product: null, name: "", quantity: "", percent_discount: "", url_image: "" });
+    setDiscount({
+      id: null,
+      id_product: null,
+      name: "-",
+      quantity: "",
+      percent_discount: "",
+      production_in_kilograms: "",
+      tir: "",
+      url_image: "",
+    });
   };
 
   const onCreateDiscount = async (event) => {
@@ -370,10 +398,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     const { status, data } = await $Shop.discount.add(discount);
 
     if (status) {
-      setDiscounts((prev) => [
-        ...prev,
-        { ...discount, id: data.data, url_image: URL.createObjectURL(discount.url_image) },
-      ]);
+      setDiscounts((prev) => [...prev, { ...discount, id: data.data, url_image: URL.createObjectURL(discount.url_image) }]);
       setFeedback({ open: true, message: "Descuento creado exitosamente.", status: "success" });
       onClearFields();
     } else {
@@ -415,7 +440,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -435,8 +460,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
             onSubmit={modal === "create" ? onCreateDiscount : onUpdateDiscount}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
-              <Grid display="flex" gap={2}>
-                <TextField label="Nombre" name="name" value={discount.name} onChange={onChangeFields} fullWidth />
+              <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
+                <TextField fullWidth select label="Tipo" name="name" value={discount.name} onChange={onChangeFields}>
+                  <MenuItem disabled value="-">
+                    Selecciona una opción
+                  </MenuItem>
+                  <MenuItem value="PACK STANDARD">PACK STANDARD</MenuItem>
+                  <MenuItem value="PACK PREMIUM">PACK PREMIUM</MenuItem>
+                </TextField>
                 <FormControl fullWidth>
                   <InputLabel id="label-product-select">Producto</InputLabel>
                   <Select
@@ -458,7 +489,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid display="flex" gap={2}>
+              <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
                 <TextField
                   label="% Descuento"
                   name="percent_discount"
@@ -466,10 +497,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                   onChange={onChangeFields}
                   fullWidth
                 />
+                <TextField label="Cantidad" name="quantity" value={discount.quantity} onChange={onChangeFields} fullWidth />
+              </Grid>
+              <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
+                <TextField label="Tir" name="tir" value={discount.tir} onChange={onChangeFields} fullWidth />
                 <TextField
-                  label="Cantidad"
-                  name="quantity"
-                  value={discount.quantity}
+                  label="Producción en kg"
+                  name="production_in_kilograms"
+                  value={discount.production_in_kilograms}
                   onChange={onChangeFields}
                   fullWidth
                 />
@@ -488,11 +523,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={modal === "create" ? onCreateDiscount : onUpdateDiscount}
-              variant="contained"
-              disabled={!isValidProduct}
-            >
+            <Button onClick={modal === "create" ? onCreateDiscount : onUpdateDiscount} variant="contained" disabled={!isValidProduct}>
               {modal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>
@@ -524,10 +555,11 @@ function Coupons({ service: $Shop, state, feedback }) {
     id: null,
     name: "",
     discountPercentage: "",
-    expires_at: "",
+    expirationDate: "",
   });
   const [modal, setModal] = useState(null);
-  const isValidProduct = useMemo(() => coupon.name && coupon.expires_at && coupon.discountPercentage, [coupon]);
+  const [loading, setLoading] = useState(false);
+  const isValidProduct = useMemo(() => coupon.name && coupon.expirationDate && coupon.discountPercentage, [coupon]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -546,11 +578,38 @@ function Coupons({ service: $Shop, state, feedback }) {
         format: (value) => value,
       },
       {
-        id: "expires_at",
+        id: "expirationDate",
         label: "Vence el",
         align: "left",
         disablePadding: false,
-        format: (value) => value ? dayjs(value).format("DD/MM/YYYY") : '-',
+        format: (value) => (value ? dayjs(value).format("DD MMMM YYYY") : "-"),
+      },
+      {
+        id: "id",
+        label: "",
+        align: "left",
+        disablePadding: false,
+        format: (value, row) => (
+          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+            <IconButton
+              onClick={() => {
+                setCoupon(row);
+                setModal("update");
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => {
+                setCoupon(row);
+                setModal("delete");
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        ),
       },
     ],
     []
@@ -574,7 +633,13 @@ function Coupons({ service: $Shop, state, feedback }) {
       return;
     }
 
-    const { status, data } = await $Shop.coupon.add(coupon);
+    setLoading(true);
+
+    const { status, data } = await $Shop.coupon.add({
+      name: coupon.name,
+      discountPercentage: coupon.discountPercentage,
+      expirationDate: coupon.expirationDate,
+    });
 
     if (status) {
       setCoupons((prev) => [...prev, { ...coupon, id: data.data }]);
@@ -583,6 +648,8 @@ function Coupons({ service: $Shop, state, feedback }) {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoading(false);
   };
 
   const onUpdate = async (event) => {
@@ -593,7 +660,14 @@ function Coupons({ service: $Shop, state, feedback }) {
       return;
     }
 
-    const { status } = await $Shop.coupon.update(coupon);
+    setLoading(true);
+
+    const { status } = await $Shop.coupon.update({
+      id: coupon.id,
+      name: coupon.name,
+      discountPercentage: coupon.discountPercentage,
+      expirationDate: coupon.expirationDate,
+    });
 
     if (status) {
       setCoupons((prev) => prev.map((p) => (p.id === coupon.id ? coupon : p)));
@@ -602,9 +676,13 @@ function Coupons({ service: $Shop, state, feedback }) {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoading(false);
   };
 
   const onDelete = async () => {
+    setLoading(true);
+
     const { status } = await $Shop.coupon.delete(coupon);
 
     if (status) {
@@ -614,12 +692,14 @@ function Coupons({ service: $Shop, state, feedback }) {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoading(false);
   };
 
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
-        <Grid display="flex" justifyContent="flex-end">
+        <Grid display="flex" gap={1} justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
             Crear
           </Button>
@@ -655,11 +735,11 @@ function Coupons({ service: $Shop, state, feedback }) {
               <Grid display="flex" gap={2}>
                 <DatePicker
                   label="Fecha de expiración"
-                  value={dayjs(coupon.expires_at)}
+                  value={dayjs(coupon.expirationDate)}
                   format="DD MMMM YYYY"
                   sx={{ width: "100%" }}
                   slotProps={{ textField: { error: false } }}
-                  onChange={(value) => onChangeFields({ target: { name: "expires_at", value: value.toDate() } })}
+                  onChange={(value) => onChangeFields({ target: { name: "expirationDate", value: value.toDate() } })}
                 />
               </Grid>
             </Grid>
@@ -668,9 +748,14 @@ function Coupons({ service: $Shop, state, feedback }) {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button onClick={modal === "create" ? onCreate : onUpdate} variant="contained" disabled={!isValidProduct}>
+            <LoadingButton
+              loading={loading}
+              onClick={modal === "create" ? onCreate : onUpdate}
+              variant="contained"
+              disabled={!isValidProduct}
+            >
               {modal === "create" ? "Crear" : "Editar"}
-            </Button>
+            </LoadingButton>
           </Grid>
         </DialogActions>
       </Dialog>
@@ -684,9 +769,9 @@ function Coupons({ service: $Shop, state, feedback }) {
           <Button variant="outlined" onClick={onClearFields}>
             Cancelar
           </Button>
-          <Button variant="contained" onClick={onDelete}>
+          <LoadingButton loading={loading} variant="contained" onClick={onDelete}>
             Eliminar
-          </Button>
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </>
@@ -700,6 +785,8 @@ function Shop() {
   const [coupons, setCoupons] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+  const [loading, setLoading] = useState({ importing: false });
+  const $Production = useMemo(() => ($Shop.token ? new ProductionService($Shop.token) : null), [$Shop.token]);
 
   const fetchProducts = async () => {
     const { status, data } = await $Shop.product.get();
@@ -729,6 +816,25 @@ function Shop() {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
+  const onImport = async (file) => {
+    if (!file) {
+      setFeedback({ open: true, message: "Debe seleccionar un archivo.", status: "error" });
+      return;
+    }
+
+    setLoading((prev) => ({ ...prev, importing: true }));
+
+    const { status } = await $Production.import({ file });
+
+    if (status) {
+      setFeedback({ open: true, message: "Producción importada exitosamente.", status: "success" });
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, importing: false }));
+  };
+
   useEffect(() => {
     if ($Shop) {
       (async () => {
@@ -741,6 +847,28 @@ function Shop() {
 
   return (
     <>
+      <Stack direction="row" justifyContent="flex-end" alignItems="center">
+        <Box position="relative">
+          <LoadingButton loading={loading.importing} variant="contained" size="small">
+            Importar producción
+          </LoadingButton>
+          <input
+            type="file"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 1,
+              width: "100%",
+              height: "100%",
+              cursor: "pointer",
+              aspectRatio: 1,
+              opacity: 0,
+            }}
+            onChange={({ target }) => onImport(target.files[0])}
+          />
+        </Box>
+      </Stack>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
           <Tab label="Productos" />
@@ -749,15 +877,10 @@ function Shop() {
         </Tabs>
       </Box>
       <TabPanel value={currentTab} index={0}>
-        <Products service={$Shop} state={[products, setProducts]} feedback={[feedback, setFeedback]} />
+        <Products token={$Shop.token} service={$Shop} state={[products, setProducts]} feedback={[feedback, setFeedback]} />
       </TabPanel>
       <TabPanel value={currentTab} index={1}>
-        <Discounts
-          service={$Shop}
-          state={[discounts, setDiscounts]}
-          products={products}
-          feedback={[feedback, setFeedback]}
-        />
+        <Discounts service={$Shop} state={[discounts, setDiscounts]} products={products} feedback={[feedback, setFeedback]} />
       </TabPanel>
       <TabPanel value={currentTab} index={2}>
         <Coupons service={$Shop} state={[coupons, setCoupons]} feedback={[feedback, setFeedback]} />

@@ -71,7 +71,7 @@ function ContractValidation() {
     if (status) {
       setContracts((prev) => ({ ...prev, pendings: prev.pendings.filter((c) => c.id !== contract.id) }));
       setModal("contract-success");
-      resetForm();
+      location.reload();
     } else {
       console.log("Error");
     }
@@ -109,8 +109,8 @@ function ContractValidation() {
                     <ContractIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Contrato ${index + 1}`}
-                    secondary={`válido hasta el ${formatDate(contract.first_payment_date)}`}
+                    primary={`Contrato AV-${contract.id}`}
+                    secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
                     primaryTypographyProps={{ fontSize: 20, color: "primary" }}
                     secondaryTypographyProps={{ color: "text.main" }}
                   />

@@ -4,6 +4,7 @@ import {
   Box,
   Grid,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -15,8 +16,8 @@ import {
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableRow from "./EnhancedTableRow";
 
-function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, collapse = null }) {
-  const [order, setOrder] = useState("asc");
+function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy = "", footer = <></>, collapse = null, loading = false }) {
+  const [order, setOrder] = useState(initialOrder);
   const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
@@ -53,7 +54,15 @@ function EnhancedTable({ headCells, rows, initialOrderBy = "", footer = <></>, c
             onRequestSort={handleRequestSort}
             rowCount={rows.length}
           />
-          {visibleRows.length ? (
+          {loading ? (
+            <TableRow tabIndex={-1} hover>
+              {headCells.map((headCell, index) => (
+                <TableCell key={index} align={headCell.align} style={{ minWidth: headCell.width }}>
+                  <Skeleton />
+                </TableCell>
+              ))}
+            </TableRow>
+          ) : visibleRows.length ? (
             <TableBody>
               {visibleRows.map((row) => (
                 <EnhancedTableRow key={row.id} headCells={headCells} row={row} collapse={collapse} />

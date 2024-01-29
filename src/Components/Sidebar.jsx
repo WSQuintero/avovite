@@ -1,14 +1,30 @@
 import { NavLink } from "react-router-dom";
-import { Avatar, Collapse, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, Toolbar, Typography, alpha } from "@mui/material";
+import {
+  Avatar,
+  Collapse,
+  Drawer,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  Stack,
+  Toolbar,
+  Typography,
+  alpha,
+} from "@mui/material";
 import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon, RecieptIcon, AnnualIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
 
 import background from "../assets/img/sidebar/background.png";
+import WhiteIcon from "../assets/img/common/icon_white.svg";
+import WhiteLogo from "../assets/img/common/logo_white.png";
 import { CONTRACT_TYPES } from "../utilities/constants";
+import Image from "./Image";
 
 const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   return (
@@ -65,13 +81,11 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   );
 };
 
-function Sidebar({ collapseOn = "" }) {
+const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
-
-  console.log(user?.isWhitelisted());
 
   const routes = useMemo(
     () => [
@@ -106,6 +120,12 @@ function Sidebar({ collapseOn = "" }) {
         show: !user?.isAdmin(),
       },
       {
+        icon: <RecieptIcon />,
+        name: "Pagos",
+        route: "/payments",
+        show: !user?.isAdmin(),
+      },
+      {
         icon: <AnnualIcon />,
         name: "Pago por cuotas",
         route: user?.isWhitelisted() === CONTRACT_TYPES.mortgage ? "/registro-contrato-hipoteca" : "/registro-contrato",
@@ -125,20 +145,32 @@ function Sidebar({ collapseOn = "" }) {
         collapse: collapseOn === "admin",
         children: [
           {
-            name: "Contratos",
-            route: "/admin/contracts",
-          },
-          {
-            name: "Lapsos",
-            route: "/admin/date-ranges",
+            name: "Blog",
+            route: "/admin/blog",
           },
           {
             name: "Conceptos",
             route: "/admin/concepts",
           },
           {
-            name: "Blog",
-            route: "/admin/blog",
+            name: "Contratos",
+            route: "/admin/contracts",
+          },
+          {
+            name: "Cosechas",
+            route: "/admin/harvests",
+          },
+          // {
+          //   name: "Lapsos",
+          //   route: "/admin/date-ranges",
+          // },
+          {
+            name: "Proveedores",
+            route: "/admin/suppliers",
+          },
+          {
+            name: "Split de pagos",
+            route: "/admin/payment-split",
           },
           {
             name: "Tienda",
@@ -147,6 +179,10 @@ function Sidebar({ collapseOn = "" }) {
           {
             name: "Usuarios",
             route: "/admin/users",
+          },
+          {
+            name: "Verifik",
+            route: "/admin/verifik",
           },
           {
             name: "Whitelist",
@@ -184,7 +220,7 @@ function Sidebar({ collapseOn = "" }) {
       })}
       onClose={() => toggleSidebar()}
     >
-      {isMobile && (
+      {isMobile ? (
         <>
           <Toolbar>
             <img
@@ -205,6 +241,10 @@ function Sidebar({ collapseOn = "" }) {
             </Grid>
           </Toolbar>
         </>
+      ) : (
+        <Toolbar>
+          <img src={WhiteLogo} alt="Logo" height={40} />
+        </Toolbar>
       )}
       <Typography padding={2} color="common.white">
         Navegación
@@ -215,8 +255,14 @@ function Sidebar({ collapseOn = "" }) {
             show && <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
         )}
       </List>
+      <Stack direction="row" spacing={4} alignItems="center" pr={2} mt="auto" mb={1} sx={{ opacity: 0.5 }}>
+        <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
+        <Typography variant="caption" color="white" lineHeight={1}>
+          Las ganancias del aguacate Hass Colombiana son para todos
+        </Typography>
+      </Stack>
     </Drawer>
   );
-}
+});
 
 export default Sidebar;

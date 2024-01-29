@@ -24,10 +24,12 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
+  Stack,
+  DialogContentText,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
-import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
+import { DeleteOutlined as DeleteIcon, FileDownload as DownloadIcon, SyncOutlined as RefreshIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
@@ -37,8 +39,18 @@ import useSession from "../../Hooks/useSession";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
 import DueService from "../../Services/due.service";
+import Image from "../Image";
+import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
+  {
+    accessorKey: "id",
+    id: "id",
+    header: "Número de contrato",
+    Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
+  },
   {
     accessorKey: "fullname",
     id: "fullname",
@@ -88,6 +100,11 @@ const columns = [
     id: "overdue_quotas",
     header: "Cuotas en mora",
   },
+  {
+    accessorKey: "stateFignature",
+    id: "stateFignature",
+    header: "Estado de la firma",
+  },
 ];
 
 function formatDate(dateString) {
@@ -99,11 +116,16 @@ function formatDate(dateString) {
 }
 
 const Contracts = () => {
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [{ constants }] = useConfig();
   const [{ token }] = useSession();
   const $Shop = useShop();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCreating, setLoadingCreating] = useState(false);
+  const [loadingSigning, setLoadingSigning] = useState(false);
+  const [loadingRefreshing, setLoadingRefreshing] = useState(false);
   const [modal, setModal] = useState(null);
 
   const [services, setServices] = useState([]);
@@ -125,20 +147,14 @@ const Contracts = () => {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const unitValue = useMemo(() => services[contract.service]?.unitary_price, [contract.service, services]);
   const subTotalValue = useMemo(() => Math.round(contract.vites * unitValue), [contract.vites, unitValue]);
-  const discountValue = useMemo(
-    () => Math.round(subTotalValue * (contract.discount / 100)),
-    [subTotalValue, contract.discount]
-  );
+  const discountValue = useMemo(() => Math.round(subTotalValue * (contract.discount / 100)), [subTotalValue, contract.discount]);
   const totalValue = useMemo(() => subTotalValue - discountValue, [subTotalValue, discountValue]);
   const totalFinancingValue = useMemo(
     () => Math.round(totalValue - (contract.firstPaymentValue || 0)),
     [contract.firstPaymentValue, totalValue]
   );
   const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value || 0), 0), [dues]);
-  const totalSubDuesValue = useMemo(
-    () => totalFinancingValue - (totalDuesValue || 0),
-    [totalDuesValue, totalFinancingValue]
-  );
+  const totalSubDuesValue = useMemo(() => totalFinancingValue - (totalDuesValue || 0), [totalDuesValue, totalFinancingValue]);
   const contractIsDisabledToCreate = useMemo(
     () =>
       totalDuesValue !== totalFinancingValue ||
@@ -168,8 +184,6 @@ const Contracts = () => {
 
   const fetchContractDues = async (contractId) => {
     const { status, data } = await $Due.get({ contractId });
-
-    console.log(data);
 
     if (status) {
       setContractDues({ id: contractId, dues: data.data });
@@ -202,52 +216,55 @@ const Contracts = () => {
   };
 
   const onCreateContract = async () => {
+    const body = {
+      mortgage_contract: contract.mortgage_contract,
+      ...(totalFinancingValue !== 0
+        ? {
+            // Financing
+            financed: 1,
+            with_guarantee: 0,
+            contract_vites: parseFloat(contract.vites),
+            contract_amount: parseFloat(subTotalValue),
+            id_services: services[contract.service].id_product,
+            percentage_discount: parseFloat(contract.discount),
+            contract_discount: parseFloat(discountValue),
+            total_contract_with_discount: parseFloat(totalValue),
+            first_payment: parseFloat(contract.firstPaymentValue),
+            first_payment_date: formatDate(contract.firstPaymentDate),
+            total_financed: parseFloat(totalDuesValue),
+            payment_numbers: dues.length,
+            financed_contracts: dues.map((d, index) => ({
+              quota_number: index + 1,
+              payment_amount: d.value,
+              date_payment: formatDate(d.date),
+            })),
+            enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
+          }
+        : {
+            //  Financingn't
+            financed: 0,
+            with_guarantee: 0,
+            contract_vites: parseFloat(contract.vites),
+            contract_amount: parseFloat(subTotalValue),
+            id_services: services[contract.service].id_product,
+            percentage_discount: parseFloat(contract.discount),
+            contract_discount: parseFloat(discountValue),
+            total_contract_with_discount: parseFloat(totalValue),
+            first_payment: parseFloat(contract.firstPaymentValue),
+            first_payment_date: formatDate(contract.firstPaymentDate),
+            enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
+          }),
+      ...(contract.mortgage_contract === 1
+        ? { mortgage_contract_aditional_text: contract.mortgage_contract === 1 ? contract.mortgage_contract_aditional_text : "" }
+        : {}),
+    };
+
+    setLoadingCreating(true);
+
     const { status } = await $Contract.complete({
       id: selectedContract.id,
-      mortgage: selectedContract.mortgage_contract === 1,
-      body: {
-        ...(totalFinancingValue !== 0
-          ? {
-              // Financing
-              financed: 1,
-              with_guarantee: 0,
-              contract_vites: parseFloat(contract.vites),
-              contract_amount: parseFloat(subTotalValue),
-              id_services: services[contract.service].id_product,
-              percentage_discount: parseFloat(contract.discount),
-              contract_discount: parseFloat(discountValue),
-              total_contract_with_discount: parseFloat(totalValue),
-              first_payment: parseFloat(contract.firstPaymentValue),
-              first_payment_date: formatDate(contract.firstPaymentDate),
-              total_financed: parseFloat(totalDuesValue),
-              payment_numbers: dues.length,
-              financed_contracts: dues.map((d, index) => ({
-                quota_number: index + 1,
-                payment_amount: d.value,
-                date_payment: formatDate(d.date),
-              })),
-              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
-            }
-          : {
-              //  Financingn't
-              financed: 0,
-              with_guarantee: 0,
-              contract_vites: parseFloat(contract.vites),
-              contract_amount: parseFloat(subTotalValue),
-              id_services: services[contract.service].id_product,
-              percentage_discount: parseFloat(contract.discount),
-              contract_discount: parseFloat(discountValue),
-              total_contract_with_discount: parseFloat(totalValue),
-              first_payment: parseFloat(contract.firstPaymentValue),
-              first_payment_date: formatDate(contract.firstPaymentDate),
-              enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
-            }),
-        ...(selectedContract.mortgage_contract === 1
-          ? {
-              mortgage_contract_aditional_text: contract.mortgage_contract_aditional_text,
-            }
-          : {}),
-      },
+      mortgage: contract.mortgage_contract === 1,
+      body: body,
     });
 
     if (status) {
@@ -257,28 +274,84 @@ const Contracts = () => {
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
+
+    setLoadingCreating(false);
   };
 
-  const onDeleteContract = async (contractId) => {
-    const { status } = await $Contract.delete({ id: contractId });
+  const onDeleteContract = async (contractId, permanently) => {
+    if (permanently) {
+      const { status } = await $Contract.delete({ id: contractId });
 
-    if (status) {
-      setFeedback({ open: true, message: "Contrato eliminado exitosamente.", status: "success" });
-      setContracts((prev) => prev.filter((c) => c.id !== contractId));
+      if (status) {
+        enqueueSnackbar("Contrato eliminado exitosamente.", { variant: "success" });
+        setContracts((prev) => prev.filter((c) => c.id !== contractId));
+      } else {
+        enqueueSnackbar("Error al eliminar contrato.", { variant: "error" });
+      }
     } else {
-      setFeedback({ open: true, message: "Error al eliminar contrato.", status: "error" });
+      const { status } = await $Contract.requestDelete({ id: contractId });
+
+      if (status) {
+        enqueueSnackbar("Se ha notificado al usuario para eliminar el contrato.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Error al eliminar contrato.", { variant: "error" });
+      }
     }
   };
 
-  const onCheckDue = async ({ id, status }) => {
+  const onCheckDue = async ({ id, file, status, id_contracts }) => {
     setLoadingDue(true);
-    const { status: reqStatus, data } = await $Due.updateStatus({ id, status });
 
-    if (reqStatus) {
-      setContractDues((prev) => ({ ...prev, dues: prev.dues.map((d) => (d.id === id ? { ...d, status } : d)) }));
+    if (id) {
+      const { status: reqStatus } = await $Due.updateStatus({ id, status, url_image: file });
+
+      if (reqStatus) {
+        setContractDues((prev) => ({
+          ...prev,
+          dues: prev.dues.map((d) => (d.id === id ? { ...d, status, url_image: URL.createObjectURL(file) } : d)),
+        }));
+      }
+    } else {
+      const { status: reqStatus } = await $Due.updateFirstDue({ contractId: id_contracts, status, url_image: file });
+
+      if (reqStatus) {
+        setContractDues((prev) => ({
+          ...prev,
+          dues: prev.dues.map((d) => (d.id === null ? { ...d, status, url_image: URL.createObjectURL(file) } : d)),
+        }));
+      }
     }
 
     setLoadingDue(false);
+  };
+
+  const onSendSignature = async ({ id }) => {
+    setLoadingSigning(true);
+
+    const { status } = await $Contract.sendSignature({ id });
+
+    if (status) {
+      enqueueSnackbar("Se ha notificado al usuario para firmar el contrato.", { variant: "success" });
+    } else {
+      enqueueSnackbar("Error al notificar al usuario para firmar el contrato.", { variant: "error" });
+    }
+
+    setLoadingSigning(false);
+  };
+
+  const onRefreshSignatures = async () => {
+    setLoadingRefreshing(true);
+
+    const { status } = await $Contract.refreshSignatures();
+
+    if (status) {
+      enqueueSnackbar("El estado de las firmas ha sido refrescado.", { variant: "success" });
+      await fetchContracts();
+    } else {
+      enqueueSnackbar("Error al refrescar el estado de las firmas.", { variant: "error" });
+    }
+
+    setLoadingRefreshing(false);
   };
 
   const resetFeedback = () => {
@@ -319,19 +392,27 @@ const Contracts = () => {
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
-            // disabled={!!original.id_user_contract_transactional_payment}
+            disabled={original.status_contracts === 0}
             onClick={() => {
               closeMenu();
-              original.status_contracts === 0
-                ? (setSelectedContract(original),
-                  setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 })))
-                : window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
+              window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
             }}
           >
-            {original.status_contracts === 0 ? "Crear" : " Ver"} contrato
+            Ver contrato
           </MenuItem>,
           <MenuItem
             key={1}
+            disabled={original.status_contracts !== 0}
+            onClick={() => {
+              closeMenu();
+              setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
+            }}
+          >
+            Completar contrato
+          </MenuItem>,
+          <MenuItem
+            key={2}
+            disabled={original.status_contracts === 0}
             onClick={async () => {
               closeMenu();
               await fetchContractDues(original.id);
@@ -340,22 +421,70 @@ const Contracts = () => {
           >
             Ver cuotas
           </MenuItem>,
+          <Divider key="divider-1" />,
           <MenuItem
-            key={0}
-            disabled={original.status_contracts !== 0}
-            sx={{ color: "error.main" }}
-            onClick={async () => {
+            key={1.5}
+            disabled={loadingSigning}
+            onClick={() => {
               closeMenu();
-              await onDeleteContract(original.id);
+              onSendSignature(original);
             }}
+            sx={{ gap: 1, alignItems: "center" }}
           >
-            Eliminar contrato
+            {loadingSigning && <CircularProgress size={16} />} Envia firma
           </MenuItem>,
+          <MenuItem
+            key={1.75}
+            disabled={!original.urlValidocus}
+            onClick={() => {
+              closeMenu();
+              window.open(original.urlValidocus, "_blank");
+            }}
+            sx={{ gap: 1, alignItems: "center" }}
+          >
+            Ver firma
+          </MenuItem>,
+          <Divider key="divider-2" />,
+          // <MenuItem
+          //   key={4}
+          //   onClick={async () => {
+          //     closeMenu();
+          //     setContract(original);
+          //     setModal("edit-contract");
+          //   }}
+          // >
+          //   Editar contrato
+          // </MenuItem>,
+          original.status_contracts !== 0 ? (
+            <MenuItem
+              key={3}
+              sx={{ color: "error.main" }}
+              onClick={async () => {
+                closeMenu();
+                await onDeleteContract(original.id);
+              }}
+            >
+              Solicitar eliminar
+            </MenuItem>
+          ) : (
+            <MenuItem
+              key={5}
+              sx={{ color: "error.main" }}
+              onClick={async () => {
+                closeMenu();
+                await onDeleteContract(original.id, true);
+              }}
+            >
+              Eliminar contrato
+            </MenuItem>
+          ),
         ]}
         renderDetailPanel={({ row: { original: row } }) => (
           <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
             <Grid display="flex" flexDirection="column" gap={1}>
-              <Typography variant="h4">Información financiera</Typography>
+              <Typography variant="h4" mt={4}>
+                Información financiera
+              </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Financiado:{" "}
@@ -381,7 +510,9 @@ const Contracts = () => {
                 ${formatCurrency(row.total_contract_with_discount)}
               </Typography>
 
-              <Typography variant="h4">Información de primer pago</Typography>
+              <Typography variant="h4" mt={4}>
+                Información de primer pago
+              </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Valor:{" "}
@@ -395,7 +526,9 @@ const Contracts = () => {
                 {formatLongDate(row.first_payment_date)}
               </Typography>
 
-              <Typography variant="h4">Información del titular</Typography>
+              <Typography variant="h4" mt={4}>
+                Información del titular
+              </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
                   Teléfono:{" "}
@@ -412,7 +545,7 @@ const Contracts = () => {
                 <Typography component="span" fontWeight={600}>
                   Número de documento:{" "}
                 </Typography>
-                {row.beneficiary_id_number}
+                {row.id_number}
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
@@ -432,12 +565,6 @@ const Contracts = () => {
                 </Typography>
                 {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
               </Typography>
-              <Typography>
-                <Typography component="span" fontWeight={600}>
-                  Número de contrato:{" "}
-                </Typography>
-                {row.contract_number}
-              </Typography>
             </Grid>
           </Grid>
         )}
@@ -446,12 +573,21 @@ const Contracts = () => {
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
               Exportar a Excel
             </Button>
+            <LoadingButton
+              loading={loadingRefreshing}
+              variant={loadingRefreshing ? "contained" : "text"}
+              color="primary"
+              onClick={onRefreshSignatures}
+              startIcon={<RefreshIcon />}
+            >
+              Refrescar firmas
+            </LoadingButton>
           </Box>
         )}
       />
 
       <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
-        <DialogTitle color="primary.main">Crear contrato</DialogTitle>
+        <DialogTitle color="primary.main">Completar contrato</DialogTitle>
         <DialogContent>
           <Box component="form" display="flex" flexDirection="column" gap={3} padding={1} onSubmit={onCreateContract}>
             <Grid
@@ -639,7 +775,7 @@ const Contracts = () => {
                 />
               </Grid>
             </Grid>
-            <FormControlLabel
+            {/* <FormControlLabel
               label="Habilitar pago con Epayco"
               control={
                 <Checkbox
@@ -647,18 +783,16 @@ const Contracts = () => {
                   onChange={({ target }) => setContract((prev) => ({ ...prev, enable_to_pay_epayco: target.checked }))}
                 />
               }
-            />
-            {/* <FormControlLabel
+            /> */}
+            <FormControlLabel
               label="Habilitar pago hipotecario"
               control={
                 <Checkbox
                   checked={contract.mortgage_contract === 1}
-                  onChange={({ target }) =>
-                    setContract((prev) => ({ ...prev, mortgage_contract: target.checked ? 1 : 0 }))
-                  }
+                  onChange={({ target }) => setContract((prev) => ({ ...prev, mortgage_contract: target.checked ? 1 : 0 }))}
                 />
               }
-            /> */}
+            />
 
             <Collapse in={contract?.mortgage_contract === 1}>
               <TiptapEditor
@@ -683,35 +817,25 @@ const Contracts = () => {
                     </Typography>
                     <Grid display="flex" flexDirection="column" alignItems="flex-end">
                       <Typography fontSize={18} fontWeight={500} color="primary">
-                        Total: $
-                        <NumericFormat displayType="text" value={totalDuesValue} thousandSeparator></NumericFormat>
+                        Total: $<NumericFormat displayType="text" value={totalDuesValue} thousandSeparator></NumericFormat>
                       </Typography>
                       {totalSubDuesValue !== 0 && (
                         <Typography fontSize={12} color="error">
-                          Faltante: $
-                          <NumericFormat displayType="text" value={totalSubDuesValue} thousandSeparator></NumericFormat>
+                          Faltante: $<NumericFormat displayType="text" value={totalSubDuesValue} thousandSeparator></NumericFormat>
                         </Typography>
                       )}
                     </Grid>
                   </Grid>
                   {dues.map((due, index) => (
                     <Grid key={due.id} display="flex" gap={1}>
-                      <TextField
-                        label="ID"
-                        variant="outlined"
-                        defaultValue={index + 1}
-                        disabled
-                        sx={{ width: "100%" }}
-                      />
+                      <TextField label="ID" variant="outlined" defaultValue={index + 1} disabled sx={{ width: "100%" }} />
                       <DatePicker
                         label="Fecha"
                         value={dayjs(due.date)}
                         format="DD/MM/YYYY"
                         sx={{ width: "100%" }}
                         disablePast
-                        onChange={(value) =>
-                          setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, date: value.toDate() } : d)))
-                        }
+                        onChange={(value) => setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, date: value.toDate() } : d)))}
                       />
                       <NumericFormat
                         customInput={TextField}
@@ -732,10 +856,7 @@ const Contracts = () => {
                         }
                       />
                       <Box display="flex" justifyContent="center" alignItems="center">
-                        <IconButton
-                          color="error"
-                          onClick={() => setDues((prev) => prev.filter((d) => d.id !== due.id))}
-                        >
+                        <IconButton color="error" onClick={() => setDues((prev) => prev.filter((d) => d.id !== due.id))}>
                           <DeleteIcon />
                         </IconButton>
                       </Box>
@@ -766,9 +887,9 @@ const Contracts = () => {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onCancelCreateContract}>Cancelar</Button>
-            <Button onClick={onCreateContract} variant="contained" disabled={contractIsDisabledToCreate}>
+            <LoadingButton loading={loadingCreating} onClick={onCreateContract} variant="contained" disabled={contractIsDisabledToCreate}>
               Crear contrato
-            </Button>
+            </LoadingButton>
           </Grid>
         </DialogActions>
       </Dialog>
@@ -797,29 +918,41 @@ const Contracts = () => {
               }
             >
               <Grid display="flex" gap={4} alignItems="center">
-                <ListItemText
-                  primary="Cuota"
-                  primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
-                />
+                <ListItemText primary="Cuota" primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
               </Grid>
             </ListItem>
             {contractDues.dues.map((due) => (
               <ListItem
                 key={due.id}
                 secondaryAction={
-                  <Checkbox
-                    edge="end"
-                    disabled={loadingDue}
-                    checked={due.status}
-                    onChange={({ target }) => onCheckDue({ id: due.id, status: target.checked ? 1 : 0 })}
-                  />
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    {due.url_image && <Image src={due.url_image} alt="Due image" height={32} width={32} borderRadius={0.5} />}
+                    <Box position="relative">
+                      <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
+                      <input
+                        type="file"
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          zIndex: 1,
+                          display: due.status ? "none" : "block",
+                          width: "100%",
+                          height: "100%",
+                          cursor: "pointer",
+                          aspectRatio: 1,
+                          opacity: 0,
+                        }}
+                        onChange={({ target }) =>
+                          onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })
+                        }
+                      />
+                    </Box>
+                  </Stack>
                 }
               >
                 <Grid display="flex" gap={4} alignItems="center">
-                  <ListItemText
-                    primary={due.quota_number}
-                    primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }}
-                  />
+                  <ListItemText primary={due.quota_number} primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
                   <ListItemText
                     primary={formatCurrency(due.payment_amount, "$")}
                     secondary={formatLongDate(due.date_payment)}
@@ -831,6 +964,35 @@ const Contracts = () => {
             ))}
           </List>
         </DialogContent>
+      </Dialog>
+
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={modal === "edit-contract"}
+        onClose={() => {
+          setModal(null);
+          onCancelCreateContract();
+        }}
+      >
+        <DialogTitle>Editar contrato</DialogTitle>
+        <DialogContent>
+          <DialogContentText>¿Estás seguro que deseas editar el contrato AV-{contract?.id}?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setModal(null);
+              onCancelCreateContract();
+            }}
+          >
+            Cancelar
+          </Button>
+          <LoadingButton variant="contained" onClick={() => navigate(`/admin/contracts/${contract?.id}?editing=true`)}>
+            Editar
+          </LoadingButton>
+        </DialogActions>
       </Dialog>
 
       <Snackbar

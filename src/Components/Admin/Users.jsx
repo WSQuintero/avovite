@@ -53,7 +53,7 @@ function Users() {
     id_number: "",
     id_location_expedition: "",
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({ fetching: true, importing: false });
   const [modal, setModal] = useState(null);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
@@ -160,7 +160,7 @@ function Users() {
       return;
     }
 
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, fetching: true }));
 
     const { status, data } = await $User.add(user);
 
@@ -173,29 +173,18 @@ function Users() {
       setFeedback({ open: true, message: "Error al crear el usuario.", status: "error" });
     }
 
-    setLoading(false);
+    setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
   const handleUpdateUser = async (event) => {
     event.preventDefault();
 
-    if (
-      !validate([
-        "fullname",
-        "email",
-        "cellphone",
-        "email_validated",
-        "birthdate",
-        "id_type",
-        "id_number",
-        "id_location_expedition",
-      ])
-    ) {
+    if (!validate(["fullname", "email", "cellphone", "email_validated", "birthdate", "id_type", "id_number", "id_location_expedition"])) {
       setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
     }
 
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, fetching: true }));
 
     const { status } = await $User.update({
       id: user.id,
@@ -218,10 +207,8 @@ function Users() {
       setFeedback({ open: true, message: "Error al actualizar el usuario.", status: "error" });
     }
 
-    setLoading(false);
+    setLoading((prev) => ({ ...prev, fetching: false }));
   };
-
-  console.log(user);
 
   const handleUpdateUserRole = async (event) => {
     event.preventDefault();
@@ -231,7 +218,7 @@ function Users() {
       return;
     }
 
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, fetching: true }));
 
     const { status } = await $User.updateRole({ id: user.id, role: String(user.rol) });
 
@@ -244,7 +231,7 @@ function Users() {
       setFeedback({ open: true, message: "Error al actualizar el usuario.", status: "error" });
     }
 
-    setLoading(false);
+    setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
   const handleDeleteUser = async () => {
@@ -252,7 +239,7 @@ function Users() {
       return;
     }
 
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, fetching: true }));
 
     const { status } = await $User.delete({ id: user.id });
 
@@ -265,24 +252,75 @@ function Users() {
       setFeedback({ open: true, message: "Error al eliminar el usuario.", status: "error" });
     }
 
-    setLoading(false);
+    setLoading((prev) => ({ ...prev, fetching: false }));
+  };
+
+  const handleImportUsers = async (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+      setFeedback({ open: true, message: "Debe seleccionar un archivo válido.", status: "error" });
+      return;
+    }
+
+    setLoading((prev) => ({ ...prev, importing: true }));
+
+    const { status } = await $User.import({ file });
+
+    if (status) {
+      setFeedback({ open: true, message: "Usuarios importados exitosamente.", status: "success" });
+      await fetchData();
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+
+    setLoading((prev) => ({ ...prev, importing: false }));
+  };
+
+  const fetchData = async () => {
+    setLoading((prev) => ({ ...prev, fetching: true }));
+
+    const { status, data } = await $User.get();
+
+    if (status) {
+      setUsers(data.data);
+    }
+
+    setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
   useEffect(() => {
     if (token) {
       (async () => {
-        const { status, data } = await $User.get();
-
-        if (status) {
-          setUsers(data.data);
-          setLoading(false);
-        }
+        await fetchData();
       })();
     }
   }, [token]);
 
   return (
     <>
+      <Stack direction="row" justifyContent="flex-end" alignItems="center">
+        <Box position="relative">
+          <LoadingButton loading={loading.importing} variant="contained" size="small">
+            Importar usuarios
+          </LoadingButton>
+          <input
+            type="file"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 1,
+              width: "100%",
+              height: "100%",
+              cursor: "pointer",
+              aspectRatio: 1,
+              opacity: 0,
+            }}
+            onChange={handleImportUsers}
+          />
+        </Box>
+      </Stack>
       <MaterialReactTable
         columns={columns}
         data={users}
@@ -291,7 +329,7 @@ function Users() {
         muiTablePaperProps={{ elevation: 0 }}
         initialState={{ density: "compact" }}
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
-        state={{ showSkeletons: loading }}
+        state={{ showSkeletons: loading.fetching }}
         renderBottomToolbarCustomActions={() => (
           <Box sx={{ display: "flex", gap: 1 }}>
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
@@ -313,15 +351,17 @@ function Users() {
       >
         <DialogTitle>{modal === "user-create" ? "Agregar" : "Editar"} usuario</DialogTitle>
         <DialogContent>
-          <Box
-            id="form-create-user"
-            component="form"
-            paddingY={2}
-            onSubmit={modal === "user-create" ? handleCreateUser : handleUpdateUser}
-          >
+          <Box id="form-create-user" component="form" paddingY={2} onSubmit={modal === "user-create" ? handleCreateUser : handleUpdateUser}>
             <Stack spacing={2}>
               <TextField fullWidth label="Nombre" name="fullname" value={user.fullname} onChange={handleInputChange} />
-              <TextField fullWidth disabled={modal === 'user-update'} label="Correo" name="email" value={user.email} onChange={handleInputChange} />
+              <TextField
+                fullWidth
+                disabled={modal === "user-update"}
+                label="Correo"
+                name="email"
+                value={user.email}
+                onChange={handleInputChange}
+              />
               <FormControl fullWidth>
                 <FormLabel id="user_email_validated">Correo validado</FormLabel>
                 <RadioGroup
@@ -364,8 +404,8 @@ function Users() {
                   name="birthdate"
                   slotProps={{
                     textField: {
-                      error: false
-                    }
+                      error: false,
+                    },
                   }}
                   value={dayjs(user.birthdate)}
                   onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
@@ -418,7 +458,7 @@ function Users() {
           >
             Cancelar
           </Button>
-          <LoadingButton variant="contained" type="submit" form="form-create-user" loading={loading}>
+          <LoadingButton variant="contained" type="submit" form="form-create-user" loading={loading.fetching}>
             {modal === "user-create" ? "Crear" : "Editar"}
           </LoadingButton>
         </DialogActions>
@@ -460,7 +500,7 @@ function Users() {
           >
             Cancelar
           </Button>
-          <LoadingButton variant="contained" type="submit" form="form-update-role-user" loading={loading}>
+          <LoadingButton variant="contained" type="submit" form="form-update-role-user" loading={loading.fetching}>
             Editar
           </LoadingButton>
         </DialogActions>
@@ -478,9 +518,7 @@ function Users() {
       >
         <DialogTitle>Eliminar usuario</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            ¿Estás seguro que deseas eliminar este usuario? Esta acción no podrá revertirse.
-          </DialogContentText>
+          <DialogContentText>¿Estás seguro que deseas eliminar este usuario? Esta acción no podrá revertirse.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
@@ -492,7 +530,7 @@ function Users() {
           >
             Cancelar
           </Button>
-          <LoadingButton variant="contained" loading={loading} onClick={handleDeleteUser}>
+          <LoadingButton variant="contained" loading={loading.fetching} onClick={handleDeleteUser}>
             Eliminar
           </LoadingButton>
         </DialogActions>
@@ -504,11 +542,7 @@ function Users() {
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
       >
-        <Alert
-          onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
-          severity={feedback.status}
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={() => setFeedback((prev) => ({ ...prev, open: false }))} severity={feedback.status} sx={{ width: "100%" }}>
           {feedback.message}
         </Alert>
       </Snackbar>

@@ -35,9 +35,13 @@ function App() {
   };
 
   useEffect(() => {
+    fetchConstants();
+  }, []);
+
+  useEffect(() => {
     (async () => {
+      setLoading(true);
       await validateSession();
-      await fetchConstants();
       setLoading(false);
     })();
   }, [session.token]);

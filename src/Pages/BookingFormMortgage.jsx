@@ -43,7 +43,12 @@ const BookingFormMortgage = () => {
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-      <Form isMortgage title="Aplicación con garantía hipotecaria" initialState={initialFormData} onSubmit={handleSubmit} />
+      <Form
+        isMortgage
+        title="Aplicación con garantía hipotecaria"
+        initialState={initialFormData}
+        onSubmit={handleSubmit}
+      />
 
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">

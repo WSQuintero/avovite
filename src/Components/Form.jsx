@@ -253,6 +253,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    console.log(formData)
+
     const validation = validateJSON(formData, [
       "how_did_you_hear_about_us",
       ...(formData.he_has_children === "No" ? ["he_has_children_count"] : []),
@@ -684,7 +686,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
         >
           Información bancaria
           <Typography variant="caption" display="block">
-            Cuenta bancaria donde deseas recibir tus rendimientos.
+            Cuenta bancaria donde deseas recibir tus transferencias.
           </Typography>
         </Typography>
 
@@ -840,7 +842,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
         >
           Información del beneficiario
           <Typography variant="caption" display="block">
-            Designa un beneficiario en tu contrato que pueda recibir los beneficios en caso de fuerza mayor o evento fortuito.
+            Designa un beneficiario en tu contrato que pueda recibir pagos en caso de fuerza mayor o evento fortuito.
           </Typography>
         </Typography>
 

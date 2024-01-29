@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Typography, Container, Box, Stack } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Typography, Container, Box, Stack, Button } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
@@ -18,22 +19,52 @@ function Vites() {
         header: "Número de vites",
       },
       {
-        accessorKey: "contract_number",
+        accessorKey: "id",
         header: "Número de contrato",
+        Cell: ({ renderedCellValue }) => <>AV-{renderedCellValue}</>,
       },
       {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
-        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
+        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>,
       },
       {
-        accessorKey: "sown_at",
+        accessorKey: "earliest_sowing_date",
         header: "Fecha de siembra",
-        Cell: ({ renderedCellValue }) => <>{dayjs(new Date(renderedCellValue)).format("DD-MM-YYYY")}</>,
+        Cell: ({ renderedCellValue }) =>
+          renderedCellValue ? (
+            <>{dayjs(new Date(renderedCellValue)).format("DD MMMM YYYY")}</>
+          ) : (
+            <Typography fontSize={12} color="warning.light">
+              No se ha sembrado
+            </Typography>
+          ),
       },
       {
-        accessorKey: "status",
+        accessorKey: "harvest_state",
         header: "Estado",
+        Cell: ({ renderedCellValue }) =>
+          renderedCellValue || (
+            <Typography fontSize={12} color="warning.light">
+              No se ha cosechado
+            </Typography>
+          ),
+      },
+      {
+        accessorKey: "stateFignature",
+        header: "Estado firma",
+        Cell: ({ renderedCellValue, row: { original } }) =>
+          original.urlValidocus ? (
+            <Button component={RouterLink} to={original.urlValidocus} target="_blank" size="small" variant="contained">
+              Ver firma
+            </Button>
+          ) : (
+            renderedCellValue || (
+              <Typography fontSize={12} color="warning.light">
+                No firmado
+              </Typography>
+            )
+          ),
       },
     ],
     []

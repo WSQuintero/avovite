@@ -73,26 +73,6 @@ export default class AuthService {
     }
 
     try {
-      /* const data = await new Promise((resolve) =>
-        setTimeout(
-          () =>
-            resolve({
-              user: {
-                fullname: "Glen Cunningham",
-                email: "wungo@raru.li",
-                phone: "573101112233",
-                account_number: 2873557237,
-                city: "Medellín",
-                rol: 0,
-                country: "Colombia",
-                account_bank: 3948779348,
-                avatar: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
-              },
-            }),
-          200
-        )
-      ); */
-
       const { data } = await axios.get(`${this.API_URL}/users/session`, {
         headers: {
           Authorization: this.token,
@@ -103,5 +83,15 @@ export default class AuthService {
     } catch (error) {
       return { status: false, data: error };
     }
+  }
+
+  async forgotPassword({ email, token = null, password } = {}) {
+    return await handleCall(
+      async () =>
+        (token
+          ? await axios.post(`${this.API_URL}/users/reset-password/with/token`, { password, password2: password }, { params: { token } })
+          : await axios.post(`${this.API_URL}/users/reset-password`, { email })
+        ).data
+    );
   }
 }
