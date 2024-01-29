@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Form from "../Components/Form";
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
-import { DEV_FORMS } from "../utilities/constants";
 
 const BookingFormMortgage = () => {
   const navigate = useNavigate();
@@ -46,9 +45,8 @@ const BookingFormMortgage = () => {
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
       <Form
         isMortgage
-        initialState={DEV_FORMS[0]}
         title="Aplicación con garantía hipotecaria"
-        // initialState={initialFormData}
+        initialState={initialFormData}
         onSubmit={handleSubmit}
       />
 

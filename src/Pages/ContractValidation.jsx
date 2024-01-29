@@ -24,7 +24,6 @@ import ContractService from "../Services/contract.service";
 import PageWrapper from "../Components/PageWrapper";
 import { formatDate } from "../utilities";
 import Form from "../Components/Form";
-import { DEV_FORMS } from "../utilities/constants";
 
 function ContractValidation() {
   const navigate = useNavigate();
@@ -145,12 +144,7 @@ function ContractValidation() {
       >
         <DialogContent>
           <Container maxWidth="xxl" sx={{ padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-            <Form
-              loading={loadingSubmit}
-              initialState={DEV_FORMS[0]}
-              onSubmit={handleFormSubmit}
-              onLoad={({ reset }) => setResetForm(reset)}
-            />
+            <Form loading={loadingSubmit} onSubmit={handleFormSubmit} onLoad={({ reset }) => setResetForm(reset)} />
           </Container>
         </DialogContent>
       </Dialog>
