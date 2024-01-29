@@ -8,10 +8,10 @@ import useSession from "../Hooks/useSession";
 
 const BookingFormMortgage = () => {
   const navigate = useNavigate();
-  const [{ user }] = useSession();
-  const $Contract = useMemo(() => new ContractService(), []);
+  const [{ token, user }] = useSession();
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [initialFormData, setInitialFormData] = useState({});
+  const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
 
   const handleSubmit = async (body) => {
     const { status } = await $Contract.add(body);
@@ -43,12 +43,7 @@ const BookingFormMortgage = () => {
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-      <Form
-        isMortgage
-        title="Aplicación con garantía hipotecaria"
-        initialState={initialFormData}
-        onSubmit={handleSubmit}
-      />
+      <Form isMortgage title="Aplicación con garantía hipotecaria" initialState={initialFormData} onSubmit={handleSubmit} />
 
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
