@@ -63,9 +63,9 @@ const columns = [
     Cell: ({ renderedCellValue, row: { original } }) => (
       <Stack>
         <Typography>{renderedCellValue}</Typography>
-        {/* <Typography fontSize={12}>
+        <Typography fontSize={12}>
           {original.email}
-        </Typography> */}
+        </Typography>
       </Stack>
     ),
   },
