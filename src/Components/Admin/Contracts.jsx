@@ -48,13 +48,26 @@ const columns = [
   {
     accessorKey: "id",
     id: "id",
-    header: "Número de contrato",
+    header: "Número",
     Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
+  },
+  {
+    accessorKey: "contract_label",
+    id: "contract_label",
+    header: "Etiqueta",
   },
   {
     accessorKey: "fullname",
     id: "fullname",
-    header: "Nombre del pagador",
+    header: "Pagador",
+    Cell: ({ renderedCellValue, row: { original } }) => (
+      <Stack>
+        <Typography>{renderedCellValue}</Typography>
+        <Typography fontSize={12}>
+          {original.email}
+        </Typography>
+      </Stack>
+    ),
   },
   {
     accessorKey: "mortgage_contract",

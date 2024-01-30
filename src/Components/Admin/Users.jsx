@@ -39,11 +39,13 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { DOCUMENT_TYPES } from "../../utilities/constants";
 import DialogSendEmailAndSMS from "../Dialogs/SendEmailAndSMS";
+import DialogImportContacts from "../Dialogs/ImportContacts";
+import { useSnackbar } from "notistack";
 
 function Users() {
   const [{ token }] = useSession();
+  const { enqueueSnackbar } = useSnackbar();
   const $User = useUser();
-  const importInputRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({
     id: null,
@@ -261,19 +263,10 @@ function Users() {
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
-  const handleImportUsers = async (event) => {
-    const file = event.target.files[0];
-
-    if (!file) {
-      setFeedback({ open: true, message: "Debe seleccionar un archivo válido.", status: "error" });
-      return;
-    }
-
+  const handleImportUsers = async ({ file, massive }) => {
     setLoading((prev) => ({ ...prev, importing: true }));
 
-    console.log(file)
-
-    const { status } = await $User.import({ file });
+    const { status } = await $User.import({ file, sendemails: massive });
 
     if (status) {
       setFeedback({ open: true, message: "Usuarios importados exitosamente.", status: "success" });
@@ -285,20 +278,54 @@ function Users() {
     setLoading((prev) => ({ ...prev, importing: false }));
   };
 
-  const handleSendEmailAndSMS = async () => {
+  const handleSendEmailAndSMS = async ({ form, statuses }) => {
     setLoading((prev) => ({ ...prev, sending: true }));
 
-    const { status } = await new Promise((resolve) => setTimeout(() => resolve({ status: false }), 3000));
+    let success = { email: false, sms: false };
 
-    if (status) {
-      setFeedback({ open: true, message: "Emails enviados con exito.", status: "success" });
-    } else {
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    const selectedUsers = selectedContactsValues.map((index) => users[index]);
+
+    if (statuses.sms) {
+      const { status } = await $User.sendSMS({
+        massive: statuses.massive,
+        tpoa: form.sms.subject,
+        message: form.sms.template,
+        phoneNumbers: selectedUsers.map((u) => u.cellphone),
+      });
+
+      if (status) {
+        enqueueSnackbar("SMS enviados con exito.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Ha ocurrido un error inesperado enviando SMS.", { variant: "error" });
+      }
+
+      success.sms = status;
+    }
+
+    if (statuses.email) {
+      const { status } = await $User.sendEmail({
+        massive: statuses.massive,
+        subject: form.email.subject,
+        html: form.email.template,
+        to: selectedUsers.map((u) => ({ email: u.email, name: u.fullname })),
+      });
+
+      if (status) {
+        enqueueSnackbar("Correos enviados con exito.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Ha ocurrido un error inesperado enviando correos.", { variant: "error" });
+      }
+
+      success.email = status;
     }
 
     setLoading((prev) => ({ ...prev, sending: false }));
 
-    return status;
+    if (success.email || success.sms) {
+      setModal(null);
+    }
+
+    return success.email || success.sms;
   };
 
   const fetchData = async () => {
@@ -336,12 +363,9 @@ function Users() {
         state={{ showSkeletons: loading.fetching, rowSelection: selectedContacts }}
         renderTopToolbarCustomActions={() => (
           <Stack direction="row" spacing={1}>
-            <Box position="relative">
-              <LoadingButton loading={loading.importing} variant="contained" size="small" onClick={() => importInputRef.current.click()}>
-                Importar usuarios
-              </LoadingButton>
-              <input hidden ref={importInputRef} type="file" onChange={handleImportUsers} />
-            </Box>
+            <LoadingButton loading={loading.importing} variant="contained" size="small" onClick={() => setModal("users-import")}>
+              Importar usuarios
+            </LoadingButton>
             <Button variant="contained" size="small" color="primary" onClick={handleExportData}>
               Exportar usuarios
             </Button>
@@ -561,6 +585,13 @@ function Users() {
         loading={loading.sending}
         onClose={() => setModal(null)}
         onSubmit={handleSendEmailAndSMS}
+      />
+
+      <DialogImportContacts
+        open={modal === "users-import"}
+        loading={loading.importing}
+        onClose={() => setModal(null)}
+        onSubmit={handleImportUsers}
       />
 
       <Snackbar
