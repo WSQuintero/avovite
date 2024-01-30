@@ -110,7 +110,7 @@ function Dashboard() {
                       <InvestIcon sx={{ fontSize: 128 }} />
                       <Stack>
                         <Typography fontSize={40} fontWeight={300} color="white" lineHeight={1} textAlign="center">
-                          VITES
+                          VITE{Number(user.totalVites) === 1 ? "" : "S"}
                         </Typography>
                         <Typography fontSize={40} fontWeight={700} color="white" lineHeight={1} textAlign="center">
                           {user.totalVites}
