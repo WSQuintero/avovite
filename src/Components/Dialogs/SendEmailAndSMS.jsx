@@ -13,19 +13,52 @@ import {
 import { useState } from "react";
 import TiptapEditor from "../TiptapEditor";
 import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
+
+const initialFormData = {
+  email: {
+    subject: "",
+    template: "",
+  },
+  sms: {
+    subject: "",
+    template: "",
+  },
+};
 
 function SendEmailAndSMS({ open, loading, onClose, onSubmit }) {
-  const [formData, setFormData] = useState({ email: "", sms: "" });
+  const { enqueueSnackbar } = useSnackbar();
+  const [formData, setFormData] = useState(initialFormData);
   const [status, setStatus] = useState({ email: false, sms: false, massive: false });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const status = await onSubmit(formData);
+    if (status.email && !formData.email.subject) {
+      enqueueSnackbar("Debe agregar un asunto para email.", { variant: "error" });
+      return;
+    }
 
-    if (status) {
-      setFormData({ email: "", sms: "" });
-      setStatus({ email: false, sms: false });
+    if (status.email && !formData.email.template) {
+      enqueueSnackbar("Debe agregar una plantilla para email.", { variant: "error" });
+      return;
+    }
+
+    if (status.sms && !formData.sms.subject) {
+      enqueueSnackbar("Debe agregar un asunto para SMS.", { variant: "error" });
+      return;
+    }
+
+    if (status.sms && !formData.sms.template) {
+      enqueueSnackbar("Debe agregar una plantilla para SMS.", { variant: "error" });
+      return;
+    }
+
+    const success = await onSubmit({ form: formData, statuses: status });
+
+    if (success) {
+      setFormData(initialFormData);
+      setStatus({ email: false, sms: false, massive: false });
     }
   };
 
@@ -39,27 +72,48 @@ function SendEmailAndSMS({ open, loading, onClose, onSubmit }) {
             label="Enviar correo electrónico"
           />
           <Collapse in={status.email}>
-            <TiptapEditor
-              placeholder="Correo"
-              value={formData.email}
-              onChange={({ html }) => setFormData((prev) => ({ ...prev, email: html }))}
-            />
+            <Stack spacing={2}>
+              <TextField
+                fullWidth
+                label="Asunto"
+                value={formData.email.subject}
+                onChange={({ target }) => setFormData((prev) => ({ ...prev, email: { ...prev.email, subject: target.value } }))}
+              />
+              <TiptapEditor
+                placeholder="Correo"
+                value={formData.email.template}
+                onChange={({ html }) => setFormData((prev) => ({ ...prev, email: { ...prev.email, template: html } }))}
+              />
+            </Stack>
           </Collapse>
           <FormControlLabel
             control={<Checkbox checked={status.sms} onChange={({ target }) => setStatus({ ...status, sms: target.checked })} />}
             label="Enviar SMS"
           />
           <Collapse in={status.sms}>
-            <TextField
-              multiline
-              fullWidth
-              minRows={6}
-              maxRows={12}
-              placeholder="SMS"
-              value={formData.sms}
-              helperText={`${160 - formData.sms.length} caracteres restantes`}
-              onChange={({ target }) => setFormData((prev) => ({ ...prev, sms: target.value.length <= 160 ? target.value : prev.sms }))}
-            />
+            <Stack spacing={2}>
+              <TextField
+                fullWidth
+                label="Asunto"
+                value={formData.sms.subject}
+                onChange={({ target }) => setFormData((prev) => ({ ...prev, sms: { ...prev.sms, subject: target.value } }))}
+              />
+              <TextField
+                multiline
+                fullWidth
+                minRows={6}
+                maxRows={12}
+                placeholder="SMS"
+                value={formData.sms.template}
+                helperText={`${160 - formData.sms.template.length} caracteres restantes`}
+                onChange={({ target }) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    sms: { ...prev.sms, template: target.value.length <= 160 ? target.value : prev.sms.template },
+                  }))
+                }
+              />
+            </Stack>
           </Collapse>
           <FormControlLabel
             control={<Checkbox checked={status.massive} onChange={({ target }) => setStatus({ ...status, massive: target.checked })} />}

@@ -39,9 +39,11 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { DOCUMENT_TYPES } from "../../utilities/constants";
 import DialogSendEmailAndSMS from "../Dialogs/SendEmailAndSMS";
+import { useSnackbar } from "notistack";
 
 function Users() {
   const [{ token }] = useSession();
+  const { enqueueSnackbar } = useSnackbar();
   const $User = useUser();
   const importInputRef = useRef(null);
   const [users, setUsers] = useState([]);
@@ -271,7 +273,7 @@ function Users() {
 
     setLoading((prev) => ({ ...prev, importing: true }));
 
-    console.log(file)
+    console.log(file);
 
     const { status } = await $User.import({ file });
 
@@ -285,20 +287,54 @@ function Users() {
     setLoading((prev) => ({ ...prev, importing: false }));
   };
 
-  const handleSendEmailAndSMS = async () => {
+  const handleSendEmailAndSMS = async ({ form, statuses }) => {
     setLoading((prev) => ({ ...prev, sending: true }));
 
-    const { status } = await new Promise((resolve) => setTimeout(() => resolve({ status: false }), 3000));
+    let success = { email: false, sms: false };
 
-    if (status) {
-      setFeedback({ open: true, message: "Emails enviados con exito.", status: "success" });
-    } else {
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    const selectedUsers = selectedContactsValues.map((index) => users[index]);
+
+    if (statuses.sms) {
+      const { status } = await $User.sendSMS({
+        massive: statuses.massive,
+        tpoa: form.sms.subject,
+        message: form.sms.template,
+        phoneNumbers: selectedUsers.map((u) => u.cellphone),
+      });
+
+      if (status) {
+        enqueueSnackbar("SMS enviados con exito.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Ha ocurrido un error inesperado enviando SMS.", { variant: "error" });
+      }
+
+      success.sms = status;
+    }
+
+    if (statuses.email) {
+      const { status } = await $User.sendEmail({
+        massive: statuses.massive,
+        subject: form.email.subject,
+        html: form.email.template,
+        to: selectedUsers.map((u) => ({ email: u.email, name: u.fullname })),
+      });
+
+      if (status) {
+        enqueueSnackbar("Correos enviados con exito.", { variant: "success" });
+      } else {
+        enqueueSnackbar("Ha ocurrido un error inesperado enviando correos.", { variant: "error" });
+      }
+
+      success.email = status;
     }
 
     setLoading((prev) => ({ ...prev, sending: false }));
 
-    return status;
+    if (success.email || success.sms) {
+      setModal(null);
+    }
+
+    return success.email || success.sms;
   };
 
   const fetchData = async () => {
