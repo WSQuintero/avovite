@@ -311,17 +311,12 @@ function Dashboard() {
         ) : (
           <Grid display="flex" flexDirection="column" gap={2} width="100%">
             <Typography variant="h2" textAlign="center">
-              Términos y Condiciones
+            ¡Bienvenido a la app de Avovite! 
             </Typography>
             <Typography textAlign="justify">
-              Términos y Condiciones de Uso de la Aplicación Avovite app Por favor, lea detenidamente los siguientes términos y condiciones
-              antes de utilizar la aplicación (&quot; Avovite app&quot;). Estos Términos constituyen un acuerdo legalmente vinculante entre
-              usted (&quot;el Usuario&quot;) y [Avovite S.A.S] Al utilizar la Aplicación, usted acepta cumplir con estos Términos en su
-              totalidad. Si no está de acuerdo con alguno de los términos o condiciones aquí establecidos, le pedimos que no utilice la
-              Aplicación. Aplicación, usted acepta cumplir con estos Términos en su totalidad. Si no está de acuerdo con alguno de los
-              términos o condiciones aquí establecidos, le pedimos que no utilice la Aplicación. Aplicación, usted acepta cumplir con estos
-              Términos en su totalidad. Si no está de acuerdo con alguno de los términos o condiciones aquí establecidos, le pedimos que no
-              utilice la Aplicación.
+            Aquí, te sumergirás en una experiencia de usuario excepcional. 
+Estamos emocionados de tenerte con nosotros, estamos trabajando en actualizaciones para hacer tu experiencia aún mejor. Pronto, disfrutarás de servicios mejorados que harán que cada interacción sea más fluida y satisfactoria. 
+En Avovite, queremos que tu tiempo con nosotros sea inolvidable.
             </Typography>
             <Grid display="flex" gap={2}>
               <Button variant="contained" size="large" fullWidth onClick={() => setOnboarding(false)}>
