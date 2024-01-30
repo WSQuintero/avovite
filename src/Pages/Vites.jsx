@@ -32,6 +32,11 @@ function Vites() {
         Cell: ({ renderedCellValue }) => <>AV-{renderedCellValue}</>,
       },
       {
+        accessorKey: "contract_label",
+        header: "Etiqueta de contrato",
+        size: 210
+      },
+      {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
         Cell: ({ renderedCellValue }) =>
