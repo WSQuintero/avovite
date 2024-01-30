@@ -36,8 +36,10 @@ export default class AuthService {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/users/profits`, this.config)).data);
   }
 
-  async import({ file }) {
-    return await handleCall(async () => (await axios.postForm(`${this.API_URL}/users/importData`, { file }, this.config)).data);
+  async import({ file, sendemails }) {
+    return await handleCall(
+      async () => (await axios.postForm(`${this.API_URL}/users/importData`, { file }, { ...this.config, params: { sendemails } })).data
+    );
   }
 
   async sendEmail({ massive, ...body } = {}) {

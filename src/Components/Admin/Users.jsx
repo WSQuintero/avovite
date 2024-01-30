@@ -39,13 +39,13 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { DOCUMENT_TYPES } from "../../utilities/constants";
 import DialogSendEmailAndSMS from "../Dialogs/SendEmailAndSMS";
+import DialogImportContacts from "../Dialogs/ImportContacts";
 import { useSnackbar } from "notistack";
 
 function Users() {
   const [{ token }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const $User = useUser();
-  const importInputRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({
     id: null,
@@ -263,19 +263,10 @@ function Users() {
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
-  const handleImportUsers = async (event) => {
-    const file = event.target.files[0];
-
-    if (!file) {
-      setFeedback({ open: true, message: "Debe seleccionar un archivo válido.", status: "error" });
-      return;
-    }
-
+  const handleImportUsers = async ({ file, massive }) => {
     setLoading((prev) => ({ ...prev, importing: true }));
 
-    console.log(file);
-
-    const { status } = await $User.import({ file });
+    const { status } = await $User.import({ file, sendemails: massive });
 
     if (status) {
       setFeedback({ open: true, message: "Usuarios importados exitosamente.", status: "success" });
@@ -372,12 +363,9 @@ function Users() {
         state={{ showSkeletons: loading.fetching, rowSelection: selectedContacts }}
         renderTopToolbarCustomActions={() => (
           <Stack direction="row" spacing={1}>
-            <Box position="relative">
-              <LoadingButton loading={loading.importing} variant="contained" size="small" onClick={() => importInputRef.current.click()}>
-                Importar usuarios
-              </LoadingButton>
-              <input hidden ref={importInputRef} type="file" onChange={handleImportUsers} />
-            </Box>
+            <LoadingButton loading={loading.importing} variant="contained" size="small" onClick={() => setModal("users-import")}>
+              Importar usuarios
+            </LoadingButton>
             <Button variant="contained" size="small" color="primary" onClick={handleExportData}>
               Exportar usuarios
             </Button>
@@ -597,6 +585,13 @@ function Users() {
         loading={loading.sending}
         onClose={() => setModal(null)}
         onSubmit={handleSendEmailAndSMS}
+      />
+
+      <DialogImportContacts
+        open={modal === "users-import"}
+        loading={loading.importing}
+        onClose={() => setModal(null)}
+        onSubmit={handleImportUsers}
       />
 
       <Snackbar

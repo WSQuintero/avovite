@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Checkbox,
   Collapse,
@@ -62,8 +63,14 @@ function SendEmailAndSMS({ open, loading, onClose, onSubmit }) {
     }
   };
 
+  const handleClose = () => {
+    setFormData(initialFormData);
+    setStatus({ email: false, sms: false, massive: false });
+    onClose();
+  };
+
   return (
-    <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="md" open={open} onClose={handleClose}>
       <DialogTitle>Enviar correo y SMS</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
@@ -119,10 +126,16 @@ function SendEmailAndSMS({ open, loading, onClose, onSubmit }) {
             control={<Checkbox checked={status.massive} onChange={({ target }) => setStatus({ ...status, massive: target.checked })} />}
             label="Envío masivo"
           />
+          <Collapse in={status.massive}>
+            <Alert severity="warning">
+              Al activar el envío masivo, el sistema notificará a <b>TODOS</b> los usuarios registrados en la plataforma, sin importar si
+              estén o no estén previamente seleccionados.
+            </Alert>
+          </Collapse>
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={onClose}>
+        <Button variant="outlined" onClick={handleClose}>
           Cancelar
         </Button>
         <LoadingButton loading={loading} variant="contained" onClick={handleSubmit}>
