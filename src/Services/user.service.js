@@ -37,6 +37,6 @@ export default class AuthService {
   }
 
   async import({ file }) {
-    return await handleCall(async () => (await axios.postForm(`${this.API_URL}/users/importData`, file, this.config)).data);
+    return await handleCall(async () => (await axios.postForm(`${this.API_URL}/users/importData`, { file }, this.config)).data);
   }
 }

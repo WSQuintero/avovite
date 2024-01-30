@@ -271,6 +271,8 @@ function Users() {
 
     setLoading((prev) => ({ ...prev, importing: true }));
 
+    console.log(file)
+
     const { status } = await $User.import({ file });
 
     if (status) {
