@@ -28,6 +28,10 @@ import { CIVIL_STATUS, DOCUMENT_TYPES, EDUCATIONAL_LEVEL, HOW_DID_YOU_HEAR_ABOUT
 import { validateJSON } from "../utilities";
 import dayjs from "dayjs";
 import { NumericFormat } from "react-number-format";
+import { useSnackbar } from "notistack";
+import useSession from "../Hooks/useSession";
+import DialogKYC from "./Dialogs/KYC";
+import useUser from "../Hooks/useUser";
 
 const InitialState = {
   fullname: "",
@@ -154,7 +158,9 @@ const Column = ({ children }) => (
 const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
 function Form({ title, isMortgage = false, loading = false, initialState = null, onSubmit, onLoad = () => {} }) {
+  const { enqueueSnackbar } = useSnackbar();
   const [{ constants }] = useConfig();
+  const [{ user }, { setUser }] = useSession();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -162,6 +168,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   const [citiesBeneficiary, setCitiesBeneficiary] = useState([]);
   const [formData, setFormData] = useState(InitialState);
   const [errors, setErrors] = useState(InitialStateErrors);
+  const [modal, setModal] = useState({ kyc: false });
   const [controlFormData, setControlFormData] = useState({
     state: "-",
     bank_name: "",
@@ -173,6 +180,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
     state_beneficiary: false,
   });
   const $Utils = useMemo(() => new UtilsService(), []);
+  const $User = useUser();
 
   const handleInputChange = async (event) => {
     const { name, value } = event.target;
@@ -265,6 +273,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
       const fails = {};
       validation.forEach((key) => (fails[key] = true));
       setErrors((prev) => ({ ...prev, ...fails }));
+      enqueueSnackbar("Por favor complete todos los campos requeridos.", { variant: "error" });
       return;
     }
 
@@ -277,6 +286,20 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
     };
 
     onSubmit({ body, mortgage: isMortgage });
+  };
+
+  const handleSubmitKYC = async (form) => {
+    const body = { faces: [form.document, form.face1, form.face2] };
+
+    const { status, data } = await $User.sendKYC(body);
+
+    console.log(data);
+
+    if (status) {
+      setUser({ ...user, KYC: 1 });
+    }
+
+    return status;
   };
 
   useEffect(() => {
@@ -300,6 +323,12 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
       setFormData((prev) => ({ ...prev, ...initialState }));
     }
   }, [initialState]);
+
+  useEffect(() => {
+    if (user) {
+      setModal((prev) => ({ ...prev, kyc: user.KYC === 0 }));
+    }
+  }, [user]);
 
   return (
     <Stack>
@@ -1075,6 +1104,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           Enviar
         </LoadingButton>
       </Grid>
+
+      <DialogKYC open={modal.kyc} onClose={() => setModal({ ...modal, kyc: false })} onSubmit={handleSubmitKYC} />
     </Stack>
   );
 }
