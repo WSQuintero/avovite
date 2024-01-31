@@ -1,4 +1,4 @@
-const testing = true;
+import { TESTING_EPAYCO } from "../utilities/constants";
 
 export default {
   async pay({
@@ -45,7 +45,7 @@ export default {
 
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-      test: testing,
+      test: TESTING_EPAYCO,
     });
 
     handler.open({ ...mandatory, ...aditional });

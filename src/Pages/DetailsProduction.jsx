@@ -7,6 +7,7 @@ import PageWrapper from "../Components/PageWrapper";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import useSession from "../Hooks/useSession";
 import ProductionService from "../Services/production.service";
+import { formatCurrency } from "../utilities";
 
 const LABELS = {
   estimatedTreeProductionKg: "Produccion Estimada x Arbol (KG Año)",
@@ -18,21 +19,6 @@ const LABELS = {
 };
 
 const CELL_SIZE = 128;
-
-function transposeObject(obj) {
-  const transposedObject = {};
-
-  for (const year in obj) {
-    for (const prop in obj[year]) {
-      if (!transposedObject[prop]) {
-        transposedObject[prop] = {};
-      }
-      transposedObject[prop][year] = obj[year][prop];
-    }
-  }
-
-  return transposedObject;
-}
 
 function DetailsProduction() {
   const [{ token }] = useSession();
@@ -97,8 +83,24 @@ function DetailsProduction() {
     const { status, data } = await $Production.get({ vites: quantity });
 
     if (status) {
-      const transposed = transposeObject(data.data);
-      setProduction(Object.entries(transposed).map((entry) => ({ ...entry[1], name: entry[0] })));
+      setProduction(
+        Object.entries(data.data)
+          .map((entry) => ({ ...entry[1], name: entry[0] }))
+          .map((row) => {
+            const { name, ...years } = row;
+
+            return {
+              ...row,
+              ...Object.entries(years).reduce(
+                (a, c) => ({
+                  ...a,
+                  [c[0]]: formatCurrency(c[1], ["avovitePayment", "netIncome", "totalAnnualSalesValue"].includes(name) ? "$" : ""),
+                }),
+                {}
+              ),
+            };
+          })
+      );
     }
 
     setLoading((prev) => ({ ...prev, fetching: false }));

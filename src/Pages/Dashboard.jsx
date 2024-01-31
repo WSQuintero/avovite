@@ -16,14 +16,18 @@ import { useSnackbar } from "notistack";
 import DialogSellAvocados from "../Components/Dialogs/SellAvocados";
 import SaleService from "../Services/sale.service";
 import dayjs from "dayjs";
+import TermsAndConditions from "../Components/TermsAndConditions";
+import useUser from "../Hooks/useUser";
+import { LoadingButton } from "@mui/lab";
 
 function Dashboard() {
-  const [{ user, token }] = useSession();
+  const [{ user, token }, { setUser }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
-  const [config, { setOnboarding }] = useConfig();
   const $Post = usePost();
+  const $User = useUser();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [modal, setModal] = useState("");
   const $Sale = useMemo(() => (token ? new SaleService(token) : null), [token]);
   const chartData = useMemo(
@@ -56,6 +60,26 @@ function Dashboard() {
     }
   };
 
+  const handleAcceptTerms = async () => {
+    setLoadingSubmit(true);
+
+    const { status } = await $User.updateTermsAndConditions({ status: true });
+
+    if (status) {
+      enqueueSnackbar("Se ha aceptado los términos y condiciones correctamente", {
+        variant: "success",
+      });
+      setUser({ ...user, status_terms_and_conditions: 1 });
+      window.scrollTo(0, 0);
+    } else {
+      enqueueSnackbar("Error al aceptar los términos y condiciones. Inténtalo de nuevo", {
+        variant: "error",
+      });
+    }
+
+    setLoadingSubmit(false);
+  };
+
   const fetchPosts = async () => {
     const { status, data } = await $Post.get();
 
@@ -80,7 +104,7 @@ function Dashboard() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        {!config.onboarding ? (
+        {user.status_terms_and_conditions === 1 ? (
           <>
             <Grid display="flex" flexDirection="column" gap={8} width="100%">
               <Stack spacing={2}>
@@ -313,18 +337,11 @@ function Dashboard() {
             <Typography variant="h2" textAlign="center">
             ¡Bienvenido a la app de Avovite! 
             </Typography>
-            <Typography textAlign="justify">
-            Aquí, te sumergirás en una experiencia de usuario excepcional. 
-Estamos emocionados de tenerte con nosotros, estamos trabajando en actualizaciones para hacer tu experiencia aún mejor. Pronto, disfrutarás de servicios mejorados que harán que cada interacción sea más fluida y satisfactoria. 
-En Avovite, queremos que tu tiempo con nosotros sea inolvidable.
-            </Typography>
+            <TermsAndConditions />
             <Grid display="flex" gap={2}>
-              <Button variant="contained" size="large" fullWidth onClick={() => setOnboarding(false)}>
-                Aceptar
-              </Button>
-              <Button variant="outlined" size="large" fullWidth>
-                Cancelar
-              </Button>
+              <LoadingButton fullWidth loading={loadingSubmit} variant="contained" size="large" onClick={() => handleAcceptTerms(false)}>
+                Aceptar y Continuar
+              </LoadingButton>
             </Grid>
           </Grid>
         )}

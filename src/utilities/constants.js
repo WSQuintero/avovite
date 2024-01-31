@@ -1,5 +1,7 @@
 export const IMAGE_PLACEHOLDER = "https://cutewallpaper.org/24/image-placeholder-png/emoji.png";
 
+export const TESTING_EPAYCO = false;
+
 export const DOCUMENT_TYPES = {
   cedula: "Cédula de Ciudadanía",
   pasaporte: "Pasaporte",

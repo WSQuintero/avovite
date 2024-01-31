@@ -28,6 +28,15 @@ export default class AuthService {
     return await handleCall(async () => (await axios.put(`${this.API_URL}/users/update/rol/${id}`, { rol: role }, this.config)).data);
   }
 
+  async updateTermsAndConditions({ status } = {}) {
+    return await handleCall(
+      async () =>
+        (
+          await axios.put(`${this.API_URL}/users/update/status_terms_and_conditions`, { status_terms_and_conditions: status }, this.config)
+        ).data
+    );
+  }
+
   async delete({ id }) {
     return await handleCall(async () => (await axios.delete(`${this.API_URL}/users/${id}`, this.config)).data);
   }
@@ -52,5 +61,9 @@ export default class AuthService {
     return await handleCall(
       async () => (await axios.post(`${this.API_URL}/users/send/sms`, body, { ...this.config, params: { massive } })).data
     );
+  }
+
+  async sendKYC(body) {
+    return await handleCall(async () => (await axios.post(`${this.API_URL}/users/validate`, body, this.config)).data);
   }
 }
