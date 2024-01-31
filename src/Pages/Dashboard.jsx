@@ -335,7 +335,7 @@ function Dashboard() {
         ) : (
           <Grid display="flex" flexDirection="column" gap={2} width="100%">
             <Typography variant="h2" textAlign="center">
-              Términos y Condiciones
+            ¡Bienvenido a la app de Avovite! 
             </Typography>
             <TermsAndConditions />
             <Grid display="flex" gap={2}>
