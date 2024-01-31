@@ -21,7 +21,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import useCart from "../Hooks/useCart";
 import PageWrapper from "../Components/PageWrapper";
-import { IMAGE_PLACEHOLDER } from "../utilities/constants";
+import { IMAGE_PLACEHOLDER, TESTING_EPAYCO } from "../utilities/constants";
 import useSession from "../Hooks/useSession";
 import DiscountService from "../Services/discount.service";
 import PaymentService from "../Services/payment.service";
@@ -135,7 +135,7 @@ function ShoppingCart() {
 
       const handler = window.ePayco.checkout.configure({
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-        test: true,
+        test: TESTING_EPAYCO,
       });
 
       handler.open({ ...mandatory, ...aditional });

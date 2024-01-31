@@ -289,11 +289,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   };
 
   const handleSubmitKYC = async (form) => {
-    const body = { faces: [form.document, form.face1, form.face2] };
+    const body = new FormData();
 
-    const { status, data } = await $User.sendKYC(body);
+    body.append("faces", form.document);
+    body.append("faces", form.face1);
+    body.append("faces", form.face2);
 
-    console.log(data);
+    const { status } = await $User.sendKYC(body);
 
     if (status) {
       setUser({ ...user, KYC: 1 });

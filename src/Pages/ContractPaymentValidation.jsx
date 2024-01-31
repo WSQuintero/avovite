@@ -22,6 +22,7 @@ import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
 import { formatCurrency, formatDate } from "../utilities";
+import { TESTING_EPAYCO } from "../utilities/constants";
 
 function ContractPaymentValidation() {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ function ContractPaymentValidation() {
 
     const handler = window.ePayco.checkout.configure({
       key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-      test: false,
+      test: TESTING_EPAYCO,
     });
 
     handler.open({ ...mandatory, ...aditional });

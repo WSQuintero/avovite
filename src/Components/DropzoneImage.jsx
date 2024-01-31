@@ -5,7 +5,7 @@ function formatColor(hex) {
   return String(hex).split("#")[1];
 }
 
-function DropzoneImage({ width, placeholder, value, onChange, children }) {
+function DropzoneImage({ width = "100%", placeholder, value, onChange, children }) {
   const [dragging, setDragging] = useState(false);
   const [file, setFile] = useState(value);
 

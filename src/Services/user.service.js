@@ -64,6 +64,6 @@ export default class AuthService {
   }
 
   async sendKYC(body) {
-    return await handleCall(async () => (await axios.postForm(`${this.API_URL}/users/validate`, body, this.config)).data);
+    return await handleCall(async () => (await axios.post(`${this.API_URL}/users/validate`, body, this.config)).data);
   }
 }
