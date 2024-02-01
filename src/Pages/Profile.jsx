@@ -24,6 +24,7 @@ import PageWrapper from "../Components/PageWrapper";
 import CoverImage from "../assets/img/signup/background.png";
 import AuthService from "../Services/auth.service";
 import { DOCUMENT_TYPES } from "../utilities/constants";
+import { useNavigate } from 'react-router-dom';
 
 const Row = ({ children }) => (
   <Grid
@@ -40,6 +41,8 @@ const Row = ({ children }) => (
 );
 
 function Profile() {
+  const navigate = useNavigate();
+
   const [session, { setUser: setSession }] = useSession();
   const [user, setUser] = useState({
     avatar: null,
@@ -126,16 +129,21 @@ function Profile() {
 
   useEffect(() => {
     if (session.user) {
-      setUser({
-        avatar: session.user.avatar || null,
-        fullname: session.user.fullname || "",
-        email: session.user.email || "",
-        cellphone: session.user.cellphone || "",
-        id_type: session.user.id_type || "-",
-        id_number: session.user.id_number || "",
-        id_location_expedition: session.user.id_location_expedition || "",
-        location_residence: session.user.location_residence || "",
-      });
+      if(session.user.status_terms_and_conditions==0){
+        navigate('/dashboard');
+      }else{
+        setUser({
+          avatar: session.user.avatar || null,
+          fullname: session.user.fullname || "",
+          email: session.user.email || "",
+          cellphone: session.user.cellphone || "",
+          id_type: session.user.id_type || "-",
+          id_number: session.user.id_number || "",
+          id_location_expedition: session.user.id_location_expedition || "",
+          location_residence: session.user.location_residence || "",
+        });
+      }
+
     }
   }, [session.user]);
 

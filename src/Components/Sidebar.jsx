@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import {
   Avatar,
   Collapse,
@@ -12,10 +11,18 @@ import {
   Toolbar,
   Typography,
   alpha,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
+import { NavLink } from "react-router-dom";
+import TermsAndConditions from "../Components/TermsAndConditions";
 import { InvestIcon, GraphIcon, EcommerceIcon, AccountantIcon, ProtectionIcon, LoanIcon, RecieptIcon, AnnualIcon } from "./Icons";
 import { useTheme } from "@emotion/react";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useConfig from "../Hooks/useConfig";
 import useSession from "../Hooks/useSession";
@@ -83,6 +90,7 @@ const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
 
 const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
   const theme = useTheme();
+  const [modal, setModal] = useState("");
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"), { noSsr: true });
   const [{ sidebar }, { toggleSidebar }] = useConfig();
   const [{ user }] = useSession();
@@ -202,9 +210,11 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
 
   if (!user) {
     return <></>;
+  }else if(user.status_terms_and_conditions==0){
+    return <></>;
   }
 
-  return (
+  return (<>
     <Drawer
       variant={isMobile ? "temporary" : "permanent"}
       anchor="left"
@@ -255,14 +265,33 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             show && <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
         )}
       </List>
-      <Stack direction="row" spacing={4} alignItems="center" pr={2} mt="auto" mb={1} sx={{ opacity: 0.5 }}>
+      
+      <Stack spacing={1} alignItems="center" mt="auto" mb={1}>
+        <Typography variant="caption" color="white" lineHeight={1} style={{cursor: "pointer"}} onClick={()=>setModal("modal-terms")}>
+          TÉRMINOS Y CONDICIONES
+        </Typography>
+      </Stack>
+      
+      <Stack direction="row" spacing={4} alignItems="center" pr={2}  mb={1} sx={{ opacity: 0.5 }}>
         <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
         <Typography variant="caption" color="white" lineHeight={1}>
           Las ganancias del aguacate Hass Colombiana son para todos
         </Typography>
       </Stack>
     </Drawer>
-  );
+          
+    <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)}  maxWidth="md" fullWidth>
+      <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
+      <DialogContent>
+        <TermsAndConditions />
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" onClick={() => setModal(null)}>
+          Cerrar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </>);
 });
 
 export default Sidebar;

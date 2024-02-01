@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Typography, Container, Stack, Box, Button } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import dayjs from "dayjs";
@@ -9,9 +9,12 @@ import MovementService from "../Services/movement.service";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import EnhancedTable from "../Components/EnhancedTable";
 import { TRANSACTION_TYPES } from "../utilities/constants";
+import { useNavigate } from 'react-router-dom';
 
 function Transactions() {
-  const [{ token }] = useSession();
+  const navigate = useNavigate();
+  
+  const [{ user, token }] = useSession();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState({ fetching: true });
   const $Movement = useMemo(() => (token ? new MovementService(token) : null), [token]);
@@ -67,6 +70,14 @@ function Transactions() {
       setLoading((prev) => ({ ...prev, fetching: false }));
     }
   }, [$Movement]);
+
+  useEffect(() => {
+    if(user){
+      if(user.status_terms_and_conditions==0){
+        navigate('/dashboard');
+      }
+    }
+  }, [user]);
 
   return (
     <PageWrapper>

@@ -26,9 +26,12 @@ import DueService from "../Services/due.service";
 import { NumericFormat } from "react-number-format";
 import $Epayco from "../Services/epayco.service";
 import { v4 as uuid } from "uuid";
+import { useNavigate } from 'react-router-dom';
 
 function Payments() {
-  const [{ token }] = useSession();
+  const navigate = useNavigate();
+
+  const [{ token, user }] = useSession();
   const [contracts, setContracts] = useState([]);
   const [history, setHistory] = useState({});
   const [loading, setLoading] = useState({ fetching: true, collapse: null });
@@ -203,6 +206,14 @@ function Payments() {
       setLoading((prev) => ({ ...prev, fetching: false }));
     })();
   }, [$Contract]);
+
+  useEffect(() => {
+    if(user){
+      if(user.status_terms_and_conditions==0){
+        navigate('/dashboard');
+      }
+    }
+  }, [user]);
 
   return (
     <PageWrapper>
