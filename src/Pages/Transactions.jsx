@@ -125,11 +125,11 @@ function Transactions() {
     
     setLoading(false);
 
-    enqueueSnackbar(`Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria..`, {
+    enqueueSnackbar(`Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.`, {
       variant: "success",
     });
 
-    cancelWithdrawalMov();
+    setModal("modal-withdrawal-success");
   };
 
   const onImport = async (file, type) => {
@@ -151,7 +151,7 @@ function Transactions() {
     body.append("info", filesUser.cedula);
     body.append("info", filesUser.certificado);
 
-    await $Movement.changeInformationBank(body);
+    await $Movement.changeInformationBank(body, withdrawalMovId?.id);
     
     await loadMovs();
     
@@ -274,6 +274,20 @@ function Transactions() {
           {" "}
           <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
             Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      <Dialog open={modal === "modal-withdrawal-success"} onClose={() => cancelWithdrawalMov()}>
+        <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+              Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
+            !Gracias!
           </Button>
         </DialogActions>
       </Dialog>
