@@ -287,7 +287,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={() => setModal(null)}>
-          Aceptaste los términos en: {user.status_terms_and_conditions_date}
+          Aceptaste los términos en: {user.status_terms_and_conditions_date.split("T")[0]} {user.status_terms_and_conditions_date.split("T")[1].replaceAll(".000Z","")}
         </Button>
       </DialogActions>
     </Dialog>
