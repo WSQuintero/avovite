@@ -771,7 +771,6 @@ function TermsAndConditions() {
         permanecerán en pleno vigor y efecto, incluidos, entre otros, los apartados de Confidencialidad, Limitación de Responsabilidad,
         Propiedad Intelectual, Ley Aplicable y Solución de Controversias.
       </p>
-      <p>¿Quieres realizar alguna modificación o agregar algo a este punto?</p>
       <Subtitle index="24">Ley Aplicable:</Subtitle>
       <p>
         Estos términos y condiciones se regirán e interpretarán de acuerdo con las leyes del Colombia, excluyendo cualquier conflicto de
