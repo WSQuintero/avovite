@@ -74,7 +74,7 @@ function Transactions() {
             </Button>
             
             {data.withdrawal==0&&(<Button size="small" onClick={()=>{ 
-              setWithdrawalMovId(mov);
+              setWithdrawalMovId(data);
               setModal("modal-withdrawal"); 
             }} variant="contained">
               Retirar
@@ -119,7 +119,7 @@ function Transactions() {
   const withdrawalMov = async ()=>{
     setLoading(true);
     
-    await $Movement.withdrawal(withdrawalMovId);
+    await $Movement.withdrawal(withdrawalMovId?.id);
     
     await loadMovs();
     
@@ -247,7 +247,12 @@ function Transactions() {
       <Dialog open={modal === "modal-withdrawal"} onClose={() => cancelWithdrawalMov()}>
         <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
-          <DialogContentText>¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.</DialogContentText>
+          <DialogContentText>
+            ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.<br /><br />
+            <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
+            <b>Tipo de Cuenta:</b> {withdrawalMovId?.tipo_cuenta}<br />
+            <b>Número de Cuenta:</b> {withdrawalMovId?.user_bank_account_number}
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant="contained" onClick={() => withdrawalMov()}>
