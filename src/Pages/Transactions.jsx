@@ -148,7 +148,8 @@ function Transactions() {
 
     const body = new FormData();
 
-    body.append("info", [filesUser.cedula, filesUser.certificado]);
+    body.append("info[0]", filesUser.cedula);
+    body.append("info[1]", filesUser.certificado);
 
     await $Movement.changeInformationBank(body);
     
