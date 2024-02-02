@@ -249,9 +249,18 @@ function Transactions() {
         <DialogContent>
           <DialogContentText>
             ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.<br /><br />
+            <hr />
+            <b>Valor Retiro:</b> $ {withdrawalMovId?.transaction_value.toLocaleString("es-ES")}<br />
+            <hr />
+            <b>Nombre:</b> {withdrawalMovId?.fullname}<br />
+            <b>Tipo de Documento:</b> {withdrawalMovId?.id_type}<br />
+            <b>Número de Documento:</b> {withdrawalMovId?.id_number}<br />
+            <hr />
+            <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
             <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
             <b>Tipo de Cuenta:</b> {withdrawalMovId?.tipo_cuenta}<br />
             <b>Número de Cuenta:</b> {withdrawalMovId?.user_bank_account_number}
+            <hr />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
