@@ -52,7 +52,7 @@ function Vites() {
           ),
       },
       {
-        accessorKey: "earliest_sowing_date",
+        accessorKey: "sowing_date",
         header: "Fecha de siembra",
         Cell: ({ renderedCellValue }) =>
           renderedCellValue ? (
@@ -65,13 +65,8 @@ function Vites() {
       },
       {
         accessorKey: "harvest_state",
-        header: "Estado",
-        Cell: ({ renderedCellValue }) =>
-          renderedCellValue || (
-            <Typography fontSize={12} color="warning.light">
-              No se ha cosechado
-            </Typography>
-          ),
+        header: "Estado de Cosecha",
+        Cell: (value) => (value ? "Maduros" : "En crecimiento"),
       },
       {
         accessorKey: "stateFignature",
