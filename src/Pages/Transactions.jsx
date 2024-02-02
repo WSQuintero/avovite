@@ -181,7 +181,8 @@ function Transactions() {
       <Dialog open={modal === "modal-update-payment-docs"} onClose={() => cancelWithdrawalMov()}  maxWidth="md" fullWidth>
         <DialogTitle color="primary.main">Actualizar datos</DialogTitle>
           <DialogContent>
-            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!</DialogContentText>
+            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br /><br />
+              ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!</DialogContentText>
             <br />
 
             <Grid display="flex" gap={1}>
@@ -286,7 +287,7 @@ function Transactions() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
+          <Button variant="contained" onClick={()=>cancelWithdrawalMov()}>
             !Gracias!
           </Button>
         </DialogActions>
