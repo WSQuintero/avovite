@@ -14,6 +14,6 @@ export default class MovementService {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements/aproveed/${id}`)).data);
   }
   async changeInformationBank(info) {
-    return await handleCall(async () => (await this.axios.postForm(`${this.API_URL}/movements/changeinformationbanck`, info)).data);
+    return await handleCall(async () => (await this.axios.post(`${this.API_URL}/movements/changeinformationbanck`, info)).data);
   }
 }
