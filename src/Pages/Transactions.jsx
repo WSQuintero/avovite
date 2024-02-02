@@ -125,7 +125,7 @@ function Transactions() {
     
     setLoading(false);
 
-    enqueueSnackbar(`Se ha generado el retiro correctamente.`, {
+    enqueueSnackbar(`Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria..`, {
       variant: "success",
     });
 
@@ -157,7 +157,7 @@ function Transactions() {
     
     setLoading(false);
 
-    enqueueSnackbar(`Se han cargado los documentos correctamente.`, {
+    enqueueSnackbar(`Se han enviado los documentos exitosamente.`, {
       variant: "success",
     });
 
@@ -181,7 +181,7 @@ function Transactions() {
       <Dialog open={modal === "modal-update-payment-docs"} onClose={() => cancelWithdrawalMov()}  maxWidth="md" fullWidth>
         <DialogTitle color="primary.main">Actualizar datos</DialogTitle>
           <DialogContent>
-            <DialogContentText>Adjunta PDF de tus documentos</DialogContentText>
+            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!</DialogContentText>
             <br />
 
             <Grid display="flex" gap={1}>
@@ -245,17 +245,17 @@ function Transactions() {
       </Dialog>
       
       <Dialog open={modal === "modal-withdrawal"} onClose={() => cancelWithdrawalMov()}>
-        <DialogTitle color="primary.main">Retirar</DialogTitle>
+        <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
-          <DialogContentText>¿Estás seguro que quieres eliminar este proveedor de la lista?</DialogContentText>
+          <DialogContentText>¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant="contained" onClick={() => withdrawalMov()}>
-            Sí
+            RETIRAR
           </Button>
           {" "}
           <Button onClick={() => setModal("modal-update-payment-docs")}>
-            Actualizar datos
+            No, Actualizar Datos
           </Button>
           {" "}
           <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
