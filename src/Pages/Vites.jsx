@@ -7,9 +7,12 @@ import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
+import { useNavigate } from 'react-router-dom';
 
 function Vites() {
-  const [{ token }] = useSession();
+  const navigate = useNavigate();
+
+  const [{ user, token }] = useSession();
   const [rows, setRows] = useState([]);
   const $Contract = useMemo(() => new ContractService(token), [token]);
   const columns = useMemo(
@@ -99,6 +102,14 @@ function Vites() {
       }
     })();
   }, [$Contract]);
+
+  useEffect(() => {
+    if(user){
+      if(user.status_terms_and_conditions==0){
+        navigate('/dashboard');
+      }
+    }
+  }, [user]);
 
   return (
     <PageWrapper>

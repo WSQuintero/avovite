@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Container, Grid, Skeleton, Typography, Stack, Icon, Tooltip as MuiTooltip } from "@mui/material";
+import { 
+  Box, 
+  Button, 
+  Container, 
+  Grid, 
+  Skeleton, 
+  Typography, 
+  Stack, 
+  Icon, 
+  Tooltip as MuiTooltip,
+} from "@mui/material";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, Line, Tooltip, YAxis, Label } from "recharts";
 import useConfig from "../Hooks/useConfig";
 import usePost from "../Hooks/usePost";
@@ -331,6 +341,12 @@ function Dashboard() {
               onClose={() => setModal("")}
               onSubmit={(data) => handleUpdateSellingMode("sell-avocados", data)}
             />
+
+            <Grid display="flex" gap={2}>
+              <LoadingButton fullWidth loading={loadingSubmit} variant="contained" size="large" onClick={() => setModal("modal-terms")}>
+                Términos y Condiciones
+              </LoadingButton>
+            </Grid>
           </>
         ) : (
           <Grid display="flex" flexDirection="column" gap={2} width="100%">

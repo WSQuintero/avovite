@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuid } from "uuid";
 import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon, DeleteOutline as DeleteIcon } from "@mui/icons-material";
@@ -27,10 +27,15 @@ import DiscountService from "../Services/discount.service";
 import PaymentService from "../Services/payment.service";
 import Theme from "../Theme";
 import { useSnackbar } from "notistack";
+import { useNavigate } from 'react-router-dom';
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
 function ShoppingCart() {
+  const navigate = useNavigate();
+
+  const [session] = useSession();
+
   const { enqueueSnackbar } = useSnackbar();
   const [{ token }] = useSession();
   const [shoppingCart, { remove, updateQuantity }] = useCart();
@@ -143,6 +148,14 @@ function ShoppingCart() {
       enqueueSnackbar(data.response.data.message, { variant: "error", autoHideDuration: 10000 });
     }
   };
+
+  useEffect(() => {
+    if (session.user) {
+      if(session.user.status_terms_and_conditions==0){
+        navigate('/dashboard');
+      }
+    }
+  }, [session.user]);
 
   return (
     <PageWrapper>

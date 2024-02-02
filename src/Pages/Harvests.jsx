@@ -10,9 +10,12 @@ import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import EnhancedTable from "../Components/EnhancedTable";
+import { useNavigate } from 'react-router-dom';
 
 function Harvests() {
-  const [{ token }] = useSession();
+  const navigate = useNavigate();
+  
+  const [{ user, token }] = useSession();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState({ fetching: true });
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
@@ -81,6 +84,14 @@ function Harvests() {
 
     setLoading((prev) => ({ ...prev, fetching: false }));
   }, []);
+
+  useEffect(() => {
+    if(user){
+      if(user.status_terms_and_conditions==0){
+        navigate('/dashboard');
+      }
+    }
+  }, [user]);
 
   return (
     <PageWrapper>
