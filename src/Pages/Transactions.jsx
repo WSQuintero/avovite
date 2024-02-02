@@ -104,7 +104,7 @@ function Transactions() {
 
   useEffect(() => {
     if(user){
-      if(user.status_terms_and_conditions==0){
+      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
         navigate('/dashboard');
       }
     }

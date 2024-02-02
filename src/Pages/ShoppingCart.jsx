@@ -151,7 +151,7 @@ function ShoppingCart() {
 
   useEffect(() => {
     if (session.user) {
-      if(session.user.status_terms_and_conditions==0){
+      if(session.user.status_terms_and_conditions==0||!session.user.status_terms_and_conditions_date){
         navigate('/dashboard');
       }
     }
