@@ -13,7 +13,7 @@ export default class MovementService {
   async withdrawal(id) {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements/aproveed/${id}`)).data);
   }
-  async changeInformationBank(info) {
-    return await handleCall(async () => (await this.axios.post(`${this.API_URL}/movements/changeinformationbanck`, info)).data);
+  async changeInformationBank(info, id) {
+    return await handleCall(async () => (await this.axios.post(`${this.API_URL}/movements/changeinformationbanck/${id}`, info)).data);
   }
 }

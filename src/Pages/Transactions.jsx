@@ -104,7 +104,7 @@ function Transactions() {
 
   useEffect(() => {
     if(user){
-      if(user.status_terms_and_conditions==0){
+      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
         navigate('/dashboard');
       }
     }
@@ -125,11 +125,11 @@ function Transactions() {
     
     setLoading(false);
 
-    enqueueSnackbar(`Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria..`, {
+    enqueueSnackbar(`Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.`, {
       variant: "success",
     });
 
-    cancelWithdrawalMov();
+    setModal("modal-withdrawal-success");
   };
 
   const onImport = async (file, type) => {
@@ -151,7 +151,7 @@ function Transactions() {
     body.append("info", filesUser.cedula);
     body.append("info", filesUser.certificado);
 
-    await $Movement.changeInformationBank(body);
+    await $Movement.changeInformationBank(body, withdrawalMovId?.id);
     
     await loadMovs();
     
@@ -181,7 +181,8 @@ function Transactions() {
       <Dialog open={modal === "modal-update-payment-docs"} onClose={() => cancelWithdrawalMov()}  maxWidth="md" fullWidth>
         <DialogTitle color="primary.main">Actualizar datos</DialogTitle>
           <DialogContent>
-            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!</DialogContentText>
+            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br /><br />
+              ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!</DialogContentText>
             <br />
 
             <Grid display="flex" gap={1}>
@@ -249,9 +250,18 @@ function Transactions() {
         <DialogContent>
           <DialogContentText>
             ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.<br /><br />
+            <hr />
+            <b>Valor Retiro:</b> $ {withdrawalMovId?.transaction_value.toLocaleString("es-ES")}<br />
+            <hr />
+            <b>Nombre:</b> {withdrawalMovId?.fullname}<br />
+            <b>Tipo de Documento:</b> {withdrawalMovId?.id_type}<br />
+            <b>Número de Documento:</b> {withdrawalMovId?.id_number}<br />
+            <hr />
+            <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
             <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
             <b>Tipo de Cuenta:</b> {withdrawalMovId?.tipo_cuenta}<br />
             <b>Número de Cuenta:</b> {withdrawalMovId?.user_bank_account_number}
+            <hr />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -265,6 +275,20 @@ function Transactions() {
           {" "}
           <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
             Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      <Dialog open={modal === "modal-withdrawal-success"} onClose={() => cancelWithdrawalMov()}>
+        <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+              Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={()=>cancelWithdrawalMov()}>
+            !Gracias!
           </Button>
         </DialogActions>
       </Dialog>

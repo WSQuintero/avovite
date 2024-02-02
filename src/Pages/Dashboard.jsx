@@ -114,7 +114,7 @@ function Dashboard() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        {user.status_terms_and_conditions === 1 ? (
+        {user.status_terms_and_conditions === 1 && user.status_terms_and_conditions_date ? (
           <>
             <Grid display="flex" flexDirection="column" gap={8} width="100%">
               <Stack spacing={2}>

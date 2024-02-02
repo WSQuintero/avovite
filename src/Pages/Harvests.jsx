@@ -46,6 +46,15 @@ function Harvests() {
         format: (value) => (value ? formatCurrency(Number(value || 0), "$") : "-"),
       },
       {
+        id: "sowing_date",
+        label: "Fecha de Siembra"
+      },
+      {
+        id: "harvest_state",
+        label: "Estado de Cosecha",
+        format: (value) => (value ? "Maduros" : "En crecimiento"),
+      },
+      {
         id: "contract_number",
         label: "",
         format: (value) => (
@@ -87,7 +96,7 @@ function Harvests() {
 
   useEffect(() => {
     if(user){
-      if(user.status_terms_and_conditions==0){
+      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
         navigate('/dashboard');
       }
     }
