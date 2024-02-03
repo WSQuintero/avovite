@@ -31,12 +31,12 @@ function Vites() {
       },
       {
         accessorKey: "id",
-        header: "Número de contrato",
+        header: "ID",
         Cell: ({ renderedCellValue }) => <>AV-{renderedCellValue}</>,
       },
       {
         accessorKey: "contract_label",
-        header: "Etiqueta de contrato",
+        header: "Número de contrato",
         size: 210
       },
       {

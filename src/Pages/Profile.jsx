@@ -193,7 +193,7 @@ function Profile() {
               disabled={loading}
               onChange={handleAvatarChange}
             />
-            <label htmlFor="input-select-avatar">
+            {/*<label htmlFor="input-select-avatar">
               <IconButton
                 component="span"
                 size="large"
@@ -231,7 +231,7 @@ function Profile() {
                   />
                 )}
               </IconButton>
-            </label>
+                </label>-*/}
             <Grid display="flex" flexDirection="column">
               <Typography variant="h1" fontSize={32} fontWeight={600} color="white">
                 Perfil
