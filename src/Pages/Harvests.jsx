@@ -23,7 +23,7 @@ function Harvests() {
     () => [
       {
         id: "contract_number",
-        label: "Numero de contrato",
+        label: "ID Contrato",
         format: (value) => `AV-${value}`,
       },
       {
