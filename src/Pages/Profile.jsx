@@ -356,9 +356,9 @@ function Profile() {
             />
           </Row>
 
-          <Button type="submit" size="large" variant="contained" disabled={!validation}>
+          {/*<Button type="submit" size="large" variant="contained" disabled={!validation}>
             Actualizar
-          </Button>
+            </Button>*/}
         </Grid>
         <Snackbar
           open={alert.show}

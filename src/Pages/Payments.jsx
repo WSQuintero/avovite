@@ -42,7 +42,7 @@ function Payments() {
     () => [
       {
         id: "id",
-        label: "Número",
+        label: "ID Contrato",
         align: "left",
         disablePadding: false,
         format: (value) => `AV-${value}`,

@@ -46,7 +46,7 @@ function Transactions() {
       },
       {
         id: "contract_id",
-        label: "Contrato",
+        label: "ID Contrato",
         format: (value) => `AV-${value}`,
       },
       {

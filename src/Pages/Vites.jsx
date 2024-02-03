@@ -31,7 +31,7 @@ function Vites() {
       },
       {
         accessorKey: "id",
-        header: "ID",
+        header: "ID Contrato",
         Cell: ({ renderedCellValue }) => <>AV-{renderedCellValue}</>,
       },
       {
