@@ -181,8 +181,18 @@ function Transactions() {
       <Dialog open={modal === "modal-update-payment-docs"} onClose={() => cancelWithdrawalMov()}  maxWidth="md" fullWidth>
         <DialogTitle color="primary.main">Actualizar datos</DialogTitle>
           <DialogContent>
-            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br /><br />
-              ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!</DialogContentText>
+            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará  actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br /><br />
+
+              <u>"<b>RECUERDE:</b>    el documento de identidad y la certificación bancaria deben    
+              estar a nombre del titular del contrato, de lo contrario sus datos NO se 
+              actualizarán y NO se podrá realizar el procesamiento de sus retiros”</u>
+
+              <br />
+              <br />
+
+              ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!
+              
+              </DialogContentText>
             <br />
 
             <Grid display="flex" gap={1}>
@@ -257,7 +267,6 @@ function Transactions() {
             <b>Tipo de Documento:</b> {withdrawalMovId?.id_type}<br />
             <b>Número de Documento:</b> {withdrawalMovId?.id_number}<br />
             <hr />
-            <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
             <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
             <b>Tipo de Cuenta:</b> {withdrawalMovId?.tipo_cuenta}<br />
             <b>Número de Cuenta:</b> {withdrawalMovId?.user_bank_account_number}
