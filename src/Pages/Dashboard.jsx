@@ -29,8 +29,11 @@ import dayjs from "dayjs";
 import TermsAndConditions from "../Components/TermsAndConditions";
 import useUser from "../Hooks/useUser";
 import { LoadingButton } from "@mui/lab";
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
+  const navigate = useNavigate();
+
   const [{ user, token }, { setUser }] = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const $Post = usePost();
@@ -79,7 +82,7 @@ function Dashboard() {
       enqueueSnackbar("Se ha aceptado los términos y condiciones correctamente", {
         variant: "success",
       });
-      setUser({ ...user, status_terms_and_conditions: 1 });
+      setUser({ ...user, status_terms_and_conditions: 1, status_terms_and_conditions_date: new Date().toLocaleString("es-ES") });
       window.scrollTo(0, 0);
     } else {
       enqueueSnackbar("Error al aceptar los términos y condiciones. Inténtalo de nuevo", {
