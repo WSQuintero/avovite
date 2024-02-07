@@ -52,6 +52,17 @@ const columns = [
     Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
   },
   {
+    accessorKey: "created_at",
+    id: "contract_date",
+    header: "Fecha del contrato",
+    Cell: ({ renderedCellValue }) => {
+
+      return (
+        <Typography>{formatDate(renderedCellValue) }</Typography>
+      );
+    }
+  },
+  {
     accessorKey: "contract_label",
     id: "contract_label",
     header: "Etiqueta",
@@ -522,7 +533,12 @@ const Contracts = () => {
                 </Typography>
                 ${formatCurrency(row.total_contract_with_discount)}
               </Typography>
-
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Fecha de contrato:{" "}
+                </Typography>
+                {formatDate(row.created_at)}
+              </Typography>
               <Typography variant="h4" mt={4}>
                 Información de primer pago
               </Typography>
