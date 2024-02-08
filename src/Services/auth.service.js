@@ -54,7 +54,7 @@ export default class AuthService {
           })
         ).data
     );
-  }
+  }//aquí se debe poner el endpoint para actualizar los datos
 
   async updateAvatar(body) {
     return await handleCall(
@@ -87,7 +87,7 @@ export default class AuthService {
 
   async forgotPassword({ email, token = null, password } = {}) {
     return await handleCall(
-      async () =>
+      async () =>Auth
         (token
           ? await axios.post(`${this.API_URL}/users/reset-password/with/token`, { password, password2: password }, { params: { token } })
           : await axios.post(`${this.API_URL}/users/reset-password`, { email })
