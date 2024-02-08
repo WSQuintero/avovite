@@ -45,7 +45,7 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
 
   return (
     <>
-      <TableContainer sx={{ width: "100%" }}>
+      <TableContainer component={Paper}>
         <Table size={dense ? "small" : "medium"}>
           <EnhancedTableHead
             headCells={headCells}
@@ -55,13 +55,15 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
             rowCount={rows.length}
           />
           {loading ? (
-            <TableRow tabIndex={-1} hover>
-              {headCells.map((headCell, index) => (
-                <TableCell key={index} align={headCell.align} style={{ minWidth: headCell.width }}>
-                  <Skeleton />
-                </TableCell>
-              ))}
-            </TableRow>
+            <TableBody>
+              <TableRow tabIndex={-1} hover>
+                {headCells.map((headCell, index) => (
+                  <TableCell key={index} align={headCell.align} style={{ minWidth: headCell.width }}>
+                    <Skeleton />
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableBody>
           ) : visibleRows.length ? (
             <TableBody>
               {visibleRows.map((row) => (
@@ -85,7 +87,7 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
         {footer}
         <Box flexGrow={1} />
         <TablePagination
-          labelRowsPerPage="Filas por pagina"
+          labelRowsPerPage="Filas por página"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}

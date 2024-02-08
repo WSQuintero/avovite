@@ -213,7 +213,7 @@ function Router() {
     },
     {
       path: "/admin/ticket-list",
-      element: <PrivateRoute component={TicketList} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+      element: <PrivateRoute component={TicketList} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,]} />,
     },
     {
       path: "/posts/:id",
