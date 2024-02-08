@@ -190,8 +190,8 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             route: "/admin/users",
           },
           {
-            name: "Tickets",
-            route: "/admin/tickets",
+            name: "Lista de tickets",
+            route: "/admin/ticket-list",
           },
           {
             name: "Verifik",
@@ -200,6 +200,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
           {
             name: "Whitelist",
             route: "/admin/whitelist",
+            show: user?.isAdmin(),
           },
         ],
       },
