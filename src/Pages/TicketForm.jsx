@@ -1,9 +1,17 @@
 import { Box, Button, Container, FormControl, Grid, Stack, TextField, TextareaAutosize, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PageWrapper from "../Components/PageWrapper";
 import { AvoviteWhiteIcon } from "../Components/Icons";
+import useSession from "../Hooks/useSession";
+import TicketService from "../Services/ticket.service";
+import { useNavigate } from "react-router-dom";
 
-const TicketForm = ({ onSubmit }) => {
+function TicketForm  ({ onSubmit }) {
+  const [session, { setUser: setSession }] = useSession();
+  const $Ticket = useMemo(() => new TicketService(session.token), [session.token]);
+  const [actualTicket,setActualTicket]=useState()
+  const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
+  const navigate=useNavigate()
   const [formData, setFormData] = useState({
     fullname: "",
     email: "",
@@ -15,15 +23,69 @@ const TicketForm = ({ onSubmit }) => {
     additional_info: "",
   });
 
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+
+    const title=event.target.title.value
+    const description=event.target.description.value
+    const ticketCategory=event.target.ticketCategory.value
+
+
+    if (!title &&!description &&!ticketCategory) {
+      setAlert({
+        show: true,
+        message: "Todos los campos son requeridos.",
+        status: "error",
+      });
+      return;
+    }
+
+    // const { status } = await $Ticket.update({});
+
+    // if (status) {
+    //   setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
+    //   const { avatar, ...rest } = user;
+    //   setSession({ ...session.user, ...rest });
+    // } else {
+    //   setAlert({ show: true, message: "Ha ocurrido un error", status: "error" });
+    // }
+  };
+
+  const resetAlert = () => {
+    setAlert((prev) => ({ show: false, message: prev.message, status: prev.status }));
+  };
+
+  useEffect(() => {
+    if (session.user) {
+      if(session.user.status_terms_and_conditions==0||!session.user.status_terms_and_conditions_date){
+        navigate('/dashboard');
+      }else{
+        // setActualTicket({
+        //   title: session.user.title || "",
+        //   description: session.user.description || "",
+        //   ticketCategory: session.user.ticketCategory || "",
+        // });
+      }
+
+    }
+  }, [session.user]);
+
+  if (!session.user) {
+    return <></>;
+  }
+
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   onSubmit(formData);
+  // };
 
   return (
     <PageWrapper>
@@ -36,7 +98,7 @@ const TicketForm = ({ onSubmit }) => {
             Solicitud de actualización de datos
           </Typography>
         </Stack>
-        <FormControl variant="outlined" fullWidth onSubmit={handleSubmit} sx={{ marginTop: "20px" }}>
+        <FormControl variant="outlined" fullWidth onSubmit={handleFormSubmit} sx={{ marginTop: "20px" }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <TextField name="title" label="Título" fullWidth value={formData.title} onChange={handleInputChange} required />
@@ -69,6 +131,9 @@ const TicketForm = ({ onSubmit }) => {
                   },
                 }}             />
             </Grid>
+            <Grid item xs={12} sm={12}>
+              <TextField name="TicketCategory" label="Tipo de requerimiento" fullWidth value={formData.title} onChange={handleInputChange} required />
+            </Grid>
             <Grid item xs={12}>
               <Button type="submit" variant="contained" color="primary" sx={{marginTop:"20px"}}>
                 Enviar Solicitud
@@ -79,6 +144,6 @@ const TicketForm = ({ onSubmit }) => {
       </Container>
     </PageWrapper>
   );
-};
+}
 
 export default TicketForm;
