@@ -303,7 +303,7 @@ function Profile() {
               required
               fullWidth
               onChange={handleInputChange}
-              disabled // Deshabilita el select
+              disabled
               onFocus={handleReadOnlyInputChange}
             >
               <MenuItem value="-" selected disabled>

@@ -78,6 +78,11 @@ function Users() {
         header: "Correo",
       },
       {
+        accessorKey: "id_number",
+        id: "id_number",
+        header: "Documento",
+      },
+      {
         accessorKey: "cellphone",
         id: "cellphone",
         header: "Teléfono",
