@@ -106,6 +106,29 @@ const theme = createTheme({
         },
       },
     },
+    MuiTextareaAutoSize: {
+      defaultProps: {
+        sx: {
+          width: "100%",
+          height: 150,
+          resize: "none",
+          border: "1px solid rgba(0, 0, 0, 0.23)",
+          borderRadius: "10px", // Puedes utilizar la variable de forma directa si la tienes definida en tu tema
+          fontFamily: "'Poppins', sans-serif",
+          fontSize: "16px",
+          color: "#979797",
+          bgcolor: "#E8E8E8",
+          "&:hover": {
+            borderColor: "#67AA36", // Puedes usar variables de tema aquí también
+          },
+          "&:focus": {
+            outline: "none",
+            borderColor: "#67AA36",
+            boxShadow: "0px 0px 0px 3px #67AA3633", // Y aquí también
+          },
+        },
+      },
+    },
     MuiStack: {
       defaultProps: {
         useFlexGap: true,

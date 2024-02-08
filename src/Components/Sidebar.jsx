@@ -32,6 +32,7 @@ import WhiteIcon from "../assets/img/common/icon_white.svg";
 import WhiteLogo from "../assets/img/common/logo_white.png";
 import { CONTRACT_TYPES } from "../utilities/constants";
 import Image from "./Image";
+import TicketIcon from "../assets/icons/TicketIcon";
 
 const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   return (
@@ -189,6 +190,10 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             route: "/admin/users",
           },
           {
+            name: "Tickets",
+            route: "/admin/tickets",
+          },
+          {
             name: "Verifik",
             route: "/admin/verifik",
           },
@@ -197,6 +202,12 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             route: "/admin/whitelist",
           },
         ],
+      },
+      {
+        icon: <TicketIcon />,
+        name: "Crear tickets",
+        route: "/form-tickets",
+        show: !user?.isAdmin(),
       },
       {
         icon: <AccountantIcon />,
@@ -265,13 +276,13 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
             show && <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
         )}
       </List>
-      
+
       <Stack spacing={1} alignItems="center" mt="auto" mb={1}>
         <Typography variant="caption" color="white" lineHeight={1} style={{cursor: "pointer"}} onClick={()=>setModal("modal-terms")}>
           TÉRMINOS Y CONDICIONES
         </Typography>
       </Stack>
-      
+
       <Stack direction="row" spacing={4} alignItems="center" pr={2}  mb={1} sx={{ opacity: 0.5 }}>
         <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
         <Typography variant="caption" color="white" lineHeight={1}>
@@ -279,7 +290,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         </Typography>
       </Stack>
     </Drawer>
-          
+
     <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)}  maxWidth="md" fullWidth>
       <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
       <DialogContent>

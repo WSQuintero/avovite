@@ -31,6 +31,7 @@ import Payments from "../Pages/Payments";
 import Production from "../Pages/Production";
 import { ContractDetail } from "../Components/Admin";
 import DetailsProduction from "../Pages/DetailsProduction";
+import TicketForm from "../Pages/TicketForm";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -204,6 +205,10 @@ function Router() {
     {
       path: "/admin/contracts/:id",
       element: <PrivateRoute component={ContractDetail} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+    },
+    {
+      path: "/form-tickets",
+      element: <PrivateRoute component={TicketForm} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/posts/:id",
