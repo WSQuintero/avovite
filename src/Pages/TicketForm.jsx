@@ -31,96 +31,124 @@ function TicketForm({ onSubmit }) {
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
   const [valueOption, setValueOption] = useState("");
   const [isChangeInformationBeneficiary, setIsChangeInformationBeneficiary] = useState(false);
-  const [isChangeBugs, setIsChangeBugs] = useState(false);
   const [isChangeInformationUser, setIsChangeInformationUser] = useState(false);
-  const [isChangeOther, setIsChangeOther] = useState(false);
   const [isChangeInformationBank, setIsChangeInformationBank] = useState(false);
-  const [isChangedCedula, setIsChangedCedula] = useState(false);
-  const [isChangedTarjetaDeIdentidad, setIsChangedTarjetaDeIdentidad] = useState(false);
-  const [isChangedCedulaExtranjeria, setIChangedCedulaExtranjeria] = useState(false);
-  const [isChangedPasaporte, setIsChangedPasaporte] = useState(false);
-  const [isChangedRegistroCivil, setIsChangedRegistroCivil] = useState(false);
-  const [isChangedDni, setIsChangedDni] = useState(false);
-  const [isGeneral, setIsGeneral] = useState(false);
+
+  const [frontalImage, setFrontalImage] = useState(null);
+  const [traseraImage, setTraseraImage] = useState(null);
 
   const navigate = useNavigate();
-
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
 
-    const title = event.target.title.value;
-    const description = event.target.description.value;
-    let ticketCategory ;
-    const files=[]
-    let fullname;
-    let email;
-    let cellphone;
-    let id_type;
-    let id_number;
-    let id_location_expedition;
+    const informationToSend = {
+      title: event.target.title.value,
+        description: event.target.description.value,
+        ticketCategory: null,
+      informationUser: {
+        title: event.target.title.value,
+        description: event.target.description.value,
+        ticketCategory: null,
+        fullname: "",
+        email: "",
+        cellphone: null,
+        id_type: "",
+        id_number: null,
+        id_location_expedition: "",
+      },
+      informationBeneficiary: {
+        title: event.target.title.value,
+        description: event.target.description.value,
+        ticketCategory: null,
+        "cod_municipio_beneficiary": "",
+        "beneficiary_fullname": "",
+        "beneficiary_id_number": "",
+        "beneficiary_id_type": "",
+        "beneficiary_id_location_expedition": "",
+        "address_residence_beneficiary": "",
+        "email_beneficiary": "",
+        "cellphone_beneficiary": "",
+        "civilStatusBeneficiary": "",
+        "economy_activity_beneficiary": "",
+        "country_of_residence_beneficiary": "",
+      },
+      informationBank: {
+        title: event.target.title.value,
+        description: event.target.description.value,
+        ticketCategory: null,
+        files: [],
+      },
+      other: {
+        title: event.target.title.value,
+        description: event.target.description.value,
+        ticketCategory: null,
+      },
+      bugs: {
+        title: event.target.title.value,
+        description: event.target.description.value,
+        ticketCategory: null,
+      },
+    };
 
-    let codMunicipioBeneficiary;
-    let beneficiaryFullname;
-    let beneficiaryIdNumber;
-    let beneficiaryIdType;
-    let beneficiaryIdLocationExpedition;
-    let addressResidenceBeneficiary;
-    let emailBeneficiary;
-    let cellphoneBeneficiary;
-    let civilStatusBeneficiary;
-    let economyActivityBeneficiary;
-    let countryOfResidenceBeneficiary;
+    if (event.target.elements.ticketCategory.value === "Bugs"){
+      informationToSend.bugs.ticketCategory= "Bugs"
+      informationToSend.ticketCategory= "Bugs"
 
-
-    if(valueOption==="Bugs")ticketCategory="Bugs"
-    if(valueOption==="Change information bank"){
-      ticketCategory="Change information bank";
-      files.push(`{
-        "filename": "string|optional",
-        "contentType": "string|optional",
-        "size": "number|optional"
-      }`,`{
-        "filename": "string|optional",
-        "contentType": "string|optional",
-        "size": "number|optional"
-      }`)
     }
 
-    if(valueOption==="Change information user"){
-      ticketCategory="Change information user";
-      {
-        fullname="event.target.fullName"
-        email="event.target.email"
-        cellphone="event.target.cellphone"
-        id_type="event.target.idType"
-        id_number="event.target.idNumber"
-        id_location_expedition="event.target.idLocExpedition"
+    if (event.target.elements.ticketCategory.value === "oter"){
+      informationToSend.bugs.ticketCategory= "oter"
+      informationToSend.ticketCategory= "oter"
+
+    }
+
+    if (event.target.elements.ticketCategory.value === "Change information bank") {
+      informationToSend.informationBank.ticketCategory = "Change information bank";
+      informationToSend.ticketCategory= "Change information bank"
+      informationToSend.informationBank.files.push(frontalImage,traseraImage);
+
+      if(!frontalImage&&!traseraImage){
+        setAlert({
+          show: true,
+          message: "Todos los campos son requeridos.",
+          status: "error",
+        });
+        return;
       }
-    }
-
-    if(valueOption==="Oter")ticketCategory="Oter"
-    if(valueOption==="Change information beneficiary"){
-      ticketCategory="Change information beneficiary";
-      codMunicipioBeneficiary="event.target.codMunicipioBeneficiary"
-      beneficiaryFullname="event.target.beneficiaryFullname"
-      beneficiaryIdNumber="event.target.beneficiaryIdNumber"
-      beneficiaryIdType="event.target.beneficiaryIdType"
-      beneficiaryIdLocationExpedition="event.target.beneficiaryIdLocationExpedition"
-      addressResidenceBeneficiary="event.target.addressResidenceBeneficiary"
-      emailBeneficiary="event.target.emailBeneficiary"
-      cellphoneBeneficiary="event.target.cellphoneBeneficiary"
-      civilStatusBeneficiary="event.target.civilStatusBeneficiary"
-      economyActivityBeneficiary="event.target.economyActivityBeneficiary"
-      countryOfResidenceBeneficiary="event.target.countryOfResidenceBeneficiary"
 
     }
 
+    if (event.target.elements.ticketCategory.value === "Change information user") {
+      informationToSend.informationUser.ticketCategory = "Change information user";
+      informationToSend.ticketCategory= "Change information user"
 
+        informationToSend.informationUser.fullname = event.target.elements.fullname.value;
+        informationToSend.informationUser.email = event.target.elements.email.value;
+        informationToSend.informationUser.cellphone = event.target.elements.cellphone.value;
+        informationToSend.informationUser.id_type = event.target.elements.idType.value;
+        informationToSend.informationUser.id_number = event.target.elements.idNumber.value;
+        informationToSend.informationUser.id_location_expedition = event.target.elements.idLocExpedition.value;
 
-    console.log({ title, description, ticketCategory });
+    }
 
-    if (!title || !description || !ticketCategory) {
+    if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
+      informationToSend.informationBeneficiary.ticketCategory = "Change information beneficiary";
+      informationToSend.ticketCategory= "Change information beneficiary"
+      informationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event.target.elements.codMunicipioBeneficiary.value;
+      informationToSend.informationBeneficiary["beneficiary_fullname"] = event.target.elements.beneficiaryFullname.value;
+      informationToSend.informationBeneficiary["beneficiary_id_number"] = event.target.elements.beneficiaryIdNumber.value;
+      informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value;
+      informationToSend.informationBeneficiary["beneficiary_id_location_expedition"] = event.target.elements.beneficiaryIdLocationExpedition.value;
+      informationToSend.informationBeneficiary["address_residence_beneficiary"] = event.target.elements.addressResidenceBeneficiary.value;
+      informationToSend.informationBeneficiary["email_beneficiary"] = event.target.elements.emailBeneficiary.value;
+      informationToSend.informationBeneficiary["cellphone_beneficiary"] = event.target.elements.cellphoneBeneficiary.value;
+      informationToSend.informationBeneficiary["civilStatusBeneficiary"] = event.target.elements.civilStatus.value;
+      informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event.target.elements.economyActivityBeneficiary.value;
+      informationToSend.informationBeneficiary["country_of_residence_beneficiary"] = event.target.elements.countryOfResidenceBeneficiary.value;
+    }
+
+    if (!informationToSend.title || !informationToSend.description || !informationToSend.ticketCategory) {
       setAlert({
         show: true,
         message: "Todos los campos son requeridos.",
@@ -128,51 +156,76 @@ function TicketForm({ onSubmit }) {
       });
       return;
     }
+
+    const sendInformation=async ()=>{
+      if (informationToSend.bugs.title &&informationToSend.bugs.description&&informationToSend.bugs.ticketCategory){
+        const { status } = await $Ticket.create(informationToSend.bugs);
+        ticketCreatedCorrectly(status)
+      }
+
+      if (informationToSend.other.title &&informationToSend.other.description&&informationToSend.other.ticketCategory){
+        const { status } = await $Ticket.create(informationToSend.other);
+        ticketCreatedCorrectly(status)
+
+      }
+      if (informationToSend.informationBank.title &&informationToSend.informationBank.description&&informationToSend.informationBank.ticketCategory){
+        const { status } = await $Ticket.create(informationToSend.informationBank);
+        ticketCreatedCorrectly(status)
+      }
+      if (informationToSend.informationUser.title &&informationToSend.informationUser.description&&informationToSend.informationUser.ticketCategory) {
+        const { status } = await $Ticket.create(informationToSend.informationUser);
+        ticketCreatedCorrectly(status)
+      }
+      if (informationToSend.informationBeneficiary.title &&informationToSend.informationBeneficiary.description&&informationToSend.informationBeneficiary.ticketCategory) {
+        const { status } = await $Ticket.create(informationToSend.informationBeneficiary);
+        ticketCreatedCorrectly(status)
+      }
+
+    }
+    sendInformation()
   };
 
+  const ticketCreatedCorrectly=(status)=>{
+    if (status) {
+      setAlert({ show: true, message: "Tu ticket ha sido creado con éxito", status: "success" });
+    } else {
+      setAlert({ show: true, message: "Hubo un error al crear tu ticket.", status: "error" });
+    }
+  }
   const handleInputChange = (event) => {
-
     const ticketCategory = event.target.value;
     setValueOption(ticketCategory);
 
-    if(ticketCategory==="Change information bank"){
-      setIsChangeInformationBank(true)
-      setIsChangeBugs(false)
-      setIsChangeInformationUser(false)
-      setIsChangeOther(false)
-      setIsChangeInformationBeneficiary(false)
-    }if(ticketCategory==="Bugs"){
-      setIsChangeInformationBank(false)
-      setIsChangeBugs(true)
-      setIsChangeInformationUser(false)
-      setIsChangeOther(false)
-      setIsChangeInformationBeneficiary(false)
-    }if(ticketCategory==="Change information user"){
-      setIsChangeInformationBank(false)
-      setIsChangeBugs(false)
-      setIsChangeInformationUser(true)
-      setIsChangeOther(false)
-      setIsChangeInformationBeneficiary(false)
-    }if(ticketCategory==="Oter"){
-      setIsChangeInformationBank(false)
-      setIsChangeBugs(false)
-      setIsChangeInformationUser(false)
-      setIsChangeOther(true)
-      setIsChangeInformationBeneficiary(false)
-    }if(ticketCategory==="Change information beneficiary"){
-      setIsChangeInformationBank(false)
-      setIsChangeBugs(false)
-      setIsChangeInformationUser(false)
-      setIsChangeOther(false)
-      setIsChangeInformationBeneficiary(true)
+    if (ticketCategory === "Change information bank") {
+      setIsChangeInformationBank(true);
+      setIsChangeInformationUser(false);
+      setIsChangeInformationBeneficiary(false);
     }
-    console.log(ticketCategory);
-  }
+    if (ticketCategory === "Bugs") {
+      setIsChangeInformationBank(false);
+      setIsChangeInformationUser(false);
+      setIsChangeInformationBeneficiary(false);
+    }
+    if (ticketCategory === "Change information user") {
+      setIsChangeInformationBank(false);
+      setIsChangeInformationUser(true);
+      setIsChangeInformationBeneficiary(false);
+    }
+    if (ticketCategory === "Oter") {
+      setIsChangeInformationBank(false);
+      setIsChangeInformationUser(false);
+      setIsChangeInformationBeneficiary(false);
+    }
+    if (ticketCategory === "Change information beneficiary") {
+      setIsChangeInformationBank(false);
+      setIsChangeInformationUser(false);
+      setIsChangeInformationBeneficiary(true);
+    }
+  };
+
   const resetAlert = () => {
     setAlert((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
-
-
 
   useEffect(() => {
     if (session.user) {
@@ -186,14 +239,6 @@ function TicketForm({ onSubmit }) {
     return <></>;
   }
 
-
-
-  function handleFileChange(event, index) {
-    event.stopPropagation();
-    const files = event.target.files;
-    const selectedFile = files && files[0];
-    // console.log(`Archivo ${index === 0 ? "frontal" : "trasera"} seleccionado:`, selectedFile);
-  }
 
   return (
     <PageWrapper>
@@ -265,7 +310,13 @@ function TicketForm({ onSubmit }) {
                   handleInputChange={handleInputChange}
                 />
                 <IsChangeInformationUser isChangeInformationUser={isChangeInformationUser} handleInputChange={handleInputChange} />
-                <IsChangeInformationBank isChangeInformationBank={isChangeInformationBank} handleFileChange={handleFileChange} />
+                <IsChangeInformationBank
+                  isChangeInformationBank={isChangeInformationBank}
+                  frontalImage={frontalImage}
+                  setFrontalImage={setFrontalImage}
+                  traseraImage={traseraImage}
+                  setTraseraImage={setTraseraImage}
+                />
               </Grid>
 
               <Grid item xs={12}>

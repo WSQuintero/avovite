@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Button, Grid, Modal, Typography } from "@mui/material";
 
-function IsChangeInformationBank({ isChangeInformationBank, handleFileChange }) {
+function IsChangeInformationBank({ isChangeInformationBank, setFrontalImage, setTraseraImage, frontalImage, traseraImage }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -10,6 +10,18 @@ function IsChangeInformationBank({ isChangeInformationBank, handleFileChange }) 
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleFileChange = (event, index) => {
+    const files = event.target.files;
+    const selectedFile = files && files[0]; // Obtener el primer archivo seleccionado
+
+    // Si index es 0, es el archivo frontal, de lo contrario, es el archivo trasero
+    if (index === 0) {
+      setFrontalImage(selectedFile);
+    } else {
+      setTraseraImage(selectedFile);
+    }
   };
 
   return (
@@ -39,7 +51,8 @@ function IsChangeInformationBank({ isChangeInformationBank, handleFileChange }) 
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius:"30px"
+                borderRadius:"30px",
+                position:"relative"
               }}
             >
               <Typography id="modal-title" variant="h6" component="h2" style={{ marginBottom: '20px' }}>
@@ -56,6 +69,11 @@ function IsChangeInformationBank({ isChangeInformationBank, handleFileChange }) 
               <Button variant="contained" component="label" htmlFor="front-photo-button" style={{ marginBottom: '20px' }}>
                 Cargar foto frontal
               </Button>
+              {frontalImage && (
+                <Typography variant="body1" style={{ marginBottom: '20px' }}>
+                  Archivo frontal seleccionado: {frontalImage.name}
+                </Typography>
+              )}
               <input
                 accept="image/*"
                 id="back-photo-button"
@@ -66,6 +84,14 @@ function IsChangeInformationBank({ isChangeInformationBank, handleFileChange }) 
               />
               <Button variant="contained" component="label" htmlFor="back-photo-button">
                 Cargar foto trasera
+              </Button>
+              {traseraImage && (
+                <Typography variant="body1" style={{ marginBottom: '20px' }}>
+                  Archivo trasero seleccionado: {traseraImage.name}
+                </Typography>
+              )}
+              <Button onClick={handleClose} variant="contained" style={{position:"absolute", bottom:"10px"}}>
+                Cerrar
               </Button>
             </Grid>
           </Modal>

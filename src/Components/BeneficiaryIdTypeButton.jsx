@@ -6,12 +6,13 @@ function BeneficiaryIdTypeSelector({ handleInputChange }) {
 
 
   return (
-    <FormControl fullWidth sx={{marginTop:"40px"}}>
+    <FormControl fullWidth >
       <InputLabel id="beneficiary-id-type-label" marginTop="20px">Seleccione Tipo de Identificación</InputLabel>
       <Select
         labelId="beneficiary-id-type-label"
         id="beneficiary-id-type-select"
         onChange={handleInputChange}
+        name="idType"
       >
         {options.map((option, index) => (
           <MenuItem key={index} value={option}>

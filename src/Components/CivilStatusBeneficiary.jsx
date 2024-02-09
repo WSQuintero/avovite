@@ -6,12 +6,13 @@ function CivilStatusBeneficiary({ handleInputChange }) {
 
 
   return (
-    <FormControl fullWidth sx={{marginTop:"40px"}}>
-      <InputLabel id="beneficiary-id-type-label" marginTop="20px">Seleccione su estado civil</InputLabel>
+    <FormControl fullWidth >
+      <InputLabel id="beneficiary-id-type-label" >Seleccione su estado civil</InputLabel>
       <Select
         labelId="beneficiary-id-type-label"
         id="beneficiary-id-type-select"
         onChange={handleInputChange}
+        name="civilStatus"
       >
         {options.map((option, index) => (
           <MenuItem key={index} value={option}>

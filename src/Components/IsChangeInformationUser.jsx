@@ -1,4 +1,5 @@
 import { Grid, TextField } from "@mui/material";
+import BeneficiaryIdTypeButton from "../Components/BeneficiaryIdTypeButton"
 
 function IsChangeInformationUser({ isChangeInformationUser, handleInputChange }) {
   return (
@@ -12,17 +13,15 @@ function IsChangeInformationUser({ isChangeInformationUser, handleInputChange })
             <TextField name="email" label="Correo electrónico" fullWidth onChange={handleInputChange} required />
           </Grid>
           <Grid item xs={12} sm={12}  >
-            <TextField name="cellphone" label="Teléfono celular" fullWidth onChange={handleInputChange} required />
+            <TextField name="cellphone" type="number" label="Teléfono celular" fullWidth onChange={handleInputChange} required />
           </Grid>
+          <BeneficiaryIdTypeButton handleInputChange={handleInputChange} />
           <Grid item xs={12} sm={12}  >
-            <TextField name="id_type" label="Tipo de identificación" fullWidth onChange={handleInputChange} required />
-          </Grid>
-          <Grid item xs={12} sm={12}  >
-            <TextField name="id_number" label="Número de identificación" fullWidth onChange={handleInputChange} required />
+            <TextField name="idNumber" type="number" label="Número de identificación" fullWidth onChange={handleInputChange} required />
           </Grid>
           <Grid item xs={12} sm={12}  >
             <TextField
-              name="id_location_expedition"
+              name="idLocExpedition"
               label="Lugar de expedición de la identificación"
               fullWidth
               onChange={handleInputChange}
