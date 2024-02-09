@@ -35,15 +35,28 @@ function TicketForm({ onSubmit }) {
   const [isChangeInformationUser, setIsChangeInformationUser] = useState(false);
   const [isChangeOther, setIsChangeOther] = useState(false);
   const [isChangeInformationBank, setIsChangeInformationBank] = useState(false);
+  const [isChangedCedula, setIsChangedCedula] = useState(false);
+  const [isChangedTarjetaDeIdentidad, setIsChangedTarjetaDeIdentidad] = useState(false);
+  const [isChangedCedulaExtranjeria, setIChangedCedulaExtranjeria] = useState(false);
+  const [isChangedPasaporte, setIsChangedPasaporte] = useState(false);
+  const [isChangedRegistroCivil, setIsChangedRegistroCivil] = useState(false);
+  const [isChangedDni, setIsChangedDni] = useState(false);
 
   const navigate = useNavigate();
 
   const resetStateOptions = () => {
-    setIsChangeInformationBeneficiary(false);
+
+
+
     setIsChangeBugs(false);
     setIsChangeInformationUser(false);
     setIsChangeOther(false);
     setIsChangeInformationBank(false);
+    setIsChangedTarjetaDeIdentidad(false);
+    setIChangedCedulaExtranjeria(false);
+    setIsChangedPasaporte(false);
+    setIsChangedRegistroCivil(false);
+    setIsChangedDni(false);
   };
 
   const handleFormSubmit = (event) => {
@@ -79,6 +92,34 @@ function TicketForm({ onSubmit }) {
   const resetAlert = () => {
     setAlert((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
+  useEffect(()=>{
+    if(isChangedCedula||
+      isChangedTarjetaDeIdentidad||
+      isChangedCedulaExtranjeria||
+      isChangedPasaporte||
+      isChangedRegistroCivil||
+      isChangedDni){
+
+      setIsChangeInformationBeneficiary(true);
+
+      }
+
+      if(isChangeBugs||
+        isChangeInformationUser||
+        isChangeOther||
+        isChangeInformationBank){
+          setIsChangeInformationBeneficiary(false);
+
+      }
+  },[isChangedCedula,
+    isChangedTarjetaDeIdentidad,
+    isChangedCedulaExtranjeria,
+    isChangedPasaporte,
+    isChangedRegistroCivil,
+    isChangedDni,isChangeBugs,
+    isChangeInformationUser,
+    isChangeOther,
+    isChangeInformationBank])
 
   useEffect(() => {
     if (session.user) {
@@ -100,22 +141,32 @@ function TicketForm({ onSubmit }) {
 
   const handleInputChange = (event) => {
     resetStateOptions();
-    const ticketCategory = event.target.value;
+       const ticketCategory = event.target.value;
     setValueOption(ticketCategory);
+    console.log(ticketCategory);
     if (ticketCategory === "Change information beneficiary") setIsChangeInformationBeneficiary(true);
     if (ticketCategory === "Bugs") setIsChangeBugs(true);
     if (ticketCategory === "Change information user") setIsChangeInformationUser(true);
     if (ticketCategory === "Oter") setIsChangeOther(true);
     if (ticketCategory === "Change information bank") setIsChangeInformationBank(true);
+    if (ticketCategory === "cedula") setIsChangedCedula(true);
+
+    if (ticketCategory === "tarjetaIdentidad") setIsChangedTarjetaDeIdentidad(true);
+    if (ticketCategory === "cedulaExtranjeria") setIChangedCedulaExtranjeria(true);
+    if (ticketCategory === "pasaporte") setIsChangedPasaporte(true);
+    if (ticketCategory === "registroCivil") setIsChangedRegistroCivil(true);
+    if (ticketCategory === "dni") setIsChangedDni(true);
   };
 
+
   function handleFileChange(event, index) {
+    event.stopPropagation();
     const files = event.target.files;
     const selectedFile = files && files[0]; // Obtener el primer archivo seleccionado
     // Puedes hacer más validaciones aquí, como el tamaño del archivo, el tipo de archivo, etc.
 
     // Hacer algo con el archivo seleccionado, como enviarlo al servidor o actualizar el estado con la imagen
-    console.log(`Archivo ${index === 0 ? 'frontal' : 'trasera'} seleccionado:`, selectedFile);
+    console.log(`Archivo ${index === 0 ? "frontal" : "trasera"} seleccionado:`, selectedFile);
 
     // Si necesitas actualizar el estado con el archivo seleccionado, puedes hacerlo así
     // setFrontalImage(selectedFile); // Por ejemplo, si index es 0
@@ -178,9 +229,7 @@ function TicketForm({ onSubmit }) {
                   id="ticket-category-select"
                   onChange={handleInputChange}
                   fullWidth
-                  sx={{ marginTop: "50px", fontSize: "14px" }
-
-                }
+                  sx={{ marginTop: "50px", fontSize: "14px" }}
                 >
                   <MenuItem value="Change information bank">Cambiar información bancaria</MenuItem>
                   <MenuItem value="Change information user">Cambiar información de usuario</MenuItem>
@@ -190,13 +239,12 @@ function TicketForm({ onSubmit }) {
                 </Select>
               </Grid>
               <Grid container xs={12} marginTop="20px" fullWidth marginLeft="15px">
-
-              <IsChangeInformationBeneficiary
-                isChangeInformationBeneficiary={isChangeInformationBeneficiary}
-                handleInputChange={handleInputChange}
-              />
-              <IsChangeInformationUser isChangeInformationUser={isChangeInformationUser} handleInputChange={handleInputChange} />
-              <IsChangeInformationBank isChangeInformationBank={isChangeInformationBank} handleFileChange={handleFileChange}/>
+                <IsChangeInformationBeneficiary
+                  isChangeInformationBeneficiary={isChangeInformationBeneficiary}
+                  handleInputChange={handleInputChange}
+                />
+                <IsChangeInformationUser isChangeInformationUser={isChangeInformationUser} handleInputChange={handleInputChange} />
+                <IsChangeInformationBank isChangeInformationBank={isChangeInformationBank} handleFileChange={handleFileChange} />
               </Grid>
 
               <Grid item xs={12}>
