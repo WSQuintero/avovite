@@ -206,7 +206,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
       },
       {
         icon: <TicketIcon />,
-        name: "Crear tickets",
+        name: "Tickets",
         route: "/form-tickets",
         show: !user?.isAdmin(),
       },
