@@ -48,11 +48,75 @@ function TicketForm({ onSubmit }) {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    resetStateOptions();
 
     const title = event.target.title.value;
     const description = event.target.description.value;
-    const ticketCategory = valueOption;
+    let ticketCategory ;
+    const files=[]
+    let fullname;
+    let email;
+    let cellphone;
+    let id_type;
+    let id_number;
+    let id_location_expedition;
+
+    let codMunicipioBeneficiary;
+    let beneficiaryFullname;
+    let beneficiaryIdNumber;
+    let beneficiaryIdType;
+    let beneficiaryIdLocationExpedition;
+    let addressResidenceBeneficiary;
+    let emailBeneficiary;
+    let cellphoneBeneficiary;
+    let civilStatusBeneficiary;
+    let economyActivityBeneficiary;
+    let countryOfResidenceBeneficiary;
+
+
+    if(valueOption==="Bugs")ticketCategory="Bugs"
+    if(valueOption==="Change information bank"){
+      ticketCategory="Change information bank";
+      files.push(`{
+        "filename": "string|optional",
+        "contentType": "string|optional",
+        "size": "number|optional"
+      }`,`{
+        "filename": "string|optional",
+        "contentType": "string|optional",
+        "size": "number|optional"
+      }`)
+    }
+
+    if(valueOption==="Change information user"){
+      ticketCategory="Change information user";
+      {
+        fullname="event.target.fullName"
+        email="event.target.email"
+        cellphone="event.target.cellphone"
+        id_type="event.target.idType"
+        id_number="event.target.idNumber"
+        id_location_expedition="event.target.idLocExpedition"
+      }
+    }
+
+    if(valueOption==="Oter")ticketCategory="Oter"
+    if(valueOption==="Change information beneficiary"){
+      ticketCategory="Change information beneficiary";
+      codMunicipioBeneficiary="event.target.codMunicipioBeneficiary"
+      beneficiaryFullname="event.target.beneficiaryFullname"
+      beneficiaryIdNumber="event.target.beneficiaryIdNumber"
+      beneficiaryIdType="event.target.beneficiaryIdType"
+      beneficiaryIdLocationExpedition="event.target.beneficiaryIdLocationExpedition"
+      addressResidenceBeneficiary="event.target.addressResidenceBeneficiary"
+      emailBeneficiary="event.target.emailBeneficiary"
+      cellphoneBeneficiary="event.target.cellphoneBeneficiary"
+      civilStatusBeneficiary="event.target.civilStatusBeneficiary"
+      economyActivityBeneficiary="event.target.economyActivityBeneficiary"
+      countryOfResidenceBeneficiary="event.target.countryOfResidenceBeneficiary"
+
+    }
+
+
 
     console.log({ title, description, ticketCategory });
 
@@ -154,7 +218,6 @@ function TicketForm({ onSubmit }) {
                   name="description"
                   aria-label="Descripción del requerimiento"
                   placeholder="Descripción del requerimiento"
-                  // onChange={handleInputChange}
                   required
                   style={{
                     width: "100%",
