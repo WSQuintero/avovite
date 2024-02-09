@@ -26,13 +26,10 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
 
             <Grid item xs={12} sm={12}>
               <Typography variant="subtitle1">Número de identificación del Beneficiario</Typography>
-              <TextField name="beneficiary_id_number" fullWidth onChange={handleInputChange} required />
+              <TextField name="beneficiary_id_number" type="number" fullWidth onChange={handleInputChange} required />
             </Grid>
             <CivilStatusBeneficiary handleInputChange={handleInputChange}/>
-            <Grid item xs={12} sm={12}>
-              <Typography variant="subtitle1">Número de identificación del Beneficiario</Typography>
-              <TextField name="beneficiary_id_number" fullWidth onChange={handleInputChange} required />
-            </Grid>
+
           </Grid>
         </Grid>
       )}

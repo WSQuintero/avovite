@@ -41,23 +41,10 @@ function TicketForm({ onSubmit }) {
   const [isChangedPasaporte, setIsChangedPasaporte] = useState(false);
   const [isChangedRegistroCivil, setIsChangedRegistroCivil] = useState(false);
   const [isChangedDni, setIsChangedDni] = useState(false);
+  const [isGeneral, setIsGeneral] = useState(false);
 
   const navigate = useNavigate();
 
-  const resetStateOptions = () => {
-
-
-
-    setIsChangeBugs(false);
-    setIsChangeInformationUser(false);
-    setIsChangeOther(false);
-    setIsChangeInformationBank(false);
-    setIsChangedTarjetaDeIdentidad(false);
-    setIChangedCedulaExtranjeria(false);
-    setIsChangedPasaporte(false);
-    setIsChangedRegistroCivil(false);
-    setIsChangedDni(false);
-  };
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
@@ -77,60 +64,56 @@ function TicketForm({ onSubmit }) {
       });
       return;
     }
-
-    // const { status } = await $Ticket.update({});
-
-    // if (status) {
-    //   setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
-    //   const { avatar, ...rest } = user;
-    //   setSession({ ...session.user, ...rest });
-    // } else {
-    //   setAlert({ show: true, message: "Ha ocurrido un error", status: "error" });
-    // }
   };
 
+  const handleInputChange = (event) => {
+
+    const ticketCategory = event.target.value;
+    setValueOption(ticketCategory);
+
+    if(ticketCategory==="Change information bank"){
+      setIsChangeInformationBank(true)
+      setIsChangeBugs(false)
+      setIsChangeInformationUser(false)
+      setIsChangeOther(false)
+      setIsChangeInformationBeneficiary(false)
+    }if(ticketCategory==="Bugs"){
+      setIsChangeInformationBank(false)
+      setIsChangeBugs(true)
+      setIsChangeInformationUser(false)
+      setIsChangeOther(false)
+      setIsChangeInformationBeneficiary(false)
+    }if(ticketCategory==="Change information user"){
+      setIsChangeInformationBank(false)
+      setIsChangeBugs(false)
+      setIsChangeInformationUser(true)
+      setIsChangeOther(false)
+      setIsChangeInformationBeneficiary(false)
+    }if(ticketCategory==="Oter"){
+      setIsChangeInformationBank(false)
+      setIsChangeBugs(false)
+      setIsChangeInformationUser(false)
+      setIsChangeOther(true)
+      setIsChangeInformationBeneficiary(false)
+    }if(ticketCategory==="Change information beneficiary"){
+      setIsChangeInformationBank(false)
+      setIsChangeBugs(false)
+      setIsChangeInformationUser(false)
+      setIsChangeOther(false)
+      setIsChangeInformationBeneficiary(true)
+    }
+    console.log(ticketCategory);
+  }
   const resetAlert = () => {
     setAlert((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
-  useEffect(()=>{
-    if(isChangedCedula||
-      isChangedTarjetaDeIdentidad||
-      isChangedCedulaExtranjeria||
-      isChangedPasaporte||
-      isChangedRegistroCivil||
-      isChangedDni){
 
-      setIsChangeInformationBeneficiary(true);
 
-      }
-
-      if(isChangeBugs||
-        isChangeInformationUser||
-        isChangeOther||
-        isChangeInformationBank){
-          setIsChangeInformationBeneficiary(false);
-
-      }
-  },[isChangedCedula,
-    isChangedTarjetaDeIdentidad,
-    isChangedCedulaExtranjeria,
-    isChangedPasaporte,
-    isChangedRegistroCivil,
-    isChangedDni,isChangeBugs,
-    isChangeInformationUser,
-    isChangeOther,
-    isChangeInformationBank])
 
   useEffect(() => {
     if (session.user) {
       if (session.user.status_terms_and_conditions == 0 || !session.user.status_terms_and_conditions_date) {
         navigate("/dashboard");
-      } else {
-        // setActualTicket({
-        //   title: ticket.user.title || "",
-        //   description: session.user.description || "",
-        //   ticketCategory: session.user.ticketCategory || "",
-        // });
       }
     }
   }, [session.user]);
@@ -139,38 +122,13 @@ function TicketForm({ onSubmit }) {
     return <></>;
   }
 
-  const handleInputChange = (event) => {
-    resetStateOptions();
-       const ticketCategory = event.target.value;
-    setValueOption(ticketCategory);
-    console.log(ticketCategory);
-    if (ticketCategory === "Change information beneficiary") setIsChangeInformationBeneficiary(true);
-    if (ticketCategory === "Bugs") setIsChangeBugs(true);
-    if (ticketCategory === "Change information user") setIsChangeInformationUser(true);
-    if (ticketCategory === "Oter") setIsChangeOther(true);
-    if (ticketCategory === "Change information bank") setIsChangeInformationBank(true);
-    if (ticketCategory === "cedula") setIsChangedCedula(true);
-
-    if (ticketCategory === "tarjetaIdentidad") setIsChangedTarjetaDeIdentidad(true);
-    if (ticketCategory === "cedulaExtranjeria") setIChangedCedulaExtranjeria(true);
-    if (ticketCategory === "pasaporte") setIsChangedPasaporte(true);
-    if (ticketCategory === "registroCivil") setIsChangedRegistroCivil(true);
-    if (ticketCategory === "dni") setIsChangedDni(true);
-  };
 
 
   function handleFileChange(event, index) {
     event.stopPropagation();
     const files = event.target.files;
-    const selectedFile = files && files[0]; // Obtener el primer archivo seleccionado
-    // Puedes hacer más validaciones aquí, como el tamaño del archivo, el tipo de archivo, etc.
-
-    // Hacer algo con el archivo seleccionado, como enviarlo al servidor o actualizar el estado con la imagen
-    console.log(`Archivo ${index === 0 ? "frontal" : "trasera"} seleccionado:`, selectedFile);
-
-    // Si necesitas actualizar el estado con el archivo seleccionado, puedes hacerlo así
-    // setFrontalImage(selectedFile); // Por ejemplo, si index es 0
-    // setTraseraImage(selectedFile); // Por ejemplo, si index es 1
+    const selectedFile = files && files[0];
+    // console.log(`Archivo ${index === 0 ? "frontal" : "trasera"} seleccionado:`, selectedFile);
   }
 
   return (
