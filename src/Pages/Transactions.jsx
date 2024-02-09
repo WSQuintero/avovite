@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
-import { 
-  Typography, 
-  Container, 
-  Stack, 
+import {
+  Typography,
+  Container,
+  Stack,
   Box,
   Grid,
   Button,
@@ -72,10 +72,10 @@ function Transactions() {
             <Button disabled size="small" variant="contained">
               Ver detalles
             </Button>
-            
-            {data.withdrawal==0&&(<Button size="small" onClick={()=>{ 
+
+            {data.withdrawal==0&&(<Button size="small" onClick={()=>{
               setWithdrawalMovId(data);
-              setModal("modal-withdrawal"); 
+              setModal("modal-withdrawal");
             }} variant="contained">
               Retirar
             </Button>)}
@@ -118,11 +118,11 @@ function Transactions() {
 
   const withdrawalMov = async ()=>{
     setLoading(true);
-    
+
     await $Movement.withdrawal(withdrawalMovId?.id);
-    
+
     await loadMovs();
-    
+
     setLoading(false);
 
     enqueueSnackbar(`Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.`, {
@@ -152,9 +152,9 @@ function Transactions() {
     body.append("info", filesUser.certificado);
 
     await $Movement.changeInformationBank(body, withdrawalMovId?.id);
-    
+
     await loadMovs();
-    
+
     setLoading(false);
 
     enqueueSnackbar(`Se han enviado los documentos exitosamente.`, {
@@ -183,15 +183,15 @@ function Transactions() {
           <DialogContent>
             <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará  actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br /><br />
 
-              <u>"<b>RECUERDE:</b>    el documento de identidad y la certificación bancaria deben    
-              estar a nombre del titular del contrato, de lo contrario sus datos NO se 
+              <u>"<b>RECUERDE:</b>    el documento de identidad y la certificación bancaria deben
+              estar a nombre del titular del contrato, de lo contrario sus datos NO se
               actualizarán y NO se podrá realizar el procesamiento de sus retiros”</u>
 
               <br />
               <br />
 
               ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!
-              
+
               </DialogContentText>
             <br />
 
@@ -217,7 +217,7 @@ function Transactions() {
                   onChange={({ target }) => onImport(target.files[0], "cedula")}
                 />
             </Box>
-              
+
             <Box position="relative">
                 <LoadingButton loading={loading.importing} variant={(filesUser.certificado?"contained":"")} size="small">
                   {(filesUser.certificado?"Cambiar certificación bancaria cargada":"Anexar certificación bancaria")}
@@ -254,7 +254,7 @@ function Transactions() {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       <Dialog open={modal === "modal-withdrawal"} onClose={() => cancelWithdrawalMov()}>
         <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
@@ -287,7 +287,7 @@ function Transactions() {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       <Dialog open={modal === "modal-withdrawal-success"} onClose={() => cancelWithdrawalMov()}>
         <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
