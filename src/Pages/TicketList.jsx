@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -15,15 +16,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-import { useEffect, useMemo, useState } from "react";
-import useSession from "../Hooks/useSession";
+import { AvoviteWhiteIcon } from "../Components/Icons";
 import EnhancedTable from "../Components/EnhancedTable";
 import PageWrapper from "../Components/PageWrapper";
-import { AvoviteWhiteIcon } from "../Components/Icons";
 import TicketService from "../Services/ticket.service";
+import useSession from "../Hooks/useSession";
 
-const InitialState = { id: null, name: "", asWork: "" };
+const InitialState = {
+  id: "",
+  name: "",
+  asWork: "",
+  state: "",
+  actions: [
+    { label: 'Front Document', url: null },
+    { label: 'Back Document', url: null },
+    { label: 'Bank Document', url: null }
+  ],
+};
 
 function TicketListUser({ handleClick }) {
   const [session] = useSession();
@@ -33,6 +42,7 @@ function TicketListUser({ handleClick }) {
   const [loading, setLoading] = useState({ fetching: true });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
+
   const tableHeadCells = useMemo(
     () => [
       {
@@ -60,10 +70,8 @@ function TicketListUser({ handleClick }) {
             onChange={(event) => handleChangeState(event, row)}
             sx={{ minWidth: 100,height:"40px",fontSize:"15px" }}
           >
-            <MenuItem value="Pending">Pending</MenuItem>
             <MenuItem value="In Progress">In Progress</MenuItem>
-            <MenuItem value="Resolved">Resolved</MenuItem>
-            <MenuItem value="Closed">Closed</MenuItem>
+            <MenuItem value="Completed">Completed</MenuItem>
           </Select>
         ),
       },
@@ -87,11 +95,23 @@ function TicketListUser({ handleClick }) {
     []
   );
 
-  const handleChangeState = (event, row) => {
-
+  const handleChangeState = async (event, row) => {
+    const newTicketStatus = event.target.value;
+    try {
+      const { status } = await $Ticket.changeTicketStatus({ id: row.id, ticketStatus: newTicketStatus });
+      if (status) {
+        setRows(prevRows => prevRows.map(prevRow => prevRow.id === row.id ? { ...prevRow, state: newTicketStatus } : prevRow));
+        setFeedback({ open: true, message: "Estado de ticket actualizado exitosamente.", status: "success" });
+      } else {
+        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+      }
+    } catch (error) {
+      console.error("Error al cambiar el estado del ticket:", error);
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
   };
-  function handleDownload(row) {
 
+  const handleDownload = (row) => {
     const fileUrl = row.fileUrl;
     const downloadLink = document.createElement('a');
     downloadLink.href = fileUrl;
@@ -99,10 +119,10 @@ function TicketListUser({ handleClick }) {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
-  }
+  };
 
   const resetFeedback = () => {
-    setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
+    setFeedback({ ...feedback, open: false });
   };
 
   const onChangeFields = ({ target }) => {
@@ -115,54 +135,31 @@ function TicketListUser({ handleClick }) {
     setNewRow(InitialState);
   };
 
-  // const onUpdate = async (event) => {
-  //   event.preventDefault();
-
-  //   if (!isValidForm) {
-  //     setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
-  //     return;
-  //   }
-
-  //   const { status } = await $Supplier.update(newRow);
-
-  //   if (status) {
-  //     setRows((prev) => prev.map((p) => (p.id === newRow.id ? newRow : p)));
-  //     setFeedback({ open: true, message: "Proveedor actualizado exitosamente.", status: "success" });
-  //     onClearFields();
-  //   } else {
-  //     setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-  //   }
-  // };
-
   const fetchData = async () => {
-    const { status, data } = await $Ticket.getAll();
-
-    if (status) {
-      console.log(data.data);
-      setRows(
-        data.data
-          .map((ticket) => ({
-            id: ticket.id,
-            name: ticket.title,
-            asWork: ticket.description,
-            state: ticket.ticketStatus,
-            actions: [
-              { label: 'Front Document', url: ticket.frontDocumentUrl },
-              { label: 'Back Document', url: ticket.backDocumentUrl },
-              { label: 'Bank Document', url: ticket.bankUrl }
-            ]
-          }))
-
-      );
-      setLoading((prev) => ({ ...prev, fetching: false }));
+    try {
+      const { status, data } = await $Ticket.getAll();
+      if (status) {
+        setRows(data.data.map(ticket => ({
+          id: ticket.id,
+          name: ticket.title,
+          asWork: ticket.description,
+          state: ticket.ticketStatus,
+          actions: [
+            { label: 'Front Document', url: ticket.frontDocumentUrl },
+            { label: 'Back Document', url: ticket.backDocumentUrl },
+            { label: 'Bank Document', url: ticket.bankUrl }
+          ]
+        })));
+        setLoading((prev) => ({ ...prev, fetching: false }));
+      }
+    } catch (error) {
+      console.error("Error al obtener los tickets:", error);
     }
   };
 
   useEffect(() => {
     if ($Ticket) {
-      (async () => {
-        await fetchData();
-      })();
+      fetchData();
     }
   }, [$Ticket]);
 
@@ -190,7 +187,6 @@ function TicketListUser({ handleClick }) {
               flexDirection="column"
               gap={3}
               padding={1}
-              // onSubmit={modal === "create" ? onCreate : onUpdate}
             >
               <Grid display="flex" flexDirection="column" gap={2}>
                 <TextField label="Nombre" name="name" value={newRow.name} onChange={onChangeFields} fullWidth />
@@ -210,9 +206,6 @@ function TicketListUser({ handleClick }) {
           <DialogActions>
             <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
               <Button onClick={onClearFields}>Cancelar</Button>
-              {/* <Button onClick={modal === "create" ? onCreate : onUpdate} variant="contained" disabled={!isValidForm}>
-              {modal === "create" ? "Crear" : "Editar"}
-            </Button> */}
             </Grid>
           </DialogActions>
         </Dialog>
@@ -226,9 +219,6 @@ function TicketListUser({ handleClick }) {
             <Button variant="outlined" onClick={onClearFields}>
               Cancelar
             </Button>
-            {/* <Button variant="contained" onClick={onDelete}> */}
-            {/* Eliminar
-          </Button> */}
           </DialogActions>
         </Dialog>
 
