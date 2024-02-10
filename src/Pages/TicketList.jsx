@@ -8,6 +8,8 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  MenuItem,
+  Select,
   Snackbar,
   Stack,
   TextField,
@@ -52,8 +54,20 @@ function TicketListUser({ handleClick }) {
         label: "Estado",
         align: "left",
         disablePadding: false,
-        format: (value) => value,
-      },{
+        format: (value, row) => (
+          <Select
+            value={row.state}
+            onChange={(event) => handleChangeState(event, row)}
+            sx={{ minWidth: 100,height:"40px",fontSize:"15px" }}
+          >
+            <MenuItem value="Pending">Pending</MenuItem>
+            <MenuItem value="In Progress">In Progress</MenuItem>
+            <MenuItem value="Resolved">Resolved</MenuItem>
+            <MenuItem value="Closed">Closed</MenuItem>
+          </Select>
+        ),
+      },
+      {
         id: 'actions',
         label: 'Acciones',
         align: 'left',
@@ -62,7 +76,7 @@ function TicketListUser({ handleClick }) {
           <Button
             variant="contained"
             color="primary"
-            sx={{width:"100px",fontSize:"12px"}}
+            sx={{ width: "100px", fontSize: "12px" }}
             onClick={() => handleDownload(row)}
           >
             Archivos
@@ -73,6 +87,9 @@ function TicketListUser({ handleClick }) {
     []
   );
 
+  const handleChangeState = (event, row) => {
+
+  };
   function handleDownload(row) {
 
     const fileUrl = row.fileUrl;
