@@ -8,8 +8,50 @@ export default class TicketService {
     this.axios = axios.create({ headers: { Authorization: this.token } });
   }
 
-  async create({ title, description, ticketCategory }) {
-    const body = { title, description, ticketCategory };
+  async create({
+    title,
+    description,
+    ticketCategory,
+    fullname,
+    civilStatusBeneficiary,
+    email,
+    cellphone,
+    id_number,
+    id_location_expedition,
+    cod_municipio_beneficiary,
+    beneficiary_fullname,
+    beneficiary_id_number,
+    beneficiary_id_type,
+    beneficiary_id_location_expedition,
+    address_residence_beneficiary,
+    email_beneficiary,
+    cellphone_beneficiary,
+    economy_activity_beneficiary,
+    country_of_residence_beneficiary,
+    files,
+  }) {
+    const body = {
+      title,
+      description,
+      ticketCategory,
+      fullname,
+      email,
+      cellphone,
+      id_number,
+      id_location_expedition,
+      cod_municipio_beneficiary,
+      beneficiary_fullname,
+      beneficiary_id_number,
+      beneficiary_id_type,
+      beneficiary_id_location_expedition,
+      address_residence_beneficiary,
+      email_beneficiary,
+      cellphone_beneficiary,
+      civilStatusBeneficiary,
+      economy_activity_beneficiary,
+      country_of_residence_beneficiary,
+      files,
+    };
     return await handleCall(async () => (await this.axios.post(`${this.API_URL}/tickets`, body)).data);
   }
 

@@ -2,14 +2,12 @@ import {
   Alert,
   Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Grid,
-  IconButton,
   Snackbar,
   Stack,
   TextField,
@@ -17,8 +15,6 @@ import {
 } from "@mui/material";
 
 import { useEffect, useMemo, useState } from "react";
-import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
-import SupplierService from "../Services/supplier.service";
 import useSession from "../Hooks/useSession";
 import EnhancedTable from "../Components/EnhancedTable";
 import PageWrapper from "../Components/PageWrapper";
@@ -34,7 +30,6 @@ function TicketListUser({ handleClick }) {
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState({ fetching: true });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const isValidForm = useMemo(() => newRow.name && newRow.asWork && newRow.asWork.length >= 10, [newRow]);
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
   const tableHeadCells = useMemo(
     () => [
@@ -79,12 +74,11 @@ function TicketListUser({ handleClick }) {
   );
 
   function handleDownload(row) {
-    // Aquí debes escribir la lógica para descargar el archivo correspondiente a la fila seleccionada
-    // Por ejemplo, si `row` contiene la información del archivo, puedes acceder a su URL y descargarlo
+
     const fileUrl = row.fileUrl;
     const downloadLink = document.createElement('a');
     downloadLink.href = fileUrl;
-    downloadLink.download = 'archivo'; // Puedes personalizar el nombre del archivo aquí si es necesario
+    downloadLink.download = 'archivo';
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -131,7 +125,18 @@ function TicketListUser({ handleClick }) {
       setRows(
         data.data
           .filter((tick) => tick.idUser === session.user.id)
-          .map((ticket) => ({ id: ticket.id, name: ticket.title, asWork: ticket.description, state: ticket.ticketStatus }))
+          .map((ticket) => ({
+            id: ticket.id,
+            name: ticket.title,
+            asWork: ticket.description,
+            state: ticket.ticketStatus,
+            actions: [
+              { label: 'Front Document', url: ticket.frontDocumentUrl },
+              { label: 'Back Document', url: ticket.backDocumentUrl },
+              { label: 'Bank Document', url: ticket.bankUrl }
+            ]
+          }))
+
       );
       setLoading((prev) => ({ ...prev, fetching: false }));
     }

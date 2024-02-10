@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Button, Grid, Modal, Typography } from "@mui/material";
 
 function IsChangeInformationBank({ isChangeInformationBank, setFrontalImage, setTraseraImage, frontalImage, traseraImage }) {
@@ -24,6 +24,9 @@ function IsChangeInformationBank({ isChangeInformationBank, setFrontalImage, set
     }
   };
 
+  useEffect(()=>{
+
+  },[])
   return (
     <>
       {isChangeInformationBank && (
@@ -65,6 +68,7 @@ function IsChangeInformationBank({ isChangeInformationBank, setFrontalImage, set
                 type="file"
                 style={{ display: 'none' }}
                 onChange={(event) => handleFileChange(event, 0)}
+                name='frontImage'
               />
               <Button variant="contained" component="label" htmlFor="front-photo-button" style={{ marginBottom: '20px' }}>
                 Cargar foto frontal
@@ -81,6 +85,7 @@ function IsChangeInformationBank({ isChangeInformationBank, setFrontalImage, set
                 type="file"
                 style={{ display: 'none' }}
                 onChange={(event) => handleFileChange(event, 1)}
+                name='backImage'
               />
               <Button variant="contained" component="label" htmlFor="back-photo-button">
                 Cargar foto trasera

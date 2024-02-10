@@ -15,19 +15,18 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import PageWrapper from "../Components/PageWrapper";
-import { AvoviteWhiteIcon } from "../Components/Icons";
+import PageWrapper from "./PageWrapper";
+import { AvoviteWhiteIcon } from "./Icons";
 import useSession from "../Hooks/useSession";
 import TicketService from "../Services/ticket.service";
 import { useNavigate } from "react-router-dom";
-import IsChangeInformationBeneficiary from "../Components/IsChangeInformationBeneficiary";
-import IsChangeInformationUser from "../Components/IsChangeInformationUser";
-import IsChangeInformationBank from "../Components/IsChangeInformationBank";
+import IsChangeInformationBeneficiary from "./IsChangeInformationBeneficiary";
+import IsChangeInformationUser from "./IsChangeInformationUser";
+import IsChangeInformationBank from "./IsChangeInformationBank";
 
 function CreateTicket({ setShowCreateTicket }) {
-  const [session, { setUser: setSession }] = useSession();
+  const [session] = useSession();
   const $Ticket = useMemo(() => new TicketService(session.token), [session.token]);
-  const [actualTicket, setActualTicket] = useState();
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
   const [valueOption, setValueOption] = useState("");
   const [isChangeInformationBeneficiary, setIsChangeInformationBeneficiary] = useState(false);
@@ -79,7 +78,7 @@ function CreateTicket({ setShowCreateTicket }) {
         ticketCategory: null,
         files: [],
       },
-      other: {
+      oter: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
@@ -90,16 +89,16 @@ function CreateTicket({ setShowCreateTicket }) {
         ticketCategory: null,
       },
     };
-
     if (event.target.elements.ticketCategory.value === "Bugs") {
       informationToSend.bugs.ticketCategory = "Bugs";
       informationToSend.ticketCategory = "Bugs";
     }
 
-    if (event.target.elements.ticketCategory.value === "oter") {
-      informationToSend.bugs.ticketCategory = "oter";
-      informationToSend.ticketCategory = "oter";
+    if (event.target.elements.ticketCategory.value === "Oter") {
+      informationToSend.oter.ticketCategory = "Oter";
+      informationToSend.ticketCategory = "Oter";
     }
+    console.log(informationToSend.informationUser);
 
     if (event.target.elements.ticketCategory.value === "Change information bank") {
       informationToSend.informationBank.ticketCategory = "Change information bank";
@@ -109,7 +108,7 @@ function CreateTicket({ setShowCreateTicket }) {
       if (!frontalImage && !traseraImage) {
         setAlert({
           show: true,
-          message: "Todos los campos son requeridos.",
+          message: "No olvides subir foto de tu documento.",
           status: "error",
         });
         return;
@@ -123,9 +122,9 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationUser.fullname = event.target.elements.fullname.value;
       informationToSend.informationUser.email = event.target.elements.email.value;
       informationToSend.informationUser.cellphone = event.target.elements.cellphone.value;
-      informationToSend.informationUser.id_type = event.target.elements.idType.value;
-      informationToSend.informationUser.id_number = event.target.elements.idNumber.value;
-      informationToSend.informationUser.id_location_expedition = event.target.elements.idLocExpedition.value;
+      informationToSend.informationUser["id_type"] = event.target.elements.idType.value;
+      informationToSend.informationUser["id_number"] = event.target.elements.idNumber.value;
+      informationToSend.informationUser["id_location_expedition"] = event.target.elements.idLocExpedition.value;
     }
 
     if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
@@ -136,14 +135,14 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary["beneficiary_id_number"] = event.target.elements.beneficiaryIdNumber.value;
       informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value;
       informationToSend.informationBeneficiary["beneficiary_id_location_expedition"] =
-        event.target.elements.beneficiaryIdLocationExpedition.value;
+      event.target.elements.beneficiaryIdLocationExpedition.value;
       informationToSend.informationBeneficiary["address_residence_beneficiary"] = event.target.elements.addressResidenceBeneficiary.value;
       informationToSend.informationBeneficiary["email_beneficiary"] = event.target.elements.emailBeneficiary.value;
       informationToSend.informationBeneficiary["cellphone_beneficiary"] = event.target.elements.cellphoneBeneficiary.value;
       informationToSend.informationBeneficiary["civilStatusBeneficiary"] = event.target.elements.civilStatus.value;
       informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event.target.elements.economyActivityBeneficiary.value;
       informationToSend.informationBeneficiary["country_of_residence_beneficiary"] =
-        event.target.elements.countryOfResidenceBeneficiary.value;
+      event.target.elements.countryOfResidenceBeneficiary.value;
     }
 
     if (!informationToSend.title || !informationToSend.description || !informationToSend.ticketCategory) {
@@ -155,42 +154,46 @@ function CreateTicket({ setShowCreateTicket }) {
       return;
     }
 
-    const sendInformation = async () => {
-      if (informationToSend.bugs.title && informationToSend.bugs.description && informationToSend.bugs.ticketCategory) {
-        const { status } = await $Ticket.create(informationToSend.bugs);
-        ticketCreatedCorrectly(status);
-      }
+    sendInformation(informationToSend);
+  };
 
-      if (informationToSend.other.title && informationToSend.other.description && informationToSend.other.ticketCategory) {
-        const { status } = await $Ticket.create(informationToSend.other);
-        ticketCreatedCorrectly(status);
-      }
-      if (
-        informationToSend.informationBank.title &&
-        informationToSend.informationBank.description &&
-        informationToSend.informationBank.ticketCategory
-      ) {
-        const { status } = await $Ticket.create(informationToSend.informationBank);
-        ticketCreatedCorrectly(status);
-      }
-      if (
-        informationToSend.informationUser.title &&
-        informationToSend.informationUser.description &&
-        informationToSend.informationUser.ticketCategory
-      ) {
-        const { status } = await $Ticket.create(informationToSend.informationUser);
-        ticketCreatedCorrectly(status);
-      }
-      if (
-        informationToSend.informationBeneficiary.title &&
-        informationToSend.informationBeneficiary.description &&
-        informationToSend.informationBeneficiary.ticketCategory
-      ) {
-        const { status } = await $Ticket.create(informationToSend.informationBeneficiary);
-        ticketCreatedCorrectly(status);
-      }
-    };
-    sendInformation();
+  const sendInformation = async (informationToSend) => {
+    if (informationToSend.bugs.title && informationToSend.bugs.description && informationToSend.bugs.ticketCategory) {
+      const { status } = await $Ticket.create(informationToSend.bugs);
+      ticketCreatedCorrectly(status);
+    }
+
+    if (informationToSend.oter.title && informationToSend.oter.description && informationToSend.oter.ticketCategory) {
+      const { status } = await $Ticket.create(informationToSend.oter);
+      ticketCreatedCorrectly(status);
+    }
+
+    if (
+      informationToSend.informationBank.title &&
+      informationToSend.informationBank.description &&
+      informationToSend.informationBank.ticketCategory
+    ) {
+      const { status } = await $Ticket.create(informationToSend.informationBank);
+      ticketCreatedCorrectly(status);
+    }
+
+    if (
+      informationToSend.informationUser.title &&
+      informationToSend.informationUser.description &&
+      informationToSend.informationUser.ticketCategory
+    ) {
+      const { status } = await $Ticket.create(informationToSend.informationUser);
+      ticketCreatedCorrectly(status);
+    }
+
+    if (
+      informationToSend.informationBeneficiary.title &&
+      informationToSend.informationBeneficiary.description &&
+      informationToSend.informationBeneficiary.ticketCategory
+    ) {
+      const { status } = await $Ticket.create({ ...informationToSend.informationBeneficiary });
+      ticketCreatedCorrectly(status);
+    }
   };
 
   const ticketCreatedCorrectly = (status) => {
@@ -213,21 +216,29 @@ function CreateTicket({ setShowCreateTicket }) {
       setIsChangeInformationBank(false);
       setIsChangeInformationUser(false);
       setIsChangeInformationBeneficiary(false);
+      setFrontalImage(false);
+      setTraseraImage(false);
     }
     if (ticketCategory === "Change information user") {
       setIsChangeInformationBank(false);
       setIsChangeInformationUser(true);
       setIsChangeInformationBeneficiary(false);
+      setFrontalImage(false);
+      setTraseraImage(false);
     }
     if (ticketCategory === "Oter") {
       setIsChangeInformationBank(false);
       setIsChangeInformationUser(false);
       setIsChangeInformationBeneficiary(false);
+      setFrontalImage(false);
+      setTraseraImage(false);
     }
     if (ticketCategory === "Change information beneficiary") {
       setIsChangeInformationBank(false);
       setIsChangeInformationUser(false);
       setIsChangeInformationBeneficiary(true);
+      setFrontalImage(false);
+      setTraseraImage(false);
     }
   };
 
@@ -258,7 +269,7 @@ function CreateTicket({ setShowCreateTicket }) {
             Solicitud de actualización de datos
           </Typography>
         </Stack>
-        <FormControl variant="outlined" fullWidth onSubmit={handleFormSubmit} sx={{ marginTop: "20px" }}>
+        <FormControl variant="outlined" fullWidth sx={{ marginTop: "20px" }}>
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
@@ -308,7 +319,7 @@ function CreateTicket({ setShowCreateTicket }) {
                   <MenuItem value="Change information user">Cambiar información de usuario</MenuItem>
                   <MenuItem value="Change information beneficiary">Cambiar información de beneficiario</MenuItem>
                   <MenuItem value="Bugs">Errores</MenuItem>
-                  <MenuItem value="Other">Otro</MenuItem>
+                  <MenuItem value="Oter">Otro</MenuItem>
                 </Select>
               </Grid>
               <Grid container xs={12} marginTop="20px" fullWidth marginLeft="15px">
@@ -330,7 +341,12 @@ function CreateTicket({ setShowCreateTicket }) {
                 <Button type="submit" variant="contained" color="primary" sx={{ marginTop: "20px" }} disabled={!valueOption && true}>
                   Enviar Solicitud
                 </Button>
-                <Button onClick={()=>setShowCreateTicket(false)} variant="contained" color="primary" sx={{ marginTop: "20px", marginLeft: "10px" }}>
+                <Button
+                  onClick={() => setShowCreateTicket(false)}
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginTop: "20px", marginLeft: "10px" }}
+                >
                   Ver tickets
                 </Button>
               </Grid>
