@@ -441,13 +441,13 @@ function Harvests() {
 
   const fetchData = async () => {
     await (async () => {
-      const { status, data } = await $Harvest.get();
+      const { status, data } = await $Harvest.get(session?.user?.id);
 
       if (status) {
         setRows(data.data);
+
       }
     })();
-
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
@@ -467,6 +467,7 @@ function Harvests() {
     if ($Harvest) {
       (async () => {
         await fetchData();
+
       })();
     }
   }, [$Harvest]);

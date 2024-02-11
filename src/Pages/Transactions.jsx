@@ -87,7 +87,7 @@ function Transactions() {
   );
 
   const loadMovs = async()=>{
-    const { status, data } = await $Movement.get();
+    const { status, data } = await $Movement.get(user?.id);
 
     if (status) {
       setRows(data.data);
