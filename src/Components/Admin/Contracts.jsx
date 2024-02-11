@@ -79,6 +79,16 @@ const columns = [
         </Typography>
       </Stack>
     ),
+  },{
+    accessorKey: "id_type",
+    id: "id_type",
+    header: "Tipo de documento",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+  },{
+    accessorKey: "id_number",
+    id: "id_number",
+    header: "Número de documento",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
   },
   {
     accessorKey: "mortgage_contract",

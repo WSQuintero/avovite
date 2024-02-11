@@ -71,6 +71,15 @@ function Users() {
         accessorKey: "fullname",
         id: "fullname",
         header: "Nombre completo",
+      },{
+        accessorKey: "id_type",
+        id: "id_type",
+        header: "Tipo de documento",
+      },
+      {
+        accessorKey: "id_number",
+        id: "id_number",
+        header: "Número de documento",
       },
       {
         accessorKey: "email",
