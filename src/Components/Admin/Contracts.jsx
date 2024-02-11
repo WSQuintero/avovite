@@ -89,6 +89,11 @@ const columns = [
     id: "id_number",
     header: "Número de documento",
     Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+  },{
+    accessorKey: "id_location_expedition",
+    id: "id_location_expedition",
+    header: "Lugar de expedición",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
   },
   {
     accessorKey: "mortgage_contract",
@@ -213,6 +218,7 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
+      console.log(data)
     }
   };
 
