@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -21,6 +21,7 @@ import EnhancedTable from "../Components/EnhancedTable";
 import PageWrapper from "../Components/PageWrapper";
 import TicketService from "../Services/ticket.service";
 import useSession from "../Hooks/useSession";
+import TicketModal from "../Components/Admin/TicketDetailModal";
 
 const InitialState = {
   id: "",
@@ -34,7 +35,7 @@ const InitialState = {
   ],
 };
 
-function TicketListUser({ handleClick }) {
+function TicketList({ handleClick }) {
   const [session] = useSession();
   const [rows, setRows] = useState([]);
   const [newRow, setNewRow] = useState(InitialState);
@@ -42,7 +43,7 @@ function TicketListUser({ handleClick }) {
   const [loading, setLoading] = useState({ fetching: true });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
-
+  const [actualTicket,setActualTicket]=useState(null)
   const tableHeadCells = useMemo(
     () => [
       {
@@ -77,7 +78,7 @@ function TicketListUser({ handleClick }) {
       },
       {
         id: 'actions',
-        label: 'Acciones',
+        label: 'Archivos adjuntos',
         align: 'left',
         disablePadding: false,
         format: (value, row) => (
@@ -87,7 +88,23 @@ function TicketListUser({ handleClick }) {
             sx={{ width: "100px", fontSize: "12px" }}
             onClick={() => handleDownload(row)}
           >
-            Archivos
+            Descargar
+          </Button>
+        ),
+      },
+      {
+        id: 'detail_ticket',
+        label: 'Detalle',
+        align: 'left',
+        disablePadding: false,
+        format: (value, row) => (
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ width: "100px", fontSize: "12px" }}
+            onClick={() => handleSeeDetail(row)}
+          >
+            Ver detalle
           </Button>
         ),
       },
@@ -108,6 +125,19 @@ function TicketListUser({ handleClick }) {
     } catch (error) {
       console.error("Error al cambiar el estado del ticket:", error);
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+
+  const handleSeeDetail = async (ticket) => {
+    try {
+      const {status,data} = await $Ticket.getById({id:ticket.id}); // Replace 'your_api_endpoint' with the actual endpoint
+
+      if(status){
+        setActualTicket(data.data?.tiket); // Set the modal state to display
+        setModal("detail"); // Show the modal for ticket detail
+      }
+    } catch (error) {
+      console.error("Error fetching ticket details:", error);
     }
   };
 
@@ -178,49 +208,8 @@ function TicketListUser({ handleClick }) {
           <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
         </Grid>
 
-        <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
-          <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} proveedor</DialogTitle>
-          <DialogContent>
-            <Box
-              component="form"
-              display="flex"
-              flexDirection="column"
-              gap={3}
-              padding={1}
-            >
-              <Grid display="flex" flexDirection="column" gap={2}>
-                <TextField label="Nombre" name="name" value={newRow.name} onChange={onChangeFields} fullWidth />
-                <TextField
-                  multiline
-                  fullWidth
-                  rows={12}
-                  label="Descripción"
-                  name="asWork"
-                  value={newRow.asWork}
-                  onChange={onChangeFields}
-                  helperText="Mínimo 10 caracteres"
-                />
-              </Grid>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-              <Button onClick={onClearFields}>Cancelar</Button>
-            </Grid>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog maxWidth="sm" open={modal === "delete"} onClose={onClearFields} fullWidth>
-          <DialogTitle>Eliminar proveedor de la lista</DialogTitle>
-          <DialogContent>
-            <DialogContentText>¿Estás seguro que quieres eliminar este proveedor de la lista?</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button variant="outlined" onClick={onClearFields}>
-              Cancelar
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/* Modal para el detalle del ticket */}
+        <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} />
 
         <Snackbar
           open={feedback.open}
@@ -240,4 +229,4 @@ function TicketListUser({ handleClick }) {
   );
 }
 
-export default TicketListUser;
+export default TicketList;
