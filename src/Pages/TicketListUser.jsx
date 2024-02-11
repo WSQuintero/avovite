@@ -20,6 +20,7 @@ import EnhancedTable from "../Components/EnhancedTable";
 import PageWrapper from "../Components/PageWrapper";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import TicketService from "../Services/ticket.service";
+import TicketModalUser from "../Components/TicketDetailModalUser";
 
 const InitialState = { id: null, name: "", asWork: "" };
 
@@ -31,6 +32,8 @@ function TicketListUser({ handleClick }) {
   const [loading, setLoading] = useState({ fetching: true });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
+  const [actualTicket, setActualTicket] = useState(null);
+
   const tableHeadCells = useMemo(
     () => [
       {
@@ -53,19 +56,26 @@ function TicketListUser({ handleClick }) {
         align: "left",
         disablePadding: false,
         format: (value) => value,
-      },{
-        id: 'actions',
-        label: 'Acciones',
-        align: 'left',
+      },
+      {
+        id: "actions",
+        label: "Acciones",
+        align: "left",
         disablePadding: false,
         format: (value, row) => (
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{width:"100px",fontSize:"12px"}}
-            onClick={() => handleDownload(row)}
-          >
+          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)}>
             Archivos
+          </Button>
+        ),
+      },
+      {
+        id: "detail_ticket",
+        label: "Detalle",
+        align: "left",
+        disablePadding: false,
+        format: (value, row) => (
+          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleSeeDetail(row)}>
+            Ver detalle
           </Button>
         ),
       },
@@ -73,19 +83,32 @@ function TicketListUser({ handleClick }) {
     []
   );
 
-  function handleDownload(row) {
+  const handleSeeDetail = async (ticket) => {
+    try {
+      const { status, data } = await $Ticket.getById({ id: ticket.id });
 
+      if (status) {
+        console.log(data)
+        setActualTicket(data?.data?.tiket[0]);
+        setModal("detail");
+      }
+    } catch (error) {
+      console.error("Error fetching ticket details:", error);
+    }
+  };
+
+  function handleDownload(row) {
     const fileUrl = row.fileUrl;
-    const downloadLink = document.createElement('a');
+    const downloadLink = document.createElement("a");
     downloadLink.href = fileUrl;
-    downloadLink.download = 'archivo';
+    downloadLink.download = "archivo";
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
   }
 
   const resetFeedback = () => {
-    setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
+    setFeedback((prev) => ({ ...prev, open: false }));
   };
 
   const onChangeFields = ({ target }) => {
@@ -98,30 +121,10 @@ function TicketListUser({ handleClick }) {
     setNewRow(InitialState);
   };
 
-  // const onUpdate = async (event) => {
-  //   event.preventDefault();
-
-  //   if (!isValidForm) {
-  //     setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
-  //     return;
-  //   }
-
-  //   const { status } = await $Supplier.update(newRow);
-
-  //   if (status) {
-  //     setRows((prev) => prev.map((p) => (p.id === newRow.id ? newRow : p)));
-  //     setFeedback({ open: true, message: "Proveedor actualizado exitosamente.", status: "success" });
-  //     onClearFields();
-  //   } else {
-  //     setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-  //   }
-  // };
-
   const fetchData = async () => {
     const { status, data } = await $Ticket.getAll();
 
     if (status) {
-      console.log(data.data);
       setRows(
         data.data
           .filter((tick) => tick.idUser === session.user.id)
@@ -131,12 +134,11 @@ function TicketListUser({ handleClick }) {
             asWork: ticket.description,
             state: ticket.ticketStatus,
             actions: [
-              { label: 'Front Document', url: ticket.frontDocumentUrl },
-              { label: 'Back Document', url: ticket.backDocumentUrl },
-              { label: 'Bank Document', url: ticket.bankUrl }
-            ]
+              { label: "Front Document", url: ticket.frontDocumentUrl },
+              { label: "Back Document", url: ticket.backDocumentUrl },
+              { label: "Bank Document", url: ticket.bankUrl },
+            ],
           }))
-
       );
       setLoading((prev) => ({ ...prev, fetching: false }));
     }
@@ -144,9 +146,7 @@ function TicketListUser({ handleClick }) {
 
   useEffect(() => {
     if ($Ticket) {
-      (async () => {
-        await fetchData();
-      })();
+      fetchData();
     }
   }, [$Ticket]);
 
@@ -194,9 +194,6 @@ function TicketListUser({ handleClick }) {
           <DialogActions>
             <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
               <Button onClick={onClearFields}>Cancelar</Button>
-              {/* <Button onClick={modal === "create" ? onCreate : onUpdate} variant="contained" disabled={!isValidForm}>
-              {modal === "create" ? "Crear" : "Editar"}
-            </Button> */}
             </Grid>
           </DialogActions>
         </Dialog>
@@ -210,12 +207,9 @@ function TicketListUser({ handleClick }) {
             <Button variant="outlined" onClick={onClearFields}>
               Cancelar
             </Button>
-            {/* <Button variant="contained" onClick={onDelete}> */}
-            {/* Eliminar
-          </Button> */}
           </DialogActions>
         </Dialog>
-
+        <TicketModalUser ticket={actualTicket} open={modal === "detail"} onClose={() => setModal(null)} />
         <Snackbar
           open={feedback.open}
           autoHideDuration={3000}
