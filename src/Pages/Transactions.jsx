@@ -259,7 +259,8 @@ function Transactions() {
         <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.<br /><br />
+            ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.<br />
+            <b>RECUERDE:</b> el documento de identidad y la cuenta bancaria deben estar a nombre del titular del contrato y los datos deben estar correctos, de lo contrario puede sufrir una pérdida del valor retirado, la cual usted asume la responsabilidad.<br /><br />
             <hr />
             <b>Valor Retiro:</b> $ {withdrawalMovId?.transaction_value.toLocaleString("es-ES")}<br />
             <hr />
