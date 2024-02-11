@@ -130,7 +130,7 @@ function CreateTicket({ setShowCreateTicket }) {
     if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
       informationToSend.informationBeneficiary.ticketCategory = "Change information beneficiary";
       informationToSend.ticketCategory = "Change information beneficiary";
-      informationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event.target.elements.codMunicipioBeneficiary.value;
+      inationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event.target.elements.codMunicipioBeneficiary.value;
       informationToSend.informationBeneficiary["beneficiary_fullname"] = event.target.elements.beneficiaryFullname.value;
       informationToSend.informationBeneficiary["beneficiary_id_number"] = event.target.elements.beneficiaryIdNumber.value;
       informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value;
