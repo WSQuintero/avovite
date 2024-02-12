@@ -38,6 +38,9 @@ import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
+import { GetApp as DownloadIcon } from "@mui/icons-material";
+import { saveAs } from 'file-saver';
+import JSZip from "jszip";
 
 const RowState = { id: null, total_money: "", payment_date: "", is_Cronjob: false };
 const CollapseState = { id: null, contract_number: "", split_payment_id: "" };
@@ -143,12 +146,24 @@ function PaymentSplit() {
             >
               Split
             </LoadingButton>
+            <Button variant="outlined" size="small" onClick={() => handleDownloadExcel(Number(row.id))}>
+              Exportar
+            </Button>
           </Grid>
         ),
-      },
+      }
     ],
     [collapse, loading.split]
   );
+
+  const handleDownloadExcel = async (id) => {
+    const link = document.createElement("a");
+    link.href = `${import.meta.env.VITE_APP_URL}/SplitPayment/generate-xlsx:${id}`;
+    link.download = `archivo_${id}.xlsx`;
+    link.click()
+
+  }
+
   const tableCollapse = useCallback(
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
@@ -415,7 +430,6 @@ function PaymentSplit() {
     }
   }, [$Split]);
 
-  console.log(multiple);
 
   return (
     <>

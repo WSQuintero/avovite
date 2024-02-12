@@ -68,7 +68,7 @@ function CreateTicket({ setShowCreateTicket }) {
         address_residence_beneficiary: "",
         email_beneficiary: "",
         cellphone_beneficiary: "",
-        civilStatusBeneficiary: "",
+        civil_status_beneficiary: "",
         economy_activity_beneficiary: "",
         country_of_residence_beneficiary: "",
       },
@@ -98,12 +98,13 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.oter.ticketCategory = "Oter";
       informationToSend.ticketCategory = "Oter";
     }
-    console.log(informationToSend.informationUser);
 
     if (event.target.elements.ticketCategory.value === "Change information bank") {
       informationToSend.informationBank.ticketCategory = "Change information bank";
       informationToSend.ticketCategory = "Change information bank";
-      informationToSend.informationBank.files.push(frontalImage, traseraImage);
+      informationToSend.informationBank.files.push(frontalImage);
+      informationToSend.informationBank.files.push(traseraImage);
+      //probablemente enviar no como JSON, sino como formdata. confirmar ya hay otros lugares donde formData.append("webmasterfile", blob);
 
       if (!frontalImage && !traseraImage) {
         setAlert({
@@ -125,21 +126,23 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationUser["id_type"] = event.target.elements.idType.value;
       informationToSend.informationUser["id_number"] = event.target.elements.idNumber.value;
       informationToSend.informationUser["id_location_expedition"] = event.target.elements.idLocExpedition.value;
+
+
     }
 
     if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
       informationToSend.informationBeneficiary.ticketCategory = "Change information beneficiary";
       informationToSend.ticketCategory = "Change information beneficiary";
-      inationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event.target.elements.codMunicipioBeneficiary.value;
+      informationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event.target.elements.codMunicipioBeneficiary.value;
       informationToSend.informationBeneficiary["beneficiary_fullname"] = event.target.elements.beneficiaryFullname.value;
       informationToSend.informationBeneficiary["beneficiary_id_number"] = event.target.elements.beneficiaryIdNumber.value;
-      informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value;
+      informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value.toLowerCase();
       informationToSend.informationBeneficiary["beneficiary_id_location_expedition"] =
       event.target.elements.beneficiaryIdLocationExpedition.value;
       informationToSend.informationBeneficiary["address_residence_beneficiary"] = event.target.elements.addressResidenceBeneficiary.value;
       informationToSend.informationBeneficiary["email_beneficiary"] = event.target.elements.emailBeneficiary.value;
       informationToSend.informationBeneficiary["cellphone_beneficiary"] = event.target.elements.cellphoneBeneficiary.value;
-      informationToSend.informationBeneficiary["civilStatusBeneficiary"] = event.target.elements.civilStatus.value;
+      informationToSend.informationBeneficiary["civil_status_beneficiary"] = event.target.elements.civilStatus.value;
       informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event.target.elements.economyActivityBeneficiary.value;
       informationToSend.informationBeneficiary["country_of_residence_beneficiary"] =
       event.target.elements.countryOfResidenceBeneficiary.value;
@@ -175,6 +178,8 @@ function CreateTicket({ setShowCreateTicket }) {
     ) {
       const { status } = await $Ticket.create(informationToSend.informationBank);
       ticketCreatedCorrectly(status);
+    // modificar files[certificadobancario]
+
     }
 
     if (
@@ -184,6 +189,9 @@ function CreateTicket({ setShowCreateTicket }) {
     ) {
       const { status } = await $Ticket.create(informationToSend.informationUser);
       ticketCreatedCorrectly(status);
+      console.log(informationToSend.informationUser);
+      // falta files[foto frontal, foto trasera]
+
     }
 
     if (
@@ -191,7 +199,8 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary.description &&
       informationToSend.informationBeneficiary.ticketCategory
     ) {
-      const { status } = await $Ticket.create({ ...informationToSend.informationBeneficiary });
+      const { status } = await $Ticket.create(informationToSend.informationBeneficiary);
+      console.log(informationToSend.informationBeneficiary)
       ticketCreatedCorrectly(status);
     }
   };

@@ -36,6 +36,9 @@ export default class SplitService {
         (id ? await this.axios.get(`${this.API_URL}/SplitPayment/${id}`) : await this.axios.get(`${this.API_URL}/SplitPayment`)).data
     );
   }
+  async download({ id } = {}) {
+    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/SplitPayment/generate-xlsx/${id}`)).data);
+  }
   async add({ id, ...body } = {}) {
     return await handleCall(async () => (await this.axios.post(`${this.API_URL}/SplitPayment`, body)).data);
   }

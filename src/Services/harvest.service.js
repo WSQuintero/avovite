@@ -45,6 +45,9 @@ export default class HarvestService {
   async split({ id }) {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/harvest/generate-split-harvest/${id}`)).data);
   }
+  async download({ id }) {
+    return await handleCall(async () => await this.axios.get(`${this.API_URL}/harvest/generate-xlsx/${id}`));
+  }
   async import(file) {
     return await handleCall(async () => (await this.axios.postForm(`${this.API_URL}/harvest-profitability/import/xlsx`, { file })).data);
   }
