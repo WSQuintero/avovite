@@ -166,6 +166,8 @@ function Harvests() {
     link.target = "_blank";
     link.download = `archivo_${id}.xlsx`;
 
+
+
     link.click();
   };
 
