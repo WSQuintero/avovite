@@ -50,6 +50,7 @@ function App() {
     <>
       <Loader show={loading} />
       <Router />
+
     </>
   );
 }

@@ -123,7 +123,7 @@ function Router() {
     },
     {
       path: "/privacy-policy",
-      element: <PrivacyPolicy />,
+      element: <PrivacyPolicy meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/",

@@ -283,9 +283,12 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         </List>
 
         <Stack spacing={1} alignItems="center" mt="auto" mb={1}>
+      {!user.isAdmin() && (
+
           <Typography variant="caption" color="white" lineHeight={1} style={{ cursor: "pointer" }} onClick={() => setModal("modal-terms")}>
             TÉRMINOS Y CONDICIONES
-          </Typography>
+          </Typography>)
+}
         </Stack>
 
         <Stack direction="row" spacing={4} alignItems="center" pr={2} mb={1} sx={{ opacity: 0.5 }}>
@@ -295,19 +298,20 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
           </Typography>
         </Stack>
       </Drawer>
-
-      <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)} maxWidth="md" fullWidth>
-        <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
-        <DialogContent>
-          <TermsAndConditions />
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={() => setModal(null)}>
-            Aceptaste los términos el: {user.status_terms_and_conditions_date.split("T")[0]} a las{" "}
-            {user.status_terms_and_conditions_date.split("T")[1]?.replaceAll(".000Z", "")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {!user.isAdmin() && (
+        <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)} maxWidth="md" fullWidth>
+          <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
+          <DialogContent>
+            <TermsAndConditions />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" onClick={() => setModal(null)}>
+              Aceptaste los términos el: {user.status_terms_and_conditions_date.split("T")[0]} a las{" "}
+              {user.status_terms_and_conditions_date.split("T")[1]?.replaceAll(".000Z", "")}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 });
