@@ -192,6 +192,7 @@ const Contracts = () => {
     () => Math.round(totalValue - (contract.firstPaymentValue || 0)),
     [contract.firstPaymentValue, totalValue]
   );
+
   const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value || 0), 0), [dues]);
   const totalSubDuesValue = useMemo(() => totalFinancingValue - (totalDuesValue || 0), [totalDuesValue, totalFinancingValue]);
   const contractIsDisabledToCreate = useMemo(
@@ -218,7 +219,6 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
-      console.log(data)
     }
   };
 
@@ -441,7 +441,7 @@ const Contracts = () => {
             Ver contrato
           </MenuItem>,
           <MenuItem
-            key={1}
+            key={2}
             disabled={original.status_contracts !== 0}
             onClick={() => {
               closeMenu();
@@ -451,7 +451,7 @@ const Contracts = () => {
             Completar contrato
           </MenuItem>,
           <MenuItem
-            key={2}
+            key={3}
             disabled={original.status_contracts === 0}
             onClick={async () => {
               closeMenu();
@@ -485,19 +485,19 @@ const Contracts = () => {
             Ver firma
           </MenuItem>,
           <Divider key="divider-2" />,
-          // <MenuItem
-          //   key={4}
-          //   onClick={async () => {
-          //     closeMenu();
-          //     setContract(original);
-          //     setModal("edit-contract");
-          //   }}
-          // >
-          //   Editar contrato
-          // </MenuItem>,
+          <MenuItem
+            key={1}
+            onClick={async () => {
+              closeMenu();
+              setContract(original);
+              setModal("edit-contract");
+            }}
+          >
+            Editar contrato
+          </MenuItem>,
           original.status_contracts !== 0 ? (
             <MenuItem
-              key={3}
+              key={2}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -508,7 +508,7 @@ const Contracts = () => {
             </MenuItem>
           ) : (
             <MenuItem
-              key={5}
+              key={3}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -734,7 +734,7 @@ const Contracts = () => {
                       firstPaymentDate: value.toDate(),
                     }))
                   }
-                />
+                />contract
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
@@ -1039,6 +1039,8 @@ const Contracts = () => {
           </LoadingButton>
         </DialogActions>
       </Dialog>
+
+
 
       <Snackbar
         open={feedback.open}

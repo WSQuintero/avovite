@@ -26,6 +26,13 @@ export default class ContractService {
     });
   }
 
+  async getById({ id = null }) {
+    return await handleCall(async () => {
+      if (id) {
+        return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
+      }
+    });
+  }
   async add({ body, mortgage = false } = {}) {
     return await handleCall(
       async () =>
@@ -66,5 +73,8 @@ export default class ContractService {
 
   async refreshSignatures() {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/update/allstatus/validocus`, this.config)).data);
+  }
+  async change({ id, body }) {
+    return await handleCall(async () => (await axios.put(`${this.API_URL}/contracts/change/update/${id}`, body, this.config)).data);
   }
 }
