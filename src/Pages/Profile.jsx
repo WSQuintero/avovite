@@ -145,6 +145,8 @@ function Profile() {
       }
 
     }
+    console.log(user)
+
   }, [session.user]);
 
   if (!session.user) {
@@ -360,7 +362,7 @@ function Profile() {
           />
           <TextField
             name="location_residence"
-            label="Ciudad y País de Residencia"
+            label="Ciudad o país de Residencia"
             value={user.location_residence}
             required
             fullWidth
@@ -370,6 +372,7 @@ function Profile() {
               onFocus: handleReadOnlyInputChange,
             }}
           />
+
         </Row>
       </Grid>
       <Snackbar

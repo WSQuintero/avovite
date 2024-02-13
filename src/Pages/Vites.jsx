@@ -55,6 +55,11 @@ function Vites() {
         size: 210
       },
       {
+        accessorKey: "contract_vites",
+        header: "Vites contratados",
+        size: 210
+      },
+      {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
         Cell: ({ renderedCellValue }) =>
