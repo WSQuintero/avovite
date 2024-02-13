@@ -210,7 +210,7 @@ function TicketListUser({ handleClick }) {
           </Hidden>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="desc" />
+          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder='desc' initialOrderBy='creationDate' />
         </Grid>
 
         <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
