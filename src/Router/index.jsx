@@ -33,6 +33,7 @@ import { ContractDetail } from "../Components/Admin";
 import DetailsProduction from "../Pages/DetailsProduction";
 import TicketForm from "../Pages/TicketForm";
 import TicketList from "../Pages/TicketList";
+import Movements from "../Pages/Movements";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -214,6 +215,10 @@ function Router() {
     {
       path: "/admin/ticket-list",
       element: <PrivateRoute component={TicketList} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,]} />,
+    },
+    {
+      path: "/admin/movements",
+      element: <PrivateRoute component={Movements} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,]} />,
     },
     {
       path: "/posts/:id",

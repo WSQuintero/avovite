@@ -193,6 +193,11 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         show: user?.isAdmin(),
       },
       {
+        name: "Movimientos",
+        route: "/admin/movements",
+        show: user?.isAdmin(),
+      },
+      {
         name: "Lista de tickets",
         route: "/admin/ticket-list",
         show: user?.isAdmin(),
