@@ -33,6 +33,7 @@ import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
+import JSZip from "jszip";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
@@ -149,12 +150,30 @@ function Harvests() {
             >
               Split
             </LoadingButton>
+            <Button variant="outlined" size="small" onClick={() => handleDownload(row.id)}>
+              Exportar
+            </Button>
           </Grid>
         ),
       },
     ],
     [collapse, loading.split]
   );
+
+  const handleDownload = async (id) => {
+    const link = document.createElement("a");
+    link.href = `${import.meta.env.VITE_APP_URL}/harvest/generate-xlsx/${id}`;
+    link.target = "_blank";
+    link.download = `archivo_${id}.xlsx`;
+
+
+
+    link.click();
+  };
+
+
+
+
   const tableCollapse = useCallback(
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
@@ -441,13 +460,12 @@ function Harvests() {
 
   const fetchData = async () => {
     await (async () => {
-      const { status, data } = await $Harvest.get();
+      const { status, data } = await $Harvest.get({id:session?.user?.id});
 
       if (status) {
         setRows(data.data);
       }
     })();
-
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 

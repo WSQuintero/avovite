@@ -11,8 +11,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
+  Input,
+  InputLabel,
   Snackbar,
   TextField,
 } from "@mui/material";
@@ -46,10 +49,11 @@ function Blog() {
         disablePadding: false,
         format: (value) => (
           <Box display="flex" width={200} sx={{ aspectRatio: 1 }}>
-            <img src={value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
+            <img src={value instanceof File ? URL.createObjectURL(value) : value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
           </Box>
         ),
       },
+
       {
         id: "url_video",
         label: "Video",
@@ -75,9 +79,7 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
-            {value}
-          </Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
         ),
       },
       {
@@ -86,9 +88,7 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
-            {value}
-          </Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
         ),
       },
       {
@@ -138,9 +138,22 @@ function Blog() {
   };
 
   const onChangeFields = ({ target }) => {
-    const { name, value } = target;
+    const { name } = target;
+    let value;
+
+    if (target.type === 'file') {
+      value = target.files[0];
+    } else {
+      value = target.value;
+    }
+
+
     setSelectedPost((prev) => ({ ...prev, [name]: value }));
   };
+
+
+
+
 
   const onClearFields = () => {
     setCurrentModal(null);
@@ -153,6 +166,7 @@ function Blog() {
     });
   };
 
+
   const onCreatePost = async (event) => {
     event.preventDefault();
 
@@ -161,16 +175,24 @@ function Blog() {
       return;
     }
 
-    const { status, data } = await $Post.add(selectedPost);
+    try {
+      // Utilizar la instancia $Post para enviar la solicitud
+      const { status, data } = await $Post.add(selectedPost);
 
-    if (status) {
-      setPosts((prev) => [...prev, { ...selectedPost, id: data.data }]);
-      setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
-      onClearFields();
-    } else {
+      if (status) {
+        setPosts((prev) => [...prev, { ...selectedPost, id: data.data }]);
+        setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
+        onClearFields();
+      } else {
+        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+      }
+    } catch (error) {
+      console.error('Error:', error);
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
+
+
 
   const onUpdatePost = async (event) => {
     event.preventDefault();
@@ -226,12 +248,7 @@ function Blog() {
         <EnhancedTable headCells={postsHeadCells} rows={posts} initialOrderBy="title" />
       </Grid>
 
-      <Dialog
-        open={currentModal === "create" || currentModal === "update"}
-        onClose={onClearFields}
-        maxWidth="xl"
-        fullWidth
-      >
+      <Dialog open={currentModal === "create" || currentModal === "update"} onClose={onClearFields} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">{currentModal === "create" ? "Crear" : "Editar"} publicación</DialogTitle>
         <DialogContent>
           <Box
@@ -266,19 +283,24 @@ function Blog() {
                   },
                 })}
               >
-                <TextField
-                  label="Url de la imagen"
-                  name="url_image"
-                  value={selectedPost.url_image}
-                  onChange={onChangeFields}
-                  fullWidth
-                />
+                <Grid sx={{ width: "50%" }}>
+                  <InputLabel htmlFor="upload-image">Subir imagen</InputLabel>
+                  <input
+                    id="upload-image"
+                    type="file"
+                    onChange={onChangeFields} // Aquí handleImageUpload es el manejador de eventos que procesa la imagen seleccionada
+                    style={{ border: "1px solid #999", borderRadius: "10px", padding: "15px", width: "100%" }}
+                    name="url_image"
+
+                  />
+                </Grid>
+
                 <TextField
                   label="Url del video"
                   name="url_video"
                   value={selectedPost.url_video}
                   onChange={onChangeFields}
-                  fullWidth
+                  sx={{ width: "50%", marginTop: "25px" }}
                 />
               </Grid>
             </Grid>
@@ -287,11 +309,7 @@ function Blog() {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={currentModal === "create" ? onCreatePost : onUpdatePost}
-              variant="contained"
-              disabled={!isValidPost}
-            >
+            <Button onClick={currentModal === "create" ? onCreatePost : onUpdatePost} variant="contained" disabled={!isValidPost}>
               {currentModal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>

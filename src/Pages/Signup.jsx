@@ -46,15 +46,24 @@ function Signin() {
     () => ({
       minimumCharacters: user.password.length >= 8 ? true : false,
       atLeastOneUppercase: /^(?=.*[A-Z])/g.test(user.password) ? true : false,
-      atLeastOneSymbol: /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/.test(user.password) ? true : false,
+      atLeastOneSymbol: /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/.test(user.password) ? true : false
     }),
     [user.password]
   );
 
-  const onUserChange = (event) => {
-    const { name, value } = event.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-  };
+  const [error, setError] = useState(undefined);
+
+const onUserChange = (event) => {
+  setError(false)
+  const { name, value } = event.target;
+  setUser((prev) => ({ ...prev, [name]: value }));
+
+  if (name === "email") {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(value);
+    setError(!isValidEmail);
+  }
+};
 
   const onSignup = async (event) => {
     event.preventDefault();
@@ -83,6 +92,15 @@ function Signin() {
       setFeedback({
         show: true,
         message: "La contraseña no cumple las condiciones.",
+        status: "error",
+      });
+
+      return;
+    }
+    if(error){
+      setFeedback({
+        show: true,
+        message: "Se debe establecer un correo válido",
         status: "error",
       });
 
@@ -218,21 +236,23 @@ function Signin() {
               ),
             }}
           />
-          <TextField
-            name="email"
-            type="email"
-            label="Correo electrónico"
-            sx={{ width: "100%" }}
-            value={user.email}
-            onInput={onUserChange}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon color="primary" />
-                </InputAdornment>
-              ),
-            }}
-          />
+        <TextField
+  name="email"
+  type="email"
+  label="Correo electrónico"
+  sx={{ width: "100%" }}
+  value={user.email}
+  onInput={onUserChange}
+  error={error}
+  required
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <EmailIcon color="primary" />
+      </InputAdornment>
+    ),
+  }}
+/>
           <Tooltip
             placement="right"
             title={

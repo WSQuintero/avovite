@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography, TextField } from "@mui/material";
 import FormRequestAvocados from "../Forms/RequestAvocados";
+import useSession from "../../Hooks/useSession";
 
 function RequestAvocados({ open, onClose, onSubmit }) {
-  const [termsAndConditions, setTermsAndConditions] = useState(false);
-
+  const {user}=useSession()
+  const [termsAndConditions, setTermsAndConditions] = useState(user?.isAdmin?true:false);
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
       {!termsAndConditions ? (

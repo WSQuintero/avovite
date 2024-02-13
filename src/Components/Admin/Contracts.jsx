@@ -52,6 +52,17 @@ const columns = [
     Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
   },
   {
+    accessorKey: "created_at",
+    id: "contract_date",
+    header: "Fecha del contrato",
+    Cell: ({ renderedCellValue }) => {
+
+      return (
+        <Typography>{formatDate(renderedCellValue) }</Typography>
+      );
+    }
+  },
+  {
     accessorKey: "contract_label",
     id: "contract_label",
     header: "Etiqueta",
@@ -68,6 +79,21 @@ const columns = [
         </Typography>
       </Stack>
     ),
+  },{
+    accessorKey: "id_type",
+    id: "id_type",
+    header: "Tipo de documento",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+  },{
+    accessorKey: "id_number",
+    id: "id_number",
+    header: "Número de documento",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+  },{
+    accessorKey: "id_location_expedition",
+    id: "id_location_expedition",
+    header: "Lugar de expedición",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
   },
   {
     accessorKey: "mortgage_contract",
@@ -166,6 +192,7 @@ const Contracts = () => {
     () => Math.round(totalValue - (contract.firstPaymentValue || 0)),
     [contract.firstPaymentValue, totalValue]
   );
+
   const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value || 0), 0), [dues]);
   const totalSubDuesValue = useMemo(() => totalFinancingValue - (totalDuesValue || 0), [totalDuesValue, totalFinancingValue]);
   const contractIsDisabledToCreate = useMemo(
@@ -192,6 +219,7 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
+
     }
   };
 
@@ -414,7 +442,7 @@ const Contracts = () => {
             Ver contrato
           </MenuItem>,
           <MenuItem
-            key={1}
+            key={2}
             disabled={original.status_contracts !== 0}
             onClick={() => {
               closeMenu();
@@ -424,7 +452,7 @@ const Contracts = () => {
             Completar contrato
           </MenuItem>,
           <MenuItem
-            key={2}
+            key={3}
             disabled={original.status_contracts === 0}
             onClick={async () => {
               closeMenu();
@@ -458,19 +486,19 @@ const Contracts = () => {
             Ver firma
           </MenuItem>,
           <Divider key="divider-2" />,
-          // <MenuItem
-          //   key={4}
-          //   onClick={async () => {
-          //     closeMenu();
-          //     setContract(original);
-          //     setModal("edit-contract");
-          //   }}
-          // >
-          //   Editar contrato
-          // </MenuItem>,
+          <MenuItem
+            key={1}
+            onClick={async () => {
+              closeMenu();
+              setContract(original);
+              setModal("edit-contract");
+            }}
+          >
+            Editar contrato
+          </MenuItem>,
           original.status_contracts !== 0 ? (
             <MenuItem
-              key={3}
+              key={2}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -481,7 +509,7 @@ const Contracts = () => {
             </MenuItem>
           ) : (
             <MenuItem
-              key={5}
+              key={3}
               sx={{ color: "error.main" }}
               onClick={async () => {
                 closeMenu();
@@ -522,7 +550,12 @@ const Contracts = () => {
                 </Typography>
                 ${formatCurrency(row.total_contract_with_discount)}
               </Typography>
-
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Fecha de contrato:{" "}
+                </Typography>
+                {formatDate(row.created_at)}
+              </Typography>
               <Typography variant="h4" mt={4}>
                 Información de primer pago
               </Typography>
@@ -702,7 +735,7 @@ const Contracts = () => {
                       firstPaymentDate: value.toDate(),
                     }))
                   }
-                />
+                />contract
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
@@ -1007,6 +1040,8 @@ const Contracts = () => {
           </LoadingButton>
         </DialogActions>
       </Dialog>
+
+
 
       <Snackbar
         open={feedback.open}

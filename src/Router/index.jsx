@@ -31,6 +31,8 @@ import Payments from "../Pages/Payments";
 import Production from "../Pages/Production";
 import { ContractDetail } from "../Components/Admin";
 import DetailsProduction from "../Pages/DetailsProduction";
+import TicketForm from "../Pages/TicketForm";
+import TicketList from "../Pages/TicketList";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -121,7 +123,7 @@ function Router() {
     },
     {
       path: "/privacy-policy",
-      element: <PrivacyPolicy />,
+      element: <PrivacyPolicy meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/",
@@ -129,7 +131,7 @@ function Router() {
     },
     {
       path: "/dashboard",
-      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN, REQUIRES_CONTRACTS]} />,
+      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,  REQUIRES_CONTRACTS]} />,
     },
     {
       path: "/vites",
@@ -204,6 +206,14 @@ function Router() {
     {
       path: "/admin/contracts/:id",
       element: <PrivateRoute component={ContractDetail} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
+    },
+    {
+      path: "/form-tickets",
+      element: <PrivateRoute component={TicketForm} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,HIDE_FOR_ADMIN]} />,
+    },
+    {
+      path: "/admin/ticket-list",
+      element: <PrivateRoute component={TicketList} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,]} />,
     },
     {
       path: "/posts/:id",

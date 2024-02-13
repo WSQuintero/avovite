@@ -252,8 +252,8 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     name: "-",
     quantity: "",
     percent_discount: "",
-    production_in_kilograms: "",
-    tir: "",
+    // production_in_kilograms: "",
+    // tir: "",
     url_image: "",
   });
   const [modal, setModal] = useState(null);
@@ -262,8 +262,8 @@ function Discounts({ service: $Shop, state, products, feedback }) {
       discount.name !== "-" &&
       discount.quantity &&
       discount.percent_discount !== "" &&
-      discount.production_in_kilograms &&
-      discount.tir &&
+      // discount.production_in_kilograms &&
+      // discount.tir &&
       discount.url_image &&
       discount.id_product,
     [discount]
@@ -309,20 +309,20 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         disablePadding: false,
         format: (value) => value,
       },
-      {
-        id: "tir",
-        label: "Tir",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value || "-",
-      },
-      {
-        id: "production_in_kilograms",
-        label: "Producción en kg",
-        align: "left",
-        disablePadding: false,
-        format: (value) => value || "-",
-      },
+      // {
+      //   id: "tir",
+      //   label: "Tir",
+      //   align: "left",
+      //   disablePadding: false,
+      //   format: (value) => value || "-",
+      // },
+      // {
+      //   id: "production_in_kilograms",
+      //   label: "Producción en kg",
+      //   align: "left",
+      //   disablePadding: false,
+      //   format: (value) => value || "-",
+      // },
       {
         id: "",
         label: "",
@@ -381,8 +381,8 @@ function Discounts({ service: $Shop, state, products, feedback }) {
       name: "-",
       quantity: "",
       percent_discount: "",
-      production_in_kilograms: "",
-      tir: "",
+      // production_in_kilograms: "",
+      // tir: "",
       url_image: "",
     });
   };
@@ -500,14 +500,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                 <TextField label="Cantidad" name="quantity" value={discount.quantity} onChange={onChangeFields} fullWidth />
               </Grid>
               <Grid display="flex" flexDirection={{ xs: "column", md: "row" }} gap={2}>
-                <TextField label="Tir" name="tir" value={discount.tir} onChange={onChangeFields} fullWidth />
-                <TextField
+                {/* <TextField label="Tir" name="tir" value={discount.tir} onChange={onChangeFields} fullWidth /> */}
+                {/* <TextField
                   label="Producción en kg"
                   name="production_in_kilograms"
                   value={discount.production_in_kilograms}
                   onChange={onChangeFields}
                   fullWidth
-                />
+                /> */}
               </Grid>
               <Grid display="flex" gap={2}>
                 <MuiFileInput

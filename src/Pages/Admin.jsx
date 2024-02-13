@@ -15,6 +15,7 @@ import {
   PaymentSplit,
   Verifik,
 } from "../Components/Admin/";
+import TicketList from "./TicketList";
 
 const SECTIONS = {
   harvests: <Harvests />,
@@ -25,6 +26,7 @@ const SECTIONS = {
   concepts: <Concepts />,
   suppliers: <Suppliers />,
   users: <Users />,
+  ticketList:<TicketList/>,
   verifik: <Verifik />,
   whitelist: <Whitelist />,
 };

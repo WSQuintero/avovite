@@ -197,7 +197,7 @@ function Payments() {
 
   useEffect(() => {
     (async () => {
-      const { status, data } = await $Contract.get();
+      const { status, data } = await $Contract.get(user?.id);
 
       if (status) {
         setContracts(data.data);
@@ -205,7 +205,7 @@ function Payments() {
 
       setLoading((prev) => ({ ...prev, fetching: false }));
     })();
-  }, [$Contract]);
+  }, [$Contract,user]);
 
   useEffect(() => {
     if(user){

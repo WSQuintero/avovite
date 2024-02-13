@@ -197,9 +197,7 @@ function Tab3({ $, service }) {
 
     const { status, data } = await $Verifik.search({ service, ...formData });
 
-    if (status) {
-      console.log(data);
-    }
+
 
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
@@ -284,9 +282,7 @@ function Tab4({ $, service }) {
 
     const { status, data } = await $Verifik.search({ service, ...formData });
 
-    if (status) {
-      console.log(data.data);
-    }
+
 
     setLoading((prev) => ({ ...prev, fetching: false }));
   };

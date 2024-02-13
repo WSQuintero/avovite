@@ -32,6 +32,7 @@ import WhiteIcon from "../assets/img/common/icon_white.svg";
 import WhiteLogo from "../assets/img/common/logo_white.png";
 import { CONTRACT_TYPES } from "../utilities/constants";
 import Image from "./Image";
+import TicketIcon from "../assets/icons/TicketIcon";
 
 const SidebarLink = ({ collapse, name, icon, route, subRoutes }) => {
   return (
@@ -146,63 +147,77 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         show: !user?.isAdmin(),
       }, */
       {
-        icon: <ProtectionIcon />,
-        name: "Administrador",
-        route: "/admin",
+        name: "Blog",
+        route: "/admin/blog",
         show: user?.isAdmin(),
-        collapse: collapseOn === "admin",
-        children: [
-          {
-            name: "Blog",
-            route: "/admin/blog",
-          },
-          {
-            name: "Conceptos",
-            route: "/admin/concepts",
-          },
-          {
-            name: "Contratos",
-            route: "/admin/contracts",
-          },
-          {
-            name: "Cosechas",
-            route: "/admin/harvests",
-          },
-          // {
-          //   name: "Lapsos",
-          //   route: "/admin/date-ranges",
-          // },
-          {
-            name: "Proveedores",
-            route: "/admin/suppliers",
-          },
-          {
-            name: "Split de pagos",
-            route: "/admin/payment-split",
-          },
-          {
-            name: "Tienda",
-            route: "/admin/shop",
-          },
-          {
-            name: "Usuarios",
-            route: "/admin/users",
-          },
-          {
-            name: "Verifik",
-            route: "/admin/verifik",
-          },
-          {
-            name: "Whitelist",
-            route: "/admin/whitelist",
-          },
-        ],
+      },
+      {
+        name: "Conceptos",
+        route: "/admin/concepts",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Contratos",
+        route: "/admin/contracts",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Cosechas",
+        route: "/admin/harvests",
+        show: user?.isAdmin(),
+      },
+      // {
+      //   name: "Lapsos",
+      //   route: "/admin/date-ranges",
+      //  show: user?.isAdmin(),
+
+      // },
+      {
+        name: "Proveedores",
+        route: "/admin/suppliers",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Split de pagos",
+        route: "/admin/payment-split",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Tienda",
+        route: "/admin/shop",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Usuarios",
+        route: "/admin/users",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Lista de tickets",
+        route: "/admin/ticket-list",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Verifik",
+        route: "/admin/verifik",
+        show: user?.isAdmin(),
+      },
+      {
+        name: "Whitelist",
+        route: "/admin/whitelist",
+        show: user?.isAdmin(),
+      },
+      {
+        icon: <TicketIcon />,
+        name: "Tickets",
+        route: "/form-tickets",
+        show: !user?.isAdmin(),
       },
       {
         icon: <AccountantIcon />,
         name: "Perfil",
         route: "/profile",
-        show: true,
+        show: !user?.isAdmin(),
       },
     ],
     [user, collapseOn]
@@ -210,88 +225,95 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
 
   if (!user) {
     return <></>;
-  }else if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
+  } else if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
     return <></>;
   }
 
-  return (<>
-    <Drawer
-      variant={isMobile ? "temporary" : "permanent"}
-      anchor="left"
-      open={sidebar}
-      sx={(t) => ({
-        flexShrink: 0,
-        width: t.sizes.sidebar.main,
-        "& .MuiDrawer-paper": {
+  return (
+    <>
+      <Drawer
+        variant={isMobile ? "temporary" : "permanent"}
+        anchor="left"
+        open={sidebar}
+        sx={(t) => ({
+          flexShrink: 0,
           width: t.sizes.sidebar.main,
-          border: "none",
-          backgroundColor: "primary.main",
-        },
-      })}
-      onClose={() => toggleSidebar()}
-    >
-      {isMobile ? (
-        <>
-          <Toolbar>
-            <img
-              src={background}
-              alt="background"
-              style={{ position: "absolute", zIndex: -1, top: "-50%", left: 0, right: 0, width: "100%" }}
-            />
-            <Grid display="flex" flexDirection="column" gap={1} paddingY={4} width="100%">
-              <Avatar src={user.avatar} alt={user.name} sx={{ width: 48, height: 48 }} />
-              <Grid display="flex" flexDirection="column" overflow="hidden">
-                <Typography fontSize={24} fontWeight={600} lineHeight={1} color="white">
-                  {user.fullname.split(" ")[0]}
-                </Typography>
-                <Typography variant="caption" fontWeight={200} color="white" textOverflow="ellipsis">
-                  {user.email}
-                </Typography>
+          "& .MuiDrawer-paper": {
+            width: t.sizes.sidebar.main,
+            border: "none",
+            backgroundColor: "primary.main",
+          },
+        })}
+        onClose={() => toggleSidebar()}
+      >
+        {isMobile ? (
+          <>
+            <Toolbar>
+              <img
+                src={background}
+                alt="background"
+                style={{ position: "absolute", zIndex: -1, top: "-50%", left: 0, right: 0, width: "100%" }}
+              />
+              <Grid display="flex" flexDirection="column" gap={1} paddingY={4} width="100%">
+                <Avatar src={user.avatar} alt={user.name} sx={{ width: 48, height: 48 }} />
+                <Grid display="flex" flexDirection="column" overflow="hidden">
+                  <Typography fontSize={24} fontWeight={600} lineHeight={1} color="white">
+                    {user.fullname.split(" ")[0]}
+                  </Typography>
+                  <Typography variant="caption" fontWeight={200} color="white" textOverflow="ellipsis">
+                    {user.email}
+                  </Typography>
+                </Grid>
               </Grid>
-            </Grid>
+            </Toolbar>
+          </>
+        ) : (
+          <Toolbar>
+            <img src={WhiteLogo} alt="Logo" height={40} />
           </Toolbar>
-        </>
-      ) : (
-        <Toolbar>
-          <img src={WhiteLogo} alt="Logo" height={40} />
-        </Toolbar>
-      )}
-      <Typography padding={2} color="common.white">
-        Navegación
-      </Typography>
-      <List>
-        {routes.map(
-          ({ icon, name, route, show, collapse, children }) =>
-            show && <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
         )}
-      </List>
-      
-      <Stack spacing={1} alignItems="center" mt="auto" mb={1}>
-        <Typography variant="caption" color="white" lineHeight={1} style={{cursor: "pointer"}} onClick={()=>setModal("modal-terms")}>
-          TÉRMINOS Y CONDICIONES
+        <Typography padding={2} color="common.white">
+          Navegación
         </Typography>
-      </Stack>
-      
-      <Stack direction="row" spacing={4} alignItems="center" pr={2}  mb={1} sx={{ opacity: 0.5 }}>
-        <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
-        <Typography variant="caption" color="white" lineHeight={1}>
-          Las ganancias del aguacate Hass Colombiana son para todos
-        </Typography>
-      </Stack>
-    </Drawer>
-          
-    <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)}  maxWidth="md" fullWidth>
-      <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
-      <DialogContent>
-        <TermsAndConditions />
-      </DialogContent>
-      <DialogActions>
-        <Button variant="contained" onClick={() => setModal(null)}>
-          Aceptaste los términos el: {user.status_terms_and_conditions_date.split("T")[0]} a las {user.status_terms_and_conditions_date.split("T")[1]?.replaceAll(".000Z","")}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </>);
+        <List>
+          {routes.map(
+            ({ icon, name, route, show, collapse, children }) =>
+              show && <SidebarLink key={name} collapse={collapse} name={name} icon={icon} route={route} subRoutes={children} />
+          )}
+        </List>
+
+        <Stack spacing={1} alignItems="center" mt="auto" mb={1}>
+      {!user.isAdmin() && (
+
+          <Typography variant="caption" color="white" lineHeight={1} style={{ cursor: "pointer" }} onClick={() => setModal("modal-terms")}>
+            TÉRMINOS Y CONDICIONES
+          </Typography>)
+}
+        </Stack>
+
+        <Stack direction="row" spacing={4} alignItems="center" pr={2} mb={1} sx={{ opacity: 0.5 }}>
+          <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
+          <Typography variant="caption" color="white" lineHeight={1}>
+            Las ganancias del aguacate Hass Colombiana son para todos
+          </Typography>
+        </Stack>
+      </Drawer>
+      {!user.isAdmin() && (
+        <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)} maxWidth="md" fullWidth>
+          <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
+          <DialogContent>
+            <TermsAndConditions />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" onClick={() => setModal(null)}>
+              Aceptaste los términos el: {user.status_terms_and_conditions_date.split("T")[0]} a las{" "}
+              {user.status_terms_and_conditions_date.split("T")[1]?.replaceAll(".000Z", "")}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </>
+  );
 });
 
 export default Sidebar;

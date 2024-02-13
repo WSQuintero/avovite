@@ -145,12 +145,20 @@ function Profile() {
       }
 
     }
+    console.log(user)
+
   }, [session.user]);
 
   if (!session.user) {
     return <></>;
   }
 
+  const handleReadOnlyInputChange = () => {
+    resetAlert()
+    setTimeout(()=>{
+      setAlert({ show: true, message: "Por favor, para modificar tu información, crea un ticket.", status: "info" });
+    },500)
+  };
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
@@ -252,124 +260,131 @@ function Profile() {
         </Box>
         <Box height={32} />
         <Grid
-          component="form"
-          display="flex"
-          flexDirection="column"
-          padding={2}
-          gap={4}
-          noValidate
-          onSubmit={handleFormSubmit}
-        >
-          <Row>
-            <TextField
-              name="fullname"
-              label="Nombres y Apellidos"
-              value={user.fullname}
-              required
-              fullWidth
-              onChange={handleInputChange}
-            />
-            <TextField
-              name="email"
-              label="Correo Electrónico"
-              value={user.email}
+        component="form"
+        display="flex"
+        flexDirection="column"
+        padding={2}
+        gap={4}
+        noValidate
+        onSubmit={handleFormSubmit}
+      >
+        <Row>
+          <TextField
+            name="fullname"
+            label="Nombres y Apellidos"
+            value={user.fullname}
+            required
+            fullWidth
+            onChange={handleInputChange}
+            InputProps={{
+              readOnly: true,
+              onFocus: handleReadOnlyInputChange,
+            }}
+          />
+          <TextField
+            name="email"
+            label="Correo Electrónico"
+            value={user.email}
+            required
+            fullWidth
+            onChange={handleInputChange}
+            InputProps={{
+              readOnly: true,
+              onFocus: handleReadOnlyInputChange,
+            }}
+          />
+        </Row>
+        <Row>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel id="label-document-type">Tipo de Documento *</InputLabel>
+            <Select
+              labelId="label-document-type"
+              label="Tipo de Documento"
+              name="id_type"
+              value={user.id_type}
               required
               fullWidth
               onChange={handleInputChange}
               disabled
-            />
-          </Row>
-          <Row>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="label-document-type">Tipo de Documento *</InputLabel>
-              <Select
-                labelId="label-document-type"
-                label="Tipo de Documento"
-                name="id_type"
-                value={user.id_type}
-                required
-                fullWidth
-                onChange={handleInputChange}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
+              onFocus={handleReadOnlyInputChange}
+            >
+              <MenuItem value="-" selected disabled>
+                Seleccione una opción
+              </MenuItem>
+              {Object.keys(DOCUMENT_TYPES).map((key) => (
+                <MenuItem key={key} value={key}>
+                  {DOCUMENT_TYPES[key]}
                 </MenuItem>
-                {Object.keys(DOCUMENT_TYPES).map((key) => (
-                  <MenuItem key={key} value={key}>
-                    {DOCUMENT_TYPES[key]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              name="id_number"
-              type="number"
-              label="Número de Documento"
-              value={user.id_number}
-              required
-              fullWidth
-              onChange={handleInputChange}
-            />
-          </Row>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            name="id_number"
+            type="number"
+            label="Número de Documento"
+            value={user.id_number}
+            required
+            fullWidth
+            onChange={handleInputChange}
+            InputProps={{
+              readOnly: true,
+              onFocus: handleReadOnlyInputChange,
+            }}
+          />
+        </Row>
+        <Row>
+          <TextField
+            name="id_location_expedition"
+            label="Lugar de Expedición del Documento"
+            value={user.id_location_expedition}
+            required
+            fullWidth
+            onChange={handleInputChange}
+            InputProps={{
+              readOnly: true,
+              onFocus: handleReadOnlyInputChange,
+            }}
+          />
+        </Row>
+        <Row>
+          {/* PhoneField component disabled */}
+          <TextField
+            name="cellphone"
+            label="Teléfono de Contacto"
+            value={user.cellphone}
+            required
+            fullWidth
+            onChange={handleInputChange}
+            InputProps={{
+              readOnly: true,
+              onFocus: handleReadOnlyInputChange,
+            }}
+          />
+          <TextField
+            name="location_residence"
+            label="Ciudad o país de Residencia"
+            value={user.location_residence}
+            required
+            fullWidth
+            onChange={handleInputChange}
+            InputProps={{
+              readOnly: true,
+              onFocus: handleReadOnlyInputChange,
+            }}
+          />
 
-          <Row>
-            <TextField
-              name="id_location_expedition"
-              label="Lugar de Expedición del Documento"
-              value={user.id_location_expedition}
-              required
-              fullWidth
-              onChange={handleInputChange}
-            />
-          </Row>
-
-          <Row>
-            <PhoneField
-              enableSearch={true}
-              value={user.cellphone}
-              country="co"
-              specialLabel="Teléfono de Contacto"
-              autoFormat={true}
-              inputStyle={{
-                width: "100%",
-              }}
-              inputProps={{
-                name: "cellphone",
-                required: true,
-              }}
-              isValid={(value, country) => {
-                if (value.match(/12345/)) {
-                  return "Invalid value:" + value + ", " + country.name;
-                } else {
-                  return true;
-                }
-              }}
-              onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
-            />
-            <TextField
-              name="location_residence"
-              label="Ciudad y País de Residencia"
-              value={user.location_residence}
-              required
-              fullWidth
-              onChange={handleInputChange}
-            />
-          </Row>
-
-          {/*<Button type="submit" size="large" variant="contained" disabled={!validation}>
-            Actualizar
-            </Button>*/}
-        </Grid>
-        <Snackbar
-          open={alert.show}
-          autoHideDuration={3000}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          onClose={resetAlert}
-        >
-          <Alert severity={alert.status} sx={{ width: "100%" }}>
-            {alert.message}
-          </Alert>
-        </Snackbar>
+        </Row>
+      </Grid>
+      <Snackbar
+        open={alert.show}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={resetAlert}
+      >
+        <Alert severity={alert.status} sx={{ width: "100%" }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
       </Container>
     </PageWrapper>
   );

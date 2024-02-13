@@ -40,6 +40,26 @@ function Vites() {
         size: 210
       },
       {
+        accessorKey: "paidVite",
+        header: "vites pagos",
+        size: 210
+      },
+      {
+        accessorKey: "debt",
+        header: "Deuda actual",
+        size: 210
+      },
+      {
+        accessorKey: "total_contract_with_discount",
+        header: "Total contrato",
+        size: 210
+      },
+      {
+        accessorKey: "contract_vites",
+        header: "Vites contratados",
+        size: 210
+      },
+      {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
         Cell: ({ renderedCellValue }) =>
@@ -90,13 +110,14 @@ function Vites() {
 
   useEffect(() => {
     (async () => {
-      const { status, data } = await $Contract.get();
+      const { status, data } = await $Contract.get({id:user?.id});
 
       if (status) {
         setRows(data.data);
+        console.log(data.data)
       }
     })();
-  }, [$Contract]);
+  }, [$Contract,user]);
 
   useEffect(() => {
     if(user){

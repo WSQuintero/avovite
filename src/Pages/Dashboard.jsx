@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { 
-  Box, 
-  Button, 
-  Container, 
-  Grid, 
-  Skeleton, 
-  Typography, 
-  Stack, 
-  Icon, 
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Skeleton,
+  Typography,
+  Stack,
+  Icon,
   Tooltip as MuiTooltip,
 } from "@mui/material";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, Line, Tooltip, YAxis, Label } from "recharts";
@@ -117,7 +117,7 @@ function Dashboard() {
   return (
     <PageWrapper>
       <Container maxWidth="xxl">
-        {user.status_terms_and_conditions === 1 && user.status_terms_and_conditions_date ? (
+        {user.status_terms_and_conditions === 1 && user.status_terms_and_conditions_date || user.isAdmin()? (
           <>
             <Grid display="flex" flexDirection="column" gap={8} width="100%">
               <Stack spacing={2}>
@@ -354,7 +354,7 @@ function Dashboard() {
         ) : (
           <Grid display="flex" flexDirection="column" gap={2} width="100%">
             <Typography variant="h2" textAlign="center">
-            ¡Bienvenido a la app de Avovite! 
+            ¡Bienvenido a la app de Avovite!
             </Typography>
             <TermsAndConditions />
             <Grid display="flex" gap={2}>
