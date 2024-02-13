@@ -22,6 +22,7 @@ import PageWrapper from "../Components/PageWrapper";
 import TicketService from "../Services/ticket.service";
 import useSession from "../Hooks/useSession";
 import TicketModal from "../Components/Admin/TicketDetailModal";
+import MessageModal from "../Components/Admin/MessageModal";
 
 const InitialState = {
   id: "",
@@ -29,9 +30,9 @@ const InitialState = {
   asWork: "",
   state: "",
   actions: [
-    { label: 'Front Document', url: null },
-    { label: 'Back Document', url: null },
-    { label: 'Bank Document', url: null }
+    { label: "Front Document", url: null },
+    { label: "Back Document", url: null },
+    { label: "Bank Document", url: null },
   ],
 };
 
@@ -43,7 +44,9 @@ function TicketList({ handleClick }) {
   const [loading, setLoading] = useState({ fetching: true });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
-  const [actualTicket,setActualTicket]=useState(null)
+  const [actualTicket, setActualTicket] = useState(null);
+  const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
+
   const tableHeadCells = useMemo(
     () => [
       {
@@ -69,7 +72,7 @@ function TicketList({ handleClick }) {
           <Select
             value={row.state}
             onChange={(event) => handleChangeState(event, row)}
-            sx={{ minWidth: 100,height:"40px",fontSize:"15px" }}
+            sx={{ minWidth: 100, height: "40px", fontSize: "15px" }}
           >
             <MenuItem value="In Progress">In Progress</MenuItem>
             <MenuItem value="Completed">Completed</MenuItem>
@@ -77,47 +80,71 @@ function TicketList({ handleClick }) {
         ),
       },
       {
-        id: 'actions',
-        label: 'Archivos adjuntos',
-        align: 'left',
+        id: "actions",
+        label: "Archivos adjuntos",
+        align: "left",
         disablePadding: false,
         format: (value, row) => (
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ width: "100px", fontSize: "12px" }}
-            onClick={() => handleDownload(row)}
-          >
+          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)}>
             Descargar
           </Button>
         ),
       },
       {
-        id: 'detail_ticket',
-        label: 'Detalle',
-        align: 'left',
+        id: "detail_ticket",
+        label: "Detalle",
+        align: "left",
+        disablePadding: false,
+        format: (value, row) => (
+          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleSeeDetail(row)}>
+            Ver detalle
+          </Button>
+        ),
+      },
+      {
+        id: "send_message", // New column for sending message
+        label: "Enviar mensaje",
+        align: "left",
         disablePadding: false,
         format: (value, row) => (
           <Button
             variant="contained"
             color="primary"
-            sx={{ width: "100px", fontSize: "12px" }}
-            onClick={() => handleSeeDetail(row)}
+            sx={{
+              width: "150px",
+              fontSize: "12px",
+              bgcolor: "background.paper",
+              border: "1px solid",
+              borderColor: "primary.main",
+              color: "primary.main",
+              "&:hover": {
+                color: "#ffffff", // Cambiar a blanco al hacer hover
+              },
+            }}
+            onClick={() => handleSendMessage(row)}
           >
-            Ver detalle
+            Enviar mensaje
           </Button>
         ),
       },
     ],
     []
   );
+  const closeMessages =()=>{
+    setMessageModalOpen(false)
+  }
+
+  const handleSendMessage = (row) => {
+    // Handle sending message here, you can open a modal or perform any action you need
+    setMessageModalOpen(true);
+  };
 
   const handleChangeState = async (event, row) => {
     const newTicketStatus = event.target.value;
     try {
       const { status } = await $Ticket.changeTicketStatus({ id: row.id, ticketStatus: newTicketStatus });
       if (status) {
-        setRows(prevRows => prevRows.map(prevRow => prevRow.id === row.id ? { ...prevRow, state: newTicketStatus } : prevRow));
+        setRows((prevRows) => prevRows.map((prevRow) => (prevRow.id === row.id ? { ...prevRow, state: newTicketStatus } : prevRow)));
         setFeedback({ open: true, message: "Estado de ticket actualizado exitosamente.", status: "success" });
       } else {
         setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
@@ -130,8 +157,8 @@ function TicketList({ handleClick }) {
 
   const handleSeeDetail = async (ticket) => {
     try {
-      const {status,data} = await $Ticket.getById({id:ticket.id}); // Replace 'your_api_endpoint' with the actual endpoint
-      if(status){
+      const { status, data } = await $Ticket.getById({ id: ticket.id }); // Replace 'your_api_endpoint' with the actual endpoint
+      if (status) {
         setActualTicket(data.data?.tiket); // Set the modal state to display
         setModal("detail"); // Show the modal for ticket detail
       }
@@ -142,9 +169,9 @@ function TicketList({ handleClick }) {
 
   const handleDownload = (row) => {
     const fileUrl = row.fileUrl;
-    const downloadLink = document.createElement('a');
+    const downloadLink = document.createElement("a");
     downloadLink.href = fileUrl;
-    downloadLink.download = 'archivo';
+    downloadLink.download = "archivo";
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -158,17 +185,19 @@ function TicketList({ handleClick }) {
     try {
       const { status, data } = await $Ticket.getAll();
       if (status) {
-        setRows(data.data.map(ticket => ({
-          id: ticket.id,
-          name: ticket.title,
-          asWork: ticket.description,
-          state: ticket.ticketStatus,
-          actions: [
-            { label: 'Front Document', url: ticket.frontDocumentUrl },
-            { label: 'Back Document', url: ticket.backDocumentUrl },
-            { label: 'Bank Document', url: ticket.bankUrl }
-          ]
-        })));
+        setRows(
+          data.data.map((ticket) => ({
+            id: ticket.id,
+            name: ticket.title,
+            asWork: ticket.description,
+            state: ticket.ticketStatus,
+            actions: [
+              { label: "Front Document", url: ticket.frontDocumentUrl },
+              { label: "Back Document", url: ticket.backDocumentUrl },
+              { label: "Bank Document", url: ticket.bankUrl },
+            ],
+          }))
+        );
         setLoading((prev) => ({ ...prev, fetching: false }));
       }
     } catch (error) {
@@ -197,9 +226,7 @@ function TicketList({ handleClick }) {
           <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
         </Grid>
 
-        {actualTicket&&(
-        <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} />
-        )}
+        {actualTicket && <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} />}
         <Snackbar
           open={feedback.open}
           autoHideDuration={3000}
@@ -211,6 +238,7 @@ function TicketList({ handleClick }) {
           </Alert>
         </Snackbar>
 
+        <MessageModal onClose={closeMessages} open={messageModalOpen} />
       </PageWrapper>
     </>
   );

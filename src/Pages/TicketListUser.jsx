@@ -22,6 +22,7 @@ import PageWrapper from "../Components/PageWrapper";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import TicketService from "../Services/ticket.service";
 import TicketModalUser from "../Components/TicketDetailModalUser";
+import MessageModal from "../Components/Admin/MessageModal";
 
 const InitialState = { id: null, name: "", asWork: "" };
 
@@ -34,7 +35,7 @@ function TicketListUser({ handleClick }) {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
   const [actualTicket, setActualTicket] = useState(null);
-
+  const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
   const tableHeadCells = useMemo(
     () => [
       {
@@ -80,9 +81,42 @@ function TicketListUser({ handleClick }) {
           </Button>
         ),
       },
+      {
+        id: "send_message", // New column for sending message
+        label: "Enviar mensaje",
+        align: "left",
+        disablePadding: false,
+        format: (value, row) => (
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "150px",
+              fontSize: "12px",
+              bgcolor: "background.paper",
+              border: "1px solid",
+              borderColor: "primary.main",
+              color: "primary.main",
+              "&:hover": {
+                color: "#ffffff", // Cambiar a blanco al hacer hover
+              },
+            }}
+            onClick={() => handleSendMessage(row)}
+          >
+            Enviar mensaje
+          </Button>
+        ),
+      },
     ],
     []
   );
+
+
+
+  const handleSendMessage = (row) => {
+    // Handle sending message here, you can open a modal or perform any action you need
+    setMessageModalOpen(true);
+  };
 
   const handleSeeDetail = async (ticket) => {
     try {
@@ -111,6 +145,11 @@ function TicketListUser({ handleClick }) {
     setFeedback((prev) => ({ ...prev, open: false }));
   };
 
+
+
+  const closeMessages =()=>{
+    setMessageModalOpen(false)
+  }
   const onChangeFields = ({ target }) => {
     const { name, value } = target;
     setNewRow((prev) => ({ ...prev, [name]: value }));
@@ -127,7 +166,7 @@ function TicketListUser({ handleClick }) {
     if (status) {
       setRows(
         data.data
-          .filter((tick) => tick.idUser === session.user.id)
+          .filter((tick) => tick.idUser === session?.user?.id)
           .map((ticket) => ({
             id: ticket.id,
             name: ticket.title,
@@ -139,7 +178,6 @@ function TicketListUser({ handleClick }) {
               { label: "Bank Document", url: ticket.bankUrl },
             ],
           }))
-
       );
 
       setLoading((prev) => ({ ...prev, fetching: false }));
@@ -150,12 +188,12 @@ function TicketListUser({ handleClick }) {
     if ($Ticket) {
       fetchData();
     }
-  }, [$Ticket]);
+  }, [$Ticket,session.user]);
 
   return (
     <>
       <PageWrapper>
-      <Button variant="contained" color="primary" sx={{ position:"absolute",right:"100px", margin: "auto" }} onClick={handleClick}>
+        <Button variant="contained" color="primary" sx={{ position: "absolute", right: "100px", margin: "auto" }} onClick={handleClick}>
           Crear ticket
         </Button>
         <Stack direction="row" alignItems="center" spacing={2}>
@@ -163,10 +201,9 @@ function TicketListUser({ handleClick }) {
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
           </Box>
           <Hidden smDown>
-          <Typography fontWeight={600} color="primary.main" sm={{display:"hidden"}}>
-            Solicitudes de actualización de datos
-          </Typography>
-
+            <Typography fontWeight={600} color="primary.main" sm={{ display: "hidden" }}>
+              Solicitudes de actualización de datos
+            </Typography>
           </Hidden>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
@@ -229,6 +266,8 @@ function TicketListUser({ handleClick }) {
           </Alert>
         </Snackbar>
 
+        {/* Message modal */}
+        <MessageModal onClose={closeMessages} open={messageModalOpen  }  />
       </PageWrapper>
     </>
   );
