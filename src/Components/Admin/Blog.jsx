@@ -49,10 +49,11 @@ function Blog() {
         disablePadding: false,
         format: (value) => (
           <Box display="flex" width={200} sx={{ aspectRatio: 1 }}>
-            <img src={value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
+            <img src={value instanceof File ? URL.createObjectURL(value) : value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
           </Box>
         ),
       },
+
       {
         id: "url_video",
         label: "Video",

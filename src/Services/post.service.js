@@ -43,16 +43,23 @@ export default class PostService {
   }
 
   async update({ id, ...body }) {
-    const { title, description, url_image, url_video } = body;
+    const formData = new FormData();
 
+    // Agregar campos al FormData
+    Object.entries(body).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    // Enviar la solicitud al backend
     return await handleCall(
       async () =>
         (
-          await axios.put(
-            `${this.API_URL}/blog/${id}`,
-            { title, description, url_image, url_video },
-            { headers: { Authorization: this.token } }
-          )
+          await axios.put(`${this.API_URL}/blog/${id}`, formData, {
+            headers: {
+              Authorization: this.token,
+              "Content-Type": "multipart/form-data", // Especificar el tipo de contenido como FormData
+            },
+          })
         ).data
     );
   }
