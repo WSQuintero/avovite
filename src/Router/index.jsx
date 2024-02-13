@@ -131,7 +131,7 @@ function Router() {
     },
     {
       path: "/dashboard",
-      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN, REQUIRES_CONTRACTS]} />,
+      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,  REQUIRES_CONTRACTS]} />,
     },
     {
       path: "/vites",

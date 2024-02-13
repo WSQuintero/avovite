@@ -40,6 +40,11 @@ function Vites() {
         size: 210
       },
       {
+        accessorKey: "vites pagos",
+        header: "vites pagos",
+        size: 210
+      },
+      {
         accessorKey: "first_payment_date",
         header: "Fecha de compra",
         Cell: ({ renderedCellValue }) =>

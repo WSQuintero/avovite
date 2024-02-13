@@ -5,7 +5,7 @@ import useSession from "../../Hooks/useSession";
 
 function RequestAvocados({ open, onClose, onSubmit }) {
   const {user}=useSession()
-  const [termsAndConditions, setTermsAndConditions] = useState(user.isAdmin?true:false);
+  const [termsAndConditions, setTermsAndConditions] = useState(user?.isAdmin?true:false);
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={onClose}>
       {!termsAndConditions ? (
