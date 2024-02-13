@@ -219,6 +219,7 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
+
     }
   };
 

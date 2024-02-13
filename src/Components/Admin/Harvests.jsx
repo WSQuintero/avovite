@@ -460,7 +460,7 @@ function Harvests() {
 
   const fetchData = async () => {
     await (async () => {
-      const { status, data } = await $Harvest.get(session?.user?.id);
+      const { status, data } = await $Harvest.get({id:session?.user?.id});
 
       if (status) {
         setRows(data.data);

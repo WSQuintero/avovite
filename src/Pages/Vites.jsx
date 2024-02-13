@@ -40,8 +40,18 @@ function Vites() {
         size: 210
       },
       {
-        accessorKey: "vites pagos",
+        accessorKey: "paidVite",
         header: "vites pagos",
+        size: 210
+      },
+      {
+        accessorKey: "debt",
+        header: "Deuda actual",
+        size: 210
+      },
+      {
+        accessorKey: "total_contract_with_discount",
+        header: "Total contrato",
         size: 210
       },
       {
@@ -99,6 +109,7 @@ function Vites() {
 
       if (status) {
         setRows(data.data);
+        console.log(data.data)
       }
     })();
   }, [$Contract,user]);
