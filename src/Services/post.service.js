@@ -17,9 +17,28 @@ export default class PostService {
     });
   }
 
-  async add({ id, ...body }) {
+  async add({ id, url_image, ...body }) {
+    const formData = new FormData();
+
+    // Agregar campos al FormData
+    Object.entries(body).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    // Agregar el archivo al FormData
+    formData.append("url_image", url_image);
+
+    // Enviar la solicitud al backend
     return await handleCall(
-      async () => (await axios.post(`${this.API_URL}/blog`, body, { headers: { Authorization: this.token } })).data
+      async () =>
+        (
+          await axios.post(`${this.API_URL}/blog`, formData, {
+            headers: {
+              Authorization: this.token,
+              "Content-Type": "multipart/form-data", // Especificar el tipo de contenido como FormData
+            },
+          })
+        ).data
     );
   }
 

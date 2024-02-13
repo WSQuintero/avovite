@@ -213,6 +213,7 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBank.ticketCategory
     ) {
       const { status } = await $Ticket.create(informationToSend.informationBank);
+      console.log(informationToSend.informationBank)
       if (status) {
         ticketCreatedCorrectly(status);
         setTimeout(() => {

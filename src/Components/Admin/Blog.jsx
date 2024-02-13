@@ -137,9 +137,26 @@ function Blog() {
   };
 
   const onChangeFields = ({ target }) => {
-    const { name, value } = target;
+    const { name } = target;
+    let value;
+
+    if (target.type === 'file') {
+      value = target.files[0];
+    } else {
+      value = target.value;
+    }
+
+
     setSelectedPost((prev) => ({ ...prev, [name]: value }));
   };
+
+
+
+  useEffect(()=>{
+    if(selectedPost){
+      console.log(selectedPost)
+    }
+  },[selectedPost])
 
   const onClearFields = () => {
     setCurrentModal(null);
@@ -152,6 +169,7 @@ function Blog() {
     });
   };
 
+
   const onCreatePost = async (event) => {
     event.preventDefault();
 
@@ -160,16 +178,24 @@ function Blog() {
       return;
     }
 
-    const { status, data } = await $Post.add(selectedPost);
+    try {
+      // Utilizar la instancia $Post para enviar la solicitud
+      const { status, data } = await $Post.add(selectedPost);
 
-    if (status) {
-      setPosts((prev) => [...prev, { ...selectedPost, id: data.data }]);
-      setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
-      onClearFields();
-    } else {
+      if (status) {
+        setPosts((prev) => [...prev, { ...selectedPost, id: data.data }]);
+        setFeedback({ open: true, message: "Publicación creada exitosamente.", status: "success" });
+        onClearFields();
+      } else {
+        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+      }
+    } catch (error) {
+      console.error('Error:', error);
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
+
+
 
   const onUpdatePost = async (event) => {
     event.preventDefault();
@@ -260,16 +286,25 @@ function Blog() {
                   },
                 })}
               >
-                <FormControl fullWidth>
+                <Grid sx={{ width: "50%" }}>
                   <InputLabel htmlFor="upload-image">Subir imagen</InputLabel>
-                  <Input
+                  <input
                     id="upload-image"
                     type="file"
-                    // onChange={handleImageUpload} // Aquí handleImageUpload es el manejador de eventos que procesa la imagen seleccionada
-                    inputProps={{ accept: "image/*" }} // Esto limitará la selección de archivos a solo imágenes
+                    onChange={onChangeFields} // Aquí handleImageUpload es el manejador de eventos que procesa la imagen seleccionada
+                    style={{ border: "1px solid #999", borderRadius: "10px", padding: "15px", width: "100%" }}
+                    name="url_image"
+
                   />
-                </FormControl>
-                <TextField label="Url del video" name="url_video" value={selectedPost.url_video} onChange={onChangeFields} fullWidth />
+                </Grid>
+
+                <TextField
+                  label="Url del video"
+                  name="url_video"
+                  value={selectedPost.url_video}
+                  onChange={onChangeFields}
+                  sx={{ width: "50%", marginTop: "25px" }}
+                />
               </Grid>
             </Grid>
           </Box>
