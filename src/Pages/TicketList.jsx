@@ -101,6 +101,7 @@ function TicketList({ handleClick }) {
           </Button>
         ),
       },
+      //Se agrega botón para enviar mensajes
       {
         id: "send_message", // New column for sending message
         label: "Enviar mensaje",
@@ -130,9 +131,9 @@ function TicketList({ handleClick }) {
     ],
     []
   );
-  const closeMessages =()=>{
-    setMessageModalOpen(false)
-  }
+  const closeMessages = () => {
+    setMessageModalOpen(false);
+  };
 
   const handleSendMessage = (row) => {
     // Handle sending message here, you can open a modal or perform any action you need
