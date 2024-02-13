@@ -11,8 +11,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
   Grid,
   IconButton,
+  Input,
+  InputLabel,
   Snackbar,
   TextField,
 } from "@mui/material";
@@ -75,9 +78,7 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
-            {value}
-          </Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
         ),
       },
       {
@@ -86,9 +87,7 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>
-            {value}
-          </Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
         ),
       },
       {
@@ -226,12 +225,7 @@ function Blog() {
         <EnhancedTable headCells={postsHeadCells} rows={posts} initialOrderBy="title" />
       </Grid>
 
-      <Dialog
-        open={currentModal === "create" || currentModal === "update"}
-        onClose={onClearFields}
-        maxWidth="xl"
-        fullWidth
-      >
+      <Dialog open={currentModal === "create" || currentModal === "update"} onClose={onClearFields} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">{currentModal === "create" ? "Crear" : "Editar"} publicación</DialogTitle>
         <DialogContent>
           <Box
@@ -266,20 +260,16 @@ function Blog() {
                   },
                 })}
               >
-                <TextField
-                  label="Url de la imagen"
-                  name="url_image"
-                  value={selectedPost.url_image}
-                  onChange={onChangeFields}
-                  fullWidth
-                />
-                <TextField
-                  label="Url del video"
-                  name="url_video"
-                  value={selectedPost.url_video}
-                  onChange={onChangeFields}
-                  fullWidth
-                />
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="upload-image">Subir imagen</InputLabel>
+                  <Input
+                    id="upload-image"
+                    type="file"
+                    // onChange={handleImageUpload} // Aquí handleImageUpload es el manejador de eventos que procesa la imagen seleccionada
+                    inputProps={{ accept: "image/*" }} // Esto limitará la selección de archivos a solo imágenes
+                  />
+                </FormControl>
+                <TextField label="Url del video" name="url_video" value={selectedPost.url_video} onChange={onChangeFields} fullWidth />
               </Grid>
             </Grid>
           </Box>
@@ -287,11 +277,7 @@ function Blog() {
         <DialogActions>
           <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
             <Button onClick={onClearFields}>Cancelar</Button>
-            <Button
-              onClick={currentModal === "create" ? onCreatePost : onUpdatePost}
-              variant="contained"
-              disabled={!isValidPost}
-            >
+            <Button onClick={currentModal === "create" ? onCreatePost : onUpdatePost} variant="contained" disabled={!isValidPost}>
               {currentModal === "create" ? "Crear" : "Editar"}
             </Button>
           </Grid>

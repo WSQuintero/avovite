@@ -9,7 +9,7 @@ function BeneficiaryIdTypeSelector({ handleInputChange, value,selectedIdType,set
   const options = ['Cedula', 'Tarjeta Identidad', 'Cedula Extranjeria', 'Pasaporte', 'Registro Civil', 'DNI'];
 
   useEffect(() => {
-    setSelectedIdType(capitalizeFirstLetter(value));
+    setSelectedIdType(capitalizeFirstLetter(String(value))||"");
   }, [value]);
 
   const handleChange = (event) => {

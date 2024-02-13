@@ -8,6 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  Hidden,
   Snackbar,
   Stack,
   TextField,
@@ -138,7 +139,9 @@ function TicketListUser({ handleClick }) {
               { label: "Bank Document", url: ticket.bankUrl },
             ],
           }))
+
       );
+
       setLoading((prev) => ({ ...prev, fetching: false }));
     }
   };
@@ -152,16 +155,22 @@ function TicketListUser({ handleClick }) {
   return (
     <>
       <PageWrapper>
+      <Button variant="contained" color="primary" sx={{ position:"absolute",right:"100px", margin: "auto" }} onClick={handleClick}>
+          Crear ticket
+        </Button>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
           </Box>
-          <Typography fontWeight={600} color="primary.main">
+          <Hidden smDown>
+          <Typography fontWeight={600} color="primary.main" sm={{display:"hidden"}}>
             Solicitudes de actualización de datos
           </Typography>
+
+          </Hidden>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
+          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="desc" />
         </Grid>
 
         <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
@@ -219,9 +228,7 @@ function TicketListUser({ handleClick }) {
             {feedback.message}
           </Alert>
         </Snackbar>
-        <Button variant="contained" color="primary" sx={{ marginTop: "20px", margin: "auto" }} onClick={handleClick}>
-          Crear ticket
-        </Button>
+
       </PageWrapper>
     </>
   );

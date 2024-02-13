@@ -1,8 +1,11 @@
 import { Grid, TextField, Typography } from "@mui/material";
 import BeneficiaryIdTypeButton from "./BeneficiaryIdTypeButton";
 import CivilStatusBeneficiary from "./CivilStatusBeneficiary";
+import { useState } from "react";
 
 function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handleInputChange }) {
+  const [selectedIdType, setSelectedIdType] = useState();
+  const [statusCivil, setStatusCivil] = useState();
   return (
     <>
       {isChangeInformationBeneficiary && (
@@ -16,7 +19,11 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
           {/* Beneficiary ID Number */}
           <Grid item xs={12} sm={12}>
             <Typography variant="subtitle1">Tipo de identificación Beneficiario</Typography>
-            <BeneficiaryIdTypeButton handleInputChange={handleInputChange} />
+            <BeneficiaryIdTypeButton
+              handleInputChange={handleInputChange}
+              selectedIdType={selectedIdType}
+              setSelectedIdType={setSelectedIdType}
+            />
           </Grid>
 
           <Grid item xs={12} sm={12}>
@@ -47,7 +54,7 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
             </Grid>
             <Grid item xs={12} sm={12}>
               <Typography variant="subtitle1">Estado civil Beneficiario</Typography>
-              <CivilStatusBeneficiary handleInputChange={handleInputChange} />
+              <CivilStatusBeneficiary handleInputChange={handleInputChange} statusCivil={statusCivil} setStatusCivil={setStatusCivil} />
             </Grid>
             <Grid item xs={12} sm={12}>
               <Typography variant="subtitle1">Actividad del beneficiario</Typography>

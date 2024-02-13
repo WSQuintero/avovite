@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import IsChangeInformationBeneficiary from "./IsChangeInformationBeneficiary";
 import IsChangeInformationUser from "./IsChangeInformationUser";
 import IsChangeInformationBank from "./IsChangeInformationBank";
+import UploadInformationOther from "./UploadInformationOther";
 
 function CreateTicket({ setShowCreateTicket }) {
   const [session] = useSession();
@@ -35,12 +36,12 @@ function CreateTicket({ setShowCreateTicket }) {
 
   const [frontalImage, setFrontalImage] = useState(null);
   const [traseraImage, setTraseraImage] = useState(null);
-
+  const [certificateBank, setCertificateBank] = useState(null);
+  const [filesOther, setFilesOther] = useState(null);
   const navigate = useNavigate();
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-
     const informationToSend = {
       title: event.target.title.value,
       description: event.target.description.value,
@@ -55,6 +56,7 @@ function CreateTicket({ setShowCreateTicket }) {
         id_type: "",
         id_number: null,
         id_location_expedition: "",
+        files: [],
       },
       informationBeneficiary: {
         title: event.target.title.value,
@@ -71,6 +73,7 @@ function CreateTicket({ setShowCreateTicket }) {
         civil_status_beneficiary: "",
         economy_activity_beneficiary: "",
         country_of_residence_beneficiary: "",
+        files:[]
       },
       informationBank: {
         title: event.target.title.value,
@@ -82,38 +85,45 @@ function CreateTicket({ setShowCreateTicket }) {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
+        files:[]
       },
       bugs: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
+        files:[]
       },
     };
+
+
     if (event.target.elements.ticketCategory.value === "Bugs") {
       informationToSend.bugs.ticketCategory = "Bugs";
       informationToSend.ticketCategory = "Bugs";
+      if(filesOther){
+        const filesOtherFormData=new FormData()
+        filesOtherFormData.append("file",filesOther)
+        informationToSend.bugs.files.push(filesOtherFormData)
+        setFilesOther(null)
+      }
     }
 
     if (event.target.elements.ticketCategory.value === "Oter") {
       informationToSend.oter.ticketCategory = "Oter";
       informationToSend.ticketCategory = "Oter";
+      if(filesOther){
+        const filesOtherFormData=new FormData()
+        filesOtherFormData.append("file",filesOther)
+        informationToSend.oter.files.push(filesOtherFormData)
+        setFilesOther(null)
+      }
     }
 
     if (event.target.elements.ticketCategory.value === "Change information bank") {
       informationToSend.informationBank.ticketCategory = "Change information bank";
       informationToSend.ticketCategory = "Change information bank";
-      informationToSend.informationBank.files.push(frontalImage);
-      informationToSend.informationBank.files.push(traseraImage);
-      //probablemente enviar no como JSON, sino como formdata. confirmar ya hay otros lugares donde formData.append("webmasterfile", blob);
-
-      if (!frontalImage && !traseraImage) {
-        setAlert({
-          show: true,
-          message: "No olvides subir foto de tu documento.",
-          status: "error",
-        });
-        return;
-      }
+      const certificateBankFormData = new FormData();
+      certificateBankFormData.append("certificate", certificateBank);
+      informationToSend.informationBank.files.push(certificateBankFormData);
     }
 
     if (event.target.elements.ticketCategory.value === "Change information user") {
@@ -127,7 +137,21 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationUser["id_number"] = event.target.elements.idNumber.value;
       informationToSend.informationUser["id_location_expedition"] = event.target.elements.idLocExpedition.value;
 
+      if (!frontalImage && !traseraImage) {
+        setAlert({
+          show: true,
+          message: "No olvides subir foto de tu documento.",
+          status: "error",
+        });
+        return;
+      }
 
+      const frontalImageFormData = new FormData();
+      frontalImageFormData.append("fotoFrontal", frontalImage);
+      informationToSend.informationUser.files.push(frontalImageFormData);
+      const traseraImageFormData = new FormData();
+      traseraImageFormData.append("fotoTrasera", traseraImage);
+      informationToSend.informationUser.files.push(traseraImageFormData);
     }
 
     if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
@@ -138,14 +162,20 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary["beneficiary_id_number"] = event.target.elements.beneficiaryIdNumber.value;
       informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value.toLowerCase();
       informationToSend.informationBeneficiary["beneficiary_id_location_expedition"] =
-      event.target.elements.beneficiaryIdLocationExpedition.value;
+        event.target.elements.beneficiaryIdLocationExpedition.value;
       informationToSend.informationBeneficiary["address_residence_beneficiary"] = event.target.elements.addressResidenceBeneficiary.value;
       informationToSend.informationBeneficiary["email_beneficiary"] = event.target.elements.emailBeneficiary.value;
       informationToSend.informationBeneficiary["cellphone_beneficiary"] = event.target.elements.cellphoneBeneficiary.value;
       informationToSend.informationBeneficiary["civil_status_beneficiary"] = event.target.elements.civilStatus.value;
       informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event.target.elements.economyActivityBeneficiary.value;
       informationToSend.informationBeneficiary["country_of_residence_beneficiary"] =
-      event.target.elements.countryOfResidenceBeneficiary.value;
+        event.target.elements.countryOfResidenceBeneficiary.value;
+        if(filesOther){
+          const filesOtherFormData=new FormData()
+          filesOtherFormData.append("file",filesOther)
+          informationToSend.informationBeneficiary.files.push(filesOtherFormData)
+          setFilesOther(null)
+        }
     }
 
     if (!informationToSend.title || !informationToSend.description || !informationToSend.ticketCategory) {
@@ -163,12 +193,18 @@ function CreateTicket({ setShowCreateTicket }) {
   const sendInformation = async (informationToSend) => {
     if (informationToSend.bugs.title && informationToSend.bugs.description && informationToSend.bugs.ticketCategory) {
       const { status } = await $Ticket.create(informationToSend.bugs);
-      ticketCreatedCorrectly(status);
+      if (status) {
+        ticketCreatedCorrectly(status);
+        setShowCreateTicket(false);
+      }
     }
 
     if (informationToSend.oter.title && informationToSend.oter.description && informationToSend.oter.ticketCategory) {
       const { status } = await $Ticket.create(informationToSend.oter);
-      ticketCreatedCorrectly(status);
+      if (status) {
+        ticketCreatedCorrectly(status);
+        setShowCreateTicket(false);
+      }
     }
 
     if (
@@ -177,20 +213,39 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBank.ticketCategory
     ) {
       const { status } = await $Ticket.create(informationToSend.informationBank);
-      ticketCreatedCorrectly(status);
-    // modificar files[certificadobancario]
-
+      if (status) {
+        ticketCreatedCorrectly(status);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
+      }
     }
 
     if (
       informationToSend.informationUser.title &&
       informationToSend.informationUser.description &&
-      informationToSend.informationUser.ticketCategory
+      informationToSend.informationUser.ticketCategory &&
+      informationToSend.informationUser.files
     ) {
       const { status } = await $Ticket.create(informationToSend.informationUser);
-      ticketCreatedCorrectly(status);
-      // falta files[foto frontal, foto trasera]
-
+      if (status) {
+        ticketCreatedCorrectly(status);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
+      }// falta files[foto frontal, foto trasera]
     }
 
     if (
@@ -199,7 +254,19 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary.ticketCategory
     ) {
       const { status } = await $Ticket.create(informationToSend.informationBeneficiary);
-      ticketCreatedCorrectly(status);
+      if (status) {
+        ticketCreatedCorrectly(status);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
+      }
+
     }
   };
 
@@ -334,20 +401,29 @@ function CreateTicket({ setShowCreateTicket }) {
                   isChangeInformationBeneficiary={isChangeInformationBeneficiary}
                   handleInputChange={handleInputChange}
                 />
-                <IsChangeInformationUser isChangeInformationUser={isChangeInformationUser} handleInputChange={handleInputChange} />
-                <IsChangeInformationBank
-                  isChangeInformationBank={isChangeInformationBank}
+                <IsChangeInformationUser
+                  isChangeInformationUser={isChangeInformationUser}
+                  handleInputChange={handleInputChange}
                   frontalImage={frontalImage}
                   setFrontalImage={setFrontalImage}
                   traseraImage={traseraImage}
                   setTraseraImage={setTraseraImage}
                 />
+                <IsChangeInformationBank
+                  isChangeInformationBank={isChangeInformationBank}
+                  setCertificateBank={setCertificateBank}
+                  certificateBank={certificateBank}
+                />
               </Grid>
 
               <Grid item xs={12}>
+
                 <Button type="submit" variant="contained" color="primary" sx={{ marginTop: "20px" }} disabled={!valueOption && true}>
                   Enviar Solicitud
                 </Button>
+                {!isChangeInformationBank && !isChangeInformationUser && (
+                  <UploadInformationOther setFilesOther={setFilesOther} filesOther={filesOther} valueOption={valueOption} />
+                )}
                 <Button
                   onClick={() => setShowCreateTicket(false)}
                   variant="contained"

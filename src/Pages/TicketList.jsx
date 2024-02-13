@@ -154,16 +154,6 @@ function TicketList({ handleClick }) {
     setFeedback({ ...feedback, open: false });
   };
 
-  const onChangeFields = ({ target }) => {
-    const { name, value } = target;
-    setNewRow((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const onClearFields = () => {
-    setModal(null);
-    setNewRow(InitialState);
-  };
-
   const fetchData = async () => {
     try {
       const { status, data } = await $Ticket.getAll();
@@ -207,9 +197,9 @@ function TicketList({ handleClick }) {
           <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
         </Grid>
 
-        {/* Modal para el detalle del ticket */}
-        {/* <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} /> */}
-
+        {actualTicket&&(
+        <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} />
+        )}
         <Snackbar
           open={feedback.open}
           autoHideDuration={3000}
@@ -220,9 +210,7 @@ function TicketList({ handleClick }) {
             {feedback.message}
           </Alert>
         </Snackbar>
-        <Button variant="contained" color="primary" sx={{ marginTop: "20px", margin: "auto" }} onClick={handleClick}>
-          Crear ticket
-        </Button>
+
       </PageWrapper>
     </>
   );
