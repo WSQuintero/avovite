@@ -189,7 +189,6 @@ function CreateTicket({ setShowCreateTicket }) {
     ) {
       const { status } = await $Ticket.create(informationToSend.informationUser);
       ticketCreatedCorrectly(status);
-      console.log(informationToSend.informationUser);
       // falta files[foto frontal, foto trasera]
 
     }
@@ -200,7 +199,6 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary.ticketCategory
     ) {
       const { status } = await $Ticket.create(informationToSend.informationBeneficiary);
-      console.log(informationToSend.informationBeneficiary)
       ticketCreatedCorrectly(status);
     }
   };

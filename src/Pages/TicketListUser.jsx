@@ -88,7 +88,6 @@ function TicketListUser({ handleClick }) {
       const { status, data } = await $Ticket.getById({ id: ticket.id });
 
       if (status) {
-        console.log(data)
         setActualTicket(data?.data?.tiket[0]);
         setModal("detail");
       }

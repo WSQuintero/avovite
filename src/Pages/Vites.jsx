@@ -90,7 +90,7 @@ function Vites() {
 
   useEffect(() => {
     (async () => {
-      const { status, data } = await $Contract.get(user?.id);
+      const { status, data } = await $Contract.get({id:user?.id});
 
       if (status) {
         setRows(data.data);

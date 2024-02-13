@@ -68,7 +68,6 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
       residence_neighborhood:residenceNeighborhoodBeneficiary,
       country_of_residence:countryOfResidenceBeneficiary
     };
-    console.log(formData.nationality);
 
     const emptyFields = Object.values(formData).some((field) => field === "");
     if (emptyFields) {
@@ -76,7 +75,6 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
     } else {
       const changeInformationBeneficiary = async () => {
         const { status, data } = await $Contract.change({ id: informationContract.id, body: formData });
-        console.log(formData);
         if (status) {
           setAlert({ show: true, message: "Datos de beneficiario actualizados correctamente", status: "success" });
         }

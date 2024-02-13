@@ -77,4 +77,9 @@ export default class ContractService {
   async change({ id, body }) {
     return await handleCall(async () => (await axios.put(`${this.API_URL}/contracts/change/update/${id}`, body, this.config)).data);
   }
+  async changeInformationBank({ id, body }) {
+    return await handleCall(
+      async () => (await axios.put(`${this.API_URL}/contracts/change/bankinformation/${id}`, body, this.config)).data
+    );
+  }
 }

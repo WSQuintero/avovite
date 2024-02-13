@@ -131,7 +131,6 @@ function TicketList({ handleClick }) {
   const handleSeeDetail = async (ticket) => {
     try {
       const {status,data} = await $Ticket.getById({id:ticket.id}); // Replace 'your_api_endpoint' with the actual endpoint
-
       if(status){
         setActualTicket(data.data?.tiket); // Set the modal state to display
         setModal("detail"); // Show the modal for ticket detail
@@ -209,7 +208,7 @@ function TicketList({ handleClick }) {
         </Grid>
 
         {/* Modal para el detalle del ticket */}
-        <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} />
+        {/* <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} /> */}
 
         <Snackbar
           open={feedback.open}

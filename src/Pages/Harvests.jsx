@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Harvests() {
   const navigate = useNavigate();
-  
+
   const [{ user, token }] = useSession();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState({ fetching: true });
@@ -79,7 +79,6 @@ function Harvests() {
   };
 
   useAsyncEffect(async () => {
-    console.log("Fetching");
     await fetchContracts();
 
     setLoading((prev) => ({ ...prev, fetching: false }));
