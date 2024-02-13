@@ -1,8 +1,18 @@
-import React, { useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Box } from "@mui/material";
+import { useState, useMemo } from "react";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Box, Alert, Snackbar } from "@mui/material";
+import TicketService from "../../Services/ticket.service";
+import useSession from "../../Hooks/useSession";
 
-function MessageModal({ open, onClose }) {
+function MessageModal({ open, onClose, actualTicketId, setActualTicketId }) {
+  const [session] = useSession();
+  const $Ticket = useMemo(() => (session?.token ? new TicketService(session?.token) : null), [session?.token]);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+
+  const resetFeedback = () => {
+    setFeedback({ ...feedback, open: false });
+  };
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -11,12 +21,24 @@ function MessageModal({ open, onClose }) {
   const handleCancel = () => {
     setMessage(""); // Reset message input
     onClose();
+    setActualTicketId("");
   };
 
-  const handleSend = () => {
-    // Implement logic to send message here
-    setMessage(""); // Reset message input
-    onClose();
+  const handleSend = async () => {
+    try {
+      const { status, data } = await $Ticket.sendMessage({ message: String(message), ticketsId: actualTicketId });
+      if (status) {
+        setFeedback({ open: true, message: "Mensaje enviado correctamente", status: "success" });
+        setMessages((prevMessages) => [...prevMessages, { sender: "You", text: message }]);
+        setMessage(""); // Reset message input
+   // Cerrar el modal después de enviar el mensaje
+      } else {
+        setFeedback({ open: true, message: "Error al enviar el mensaje", status: "error" });
+      }
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+      setFeedback({ open: true, message: "Error al enviar el mensaje", status: "error" });
+    }
   };
 
   return (
@@ -25,24 +47,23 @@ function MessageModal({ open, onClose }) {
       <DialogContent>
         {/* Chat area for displaying previous messages */}
         <Box sx={{ maxHeight: "400px", overflowY: "auto" }}>
-          {/* User messages */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-start" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              You:
-            </Typography>
-            <Typography variant="body1">Message 1 from user</Typography>
-            <Typography variant="body1">Message 2 from user</Typography>
-            {/* Add more user messages here */}
-          </Box>
-          {/* Admin messages */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-end" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Admin:
-            </Typography>
-            <Typography variant="body1">Message 1 from admin</Typography>
-            <Typography variant="body1">Message 2 from admin</Typography>
-            {/* Add more admin messages here */}
-          </Box>
+          {/*Aquí se debe iterar los mensajes que llegan */}
+          {messages.map((msg, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                alignItems: msg.sender === "You" ? "flex-start" : "flex-end",
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                {msg.sender}:
+              </Typography>
+              <Typography variant="body1">{msg.text}</Typography>
+            </Box>
+          ))}
         </Box>
         {/* Input field for typing new message */}
         <TextField
@@ -62,6 +83,16 @@ function MessageModal({ open, onClose }) {
           Enviar
         </Button>
       </DialogActions>
+      <Snackbar
+        open={feedback.open}
+        autoHideDuration={3000}
+        onClose={resetFeedback}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={resetFeedback} severity={feedback.status} sx={{ width: "100%" }}>
+          {feedback.message}
+        </Alert>
+      </Snackbar>
     </Dialog>
   );
 }

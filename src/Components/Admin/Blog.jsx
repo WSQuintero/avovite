@@ -153,11 +153,7 @@ function Blog() {
 
 
 
-  useEffect(()=>{
-    if(selectedPost){
-      console.log(selectedPost)
-    }
-  },[selectedPost])
+
 
   const onClearFields = () => {
     setCurrentModal(null);

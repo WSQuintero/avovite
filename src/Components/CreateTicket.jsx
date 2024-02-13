@@ -56,7 +56,7 @@ function CreateTicket({ setShowCreateTicket }) {
         id_type: "",
         id_number: null,
         id_location_expedition: "",
-        files: [],
+        // files: [],
       },
       informationBeneficiary: {
         title: event.target.title.value,
@@ -73,25 +73,25 @@ function CreateTicket({ setShowCreateTicket }) {
         civil_status_beneficiary: "",
         economy_activity_beneficiary: "",
         country_of_residence_beneficiary: "",
-        files:[]
+        // files:[]
       },
       informationBank: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        files: [],
+        // files: [],
       },
       oter: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        files:[]
+        // files:[]
       },
       bugs: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        files:[]
+        // files:[]
       },
     };
 
@@ -213,7 +213,6 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBank.ticketCategory
     ) {
       const { status } = await $Ticket.create(informationToSend.informationBank);
-      console.log(informationToSend.informationBank)
       if (status) {
         ticketCreatedCorrectly(status);
         setTimeout(() => {

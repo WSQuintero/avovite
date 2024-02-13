@@ -36,6 +36,8 @@ function TicketListUser({ handleClick }) {
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
   const [actualTicket, setActualTicket] = useState(null);
   const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
+  const [actualTicketId, setActualTicketId] = useState(null);
+
   const tableHeadCells = useMemo(
     () => [
       {
@@ -114,7 +116,7 @@ function TicketListUser({ handleClick }) {
 
 
   const handleSendMessage = (row) => {
-    // Handle sending message here, you can open a modal or perform any action you need
+    setActualTicketId(row.id);
     setMessageModalOpen(true);
   };
 
@@ -183,6 +185,7 @@ function TicketListUser({ handleClick }) {
       setLoading((prev) => ({ ...prev, fetching: false }));
     }
   };
+
 
   useEffect(() => {
     if ($Ticket) {
@@ -255,6 +258,7 @@ function TicketListUser({ handleClick }) {
           </DialogActions>
         </Dialog>
         <TicketModalUser ticket={actualTicket} open={modal === "detail"} onClose={() => setModal(null)} />
+        <MessageModal onClose={closeMessages} open={messageModalOpen} actualTicketId={actualTicketId} setActualTicketId={setActualTicketId}/>
         <Snackbar
           open={feedback.open}
           autoHideDuration={3000}
@@ -267,7 +271,6 @@ function TicketListUser({ handleClick }) {
         </Snackbar>
 
         {/* Message modal */}
-        <MessageModal onClose={closeMessages} open={messageModalOpen  }  />
       </PageWrapper>
     </>
   );

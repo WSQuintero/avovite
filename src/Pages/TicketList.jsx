@@ -45,6 +45,8 @@ function TicketList({ handleClick }) {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
   const [actualTicket, setActualTicket] = useState(null);
+  const [actualTicketId, setActualTicketId] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
   const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
 
   const tableHeadCells = useMemo(
@@ -101,7 +103,7 @@ function TicketList({ handleClick }) {
           </Button>
         ),
       },
-      //Se agrega botón para enviar mensajes
+      // Se agrega botón para enviar mensajes
       {
         id: "send_message", // New column for sending message
         label: "Enviar mensaje",
@@ -131,14 +133,17 @@ function TicketList({ handleClick }) {
     ],
     []
   );
+
   const closeMessages = () => {
     setMessageModalOpen(false);
   };
 
+
   const handleSendMessage = (row) => {
-    // Handle sending message here, you can open a modal or perform any action you need
+    setActualTicketId(row.id);
     setMessageModalOpen(true);
   };
+
 
   const handleChangeState = async (event, row) => {
     const newTicketStatus = event.target.value;
@@ -158,13 +163,13 @@ function TicketList({ handleClick }) {
 
   const handleSeeDetail = async (ticket) => {
     try {
-      const { status, data } = await $Ticket.getById({ id: ticket.id }); // Replace 'your_api_endpoint' with the actual endpoint
+      const { status, data } = await $Ticket.getById({ id: ticket.id });
       if (status) {
-        setActualTicket(data.data?.tiket); // Set the modal state to display
-        setModal("detail"); // Show the modal for ticket detail
+        setActualTicket(data.data?.ticket); // Corregir 'tiket' a 'ticket'
+        setModal("detail");
       }
     } catch (error) {
-      console.error("Error fetching ticket details:", error);
+      console.error("Error al obtener detalles del ticket:", error);
     }
   };
 
@@ -227,7 +232,15 @@ function TicketList({ handleClick }) {
           <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
         </Grid>
 
-        {actualTicket && <TicketModal ticket={actualTicket[0]} open={modal === "detail"} onClose={() => setModal(null)} />}
+        {actualTicket && (
+          <TicketModal
+            ticket={actualTicket[0]}
+            open={modal === "detail"}
+            onClose={() => setModal(null)}
+            actualTicketId={actualTicketId}
+            setActualTicketId={setActualTicketId}
+          />
+        )}
         <Snackbar
           open={feedback.open}
           autoHideDuration={3000}
@@ -239,7 +252,7 @@ function TicketList({ handleClick }) {
           </Alert>
         </Snackbar>
 
-        <MessageModal onClose={closeMessages} open={messageModalOpen} />
+        <MessageModal onClose={closeMessages} open={messageModalOpen} actualTicketId={actualTicketId} setActualTicketId={setActualTicketId}/>
       </PageWrapper>
     </>
   );
