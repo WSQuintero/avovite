@@ -28,12 +28,12 @@ import HarvestService from "../../Services/harvest.service";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { DatePicker } from "@mui/x-date-pickers";
-import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
-import JSZip from "jszip";
+import { parseString } from 'xml2js';
+import { formatCurrency } from "../../utilities";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
@@ -161,18 +161,44 @@ function Harvests() {
   );
 
   const handleDownload = async (id) => {
-    console.log(id)
-    const link = document.createElement("a");
-    link.href = `${import.meta.env.VITE_API_URL}/harvest/generate-xlsx/${id}`;
-    link.target = "_blank";
-    link.download = `archivo_${id}.xlsx`;
 
+     const exportWorksheet = (xmlData, fileName) => {
+        parseString(xmlData, (err, result) => {
+            if (err) {
+                console.error('Error al analizar el XML:', err);
+                return;
+            }
 
+            // Obtener los datos relevantes del objeto result
+            const data = result.Relationships.Relationship;
 
-    link.click();
-  };
+            // Convertir los datos a un formato adecuado para json_to_sheet
+            const jsonData = data.map(item => {
+                return {
+                    Id: item.$.Id,
+                    Type: item.$.Type,
+                    Target: item.$.Target
+                };
+            });
 
+            // Ahora puedes proceder a exportar jsonData como una hoja de cálculo
+            // utilizando la biblioteca xlsx o cualquier otra que prefieras
+            console.log(jsonData);
+        });
+    };
 
+    const {status,data}=await $Harvest.download({id:id})
+
+    const jsonArray = Object.keys(data.data).map(key => {
+      return { [key]: data.data[key] };
+    });
+    if(status){
+      if (status) {
+        // exportWorksheet(jsonArray, `${formatDate(new Date())} Datos_Form & Excel.xlsx`);
+      console.log(data.data)
+      }
+    }
+};
 
 
   const tableCollapse = useCallback(
@@ -460,24 +486,21 @@ function Harvests() {
   };
 
   const fetchData = () => {
-    console.log({id:session?.user?.id})
-
-     const updateHarvests= async () => {
-      if(session.user.isAdmin()){
+    const updateHarvests = async () => {
+      if (session.user.isAdmin()) {
         const { status, data } = await $Harvest.get();
 
         if (status) {
           setRows(data?.data);
         }
-      }else{
-        const { status, data } = await $Harvest.get({id:session?.user?.id});
+      } else {
+        const { status, data } = await $Harvest.get({ id: session?.user?.id });
 
         if (status) {
           setRows(data?.data);
         }
       }
-
-    }
+    };
     updateHarvests();
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
@@ -495,12 +518,12 @@ function Harvests() {
   };
 
   useEffect(() => {
-    if ($Harvest &&session?.user?.id) {
+    if ($Harvest && session?.user?.id) {
       (async () => {
         await fetchData();
       })();
     }
-  }, [$Harvest,session]);
+  }, [$Harvest, session]);
 
   return (
     <>
