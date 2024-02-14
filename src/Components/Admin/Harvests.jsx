@@ -32,7 +32,7 @@ import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
-import { parseString } from 'xml2js';
+import { parseString } from "xml2js";
 import { formatCurrency } from "../../utilities";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
@@ -161,45 +161,8 @@ function Harvests() {
   );
 
   const handleDownload = async (id) => {
-
-     const exportWorksheet = (xmlData, fileName) => {
-        parseString(xmlData, (err, result) => {
-            if (err) {
-                console.error('Error al analizar el XML:', err);
-                return;
-            }
-
-            // Obtener los datos relevantes del objeto result
-            const data = result.Relationships.Relationship;
-
-            // Convertir los datos a un formato adecuado para json_to_sheet
-            const jsonData = data.map(item => {
-                return {
-                    Id: item.$.Id,
-                    Type: item.$.Type,
-                    Target: item.$.Target
-                };
-            });
-
-            // Ahora puedes proceder a exportar jsonData como una hoja de cálculo
-            // utilizando la biblioteca xlsx o cualquier otra que prefieras
-            console.log(jsonData);
-        });
-    };
-
-    const {status,data}=await $Harvest.download({id:id})
-
-    const jsonArray = Object.keys(data.data).map(key => {
-      return { [key]: data.data[key] };
-    });
-    if(status){
-      if (status) {
-        // exportWorksheet(jsonArray, `${formatDate(new Date())} Datos_Form & Excel.xlsx`);
-      console.log(data.data)
-      }
-    }
-};
-
+    await $Harvest.download({ id: id });
+  };
 
   const tableCollapse = useCallback(
     (row) => (

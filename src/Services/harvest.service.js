@@ -46,7 +46,18 @@ export default class HarvestService {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/harvest/generate-split-harvest/${id}`)).data);
   }
   async download({ id }) {
-    return await handleCall(async () => await this.axios.get(`${this.API_URL}/harvest/generate-xlsx/${id}`));
+    try {
+      const response = await this.axios.get(`${this.API_URL}/harvest/generate-xlsx/${id}`, { responseType: "blob" });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `archivo.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error);
+    }
   }
   async import(file) {
     return await handleCall(async () => (await this.axios.postForm(`${this.API_URL}/harvest-profitability/import/xlsx`, { file })).data);

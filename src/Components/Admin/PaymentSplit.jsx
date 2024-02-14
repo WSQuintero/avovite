@@ -157,12 +157,8 @@ function PaymentSplit() {
   );
 
   const handleDownloadExcel = async (id) => {
-    const link = document.createElement("a");
-    link.href = `${import.meta.env.VITE_APP_URL}/SplitPayment/generate-xlsx:${id}`;
-    link.download = `archivo_${id}.xlsx`;
-    link.click()
-
-  }
+    await $Split.download({ id: id });
+  };
 
   const tableCollapse = useCallback(
     (row) => (

@@ -36,8 +36,19 @@ export default class SplitService {
         (id ? await this.axios.get(`${this.API_URL}/SplitPayment/${id}`) : await this.axios.get(`${this.API_URL}/SplitPayment`)).data
     );
   }
-  async download({ id } = {}) {
-    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/SplitPayment/generate-xlsx/${id}`)).data);
+  async download({ id }) {
+    try {
+      const response = await this.axios.get(`${this.API_URL}/SplitPayment/generate-xlsx/${id}`, { responseType: "blob" });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `archivo.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error);
+    }
   }
   async add({ id, ...body } = {}) {
     return await handleCall(async () => (await this.axios.post(`${this.API_URL}/SplitPayment`, body)).data);
