@@ -25,10 +25,10 @@ function MessageModal({ open, onClose, actualTicketId, setActualTicketId ,messag
 
   const handleSend = async () => {
     try {
-      const { status, data } = await $Ticket.sendMessage({ message: String(message), ticketsId: actualTicketId });
+      const { status } = await $Ticket.sendMessage({ message: String(message), ticketsId: actualTicketId });
       if (status) {
         setFeedback({ open: true, message: "Mensaje enviado correctamente", status: "success" });
-        setMessages((prevMessages) => [...prevMessages, { sender: "You", text: message }]);
+        setMessages((prevMessages) => [...prevMessages, { fromActor: session.user.isAdmin()?"Administrator":"User", message: message,created_at:Date.now() }]);
         setMessage(""); // Reset message input
    // Cerrar el modal después de enviar el mensaje
       } else {
@@ -53,14 +53,16 @@ function MessageModal({ open, onClose, actualTicketId, setActualTicketId ,messag
               sx={{
                 display: "flex",
                 flexDirection: "column",
+                justifyContent:"flex-start",
                 gap: "10px",
-                alignItems: msg.sender === "You" ? "flex-start" : "flex-end",
+                alignItems: msg.fromActor === "Administrator" ? "flex-start" : "flex-end",
               }}
             >
+              <div><span style={{color:"red",fontSize:"10px"}}>Enviado el: </span><span  style={{color:"green",fontSize:"10px"}}>{msg.created_at}</span></div>
               <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                {msg.sender}:
+                {msg.fromActor}:
               </Typography>
-              <Typography variant="body1">{msg.text}</Typography>
+              <Typography variant="body1">{msg.message}</Typography>
             </Box>
           ))}
         </Box>

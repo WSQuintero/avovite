@@ -37,6 +37,7 @@ function TicketListUser({ handleClick }) {
   const [actualTicket, setActualTicket] = useState(null);
   const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
   const [actualTicketId, setActualTicketId] = useState(null);
+  const [messages, setMessages] = useState([]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -113,11 +114,20 @@ function TicketListUser({ handleClick }) {
     []
   );
 
-
-
-  const handleSendMessage = (row) => {
+  const handleSendMessage = async (row) => {
     setActualTicketId(row.id);
     setMessageModalOpen(true);
+    try {
+      const { status, data } = await $Ticket.getById({ id: row.id });
+      if (status) {
+        // setActualTicket(data.data?.ticket); // Corregir 'tiket' a 'ticket'
+        // setModal("detail");
+        setMessages(data.data.messages);
+        console.log(data.data.messages);
+      }
+    } catch (error) {
+      console.error("Error al obtener detalles del ticket:", error);
+    }
   };
 
   const handleSeeDetail = async (ticket) => {
@@ -147,11 +157,9 @@ function TicketListUser({ handleClick }) {
     setFeedback((prev) => ({ ...prev, open: false }));
   };
 
-
-
-  const closeMessages =()=>{
-    setMessageModalOpen(false)
-  }
+  const closeMessages = () => {
+    setMessageModalOpen(false);
+  };
   const onChangeFields = ({ target }) => {
     const { name, value } = target;
     setNewRow((prev) => ({ ...prev, [name]: value }));
@@ -186,12 +194,11 @@ function TicketListUser({ handleClick }) {
     }
   };
 
-
   useEffect(() => {
     if ($Ticket) {
       fetchData();
     }
-  }, [$Ticket,session.user]);
+  }, [$Ticket, session.user]);
 
   return (
     <>
@@ -210,7 +217,13 @@ function TicketListUser({ handleClick }) {
           </Hidden>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder='desc' initialOrderBy='creationDate' />
+          <EnhancedTable
+            loading={loading.fetching}
+            headCells={tableHeadCells}
+            rows={rows}
+            initialOrder="desc"
+            initialOrderBy="creationDate"
+          />
         </Grid>
 
         <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
@@ -258,7 +271,14 @@ function TicketListUser({ handleClick }) {
           </DialogActions>
         </Dialog>
         <TicketModalUser ticket={actualTicket} open={modal === "detail"} onClose={() => setModal(null)} />
-        <MessageModal onClose={closeMessages} open={messageModalOpen} actualTicketId={actualTicketId} setActualTicketId={setActualTicketId}/>
+        <MessageModal
+          onClose={closeMessages}
+          open={messageModalOpen}
+          actualTicketId={actualTicketId}
+          setActualTicketId={setActualTicketId}
+          messages={messages}
+          setMessages={setMessages}
+        />
         <Snackbar
           open={feedback.open}
           autoHideDuration={3000}

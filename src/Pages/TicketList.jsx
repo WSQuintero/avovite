@@ -46,7 +46,6 @@ function TicketList({ handleClick }) {
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
   const [actualTicket, setActualTicket] = useState(null);
   const [actualTicketId, setActualTicketId] = useState(null);
-  const [newMessage, setNewMessage] = useState(null);
   const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
   const [messages, setMessages] = useState([]);
 
