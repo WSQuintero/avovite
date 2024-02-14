@@ -20,8 +20,12 @@ import {
   TextField,
 } from "@mui/material";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
-import { formatDate, isYoutubeVideo } from "../../utilities";
+import { formatDate } from "../../utilities";
 import usePost from "../../Hooks/usePost";
+
+const isYouTubeVideo = (url) => {
+  return url.includes("youtube.com") || url.includes("youtu.be");
+};
 
 function Blog() {
   const $Post = usePost();
@@ -40,6 +44,16 @@ function Blog() {
     [selectedPost]
   );
 
+  const convertToEmbedUrl = (url) => {
+    if (url.includes("youtu.be")) {
+      const videoId = url.split("/").pop();
+      return `https://www.youtube.com/embed/${videoId}`;
+    } else if (url.includes("youtube.com")) {
+      const videoId = new URL(url).searchParams.get("v");
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return url; // Return the original URL if it's not a YouTube video
+  };
   const postsHeadCells = useMemo(
     () => [
       {
@@ -61,12 +75,17 @@ function Blog() {
         disablePadding: false,
         format: (value) => (
           <Box display="flex" width={200} sx={{ aspectRatio: 1 }}>
-            {isYoutubeVideo(value) ? (
+            {isYouTubeVideo(value) ? (
               <iframe
-                src={value}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                src={convertToEmbedUrl(value)}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
                 style={{ width: "100%", objectFit: "cover", borderRadius: 8, border: 0 }}
-              />
+                onLoad={() => console.log("Video loaded successfully")}
+                onError={() => console.log("Error loading video")}
+              ></iframe>
             ) : (
               <video src={value} width="100%" style={{ objectFit: "cover", borderRadius: 8 }} muted autoPlay />
             )}
@@ -202,7 +221,17 @@ function Blog() {
       return;
     }
 
-    const { status } = await $Post.update(selectedPost);
+    // Crear un nuevo objeto con solo las propiedades necesarias para la actualización
+    const updatedPost = {
+      id: selectedPost.id,
+      title: selectedPost.title,
+      description: selectedPost.description,
+      url_video:selectedPost.url_video,
+      url_image:selectedPost.url_image
+      // Otras propiedades necesarias...
+    };
+
+    const { status } = await $Post.update(updatedPost);
 
     if (status) {
       setPosts((prev) => prev.map((p) => (p.id === selectedPost.id ? selectedPost : p)));
@@ -212,6 +241,7 @@ function Blog() {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
+
 
   const onDeletePost = async () => {
     const { status } = await $Post.delete(selectedPost);
@@ -330,7 +360,6 @@ function Blog() {
           </Button>
         </DialogActions>
       </Dialog>
-
       <Snackbar
         open={feedback.open}
         autoHideDuration={3000}
