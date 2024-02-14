@@ -143,15 +143,15 @@ function TicketListUser({ handleClick }) {
     }
   };
 
-  function handleDownload(row) {
-    const fileUrl = row.fileUrl;
-    const downloadLink = document.createElement("a");
-    downloadLink.href = fileUrl;
-    downloadLink.download = "archivo";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  }
+  const handleDownload = (row) => {
+    const document=row.actions.find((a)=>a.url!==null)
+    if(document){
+      window.open(row.actions.find((a)=>a.url!==null).url)
+    }else{
+      setFeedback({ open: true, message: "No hay archivos que descargar", status: "error" });
+    }
+  };
+
 
   const resetFeedback = () => {
     setFeedback((prev) => ({ ...prev, open: false }));
