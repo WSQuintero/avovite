@@ -22,6 +22,7 @@ import {
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
 import { formatDate } from "../../utilities";
 import usePost from "../../Hooks/usePost";
+import TiptapEditor from "../TiptapEditor";
 
 const isYouTubeVideo = (url) => {
   return url.includes("youtube.com") || url.includes("youtu.be");
@@ -294,14 +295,13 @@ function Blog() {
                 <TextField label="Título" name="title" value={selectedPost.title} onChange={onChangeFields} fullWidth />
               </Grid>
               <Grid display="flex" gap={2}>
-                <TextField
-                  label="Descripción"
+                <TiptapEditor
+                  placeholder="Descripción"
                   name="description"
-                  rows={4}
                   value={selectedPost.description}
-                  onChange={onChangeFields}
-                  multiline
-                  fullWidth
+                  onChange={({ html }) =>{
+                    setSelectedPost((prev) => ({ ...prev, ["description"]: html }));
+                  }}
                 />
               </Grid>
               <Grid
