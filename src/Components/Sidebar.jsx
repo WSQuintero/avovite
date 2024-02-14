@@ -230,7 +230,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
 
   if (!user) {
     return <></>;
-  } else if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+  } else if (!user.isAdmin()&&(user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date)) {
     return <></>;
   }
 

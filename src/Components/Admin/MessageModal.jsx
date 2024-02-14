@@ -3,11 +3,10 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, T
 import TicketService from "../../Services/ticket.service";
 import useSession from "../../Hooks/useSession";
 
-function MessageModal({ open, onClose, actualTicketId, setActualTicketId }) {
+function MessageModal({ open, onClose, actualTicketId, setActualTicketId ,messages,setMessages}) {
   const [session] = useSession();
   const $Ticket = useMemo(() => (session?.token ? new TicketService(session?.token) : null), [session?.token]);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
   const resetFeedback = () => {
