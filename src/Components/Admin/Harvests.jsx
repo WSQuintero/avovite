@@ -53,7 +53,7 @@ function Harvests() {
   const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_state && newRow.sowing_date && newRow.harvest_date, [newRow]);
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
 
-  const $Harvest = useMemo(() => (session.token ? new HarvestService(session.token) : null), [session.token]);
+  const $Harvest = useMemo(() => (session?.token ? new HarvestService(session?.token) : null), [session?.token]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -161,8 +161,9 @@ function Harvests() {
   );
 
   const handleDownload = async (id) => {
+    console.log(id)
     const link = document.createElement("a");
-    link.href = `${import.meta.env.VITE_APP_URL}/harvest/generate-xlsx/${id}`;
+    link.href = `${import.meta.env.VITE_API_URL}/harvest/generate-xlsx/${id}`;
     link.target = "_blank";
     link.download = `archivo_${id}.xlsx`;
 
@@ -458,14 +459,26 @@ function Harvests() {
     setLoading((prev) => ({ ...prev, payment: false }));
   };
 
-  const fetchData = async () => {
-    await (async () => {
-      const { status, data } = await $Harvest.get({id:session?.user?.id});
+  const fetchData = () => {
+    console.log({id:session?.user?.id})
 
-      if (status) {
-        setRows(data.data);
+     const updateHarvests= async () => {
+      if(session.user.isAdmin()){
+        const { status, data } = await $Harvest.get();
+
+        if (status) {
+          setRows(data?.data);
+        }
+      }else{
+        const { status, data } = await $Harvest.get({id:session?.user?.id});
+
+        if (status) {
+          setRows(data?.data);
+        }
       }
-    })();
+
+    }
+    updateHarvests();
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
@@ -482,12 +495,12 @@ function Harvests() {
   };
 
   useEffect(() => {
-    if ($Harvest) {
+    if ($Harvest &&session?.user?.id) {
       (async () => {
         await fetchData();
       })();
     }
-  }, [$Harvest]);
+  }, [$Harvest,session]);
 
   return (
     <>
