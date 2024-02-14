@@ -328,7 +328,7 @@ function Dashboard() {
                 <Grid display="flex" flexDirection="column" gap={2}>
                   {loading
                     ? [...Array(3).keys()].map((post) => <Skeleton key={post} height={240} sx={{ transform: "none" }} />)
-                    : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} />)}
+                    : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} video={post.url_video}/>)}
                 </Grid>
               </Grid>
             </Grid>

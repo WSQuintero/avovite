@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Grid, Container, Skeleton } from "@mui/material";
 import useCart from "../Hooks/useCart";
 import useShop from "../Hooks/useShop";
@@ -6,13 +6,17 @@ import useSession from "../Hooks/useSession";
 import CardProduct from "../Components/CardProduct";
 import PageWrapper from "../Components/PageWrapper";
 import { useNavigate } from 'react-router-dom';
+import ShopService from "../Services/product.service";
 
 function Shop() {
   const navigate = useNavigate();
 
   const [{ user }] = useSession();
   const [, { push }] = useCart();
-  const $Shop = useShop();
+  // const $Shop = useShop();
+  const [session] = useSession();
+  const $Shop = useMemo(() => (session.token ? new ShopService(session.token) : null), [session.token]);
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +36,7 @@ function Shop() {
       })();
     }
   }, [$Shop]);
-  
+
   useEffect(() => {
     if(user){
       if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){

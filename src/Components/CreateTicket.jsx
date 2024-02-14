@@ -56,7 +56,7 @@ function CreateTicket({ setShowCreateTicket }) {
         id_type: "",
         id_number: null,
         id_location_expedition: "",
-        // files: [],
+        files: [],
       },
       informationBeneficiary: {
         title: event.target.title.value,
@@ -73,25 +73,25 @@ function CreateTicket({ setShowCreateTicket }) {
         civil_status_beneficiary: "",
         economy_activity_beneficiary: "",
         country_of_residence_beneficiary: "",
-        // files:[]
+        files:[]
       },
       informationBank: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        // files: [],
+        files: [],
       },
       oter: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        // files:[]
+        files:[]
       },
       bugs: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        // files:[]
+        files:[]
       },
     };
 
@@ -100,9 +100,7 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.bugs.ticketCategory = "Bugs";
       informationToSend.ticketCategory = "Bugs";
       if(filesOther){
-        const filesOtherFormData=new FormData()
-        filesOtherFormData.append("file",filesOther)
-        informationToSend.bugs.files.push(filesOtherFormData)
+        informationToSend.bugs.files.push(filesOther)
         setFilesOther(null)
       }
     }
@@ -111,9 +109,7 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.oter.ticketCategory = "Oter";
       informationToSend.ticketCategory = "Oter";
       if(filesOther){
-        const filesOtherFormData=new FormData()
-        filesOtherFormData.append("file",filesOther)
-        informationToSend.oter.files.push(filesOtherFormData)
+        informationToSend.oter.files.push(filesOther)
         setFilesOther(null)
       }
     }
@@ -121,9 +117,7 @@ function CreateTicket({ setShowCreateTicket }) {
     if (event.target.elements.ticketCategory.value === "Change information bank") {
       informationToSend.informationBank.ticketCategory = "Change information bank";
       informationToSend.ticketCategory = "Change information bank";
-      const certificateBankFormData = new FormData();
-      certificateBankFormData.append("certificate", certificateBank);
-      informationToSend.informationBank.files.push(certificateBankFormData);
+      informationToSend.informationBank.files.push(certificateBank);
     }
 
     if (event.target.elements.ticketCategory.value === "Change information user") {
@@ -146,12 +140,8 @@ function CreateTicket({ setShowCreateTicket }) {
         return;
       }
 
-      const frontalImageFormData = new FormData();
-      frontalImageFormData.append("fotoFrontal", frontalImage);
-      informationToSend.informationUser.files.push(frontalImageFormData);
-      const traseraImageFormData = new FormData();
-      traseraImageFormData.append("fotoTrasera", traseraImage);
-      informationToSend.informationUser.files.push(traseraImageFormData);
+      informationToSend.informationUser.files.push(frontalImage);
+      informationToSend.informationUser.files.push(traseraImage);
     }
 
     if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
@@ -171,9 +161,7 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary["country_of_residence_beneficiary"] =
         event.target.elements.countryOfResidenceBeneficiary.value;
         if(filesOther){
-          const filesOtherFormData=new FormData()
-          filesOtherFormData.append("file",filesOther)
-          informationToSend.informationBeneficiary.files.push(filesOtherFormData)
+          informationToSend.informationBeneficiary.files.push(filesOther)
           setFilesOther(null)
         }
     }
@@ -195,15 +183,32 @@ function CreateTicket({ setShowCreateTicket }) {
       const { status } = await $Ticket.create(informationToSend.bugs);
       if (status) {
         ticketCreatedCorrectly(status);
-        setShowCreateTicket(false);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
       }
     }
 
     if (informationToSend.oter.title && informationToSend.oter.description && informationToSend.oter.ticketCategory) {
+      console.log(informationToSend.oter)
       const { status } = await $Ticket.create(informationToSend.oter);
       if (status) {
         ticketCreatedCorrectly(status);
-        setShowCreateTicket(false);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
       }
     }
 

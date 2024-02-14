@@ -84,6 +84,16 @@ export default class AuthService {
       return { status: false, data: error };
     }
   }
+  
+  async validateEmail(tokenEmail) {
+    try {
+      const { data } = await axios.get(`${this.API_URL}/users/signup-token?token=${tokenEmail}`, {});
+
+      return { status: true, data };
+    } catch (error) {
+      return { status: false, data: error };
+    }
+  }
 
   async forgotPassword({ email, token = null, password } = {}) {
     return await handleCall(

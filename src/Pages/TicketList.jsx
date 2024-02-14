@@ -46,8 +46,8 @@ function TicketList({ handleClick }) {
   const $Ticket = useMemo(() => (session.token ? new TicketService(session.token) : null), [session.token]);
   const [actualTicket, setActualTicket] = useState(null);
   const [actualTicketId, setActualTicketId] = useState(null);
-  const [newMessage, setNewMessage] = useState(null);
   const [messageModalOpen, setMessageModalOpen] = useState(false); // State to control the message modal
+  const [messages, setMessages] = useState([]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -138,12 +138,21 @@ function TicketList({ handleClick }) {
     setMessageModalOpen(false);
   };
 
-
-  const handleSendMessage = (row) => {
+  const handleSendMessage = async (row) => {
     setActualTicketId(row.id);
     setMessageModalOpen(true);
+    try {
+      const { status, data } = await $Ticket.getById({ id: row.id });
+      if (status) {
+        // setActualTicket(data.data?.ticket); // Corregir 'tiket' a 'ticket'
+        // setModal("detail");
+        setMessages(data.data.messages);
+        console.log(data.data.messages)
+      }
+    } catch (error) {
+      console.error("Error al obtener detalles del ticket:", error);
+    }
   };
-
 
   const handleChangeState = async (event, row) => {
     const newTicketStatus = event.target.value;
@@ -174,13 +183,12 @@ function TicketList({ handleClick }) {
   };
 
   const handleDownload = (row) => {
-    const fileUrl = row.fileUrl;
-    const downloadLink = document.createElement("a");
-    downloadLink.href = fileUrl;
-    downloadLink.download = "archivo";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    const document=row.actions.find((a)=>a.url!==null)
+    if(document){
+      window.open(row.actions.find((a)=>a.url!==null).url)
+    }else{
+      setFeedback({ open: true, message: "No hay archivos que descargar", status: "error" });
+    }
   };
 
   const resetFeedback = () => {
@@ -229,7 +237,7 @@ function TicketList({ handleClick }) {
           </Typography>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} />
+          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="desc" />
         </Grid>
 
         {actualTicket && (
@@ -252,7 +260,14 @@ function TicketList({ handleClick }) {
           </Alert>
         </Snackbar>
 
-        <MessageModal onClose={closeMessages} open={messageModalOpen} actualTicketId={actualTicketId} setActualTicketId={setActualTicketId}/>
+        <MessageModal
+          onClose={closeMessages}
+          open={messageModalOpen}
+          actualTicketId={actualTicketId}
+          setActualTicketId={setActualTicketId}
+          messages={messages}
+          setMessages={setMessages}
+        />
       </PageWrapper>
     </>
   );

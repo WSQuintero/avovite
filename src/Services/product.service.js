@@ -5,6 +5,7 @@ export default class ShopService {
   constructor(token) {
     this.token = token;
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
+    this.axios = axios.create({ headers: { Authorization: this.token } });
 
     const config = { headers: { Authorization: this.token } };
 

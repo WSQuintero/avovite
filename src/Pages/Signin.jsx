@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import useSession from "../Hooks/useSession";
 import AuthService from "../Services/auth.service";
 import { Box, Button, Grid, InputAdornment, Link, TextField, Typography, Snackbar, Alert } from "@mui/material";
@@ -16,6 +16,10 @@ function Signin() {
   });
   const [feedback, setFeedback] = useState({ show: false, message: "", status: "success" });
   const $Auth = useMemo(() => new AuthService(), []);
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const tokenParam = searchParams.get("token");
 
   const onUserChange = (event) => {
     const { name, value } = event.target;
@@ -43,6 +47,24 @@ function Signin() {
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
+
+  useEffect(() => {
+    const validateEmail = async ()=>{
+      if (tokenParam) {
+        const { status, data } = await $Auth.validateEmail(tokenParam);
+
+        if(status){
+          setFeedback({
+            show: true,
+            message: "Correo Electrónico validado correctamente.",
+            status: "success",
+          });
+        }
+      }
+    };
+
+    validateEmail();
+  }, [tokenParam]);
 
   return (
     <Grid

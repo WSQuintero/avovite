@@ -28,12 +28,12 @@ import HarvestService from "../../Services/harvest.service";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { DatePicker } from "@mui/x-date-pickers";
-import { formatCurrency } from "../../utilities";
 import { LoadingButton } from "@mui/lab";
 import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
-import JSZip from "jszip";
+import { parseString } from "xml2js";
+import { formatCurrency } from "../../utilities";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
@@ -53,7 +53,7 @@ function Harvests() {
   const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_state && newRow.sowing_date && newRow.harvest_date, [newRow]);
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
 
-  const $Harvest = useMemo(() => (session.token ? new HarvestService(session.token) : null), [session.token]);
+  const $Harvest = useMemo(() => (session?.token ? new HarvestService(session?.token) : null), [session?.token]);
 
   const tableHeadCells = useMemo(
     () => [
@@ -161,18 +161,8 @@ function Harvests() {
   );
 
   const handleDownload = async (id) => {
-    const link = document.createElement("a");
-    link.href = `${import.meta.env.VITE_APP_URL}/harvest/generate-xlsx/${id}`;
-    link.target = "_blank";
-    link.download = `archivo_${id}.xlsx`;
-
-
-
-    link.click();
+    await $Harvest.download({ id: id });
   };
-
-
-
 
   const tableCollapse = useCallback(
     (row) => (
@@ -458,14 +448,23 @@ function Harvests() {
     setLoading((prev) => ({ ...prev, payment: false }));
   };
 
-  const fetchData = async () => {
-    await (async () => {
-      const { status, data } = await $Harvest.get({id:session?.user?.id});
+  const fetchData = () => {
+    const updateHarvests = async () => {
+      if (session.user.isAdmin()) {
+        const { status, data } = await $Harvest.get();
 
-      if (status) {
-        setRows(data.data);
+        if (status) {
+          setRows(data?.data);
+        }
+      } else {
+        const { status, data } = await $Harvest.get({ id: session?.user?.id });
+
+        if (status) {
+          setRows(data?.data);
+        }
       }
-    })();
+    };
+    updateHarvests();
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
@@ -482,12 +481,12 @@ function Harvests() {
   };
 
   useEffect(() => {
-    if ($Harvest) {
+    if ($Harvest && session?.user?.id) {
       (async () => {
         await fetchData();
       })();
     }
-  }, [$Harvest]);
+  }, [$Harvest, session]);
 
   return (
     <>

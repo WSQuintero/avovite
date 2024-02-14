@@ -193,6 +193,11 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         show: user?.isAdmin(),
       },
       {
+        name: "Movimientos",
+        route: "/admin/movements",
+        show: user?.isAdmin(),
+      },
+      {
         name: "Lista de tickets",
         route: "/admin/ticket-list",
         show: user?.isAdmin(),
@@ -225,7 +230,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
 
   if (!user) {
     return <></>;
-  } else if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+  } else if (!user.isAdmin()&&(user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date)) {
     return <></>;
   }
 

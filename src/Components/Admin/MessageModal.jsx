@@ -3,11 +3,10 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, T
 import TicketService from "../../Services/ticket.service";
 import useSession from "../../Hooks/useSession";
 
-function MessageModal({ open, onClose, actualTicketId, setActualTicketId }) {
+function MessageModal({ open, onClose, actualTicketId, setActualTicketId ,messages,setMessages}) {
   const [session] = useSession();
   const $Ticket = useMemo(() => (session?.token ? new TicketService(session?.token) : null), [session?.token]);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
 
   const resetFeedback = () => {
@@ -26,10 +25,10 @@ function MessageModal({ open, onClose, actualTicketId, setActualTicketId }) {
 
   const handleSend = async () => {
     try {
-      const { status, data } = await $Ticket.sendMessage({ message: String(message), ticketsId: actualTicketId });
+      const { status } = await $Ticket.sendMessage({ message: String(message), ticketsId: actualTicketId });
       if (status) {
         setFeedback({ open: true, message: "Mensaje enviado correctamente", status: "success" });
-        setMessages((prevMessages) => [...prevMessages, { sender: "You", text: message }]);
+        setMessages((prevMessages) => [...prevMessages, { fromActor: session.user.isAdmin()?"Administrator":"User", message: message,created_at:Date.now() }]);
         setMessage(""); // Reset message input
    // Cerrar el modal después de enviar el mensaje
       } else {
@@ -54,14 +53,16 @@ function MessageModal({ open, onClose, actualTicketId, setActualTicketId }) {
               sx={{
                 display: "flex",
                 flexDirection: "column",
+                justifyContent:"flex-start",
                 gap: "10px",
-                alignItems: msg.sender === "You" ? "flex-start" : "flex-end",
+                alignItems: msg.fromActor === "Administrator" ? "flex-start" : "flex-end",
               }}
             >
+              <div><span style={{color:"red",fontSize:"10px"}}>Enviado el: </span><span  style={{color:"green",fontSize:"10px"}}>{msg.created_at}</span></div>
               <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                {msg.sender}:
+                {msg.fromActor}:
               </Typography>
-              <Typography variant="body1">{msg.text}</Typography>
+              <Typography variant="body1">{msg.message}</Typography>
             </Box>
           ))}
         </Box>
