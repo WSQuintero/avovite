@@ -218,6 +218,7 @@ const Contracts = () => {
     } = await $Contract.get();
 
     if (status) {
+      console.log(data)
       setContracts(data);
 
     }
@@ -577,6 +578,12 @@ const Contracts = () => {
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
+                  Nombre:{" "}
+                </Typography>
+                {row.fullname}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
                   Teléfono:{" "}
                 </Typography>
                 {row.cellphone}
@@ -589,9 +596,21 @@ const Contracts = () => {
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
+                  Tipo de documento:{" "}
+                </Typography>
+                {row.id_type}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
                   Número de documento:{" "}
                 </Typography>
                 {row.id_number}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Lugar de expedición documento:{" "}
+                </Typography>
+                {row.id_location_expedition}
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
@@ -610,6 +629,46 @@ const Contracts = () => {
                   Banco:{" "}
                 </Typography>
                 {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
+              </Typography>
+
+              <Typography variant="h4" mt={4}>
+                  Información del beneficiario
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Nombre:{" "}
+                </Typography>
+                {row.beneficiary_fullname}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Tipo de documento:{" "}
+                </Typography>
+                {row.beneficiary_id_type}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Número de documento:{" "}
+                </Typography>
+                {row.beneficiary_id_number}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Lugar de expedición del documento:{" "}
+                </Typography>
+                {row.beneficiary_id_location_expedition}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Teléfono:{" "}
+                </Typography>
+                {row.cellphone_beneficiary}
+              </Typography>
+              <Typography>
+                <Typography component="span" fontWeight={600}>
+                  Correo electrónico:{" "}
+                </Typography>
+                {row.email_beneficiary}
               </Typography>
             </Grid>
           </Grid>
