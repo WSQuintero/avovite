@@ -183,7 +183,15 @@ function CreateTicket({ setShowCreateTicket }) {
       const { status } = await $Ticket.create(informationToSend.bugs);
       if (status) {
         ticketCreatedCorrectly(status);
-        setShowCreateTicket(false);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
       }
     }
 
@@ -191,9 +199,16 @@ function CreateTicket({ setShowCreateTicket }) {
       console.log(informationToSend.oter)
       const { status } = await $Ticket.create(informationToSend.oter);
       if (status) {
-        console.log(status)
         ticketCreatedCorrectly(status);
-        setShowCreateTicket(false);
+        setTimeout(() => {
+          setShowCreateTicket(false);
+        }, 2000);
+      }else{
+        setAlert({
+          show: true,
+          message: "Hubo en error al enviar la información",
+          status: "error",
+        });
       }
     }
 
