@@ -2,6 +2,7 @@ import { Grid, TextField } from "@mui/material";
 import BeneficiaryIdTypeButton from "../Components/BeneficiaryIdTypeButton";
 import { useState } from "react";
 import UploadPhotosButton from "./UploadPhotosButton";
+import PhoneField from "react-phone-input-2";
 
 function IsChangeInformationUser({
   isChangeInformationUser,
@@ -12,6 +13,8 @@ function IsChangeInformationUser({
   traseraImage,
 }) {
   const [selectedIdType, setSelectedIdType] = useState();
+  const [selectedCell, setSelectedCell] = useState();
+
   return (
     <>
       {isChangeInformationUser && (
@@ -23,7 +26,28 @@ function IsChangeInformationUser({
             <TextField name="email" label="Correo electrónico" fullWidth onChange={handleInputChange} required />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <TextField name="cellphone" type="number" label="Teléfono celular" fullWidth onChange={handleInputChange} required />
+            {/* <TextField  type="number"  fullWidth  required /> */}
+            <PhoneField
+              label="Teléfono celular"
+              required
+              value={selectedCell}
+              onChange={(value) => {
+                setSelectedCell(value);
+                handleInputChange({ target: { name: "cellphone", value } });
+              }}
+              name="cellphone"
+              enableSearch={true}
+              country="co"
+              specialLabel=""
+              autoFormat={true}
+              inputStyle={{
+                width: "100%",
+              }}
+              inputProps={{
+                name: "cellphone",
+                required: true,
+              }}
+            />
           </Grid>
           <BeneficiaryIdTypeButton
             handleInputChange={handleInputChange}
@@ -58,4 +82,3 @@ function IsChangeInformationUser({
 }
 
 export default IsChangeInformationUser;
-

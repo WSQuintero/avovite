@@ -123,11 +123,11 @@ function CreateTicket({ setShowCreateTicket }) {
     if (event.target.elements.ticketCategory.value === "Change information user") {
       informationToSend.informationUser.ticketCategory = "Change information user";
       informationToSend.ticketCategory = "Change information user";
+      informationToSend.informationUser.id_type = event.target.elements.idType.value;
 
       informationToSend.informationUser.fullname = event.target.elements.fullname.value;
       informationToSend.informationUser.email = event.target.elements.email.value;
-      informationToSend.informationUser.cellphone = event.target.elements.cellphone.value;
-      informationToSend.informationUser["id_type"] = event.target.elements.idType.value;
+      informationToSend.informationUser.cellphone = event.target.elements.cellphone?.value;
       informationToSend.informationUser["id_number"] = event.target.elements.idNumber.value;
       informationToSend.informationUser["id_location_expedition"] = event.target.elements.idLocExpedition.value;
 
