@@ -4,6 +4,7 @@ export const TESTING_EPAYCO = false;
 
 export const DOCUMENT_TYPES = {
   cedula: "Cédula de Ciudadanía",
+  cedulaExtranjeria: "Cédula de Extranjería",
   pasaporte: "Pasaporte",
   dni: "DNI",
   nit: "NIT",
