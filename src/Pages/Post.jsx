@@ -4,6 +4,7 @@ import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import { Box, Container, Grid, Skeleton, Typography } from "@mui/material";
 import { formatDate } from "../utilities";
+import sanitizeHtml from 'sanitize-html';
 
 const isYouTubeVideo = (url) => {
   return url.includes("youtube.com") || url.includes("youtu.be");
@@ -23,6 +24,7 @@ function Post() {
   const $Post = usePost();
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
+  const sanitizedDescription = sanitizeHtml(post?.description);
 
   const fetchPost = async () => {
     const { status, data } = await $Post.get({ id });
@@ -115,8 +117,8 @@ function Post() {
                 </Typography>
               </Grid>
             </Box>
-            <Typography>{post.description}</Typography>
-            <Grid sx={{ aspectRatio: 16 / 9 }}>
+            <Typography dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />
+              <Grid sx={{ aspectRatio: 16 / 9 }}>
               {isYouTubeVideo(post.url_video) ? (
                 <iframe
                   src={convertToEmbedUrl(post.url_video)}
