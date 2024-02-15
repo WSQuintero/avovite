@@ -48,7 +48,6 @@ export default class TicketService {
       });
 
       // Enviar la solicitud al backend
-      console.log(formData);
       return await handleCall(
         async () =>
           (
@@ -63,7 +62,6 @@ export default class TicketService {
     } else {
       // Si no hay archivos, enviar la información directamente sin FormData
       console.log("No hay archivos para enviar. Enviando los demás datos sin FormData.");
-      console.log(body);
 
       // Eliminar la clave 'files' del body antes de enviar
       delete body.files;

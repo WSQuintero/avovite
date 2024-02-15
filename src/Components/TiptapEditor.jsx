@@ -3,10 +3,11 @@ import StarterKit from "@tiptap/starter-kit";
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle from "@tiptap/extension-text-style";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from "@tiptap/extension-text-align";
 import { Button, Divider, Grid, Icon } from "@mui/material";
 import { useMemo } from "react";
 
-function IconButton({ children, ...props }) {
+const IconButton = ({ children, ...props }) => {
   return (
     <Button
       variant="outlined"
@@ -23,7 +24,7 @@ function IconButton({ children, ...props }) {
       {children}
     </Button>
   );
-}
+};
 
 const TiptapEditor = ({ value, placeholder, onChange }) => {
   const extensions = useMemo(
@@ -42,9 +43,15 @@ const TiptapEditor = ({ value, placeholder, onChange }) => {
           keepAttributes: false,
         },
       }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'right',"justify","center"],
+        defaultAlignment: 'left',
+      })
     ],
     [placeholder]
   );
+
   const editor = useEditor({
     extensions,
     content: value,
@@ -76,31 +83,33 @@ const TiptapEditor = ({ value, placeholder, onChange }) => {
           >
             <Icon className="fa-strikethrough" fontSize="small" style={{ fontSize: 16 }} />
           </IconButton>
+          {/* Botones de justificación de texto */}
           <Divider flexItem orientation="vertical" sx={{ marginX: 1 }} />
           <IconButton
-            onClick={() => editor.chain().focus().setParagraph().run()}
-            className={editor.isActive("paragraph") ? "is-active" : ""}
+            onClick={() => editor.chain().focus().setTextAlign("left").run()}
+            className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
           >
-            <Icon className="fa-paragraph" fontSize="small" style={{ fontSize: 16 }} />
+            <Icon className="fa-align-left" fontSize="small" style={{ fontSize: 16 }} />
           </IconButton>
           <IconButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            className={editor.isActive("heading", { level: 1 }) ? "is-active" : ""}
+            onClick={() => editor.chain().focus().setTextAlign("center").run()}
+            className={editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
           >
-            <Icon className="fa-h1" fontSize="small" style={{ fontSize: 16 }} />
+            <Icon className="fa-align-center" fontSize="small" style={{ fontSize: 16 }} />
           </IconButton>
           <IconButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className={editor.isActive("heading", { level: 2 }) ? "is-active" : ""}
+            onClick={() => editor.chain().focus().setTextAlign("right").run()}
+            className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
           >
-            <Icon className="fa-h2" fontSize="small" style={{ fontSize: 16 }} />
+            <Icon className="fa-align-right" fontSize="small" style={{ fontSize: 16 }} />
           </IconButton>
           <IconButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            className={editor.isActive("heading", { level: 3 }) ? "is-active" : ""}
+            onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+            className={editor.isActive({ textAlign: "justify" }) ? "is-active" : ""}
           >
-            <Icon className="fa-h3" fontSize="small" style={{ fontSize: 16 }} />
+            <Icon className="fa-align-justify" fontSize="small" style={{ fontSize: 16 }} />
           </IconButton>
+          {/* Resto de los botones */}
           <Divider flexItem orientation="vertical" sx={{ marginX: 1 }} />
           <IconButton
             onClick={() => editor.chain().focus().toggleBulletList().run()}

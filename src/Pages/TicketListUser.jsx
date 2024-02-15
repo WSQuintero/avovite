@@ -23,8 +23,20 @@ import { AvoviteWhiteIcon } from "../Components/Icons";
 import TicketService from "../Services/ticket.service";
 import TicketModalUser from "../Components/TicketDetailModalUser";
 import MessageModal from "../Components/Admin/MessageModal";
+import { formatDate } from "../utilities";
 
-const InitialState = { id: null, name: "", asWork: "" };
+const InitialState = {
+  id: "",
+  name: "",
+  asWork: "",
+  created_at:"",
+  state: "",
+  actions: [
+    { label: "Front Document", url: null },
+    { label: "Back Document", url: null },
+    { label: "Bank Document", url: null },
+  ],
+};
 
 function TicketListUser({ handleClick }) {
   const [session] = useSession();
@@ -45,6 +57,7 @@ function TicketListUser({ handleClick }) {
         id: "name",
         label: "Título",
         align: "left",
+        width:200,
         disablePadding: false,
         format: (value) => value,
       },
@@ -52,15 +65,35 @@ function TicketListUser({ handleClick }) {
         id: "asWork",
         label: "Descripción",
         align: "left",
+        width:400,
         disablePadding: false,
         format: (value) => value,
       },
       {
-        id: "state",
-        label: "Estado",
+        id: "created_at",
+        label: "Creación",
         align: "left",
         disablePadding: false,
-        format: (value) => value,
+        width: 200,
+        format: (value) => formatDate(value),
+      },
+      {
+        id: "state",
+        label: "Estado",
+        align: "center",
+        disablePadding: false,
+        width:160,
+        format: (value) => (
+          <span style={{
+            backgroundColor: value === "Completed" ? "#4CAF50" : value === "In Progress" ? "#FFEB3B" : "inherit",
+            color: value === "Completed" ? "white" : value === "In Progress" ? "green" : "inherit",
+            padding: "10px",
+            borderRadius: "10px",
+            fontSize:"12px"
+          }}>
+            {value}
+          </span>
+        ),
       },
       {
         id: "actions",
@@ -68,8 +101,8 @@ function TicketListUser({ handleClick }) {
         align: "left",
         disablePadding: false,
         format: (value, row) => (
-          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)}>
-            Archivos
+          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)} disabled={!row.actions.some((a)=>a.url!==null)}>
+            Descargar
           </Button>
         ),
       },
@@ -180,6 +213,7 @@ function TicketListUser({ handleClick }) {
             id: ticket.id,
             name: ticket.title,
             asWork: ticket.description,
+            created_at:ticket.created_at,
             state: ticket.ticketStatus,
             actions: [
               { label: "Front Document", url: ticket.frontDocumentUrl },
