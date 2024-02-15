@@ -23,6 +23,7 @@ import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/ico
 import { formatDate } from "../../utilities";
 import usePost from "../../Hooks/usePost";
 import TiptapEditor from "../TiptapEditor";
+import sanitizeHtml from 'sanitize-html';
 
 const isYouTubeVideo = (url) => {
   return url.includes("youtube.com") || url.includes("youtu.be");
@@ -108,7 +109,7 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}>{value}</Box>
+          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}  dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}/>
         ),
       },
       {
@@ -116,7 +117,7 @@ function Blog() {
         label: "Actualizado en",
         align: "left",
         disablePadding: false,
-        format: (value) => formatDate(value),
+        format: (value) => value ? formatDate(value) : formatDate(new Date()),
       },
       {
         id: "",

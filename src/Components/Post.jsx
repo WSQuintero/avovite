@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import sanitizeHtml from 'sanitize-html';
 
 function Post({ post, route }) {
   const breakpoint = "lg";
@@ -9,6 +10,7 @@ function Post({ post, route }) {
   const isYouTubeVideo = (url) => {
     return url.includes("youtube.com") || url.includes("youtu.be");
   };
+  const sanitizedDescription = sanitizeHtml(post?.description);
 
   const convertToEmbedUrl = (url) => {
     if (url.includes("youtu.be")) {
@@ -97,9 +99,8 @@ function Post({ post, route }) {
         <Typography variant="h3" sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
           {post.title}
         </Typography>
-        <Typography sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap", height: "110px" }}>
-          {post.description}
-        </Typography>
+        <Typography sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap", height: "110px" }} dangerouslySetInnerHTML={{ __html: sanitizedDescription }}/>
+
         <Button component={Link} sx={{ marginLeft: "auto", marginTop: "auto" }} to={route}>
           Ver más
         </Button>
