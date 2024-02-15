@@ -210,7 +210,6 @@ function TicketList({ handleClick }) {
     try {
       const { status, data } = await $Ticket.getAll();
       if (status) {
-        console.log(data.data)
         setRows(
           data.data.map((ticket) => ({
             id: ticket.id,
