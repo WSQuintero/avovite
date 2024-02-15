@@ -173,7 +173,7 @@ function TicketList({ handleClick }) {
     try {
       const { status, data } = await $Ticket.getById({ id: ticket.id });
       if (status) {
-        setActualTicket(data.data?.ticket); // Corregir 'tiket' a 'ticket'
+        setActualTicket(data.data?.tiket);
         setModal("detail");
       }
     } catch (error) {
