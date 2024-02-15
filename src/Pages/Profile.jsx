@@ -97,7 +97,6 @@ function Profile() {
           location_residence: session.user.location_residence || "",
         });
       }
-      console.log(session.user.id)
 
     }
 

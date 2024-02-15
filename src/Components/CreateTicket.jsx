@@ -196,7 +196,6 @@ function CreateTicket({ setShowCreateTicket }) {
     }
 
     if (informationToSend.oter.title && informationToSend.oter.description && informationToSend.oter.ticketCategory) {
-      console.log(informationToSend.oter)
       const { status } = await $Ticket.create(informationToSend.oter);
       if (status) {
         ticketCreatedCorrectly(status);

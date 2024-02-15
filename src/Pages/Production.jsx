@@ -15,7 +15,6 @@ function Production() {
   const [loading, setLoading] = useState({ fetching: true });
   const $Shop = useShop();
 
-  console.log(products);
 
   const columns = useMemo(
     () => [

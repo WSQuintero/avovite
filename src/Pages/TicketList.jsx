@@ -147,7 +147,6 @@ function TicketList({ handleClick }) {
         // setActualTicket(data.data?.ticket); // Corregir 'tiket' a 'ticket'
         // setModal("detail");
         setMessages(data.data.messages);
-        console.log(data.data.messages)
       }
     } catch (error) {
       console.error("Error al obtener detalles del ticket:", error);

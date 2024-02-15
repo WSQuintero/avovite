@@ -48,7 +48,6 @@ export default class TicketService {
       });
 
       // Enviar la solicitud al backend
-      console.log(formData);
       return await handleCall(
         async () =>
           (
