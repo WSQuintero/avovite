@@ -31,7 +31,7 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
   }
 
   useEffect(() => {
-    if (isChangeInformationBeneficiary) {
+    if (informationContract) {
       setBeneficiaryFullname(informationContract?.beneficiary_fullname || "");
       setBeneficiaryIdNumber(informationContract?.beneficiary_id_number || "");
       setBeneficiaryIdLocationExpedition(informationContract?.beneficiary_id_location_expedition || "");

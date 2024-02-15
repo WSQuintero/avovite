@@ -31,7 +31,7 @@ export default class TicketService {
       if (files.length > 1) {
         // Si hay más de un archivo, agregarlos todos al FormData como un solo array 'files'
         files.forEach((file, index) => {
-          formData.append(`files[${index}]`, file);
+          formData.append(`files`, file);
         });
       } else if (files.length === 1) {
         // Si solo hay un archivo, agregarlo al FormData sin usar un array

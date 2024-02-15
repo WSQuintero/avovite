@@ -2,10 +2,13 @@ import { Grid, TextField, Typography } from "@mui/material";
 import BeneficiaryIdTypeButton from "./BeneficiaryIdTypeButton";
 import CivilStatusBeneficiary from "./CivilStatusBeneficiary";
 import { useState } from "react";
+import PhoneField from "react-phone-input-2";
 
 function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handleInputChange }) {
   const [selectedIdType, setSelectedIdType] = useState();
   const [statusCivil, setStatusCivil] = useState();
+  const [selectedCell, setSelectedCell] = useState();
+
   return (
     <>
       {isChangeInformationBeneficiary && (
@@ -36,7 +39,28 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
           </Grid>
           <Grid item xs={12} sm={12}>
             <Typography variant="subtitle1">Teléfono</Typography>
-            <TextField name="cellphoneBeneficiary" fullWidth onChange={handleInputChange} required type="cellphone" />
+            <PhoneField
+              label="Teléfono celular"
+              required
+              fullWidth
+              value={selectedCell}
+              onChange={(value) => {
+                setSelectedCell(value);
+                handleInputChange({ target: { name: "cellphone", value } });
+              }}
+              name="cellphoneBeneficiary"
+              enableSearch={true}
+              country="co"
+              specialLabel=""
+              autoFormat={true}
+              inputStyle={{
+                width: "100%",
+              }}
+              inputProps={{
+                name: "cellphone",
+                required: true,
+              }}
+            />
           </Grid>
           {/* Cod Municipio Beneficiary cambiar a selected con todos los códigos*/}
           <Grid item spacing={2} fullWidth>

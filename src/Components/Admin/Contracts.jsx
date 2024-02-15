@@ -218,7 +218,6 @@ const Contracts = () => {
     } = await $Contract.get();
 
     if (status) {
-      console.log(data)
       setContracts(data);
 
     }

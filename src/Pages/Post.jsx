@@ -3,8 +3,21 @@ import { useParams } from "react-router-dom";
 import usePost from "../Hooks/usePost";
 import PageWrapper from "../Components/PageWrapper";
 import { Box, Container, Grid, Skeleton, Typography } from "@mui/material";
-import { formatDate, isYoutubeVideo } from "../utilities";
+import { formatDate } from "../utilities";
 
+const isYouTubeVideo = (url) => {
+  return url.includes("youtube.com") || url.includes("youtu.be");
+};
+const convertToEmbedUrl = (url) => {
+  if (url.includes("youtu.be")) {
+    const videoId = url.split("/").pop();
+    return `https://www.youtube.com/embed/${videoId}`;
+  } else if (url.includes("youtube.com")) {
+    const videoId = new URL(url).searchParams.get("v");
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  return url; // Return the original URL if it's not a YouTube video
+};
 function Post() {
   const { id } = useParams();
   const $Post = usePost();
@@ -104,20 +117,14 @@ function Post() {
             </Box>
             <Typography>{post.description}</Typography>
             <Grid sx={{ aspectRatio: 16 / 9 }}>
-              {isYoutubeVideo(post.url_video) ? (
+              {isYouTubeVideo(post.url_video) ? (
                 <iframe
-                  src={post.url_video}
+                  src={convertToEmbedUrl(post.url_video)}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8, border: 0 }}
                 />
               ) : (
-                <video
-                  src={post.url_video}
-                  width="100%"
-                  style={{ objectFit: "cover", borderRadius: 8 }}
-                  muted
-                  autoPlay
-                />
+                <video src={post.url_video} width="100%" style={{ objectFit: "cover", borderRadius: 8 }} muted autoPlay />
               )}
             </Grid>
           </Grid>

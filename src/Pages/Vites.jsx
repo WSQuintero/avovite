@@ -114,7 +114,6 @@ function Vites() {
 
       if (status) {
         setRows(data.data);
-        console.log(data.data)
       }
     })();
   }, [$Contract,user]);

@@ -20,7 +20,7 @@ function BeneficiaryIdTypeSelector({ handleInputChange, value,selectedIdType,set
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="beneficiary-id-type-label" marginTop="20px">Seleccione Tipo de Identificación</InputLabel>
+      <InputLabel id="beneficiary-id-type-label" marginTop="20px"/>
       <Select
         labelId="beneficiary-id-type-label"
         id="beneficiary-id-type-select"
