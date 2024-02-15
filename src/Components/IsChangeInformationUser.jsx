@@ -1,4 +1,4 @@
-import { Grid, TextField } from "@mui/material";
+import { Grid, TextField, Typography } from "@mui/material";
 import BeneficiaryIdTypeButton from "../Components/BeneficiaryIdTypeButton";
 import { useState } from "react";
 import UploadPhotosButton from "./UploadPhotosButton";
@@ -49,11 +49,15 @@ function IsChangeInformationUser({
               }}
             />
           </Grid>
-          <BeneficiaryIdTypeButton
-            handleInputChange={handleInputChange}
-            selectedIdType={selectedIdType}
-            setSelectedIdType={setSelectedIdType}
-          />
+          <Grid item xs={12} sm={12}>
+            <Typography variant="subtitle1">Tipo de identificación</Typography>
+            <BeneficiaryIdTypeButton
+              handleInputChange={handleInputChange}
+              selectedIdType={selectedIdType}
+              setSelectedIdType={setSelectedIdType}
+            />
+          </Grid>
+
           <Grid item xs={12} sm={12}>
             <TextField name="idNumber" type="number" label="Número de identificación" fullWidth onChange={handleInputChange} required />
           </Grid>
