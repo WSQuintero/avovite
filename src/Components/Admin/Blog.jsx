@@ -117,7 +117,7 @@ function Blog() {
         label: "Actualizado en",
         align: "left",
         disablePadding: false,
-        format: (value) => formatDate(value),
+        format: (value) => value ? formatDate(value) : formatDate(new Date()),
       },
       {
         id: "",
