@@ -23,11 +23,13 @@ import TicketService from "../Services/ticket.service";
 import useSession from "../Hooks/useSession";
 import TicketModal from "../Components/Admin/TicketDetailModal";
 import MessageModal from "../Components/Admin/MessageModal";
+import { formatDate } from "../utilities";
 
 const InitialState = {
   id: "",
   name: "",
   asWork: "",
+  created_at:"",
   state: "",
   actions: [
     { label: "Front Document", url: null },
@@ -63,7 +65,16 @@ function TicketList({ handleClick }) {
         label: "Descripción",
         align: "left",
         disablePadding: false,
+        width: 400,
         format: (value) => value,
+      },
+      {
+        id: "created_at",
+        label: "Creación",
+        align: "left",
+        disablePadding: false,
+        width: 200,
+        format: (value) => formatDate(value),
       },
       {
         id: "state",
@@ -76,6 +87,7 @@ function TicketList({ handleClick }) {
             onChange={(event) => handleChangeState(event, row)}
             sx={{ minWidth: 100, height: "40px", fontSize: "15px" }}
           >
+            <MenuItem value="Created">Created</MenuItem>
             <MenuItem value="In Progress">In Progress</MenuItem>
             <MenuItem value="Completed">Completed</MenuItem>
           </Select>
@@ -87,7 +99,7 @@ function TicketList({ handleClick }) {
         align: "left",
         disablePadding: false,
         format: (value, row) => (
-          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)}>
+          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)} disabled={!row.actions.some((a)=>a.url!==null)}>
             Descargar
           </Button>
         ),
@@ -198,10 +210,12 @@ function TicketList({ handleClick }) {
     try {
       const { status, data } = await $Ticket.getAll();
       if (status) {
+        console.log(data.data)
         setRows(
           data.data.map((ticket) => ({
             id: ticket.id,
             name: ticket.title,
+            created_at:ticket.created_at,
             asWork: ticket.description,
             state: ticket.ticketStatus,
             actions: [
