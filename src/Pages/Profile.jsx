@@ -22,9 +22,10 @@ import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
 
 import CoverImage from "../assets/img/signup/background.png";
-import AuthService from "../Services/auth.service";
+import AuthService from "../Services/user.service";
 import { DOCUMENT_TYPES } from "../utilities/constants";
 import { useNavigate } from 'react-router-dom';
+import useUser from "../Hooks/useUser";
 
 const Row = ({ children }) => (
   <Grid
@@ -57,71 +58,24 @@ function Profile() {
     user_bank_account_type: "-",
     user_bank_account_number: "",
   });
-  const [userAvatar, setUserAvatar] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
-  const [loading, setLoading] = useState(false);
-  const $Auth = useMemo(() => new AuthService(session.token), [session.token]);
-  const validation = useMemo(
-    () =>
-      user.fullname &&
-      user.cellphone &&
-      user.id_type !== "-" &&
-      user.id_number &&
-      user.id_location_expedition &&
-      user.location_residence,
-    [user]
-  );
+  const [countryInfo,setCountry]=useState(null)
+  const $User = useUser();
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleAvatarChange = async (event) => {
-    if (event.target.files.length > 0) {
-      setLoading(true);
-      const { status } = await $Auth.updateAvatar({ avatar: event.target.files[0] });
-      setLoading(false);
+  useEffect(()=>{
+    if($User){
+      const getInformationUser=async ()=>{
+        const {status,data}=await $User.get()
 
-      if (status) {
-        setUserAvatar(event.target.files[0]);
-        setSession({ ...session.user, avatar: URL.createObjectURL(userAvatar) });
-        setAlert({ show: true, message: "Tu avatar ha sido actualizado con éxito.", status: "success" });
-      } else {
-        setAlert({ show: true, message: "Hubo un error al actualizar tu avatar.", status: "error" });
+        if(status){
+          const country =data.data.find((a)=>a.id===session.user.id).country
+          setCountry(country)
+        }
       }
+      getInformationUser()
     }
-  };
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!validation) {
-      setAlert({
-        show: true,
-        message: "Todos los campos son requeridos.",
-        status: "error",
-      });
-      return;
-    }
-
-    const { status } = await $Auth.update({
-      fullname: user.fullname,
-      cellphone: user.cellphone,
-      id_type: user.id_type,
-      id_number: user.id_number,
-      id_location_expedition: user.id_location_expedition,
-      location_residence: user.location_residence,
-    });
-
-    if (status) {
-      setAlert({ show: true, message: "Tu usuario ha sido actualizado con éxito.", status: "success" });
-      const { avatar, ...rest } = user;
-      setSession({ ...session.user, ...rest });
-    } else {
-      setAlert({ show: true, message: "Ha ocurrido un error", status: "error" });
-    }
-  };
+      },[$User,session])
 
   const resetAlert = () => {
     setAlert((prev) => ({ show: false, message: prev.message, status: prev.status }));
@@ -143,9 +97,9 @@ function Profile() {
           location_residence: session.user.location_residence || "",
         });
       }
+      console.log(session.user.id)
 
     }
-    console.log(user)
 
   }, [session.user]);
 
@@ -198,8 +152,6 @@ function Profile() {
               accept="image/*"
               id="input-select-avatar"
               sx={{ display: "none" }}
-              disabled={loading}
-              onChange={handleAvatarChange}
             />
             {/*<label htmlFor="input-select-avatar">
               <IconButton
@@ -266,7 +218,6 @@ function Profile() {
         padding={2}
         gap={4}
         noValidate
-        onSubmit={handleFormSubmit}
       >
         <Row>
           <TextField
@@ -275,7 +226,6 @@ function Profile() {
             value={user.fullname}
             required
             fullWidth
-            onChange={handleInputChange}
             InputProps={{
               readOnly: true,
               onFocus: handleReadOnlyInputChange,
@@ -287,7 +237,6 @@ function Profile() {
             value={user.email}
             required
             fullWidth
-            onChange={handleInputChange}
             InputProps={{
               readOnly: true,
               onFocus: handleReadOnlyInputChange,
@@ -304,7 +253,6 @@ function Profile() {
               value={user.id_type}
               required
               fullWidth
-              onChange={handleInputChange}
               disabled
               onFocus={handleReadOnlyInputChange}
             >
@@ -325,7 +273,6 @@ function Profile() {
             value={user.id_number}
             required
             fullWidth
-            onChange={handleInputChange}
             InputProps={{
               readOnly: true,
               onFocus: handleReadOnlyInputChange,
@@ -339,7 +286,6 @@ function Profile() {
             value={user.id_location_expedition}
             required
             fullWidth
-            onChange={handleInputChange}
             InputProps={{
               readOnly: true,
               onFocus: handleReadOnlyInputChange,
@@ -354,7 +300,6 @@ function Profile() {
             value={user.cellphone}
             required
             fullWidth
-            onChange={handleInputChange}
             InputProps={{
               readOnly: true,
               onFocus: handleReadOnlyInputChange,
@@ -362,11 +307,10 @@ function Profile() {
           />
           <TextField
             name="location_residence"
-            label="Ciudad o país de Residencia"
-            value={user.location_residence}
+            label="País de Residencia"
+            value={countryInfo ===null?"Colombia":countryInfo}
             required
             fullWidth
-            onChange={handleInputChange}
             InputProps={{
               readOnly: true,
               onFocus: handleReadOnlyInputChange,
