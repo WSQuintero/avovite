@@ -34,7 +34,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
 import TiptapEditor from "../TiptapEditor";
-import { isToday, formatCurrency, formatDate as formatLongDate, exportWorksheet } from "../../utilities/index";
+import { isToday, formatCurrency, formatDate as formatLongDate, exportWorksheet, formatDate } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
@@ -146,13 +146,7 @@ const columns = [
   },
 ];
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${year}-${month}-${day}`;
-}
+
 
 const Contracts = () => {
   const navigate = useNavigate();
