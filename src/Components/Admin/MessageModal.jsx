@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Box, Alert, Snackbar } from "@mui/material";
 import TicketService from "../../Services/ticket.service";
 import useSession from "../../Hooks/useSession";
+import { formatDate } from "../../utilities";
 
 function MessageModal({ open, onClose, actualTicketId, setActualTicketId ,messages,setMessages}) {
   const [session] = useSession();
@@ -58,7 +59,7 @@ function MessageModal({ open, onClose, actualTicketId, setActualTicketId ,messag
                 alignItems: msg.fromActor === "Administrator" ? "flex-start" : "flex-end",
               }}
             >
-              <div><span style={{color:"red",fontSize:"10px"}}>Enviado el: </span><span  style={{color:"green",fontSize:"10px"}}>{msg.created_at}</span></div>
+              <div><span style={{color:"red",fontSize:"10px"}}>Enviado el: </span><span  style={{color:"green",fontSize:"10px"}}>{formatDate(msg.created_at)}</span></div>
               <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                 {msg.fromActor}:
               </Typography>

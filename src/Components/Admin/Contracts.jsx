@@ -106,6 +106,21 @@ const columns = [
     header: "Vites",
   },
   {
+    accessorKey: "paidVite",
+    header: "vites pagos",
+    size: 210
+  },
+  {
+    accessorKey: "debt",
+    header: "Deuda actual",
+    size: 210,
+    Cell: ({ renderedCellValue }) => (
+      <>
+        $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+      </>
+    ),
+  },
+  {
     accessorKey: "contract_amount",
     id: "contract_amount",
     header: "Valor de contrato",
@@ -244,7 +259,6 @@ const Contracts = () => {
     });
     setDues([]);
   };
-console.log(contractDues.dues)
   const onCreateContract = async () => {
     const body = {
       mortgage_contract: contract.mortgage_contract,
