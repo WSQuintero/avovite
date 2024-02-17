@@ -125,7 +125,6 @@ function Vites() {
       const { status, data } = await $Contract.get();
 
       if (status) {
-        console.log(data.data)
         setRows(data.data);
       }
     })();

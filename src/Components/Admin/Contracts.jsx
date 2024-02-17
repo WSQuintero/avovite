@@ -56,11 +56,8 @@ const columns = [
     id: "contract_date",
     header: "Fecha del contrato",
     Cell: ({ renderedCellValue }) => {
-
-      return (
-        <Typography>{formatDate(renderedCellValue) }</Typography>
-      );
-    }
+      return <Typography>{formatDate(renderedCellValue)}</Typography>;
+    },
   },
   {
     accessorKey: "contract_label",
@@ -74,22 +71,23 @@ const columns = [
     Cell: ({ renderedCellValue, row: { original } }) => (
       <Stack>
         <Typography>{renderedCellValue}</Typography>
-        <Typography fontSize={12}>
-          {original.email}
-        </Typography>
+        <Typography fontSize={12}>{original.email}</Typography>
       </Stack>
     ),
-  },{
+  },
+  {
     accessorKey: "id_type",
     id: "id_type",
     header: "Tipo de documento",
     Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
-  },{
+  },
+  {
     accessorKey: "id_number",
     id: "id_number",
     header: "Número de documento",
     Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
-  },{
+  },
+  {
     accessorKey: "id_location_expedition",
     id: "id_location_expedition",
     header: "Lugar de expedición",
@@ -145,8 +143,6 @@ const columns = [
     header: "Estado de la firma",
   },
 ];
-
-
 
 const Contracts = () => {
   const navigate = useNavigate();
@@ -213,7 +209,6 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
-
     }
   };
 
@@ -249,7 +244,7 @@ const Contracts = () => {
     });
     setDues([]);
   };
-
+console.log(contractDues.dues)
   const onCreateContract = async () => {
     const body = {
       mortgage_contract: contract.mortgage_contract,
@@ -625,7 +620,7 @@ const Contracts = () => {
               </Typography>
 
               <Typography variant="h4" mt={4}>
-                  Información del beneficiario
+                Información del beneficiario
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
@@ -787,7 +782,8 @@ const Contracts = () => {
                       firstPaymentDate: value.toDate(),
                     }))
                   }
-                />contract
+                />
+                contract
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
@@ -1019,7 +1015,7 @@ const Contracts = () => {
                 <ListItemText primary="Cuota" primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
               </Grid>
             </ListItem>
-            {contractDues.dues.map((due) => (
+            {contractDues.dues.filter((fd)=>fd.id).map((due) => (
               <ListItem
                 key={due.id}
                 secondaryAction={
@@ -1092,8 +1088,6 @@ const Contracts = () => {
           </LoadingButton>
         </DialogActions>
       </Dialog>
-
-
 
       <Snackbar
         open={feedback.open}
