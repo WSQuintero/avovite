@@ -8,6 +8,8 @@ import { AvoviteWhiteIcon } from "../Components/Icons";
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
 import { useNavigate } from 'react-router-dom';
+import { NumericFormat } from "react-number-format";
+import AuthService from "../Services/user.service";
 
 function Vites() {
   const navigate = useNavigate();
@@ -47,12 +49,22 @@ function Vites() {
       {
         accessorKey: "debt",
         header: "Deuda actual",
-        size: 210
+        size: 210,
+        Cell: ({ renderedCellValue }) => (
+          <>
+            $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+          </>
+        ),
       },
       {
         accessorKey: "total_contract_with_discount",
         header: "Total contrato",
-        size: 210
+        size: 210,
+        Cell: ({ renderedCellValue }) => (
+          <>
+            $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+          </>
+        ),
       },
       {
         accessorKey: "contract_vites",
@@ -110,13 +122,16 @@ function Vites() {
 
   useEffect(() => {
     (async () => {
-      const { status, data } = await $Contract.get({id:user?.id});
+      const { status, data } = await $Contract.get();
 
       if (status) {
+        console.log(data.data)
         setRows(data.data);
       }
     })();
   }, [$Contract,user]);
+
+
 
   useEffect(() => {
     if(user){
