@@ -102,7 +102,9 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         icon: <EcommerceIcon />,
         name: "Comprar Vites",
         route: "/shop",
-        show: !user?.isAdmin() && !user?.isWhitelisted(),
+        show: !user?.isAdmin()
+        //  && user?.isWhitelisted(),
+
       },
       {
         icon: <LoanIcon />,
