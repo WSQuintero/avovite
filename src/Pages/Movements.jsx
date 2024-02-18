@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import DateRangeModal from "../Components/Admin/DateRangeModal";
 import DateRangeModalMovementsTwo from "../Components/Admin/DateRangeModalMovementsTwo";
 import { formatDate } from "../utilities";
+import { NumericFormat } from "react-number-format";
 
 function Movements({ handleClick }) {
   const [rows, setRows] = useState([]);
@@ -121,9 +122,13 @@ function Movements({ handleClick }) {
       {
         id: "transaction_value",
         label: "Valor de la Transacción",
-        align:"center",
+        align: "center",
         disablePadding: false,
-        format: (value) => value,
+        format: ( value ) => (
+          <>
+            $<NumericFormat displayType="text" value={parseInt(value)} thousandSeparator></NumericFormat>
+          </>
+        ),
       },
       {
         id: "user_bank_account_number",
