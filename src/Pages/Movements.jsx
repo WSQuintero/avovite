@@ -9,6 +9,7 @@ import DateRangeModalMovements from "../Components/Admin/DateRangeModalMovements
 import { Button } from "@mui/material";
 import DateRangeModal from "../Components/Admin/DateRangeModal";
 import DateRangeModalMovementsTwo from "../Components/Admin/DateRangeModalMovementsTwo";
+import { formatDate } from "../utilities";
 
 function Movements({ handleClick }) {
   const [rows, setRows] = useState([]);
@@ -24,134 +25,141 @@ function Movements({ handleClick }) {
       {
         id: "contract_id",
         label: "ID del Contrato",
-        align: "left",
         disablePadding: false,
+        align:"center",
         format: (value) => value,
       },
       {
         id: "dateAproveed",
         label: "Fecha de Aprobación",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => {
           if(!value)return
           const date = new Date(value);
-          return date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          return formatDate(date);
         },
       },
       {
         id: "dateCreate",
         label: "Fecha de Creación",
-        align: "left",
+        align:"center",
+        width:"200px",
         disablePadding: false,
         format: (value) => {
           const date = new Date(value);
-          return date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          return formatDate(date);
         },
       },
 
       {
         id: "email",
         label: "Correo Electrónico",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "fullname",
         label: "Nombre Completo",
-        align: "left",
+        align:"center",
         disablePadding: false,
+        width:"500px",
         format: (value) => value,
       },
       {
         id: "id",
         label: "ID",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "id_number",
         label: "Número de Identificación",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "id_type",
         label: "Tipo de Identificación",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "id_user",
         label: "ID de Usuario",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "nombre_banco",
         label: "Nombre del Banco",
-        align: "left",
+        align:"center",
+        width:"300px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "tipo_cuenta",
         label: "Tipo de Cuenta",
-        align: "left",
+        align:"center",
+        width:"200px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "transaction",
         label: "Transacción",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "transaction_value",
         label: "Valor de la Transacción",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "user_bank_account_number",
         label: "Número de Cuenta del Usuario",
-        align: "left",
+        align:"center",
+        width:"300px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "user_bank_account_type",
         label: "Tipo de Cuenta del Usuario",
-        align: "left",
+        align:"center",
+        width:"200px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "user_id_bank",
         label: "ID del Banco del Usuario",
-        align: "left",
+        align:"center",
+        width:"200px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "withdrawal",
         label: "Retiro",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "reset",
         label: "Resetear",
-        align: "left",
+        align:"center",
         disablePadding: false,
         format: (value,row) => (
           <IconButton color="primary" onClick={()=>handleReset(row)}>
@@ -238,10 +246,10 @@ function Movements({ handleClick }) {
       <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">
-          <Button variant="contained" sx={{ width: "300px", height: "50px" }} onClick={handleExportDataByDate} startIcon={<DownloadIcon />}>
+          <Button variant="contained" sx={{ width: "200px", height: "50px",fontSize:"12px" }} onClick={handleExportDataByDate} startIcon={<DownloadIcon />}>
             Pagos transaccionales
           </Button>
-          <Button variant="contained" sx={{ width: "300px", height: "50px" }} onClick={handleExportDataByDateTwo} startIcon={<DownloadIcon />}>
+          <Button variant="contained" sx={{ width: "200px", height: "50px",fontSize:"12px" }} onClick={handleExportDataByDateTwo} startIcon={<DownloadIcon />}>
             Movimientos
           </Button>
           </Grid>

@@ -46,6 +46,7 @@ const DateRangeModal = ({ open, onClose,contract }) => {
           InputLabelProps={{ shrink: true }}
         />
         <Button variant="contained" onClick={handleSubmit}>Aceptar</Button>
+        <Button variant="contained" onClick={()=>onClose()} sx={{marginLeft:"10px"}}>Cerrar</Button>
       </Box>
     </Modal>
   );
