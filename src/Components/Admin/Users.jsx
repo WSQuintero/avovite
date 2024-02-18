@@ -196,7 +196,7 @@ function Users() {
   const handleUpdateUser = async (event) => {
     event.preventDefault();
 
-    if (!validate(["fullname", "email", "cellphone", "email_validated", "birthdate", "id_type", "id_number", "id_location_expedition"])) {
+    if (!validate(["fullname", "email", "cellphone",  "id_type", "id_number", "id_location_expedition"])) {
       setFeedback({ open: true, message: "Todos los campos son obligatorios.", status: "error" });
       return;
     }
@@ -208,8 +208,8 @@ function Users() {
       fullname: user.fullname,
       cellphone: user.cellphone,
       email: user.email,
-      email_validated: user.email_validated,
-      birthdate: dayjs(user.birthdate).format("YYYY-MM-DD"),
+      // email_validated: user.email_validated,
+      // birthdate: dayjs(user.birthdate).format("YYYY-MM-DD"),
       id_type: user.id_type,
       id_number: user.id_number,
       id_location_expedition: user.id_location_expedition,
@@ -415,19 +415,19 @@ function Users() {
                 value={user.email}
                 onChange={handleInputChange}
               />
-              <FormControl fullWidth>
-                <FormLabel id="user_email_validated">Correo validado</FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby="user_email_validated"
-                  name="email_validated"
-                  value={user.email_validated}
-                  onChange={handleInputChange}
-                >
-                  <FormControlLabel value={0} control={<Radio />} label="No" />
-                  <FormControlLabel value={1} control={<Radio />} label="Si" />
-                </RadioGroup>
-              </FormControl>
+                {/* <FormControl fullWidth>
+                  <FormLabel id="user_email_validated">Correo validado</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="user_email_validated"
+                    name="email_validated"
+                    value={user.email_validated}
+                    onChange={handleInputChange}
+                  >
+                    <FormControlLabel value={0} control={<Radio />} label="No" />
+                    <FormControlLabel value={1} control={<Radio />} label="Si" />
+                  </RadioGroup>
+                </FormControl> */}
               <PhoneField
                 enableSearch={true}
                 value={user.cellphone}
@@ -450,7 +450,7 @@ function Users() {
                 }}
                 onChange={(value) => handleInputChange({ target: { name: "cellphone", value } })}
               />
-              <FormControl fullWidth>
+              {/* <FormControl fullWidth>
                 <DatePicker
                   disableFuture
                   label="Fecha de nacimiento"
@@ -463,7 +463,7 @@ function Users() {
                   value={dayjs(user.birthdate)}
                   onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
                 />
-              </FormControl>
+              </FormControl> */}
               <TextField
                 select
                 required
