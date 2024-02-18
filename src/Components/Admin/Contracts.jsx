@@ -43,6 +43,7 @@ import Image from "../Image";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
+import DateRangeModal from "./DateRangeModal";
 
 const columns = [
   {
@@ -171,7 +172,7 @@ const Contracts = () => {
   const [loadingSigning, setLoadingSigning] = useState(false);
   const [loadingRefreshing, setLoadingRefreshing] = useState(false);
   const [modal, setModal] = useState(null);
-
+  const [modalOpen, setModalOpen] = useState(false);
   const [services, setServices] = useState([]);
 
   const [selectedContract, setSelectedContract] = useState(null);
@@ -419,6 +420,18 @@ const Contracts = () => {
       })();
     }
   }, [token]);
+
+  const handleExportDataByDate = () => {
+    // Abrir el modal al hacer clic en el botón
+
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    // Cerrar el modal
+    setModalOpen(false);
+  };
+
 
   return (
     <>
@@ -680,6 +693,12 @@ const Contracts = () => {
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
               Exportar a Excel
             </Button>
+            <>
+      <Button variant="text" color="primary" onClick={handleExportDataByDate} startIcon={<DownloadIcon />} >
+        Exportar a Excel por fecha
+      </Button>
+      <DateRangeModal open={modalOpen} onClose={handleCloseModal} contract={$Contract} /> {/* Pasar propiedades de estado y función de cierre al modal */}
+    </>
             <LoadingButton
               loading={loadingRefreshing}
               variant={loadingRefreshing ? "contained" : "text"}
