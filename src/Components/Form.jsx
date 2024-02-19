@@ -322,6 +322,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
   useEffect(() => {
     if (initialState) {
+      console.log(initialState)
       setFormData((prev) => ({ ...prev, ...initialState }));
     }
   }, [initialState]);

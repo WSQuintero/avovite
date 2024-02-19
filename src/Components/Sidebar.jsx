@@ -102,7 +102,9 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         icon: <EcommerceIcon />,
         name: "Comprar Vites",
         route: "/shop",
-        show: !user?.isAdmin() && !user?.isWhitelisted(),
+        show: !user?.isAdmin()
+        //  && user?.isWhitelisted(),
+
       },
       {
         icon: <LoanIcon />,
@@ -299,7 +301,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         <Stack direction="row" spacing={4} alignItems="center" pr={2} mb={1} sx={{ opacity: 0.5 }}>
           <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
           <Typography variant="caption" color="white" lineHeight={1}>
-            Las ganancias del aguacate Hass Colombiana son para todos
+          Los frutos del aguacate Hass colombiano son para todos
           </Typography>
         </Stack>
       </Drawer>

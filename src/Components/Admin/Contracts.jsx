@@ -34,7 +34,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import ContractService from "../../Services/contract.service";
 import TiptapEditor from "../TiptapEditor";
-import { isToday, formatCurrency, formatDate as formatLongDate, exportWorksheet } from "../../utilities/index";
+import { isToday, formatCurrency, formatDate as formatLongDate, exportWorksheet, formatDate } from "../../utilities/index";
 import useSession from "../../Hooks/useSession";
 import useConfig from "../../Hooks/useConfig";
 import useShop from "../../Hooks/useShop";
@@ -43,6 +43,7 @@ import Image from "../Image";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
+import DateRangeModal from "./DateRangeModal";
 
 const columns = [
   {
@@ -56,11 +57,8 @@ const columns = [
     id: "contract_date",
     header: "Fecha del contrato",
     Cell: ({ renderedCellValue }) => {
-
-      return (
-        <Typography>{formatDate(renderedCellValue) }</Typography>
-      );
-    }
+      return <Typography>{formatDate(renderedCellValue)}</Typography>;
+    },
   },
   {
     accessorKey: "contract_label",
@@ -74,22 +72,23 @@ const columns = [
     Cell: ({ renderedCellValue, row: { original } }) => (
       <Stack>
         <Typography>{renderedCellValue}</Typography>
-        <Typography fontSize={12}>
-          {original.email}
-        </Typography>
+        <Typography fontSize={12}>{original.email}</Typography>
       </Stack>
     ),
-  },{
+  },
+  {
     accessorKey: "id_type",
     id: "id_type",
     header: "Tipo de documento",
     Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
-  },{
+  },
+  {
     accessorKey: "id_number",
     id: "id_number",
     header: "Número de documento",
     Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
-  },{
+  },
+  {
     accessorKey: "id_location_expedition",
     id: "id_location_expedition",
     header: "Lugar de expedición",
@@ -106,6 +105,21 @@ const columns = [
     accessorKey: "contract_vites",
     id: "contract_vites",
     header: "Vites",
+  },
+  {
+    accessorKey: "paidVite",
+    header: "vites pagos",
+    size: 210
+  },
+  {
+    accessorKey: "debt",
+    header: "Deuda actual",
+    size: 210,
+    Cell: ({ renderedCellValue }) => (
+      <>
+        $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+      </>
+    ),
   },
   {
     accessorKey: "contract_amount",
@@ -146,14 +160,6 @@ const columns = [
   },
 ];
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${year}-${month}-${day}`;
-}
-
 const Contracts = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -166,7 +172,7 @@ const Contracts = () => {
   const [loadingSigning, setLoadingSigning] = useState(false);
   const [loadingRefreshing, setLoadingRefreshing] = useState(false);
   const [modal, setModal] = useState(null);
-
+  const [modalOpen, setModalOpen] = useState(false);
   const [services, setServices] = useState([]);
 
   const [selectedContract, setSelectedContract] = useState(null);
@@ -219,7 +225,6 @@ const Contracts = () => {
 
     if (status) {
       setContracts(data);
-
     }
   };
 
@@ -255,7 +260,6 @@ const Contracts = () => {
     });
     setDues([]);
   };
-
   const onCreateContract = async () => {
     const body = {
       mortgage_contract: contract.mortgage_contract,
@@ -416,6 +420,18 @@ const Contracts = () => {
       })();
     }
   }, [token]);
+
+  const handleExportDataByDate = () => {
+    // Abrir el modal al hacer clic en el botón
+
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    // Cerrar el modal
+    setModalOpen(false);
+  };
+
 
   return (
     <>
@@ -631,7 +647,7 @@ const Contracts = () => {
               </Typography>
 
               <Typography variant="h4" mt={4}>
-                  Información del beneficiario
+                Información del beneficiario
               </Typography>
               <Typography>
                 <Typography component="span" fontWeight={600}>
@@ -677,6 +693,12 @@ const Contracts = () => {
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
               Exportar a Excel
             </Button>
+            <>
+      <Button variant="text" color="primary" onClick={handleExportDataByDate} startIcon={<DownloadIcon />} >
+        Exportar a Excel por fecha
+      </Button>
+      <DateRangeModal open={modalOpen} onClose={handleCloseModal} contract={$Contract} /> {/* Pasar propiedades de estado y función de cierre al modal */}
+    </>
             <LoadingButton
               loading={loadingRefreshing}
               variant={loadingRefreshing ? "contained" : "text"}
@@ -793,7 +815,8 @@ const Contracts = () => {
                       firstPaymentDate: value.toDate(),
                     }))
                   }
-                />contract
+                />
+                contract
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid display="flex" flexDirection="column" gap={2} flexGrow={1}>
@@ -1025,7 +1048,7 @@ const Contracts = () => {
                 <ListItemText primary="Cuota" primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
               </Grid>
             </ListItem>
-            {contractDues.dues.map((due) => (
+            {contractDues.dues.filter((fd)=>fd.id).map((due) => (
               <ListItem
                 key={due.id}
                 secondaryAction={
@@ -1098,8 +1121,6 @@ const Contracts = () => {
           </LoadingButton>
         </DialogActions>
       </Dialog>
-
-
 
       <Snackbar
         open={feedback.open}

@@ -6,6 +6,10 @@ import {
   Box,
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Grid,
   InputAdornment,
@@ -26,13 +30,16 @@ import AuthService from "../Services/auth.service";
 
 import BackgroundImage from "../assets/img/signup/background.png";
 import LogoImage from "../assets/img/common/logo.svg";
+import TermsAndConditions from "../Components/TermsAndConditions";
 
 const StatusIcon = ({ status = false }) => {
   return status ? <CheckCircleIcon /> : <ErrorIcon />;
 };
 
-function Signin() {
+function SignUp() {
   const navigate = useNavigate();
+  const [modal, setModal] = useState("");
+
   const [user, setUser] = useState({
     fullname: "",
     email: "",
@@ -321,9 +328,9 @@ const onUserChange = (event) => {
             label={
               <Typography>
                 He leido y acepto los{" "}
-                <Link component={RouterLink} textAlign="center" to="/privacy-policy" target="_blank">
+                <span style={{textAlign:"center",color:"#67AA36"}} onClick={() => setModal("modal-terms")}>
                   terminos y condiciones
-                </Link>
+                </span>
               </Typography>
             }
           />
@@ -335,6 +342,17 @@ const onUserChange = (event) => {
           </Link>
         </Box>
       </Box>
+      <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)} maxWidth="md" fullWidth>
+          <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
+          <DialogContent>
+            <TermsAndConditions />
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" onClick={() => setModal(null)}>
+              Cerrar
+            </Button>
+          </DialogActions>
+        </Dialog>
       <Snackbar
         open={feedback.show}
         autoHideDuration={3000}
@@ -349,4 +367,4 @@ const onUserChange = (event) => {
   );
 }
 
-export default Signin;
+export default SignUp;
