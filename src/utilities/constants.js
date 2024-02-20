@@ -1,6 +1,8 @@
 export const IMAGE_PLACEHOLDER = "https://cutewallpaper.org/24/image-placeholder-png/emoji.png";
 
-export const TESTING_EPAYCO = false;
+const domain = window.location.hostname;
+
+export const TESTING_EPAYCO = domain === "appdev.avovite.com" || domain === "localhost";
 
 export const DOCUMENT_TYPES = {
   cedula: "Cédula de Ciudadanía",
