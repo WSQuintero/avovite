@@ -32,6 +32,7 @@ import { useSnackbar } from "notistack";
 import useSession from "../Hooks/useSession";
 import DialogKYC from "./Dialogs/KYC";
 import useUser from "../Hooks/useUser";
+import { useLocation } from "react-router-dom";
 
 const InitialState = {
   fullname: "",
@@ -169,6 +170,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   const [formData, setFormData] = useState(InitialState);
   const [errors, setErrors] = useState(InitialStateErrors);
   const [modal, setModal] = useState({ kyc: false });
+  const location=useLocation()
   const [controlFormData, setControlFormData] = useState({
     state: "-",
     bank_name: "",
@@ -365,10 +367,10 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               required
               fullWidth
               name="fullname"
-              value={formData.fullname}
+              value={formData.fullname||user?.fullname}
               error={errors.fullname}
               onChange={handleInputChange}
-              disabled={initialState?.fullname !== undefined}
+              disabled={user?.fullname?true:false}
             />
           </Column>
           <Column>
@@ -380,7 +382,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 value={formData.id_type}
                 error={errors.id_type}
                 onChange={handleInputChange}
-                disabled={initialState?.id_type !== undefined}
+                disabled={initialState?.id_type !== undefined && location.pathname !=="/validation/confirmation"}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -405,7 +407,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_number}
               onChange={handleInputChange}
               error={errors.id_number}
-              disabled={initialState?.id_number !== undefined}
+              disabled={initialState?.id_number !== undefined && location.pathname !=="/validation/confirmation"}
             />
           </Column>
           <Column>
@@ -417,7 +419,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_location_expedition}
               error={errors.id_location_expedition}
               onChange={handleInputChange}
-              disabled={initialState?.id_location_expedition !== undefined}
+              disabled={initialState?.id_location_expedition !== undefined && location.pathname !=="/validation/confirmation"}
             />
           </Column>
         </Row>
@@ -431,7 +433,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={dayjs(formData.birthdate)}
               format="DD MMMM YYYY"
               onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
-              disabled={initialState?.birthdate !== undefined}
+              disabled={initialState?.birthdate !== undefined && location.pathname !=="/validation/confirmation"}
             />
           </Column>
 
@@ -443,23 +445,23 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               required
               fullWidth
               name="email"
-              value={formData.email}
+              value={formData.email || user?.email}
               error={errors.email}
               onChange={handleInputChange}
-              disabled={initialState?.email !== undefined}
+              disabled={user?.email?true:false }
             />
           </Column>
         </Row>
 
         <Row>
           <Column>
-            <Label error={errors.cellphone} disabled={errors.cellphone !== undefined}>
+            <Label error={errors.cellphone} disabled={errors.cellphone !== undefined && location.pathname !=="/validation/confirmation"}>
               Teléfono de Contacto
             </Label>
             <PhoneField
               enableSearch={true}
               value={formData.cellphone}
-              disabled={initialState?.cellphone !== undefined}
+              disabled={initialState?.cellphone !== undefined && location.pathname !=="/validation/confirmation"}
               country="co"
               specialLabel=""
               autoFormat={true}
@@ -481,7 +483,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             />
           </Column>
           <Column>
-            <Label error={errors.nationality} disabled={errors.nationality !== undefined}>
+            <Label error={errors.nationality} disabled={errors.nationality !== undefined && location.pathname !=="/validation/confirmation"}>
               Nacionalidad
             </Label>
             <FormControl variant="outlined">
@@ -494,7 +496,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   formData?.nationality
                 }
                 onChange={handleInputChange}
-                disabled={initialState?.nationality !== undefined}
+                disabled={initialState?.nationality !== undefined && location.pathname !=="/validation/confirmation"}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -511,7 +513,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.country_of_residence} disabled={errors.country_of_residence !== undefined}>
+            <Label error={errors.country_of_residence} disabled={errorControlFormData.country_of_residence !== undefined && location.pathname !=="/validation/confirmation"}>
               País de residencia
             </Label>
             <FormControl variant="outlined" fullWidth>
@@ -523,7 +525,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 }
                 onChange={handleInputChange}
                 error={errors.country_of_residence}
-                disabld={formData.country_of_residence !== undefined}
+                disabled={initialState.country_of_residence !== undefined && location.pathname !=="/validation/confirmation"}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -536,7 +538,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               </Select>
             </FormControl>
           </Column>
-          {countries?.find((country) => country?.nombrePais === (formData?.country_of_residence || "").toUpperCase())?.codigoPais ===
+          {/* {countries?.find((country) => country?.nombrePais === (formData?.country_of_residence || "").toUpperCase())?.codigoPais ===
             "169" && (
             <Column>
               <Label error={errorControlFormData.state} disabled={errorControlFormData.state !== undefined}>
@@ -549,7 +551,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                     states?.find((country) => country?.nombrePais === (controlFormData?.state !== undefined).toUpperCase())?.codigoPais ||
                     controlFormData?.state
                   }
-                  disabled={controlFormData.state !== undefined}
+                  disabled={initialState.state !== undefined}
                   onChange={handleControlInputChange}
                   error={errorControlFormData.state}
                 >
@@ -564,20 +566,21 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 </Select>
               </FormControl>
             </Column>
-          )}
+          )} */}
         </Row>
 
         <Row>
           <Column>
-            <Label error={errors.cod_municipio} disabled={errors.cod_municipio !== undefined}>
+            <Label error={errors.cod_municipio} disabled={errors.cod_municipio !== undefined && location.pathname !=="/validation/confirmation"}>
               Ciudad de residencia
             </Label>
-            {formData.country_of_residence === "-" || formData.country_of_residence === "169" ? (
+            {formData.country_of_residence === "-" || formData.country_of_residence ===
+            "169" ? (
               <FormControl variant="outlined" fullWidth>
                 <Select
                   name="cod_municipio"
                   value={formData.cod_municipio}
-                  disabled={initialState?.cod_municipio !== undefined}
+                  // disabled={formData?.cod_municipio ? true:false}
                   onChange={handleInputChange}
                   error={errors.cod_municipio}
                 >
@@ -592,7 +595,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 </Select>
               </FormControl>
             ) : (
-              <TextField name="cod_municipio" value={formData.cod_municipio} onChange={handleInputChange} error={errors.cod_municipio} />
+              <TextField name="cod_municipio" value={formData.cod_municipio}                   disabled={formData?.cod_municipio ? true:false}
+              onChange={handleInputChange} error={errors.cod_municipio} />
             )}
           </Column>
           <Column>
@@ -604,7 +608,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               fullWidth
               name="residence_neighborhood"
               value={formData.residence_neighborhood}
-              disabled={initialState?.residence_neighborhood !== undefined}
+              disabled={initialState?.residence_neighborhood !== undefined && location.pathname !=="/validation/confirmation" }
               onChange={handleInputChange}
               error={errors.residence_neighborhood}
             />
@@ -621,7 +625,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               fullWidth
               name="address_residence"
               value={formData.address_residence}
-              disabled={initialState?.address_residence !== undefined}
+              disabled={initialState?.address_residence !== undefined && location.pathname !=="/validation/confirmation"}
               error={errors.address_residence}
               onChange={handleInputChange}
             />
@@ -634,7 +638,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <Select
                 name="civil_status"
                 value={formData.civil_status}
-                disabled={initialState?.civil_status !== undefined}
+                disabled={initialState?.civil_status !== undefined && location.pathname !=="/validation/confirmation"}
                 error={errors.civil_status}
                 onChange={handleInputChange}
               >
@@ -653,7 +657,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.education_level} disabled={errors.education_level !== undefined}>
+            <Label error={errors.education_level} disabled={errors.education_level !== ""}>
               Nivel Educativo
             </Label>
             <FormControl variant="outlined" fullWidth>
@@ -661,6 +665,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 required
                 name="education_level"
                 value={formData.education_level}
+                disabled={initialState.education_level && location.pathname !=="/validation/confirmation"}
                 onChange={handleInputChange}
                 error={errors.education_level}
               >
@@ -678,7 +683,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           <Column>
             <Label
               error={errors.he_has_children || errors.he_has_children_count}
-              disabled={errors.he_has_children || errors.he_has_children_count !== undefined}
+              disabled={errors.he_has_children || errors.he_has_children_count !== undefined && location.pathname !=="/validation/confirmation"}
             >
               ¿Actualmente tiene hijos?
             </Label>
@@ -687,7 +692,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 row
                 name="he_has_children"
                 value={formData.he_has_children}
-                disabled={initialState?.he_has_children !== undefined}
+                // disabled={initialState?.he_has_children  true&&initialState?.he_has_children !== false}
                 onChange={handleInputChange}
               >
                 <FormControlLabel value="No" control={<Radio />} label="No" />
@@ -718,7 +723,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <Select
                 name="occupation"
                 value={formData.occupation}
-                disabled={initialState?.occupation !== undefined}
+                disabled={initialState?.occupation !== undefined &&location.pathname !=="/validation/confirmation"}
                 error={errors.occupation}
                 onChange={handleInputChange}
               >
@@ -742,7 +747,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               fullWidth
               name="profession"
               value={formData.profession}
-              disabled={initialState?.profession !== undefined}
+              disabled={initialState?.profession !== undefined &&location.pathname !=="/validation/confirmation"}
               error={errors.profession}
               onChange={handleInputChange}
             />
@@ -759,7 +764,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               fullWidth
               name="economy_activity"
               value={formData.economy_activity}
-              disabled={initialState?.economy_activity !== undefined}
+              disabled={initialState?.economy_activity !== undefined &&location.pathname !=="/validation/confirmation"}
               error={errors.economy_activity}
               onChange={handleInputChange}
             />
@@ -776,7 +781,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               name="monthly_income"
               error={errors.monthly_income}
               value={formData.monthly_income}
-              disabled={initialState?.monthly_income !== undefined}
+              disabled={initialState?.monthly_income !== undefined &&location.pathname !=="/validation/confirmation"}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -797,7 +802,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               fullWidth
               name="how_did_you_hear_about_us"
               value={initialState?.how_did_you_hear_about_us}
-              disabled={initialState?.how_did_you_hear_about_us !== undefined}
+              disabled={initialState?.how_did_you_hear_about_us !== undefined &&location.pathname !=="/validation/confirmation"}
               onChange={handleInputChange}
             >
               <MenuItem disabled value="-">
@@ -836,7 +841,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <Select
                 name="user_id_bank"
                 value={formData.user_id_bank}
-                disabled={initialState?.user_id_bank !== undefined}
+                disabled={initialState?.user_id_bank !== undefined &&location.pathname !=="/validation/confirmation"}
                 onChange={handleInputChange}
                 error={errors.user_id_bank}
               >
@@ -854,13 +859,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           </Column>
           {formData.user_id_bank === "-1" && (
             <Column>
-              <Label error={errorControlFormData.bank_name} disabled={errorControlFormData.bank_name !== undefined}>
+              <Label error={errorControlFormData.bank_name}
+              disabled={errorControlFormData.bank_name !== undefined &&location.pathname !=="/validation/confirmation"}
+              >
                 Especifique Cuál Banco
               </Label>
               <TextField
                 name="bank_name"
                 value={controlFormData.bank_name}
-                disabled={controlFormData.bank_name !== undefined}
+                disabled={controlFormData.bank_name !== undefined &&location.pathname !=="/validation/confirmation"}
                 onChange={handleControlInputChange}
                 error={errorControlFormData.bank_name}
                 InputProps={{
@@ -879,7 +886,9 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.user_bank_account_type} disabled={errors.user_bank_account_type !== undefined}>
+            <Label error={errors.user_bank_account_type}
+            disabled={errors.user_bank_account_type !== undefined}
+            >
               Tipo de Cuenta
             </Label>
             <FormControl variant="outlined" fullWidth>
@@ -887,7 +896,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 name="user_bank_account_type"
                 id="tipoDeCuentaBeneficiaria"
                 value={formData.user_bank_account_type}
-                disabled={initialState?.user_bank_account_type !== undefined}
+                disabled={initialState?.user_bank_account_type !== undefined &&location.pathname !=="/validation/confirmation"}
                 onChange={handleInputChange}
                 error={errors.user_bank_account_type}
               >
@@ -903,13 +912,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.user_bank_account_number} disabled={errors.user_bank_account_number !== undefined}>
+            <Label error={errors.user_bank_account_number}
+             disabled={errors.user_bank_account_number !== undefined}
+             >
               Número de Cuenta
             </Label>
             <TextField
               name="user_bank_account_number"
               value={formData.user_bank_account_number}
-              disabled={initialState?.user_bank_account_number !== undefined}
+              disabled={initialState?.user_bank_account_number !== undefined &&location.pathname !=="/validation/confirmation"}
               onChange={handleInputChange}
               fullWidth
               error={errors.user_bank_account_number}
@@ -917,7 +928,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           </Column>
         </Row>
 
-        <Row>
+        {/* <Row>
           <Column>
             <Label error={errors.does_account_belong_to_holder} disabled={errors.does_account_belong_to_holder !== undefined}>
               ¿La cuenta le pertenece al titular del contrato?
@@ -926,14 +937,14 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               row
               name="does_account_belong_to_holder"
               value={formData.does_account_belong_to_holder}
-              disabled={initialState?.does_account_belong_to_holder !== undefined}
+              // disabled={initialState?.does_account_belong_to_holder !== undefined}
               onChange={handleInputChange}
             >
               <FormControlLabel value="Yes" control={<Radio />} label="Si" />
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Column>
-        </Row>
+        </Row> */}
 
         {formData.does_account_belong_to_holder === "No" && (
           <>
@@ -947,7 +958,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   fullWidth
                   name="full_name_of_account_holder"
                   value={formData.full_name_of_account_holder}
-                  disabled={initialState?.full_name_of_account_holder !== undefined}
+                  // disabled={initialState?.full_name_of_account_holder !== undefined}
                   error={errors.full_name_of_account_holder}
                   onChange={handleInputChange}
                 />
@@ -961,7 +972,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                     required
                     name="account_holder_document_type"
                     value={formData.account_holder_document_type}
-                    disabled={initialState?.account_holder_document_type !== undefined}
+                    // disabled={initialState?.account_holder_document_type !== undefined}
                     error={errors.account_holder_document_type}
                     onChange={handleInputChange}
                   >
@@ -988,7 +999,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   fullWidth
                   name="document_number_of_the_account_holder"
                   value={formData.document_number_of_the_account_holder}
-                  disabled={initialState?.document_number_of_the_account_holder !== undefined}
+                  // disabled={initialState?.document_number_of_the_account_holder !== undefined}
                   onChange={handleInputChange}
                   error={errors.document_number_of_the_account_holder}
                 />
@@ -1018,7 +1029,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="beneficiary_fullname"
               value={formData.beneficiary_fullname}
-              disabled={initialState?.beneficiary_fullname !== undefined}
+              // disabled={initialState?.beneficiary_fullname !== undefined}
               onChange={handleInputChange}
               fullWidth
               error={errors.beneficiary_fullname}
@@ -1029,7 +1040,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="email_beneficiary"
               value={formData.email_beneficiary}
-              disabled={initialState?.email_beneficiary !== undefined}
+              // disabled={initialState?.email_beneficiary !== undefined}
               required
               fullWidth
               error={errors.email_beneficiary}
@@ -1046,7 +1057,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="beneficiary_id_number"
               value={formData.beneficiary_id_number}
-              disabled={initialState?.beneficiary_id_number !== undefined}
+              // disabled={initialState?.beneficiary_id_number !== undefined}
               onChange={handleInputChange}
               fullWidth
               error={errors.beneficiary_id_number}
@@ -1061,7 +1072,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 name="beneficiary_id_type"
                 id="tipoDocumentoBeneficiario"
                 value={formData.beneficiary_id_type}
-                disabled={initialState?.beneficiary_id_type !== undefined}
+                // disabled={initialState?.beneficiary_id_type !== undefined}
                 onChange={handleInputChange}
                 error={errors.beneficiary_id_type}
               >
@@ -1086,7 +1097,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="beneficiary_id_location_expedition"
               value={formData.beneficiary_id_location_expedition}
-              disabled={initialState?.beneficiary_id_location_expedition !== undefined}
+              // disabled={initialState?.beneficiary_id_location_expedition !== undefined}
               fullWidth
               error={errors.beneficiary_id_location_expedition}
               onChange={handleInputChange}
@@ -1099,7 +1110,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <PhoneField
               enableSearch={true}
               value={formData.cellphone_beneficiary}
-              disabled={initialState?.cellphone_beneficiary !== undefined}
+              // disabled={initialState?.cellphone_beneficiary !== undefined}
               country="co"
               specialLabel=""
               autoFormat={true}
@@ -1131,7 +1142,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <Select
                 name="country_of_residence_beneficiary"
                 value={formData.country_of_residence_beneficiary}
-                disabled={initialState?.country_of_residence_beneficiary !== undefined}
+                // disabled={initialState?.country_of_residence_beneficiary !== undefined}
                 onChange={handleInputChange}
                 error={errors.country_of_residence_beneficiary}
               >
@@ -1146,7 +1157,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               </Select>
             </FormControl>
           </Column>
-          {formData.country_of_residence_beneficiary === "169" && (
+          {formData.country_of_residence_beneficiary  ===
+            "169"   && (
             <Column>
               <Label error={errorControlFormData.state_beneficiary} disabled={errorControlFormData.state_beneficiary !== undefined}>
                 Departamento de residencia
@@ -1155,7 +1167,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 <Select
                   name="state_beneficiary"
                   value={controlFormData.state_beneficiary}
-                  disabled={controlFormData.state_beneficiary !== undefined}
+                  // disabled={controlFormData.state_beneficiary !== undefined}
                   error={errorControlFormData.state_beneficiary}
                   onChange={handleControlInputChange}
                 >
@@ -1178,12 +1190,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <Label error={errors.cod_municipio_beneficiary} disabled={errors.cod_municipio_beneficiary !== undefined}>
               Ciudad de residencia
             </Label>
-            {formData.country_of_residence_beneficiary === "-" || formData.country_of_residence_beneficiary === "169" ? (
+            {formData.country_of_residence_beneficiary === "-" || formData.country_of_residence_beneficiary ===
+            "169" ? (
               <FormControl variant="outlined">
                 <Select
                   name="cod_municipio_beneficiary"
                   value={formData.cod_municipio_beneficiary}
-                  disabled={initialState?.cod_municipio_beneficiary !== undefined}
+                  // disabled={initialState?.cod_municipio_beneficiary !== undefined}
                   onChange={handleInputChange}
                   error={errors.cod_municipio_beneficiary}
                 >
@@ -1201,7 +1214,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <TextField
                 name="cod_municipio_beneficiary"
                 value={formData.cod_municipio_beneficiary}
-                disabled={initialState?.cod_municipio_beneficiary !== undefined}
+                // disabled={initialState?.cod_municipio_beneficiary !== undefined}
                 onChange={handleInputChange}
                 error={errors.cod_municipio_beneficiary}
               />
@@ -1216,7 +1229,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               fullWidth
               name="address_residence_beneficiary"
               value={formData.address_residence_beneficiary}
-              disabled={initialState?.address_residence_beneficiary !== undefined}
+              // disabled={initialState?.address_residence_beneficiary !== undefined}
               error={errors.address_residence_beneficiary}
               onChange={handleInputChange}
             />
@@ -1233,7 +1246,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 required
                 name="civil_status_beneficiary"
                 value={formData.civil_status_beneficiary}
-                disabled={initialState?.civil_status_beneficiary !== undefined}
+                // disabled={initialState?.civil_status_beneficiary !== undefined}
                 error={errors.civil_status_beneficiary}
                 onChange={handleInputChange}
               >
@@ -1255,7 +1268,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="economy_activity_beneficiary"
               value={formData.economy_activity_beneficiary}
-              disabled={initialState?.economy_activity_beneficiary !== undefined}
+              // disabled={initialState?.economy_activity_beneficiary !== undefined}
               error={errors.economy_activity_beneficiary}
               required
               fullWidth
@@ -1270,7 +1283,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           size="large"
           variant="contained"
           loading={loading}
-          disabled={Object.values(errors).reduce((a, c) => a || c, false)}
+          // disabled={Object.values(errors).reduce((a, c) => a || c, false)}
           onClick={handleSubmit}
         >
           Enviar

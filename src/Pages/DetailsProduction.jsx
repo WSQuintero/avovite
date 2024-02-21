@@ -121,7 +121,7 @@ function DetailsProduction() {
             Kilogramos
           </Typography>
         </Stack>
-        <EnhancedTable loading={loading.fetching} headCells={columns} rows={production} />
+        <EnhancedTable loading={loading.fetching} headCells={columns} rows={production} detailsProduction={true} />
       </Container>
     </PageWrapper>
   );

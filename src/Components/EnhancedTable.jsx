@@ -16,7 +16,7 @@ import {
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableRow from "./EnhancedTableRow";
 
-function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy = "", footer = <></>, collapse = null, loading = false }) {
+function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy = "", footer = <></>, collapse = null, loading = false,detailsProduction }) {
   const [order, setOrder] = useState(initialOrder);
   const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
   const [page, setPage] = useState(0);
@@ -51,7 +51,7 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
             headCells={headCells}
             order={order}
             orderBy={orderBy}
-            onRequestSort={handleRequestSort}
+            onRequestSort={!detailsProduction&&handleRequestSort}
             rowCount={rows.length}
           />
           {loading ? (

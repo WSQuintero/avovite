@@ -21,7 +21,7 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
     const { status } = await $User.sendKYC(body);
 
     if (status) {
-      setUser({ ...session.user, KYC: 1 });
+      setUser({ ...session?.user, KYC: 1 });
     }
 
     return status;
@@ -29,7 +29,7 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
 
   return (
     <>
-    { session.user &&session.user.KYC===1 ||session.user.isAdmin()?
+    { session?.user &&session?.user?.KYC===1 ||session?.user?.isAdmin()?
   (
 
     <Grid display="flex">
