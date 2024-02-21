@@ -431,7 +431,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={dayjs(formData.birthdate)}
               format="DD MMMM YYYY"
               onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
-              disabled={dayjs(initialState?.birthdate) !== undefined}
+              disabled={initialState?.birthdate !== undefined}
             />
           </Column>
 

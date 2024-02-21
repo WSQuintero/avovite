@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import DropzoneImage from "../DropzoneImage";
 import FacePlaceholderImage from "../../assets/img/form/face_placeholder.jpg";
 import IdDocumentPlaceholderImage from "../../assets/img/form/id_document_placeholder.png";
+import { useNavigate } from "react-router-dom";
 
 const initialFormData = {
   document: null,
@@ -12,12 +13,13 @@ const initialFormData = {
   face2: null,
 };
 
-function DialogKYC({ open, initialData, onSubmit }) {
+function DialogKYC({ open, initialData, onSubmit,logout }) {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState(initialData || initialFormData);
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const isFormValid = useMemo(() => formData.document && formData.face1 && formData.face2, [formData]);
+const navigate=useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -46,6 +48,10 @@ function DialogKYC({ open, initialData, onSubmit }) {
     }
   };
 
+  const handleLogout=()=>{
+    logout()
+    navigate("/signin")
+  }
   return (
     <Dialog fullWidth maxWidth="md" open={open}>
       <DialogTitle>Primero tenemos que verificar tu identidad</DialogTitle>
@@ -182,6 +188,9 @@ function DialogKYC({ open, initialData, onSubmit }) {
           </Button>
         )}
       </DialogActions>
+      <Button variant="contained" color="primary" onClick={handleLogout}>
+      Logout
+    </Button>
     </Dialog>
   );
 }
