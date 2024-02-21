@@ -322,7 +322,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
   useEffect(() => {
     if (initialState) {
-      console.log(initialState)
       setFormData((prev) => ({ ...prev, ...initialState }));
     }
   }, [initialState]);
@@ -362,12 +361,27 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
         <Row>
           <Column>
             <Label error={errors.fullname}>Nombre Completo</Label>
-            <TextField required fullWidth name="fullname" value={formData.fullname} error={errors.fullname} onChange={handleInputChange} disabled={formData.fullname !==""} />
+            <TextField
+              required
+              fullWidth
+              name="fullname"
+              value={formData.fullname}
+              error={errors.fullname}
+              onChange={handleInputChange}
+              disabled={initialState?.fullname !== undefined}
+            />
           </Column>
           <Column>
             <Label error={errors.id_type}>Tipo de Documento</Label>
             <FormControl variant="outlined" fullWidth>
-              <Select required name="id_type" value={formData.id_type} error={errors.id_type} onChange={handleInputChange} disabled={formData.id_type!==""}>
+              <Select
+                required
+                name="id_type"
+                value={formData.id_type}
+                error={errors.id_type}
+                onChange={handleInputChange}
+                disabled={initialState?.id_type !== undefined}
+              >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -391,7 +405,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_number}
               onChange={handleInputChange}
               error={errors.id_number}
-              disabled={formData.id_number!==""}
+              disabled={initialState?.id_number !== undefined}
             />
           </Column>
           <Column>
@@ -403,7 +417,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_location_expedition}
               error={errors.id_location_expedition}
               onChange={handleInputChange}
-              disabled={formData.id_location_expedition!==""}
+              disabled={initialState?.id_location_expedition !== undefined}
             />
           </Column>
         </Row>
@@ -417,23 +431,35 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={dayjs(formData.birthdate)}
               format="DD MMMM YYYY"
               onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
-              disabled={dayjs(formData.birthdate)!==""}
+              disabled={dayjs(initialState?.birthdate) !== undefined}
             />
           </Column>
 
           <Column>
-            <Label error={errors.email} disabled={errors.email!==""}>Correo Electrónico</Label>
-            <TextField required fullWidth name="email" value={formData.email} error={errors.email} onChange={handleInputChange} disabled={formData.email!==""}/>
+            <Label error={errors.email} disabled={errors.email !== undefined}>
+              Correo Electrónico
+            </Label>
+            <TextField
+              required
+              fullWidth
+              name="email"
+              value={formData.email}
+              error={errors.email}
+              onChange={handleInputChange}
+              disabled={initialState?.email !== undefined}
+            />
           </Column>
         </Row>
 
         <Row>
           <Column>
-            <Label error={errors.cellphone} disabled={errors.cellphone!==""}>Teléfono de Contacto</Label>
+            <Label error={errors.cellphone} disabled={errors.cellphone !== undefined}>
+              Teléfono de Contacto
+            </Label>
             <PhoneField
               enableSearch={true}
               value={formData.cellphone}
-              disabled={formData.cellphone!==""}
+              disabled={initialState?.cellphone !== undefined}
               country="co"
               specialLabel=""
               autoFormat={true}
@@ -455,16 +481,20 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             />
           </Column>
           <Column>
-            <Label error={errors.nationality} disabled={errors.nationality!==""}>Nacionalidad</Label>
+            <Label error={errors.nationality} disabled={errors.nationality !== undefined}>
+              Nacionalidad
+            </Label>
             <FormControl variant="outlined">
               <Select
                 required
                 fullWidth
                 name="nationality"
-                value={formData.nationality}
-                error={errors.nationality}
+                value={
+                  countries?.find((country) => country?.nombrePais === (formData?.nationality || "").toUpperCase())?.codigoPais ||
+                  formData?.nationality
+                }
                 onChange={handleInputChange}
-                disabled={formData.nationality!==""}
+                disabled={initialState?.nationality !== undefined}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -481,14 +511,19 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.country_of_residence} disabled={errors.country_of_residence !==""}>País de residencia</Label>
+            <Label error={errors.country_of_residence} disabled={errors.country_of_residence !== undefined}>
+              País de residencia
+            </Label>
             <FormControl variant="outlined" fullWidth>
               <Select
                 name="country_of_residence"
-                value={formData.country_of_residence}
+                value={
+                  countries?.find((country) => country?.nombrePais === (formData?.country_of_residence || "").toUpperCase())?.codigoPais ||
+                  formData?.country_of_residence
+                }
                 onChange={handleInputChange}
                 error={errors.country_of_residence}
-                disabld={formData.country_of_residence!==""}
+                disabld={formData.country_of_residence !== undefined}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
@@ -501,11 +536,23 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               </Select>
             </FormControl>
           </Column>
-          {formData.country_of_residence === "169" && (
+          {countries?.find((country) => country?.nombrePais === (formData?.country_of_residence || "").toUpperCase())?.codigoPais ===
+            "169" && (
             <Column>
-              <Label error={errorControlFormData.state} disabled={errorControlFormData.state!==""}>Departamento de residencia</Label>
+              <Label error={errorControlFormData.state} disabled={errorControlFormData.state !== undefined}>
+                Departamento de residencia
+              </Label>
               <FormControl variant="outlined" fullWidth>
-                <Select name="state" value={controlFormData.state} disabled={controlFormData.state!==""} onChange={handleControlInputChange} error={errorControlFormData.state}>
+                <Select
+                  name="state"
+                  value={
+                    states?.find((country) => country?.nombrePais === (controlFormData?.state !== undefined).toUpperCase())?.codigoPais ||
+                    controlFormData?.state
+                  }
+                  disabled={controlFormData.state !== undefined}
+                  onChange={handleControlInputChange}
+                  error={errorControlFormData.state}
+                >
                   <MenuItem value="-" selected disabled>
                     Seleccione una opción
                   </MenuItem>
@@ -522,10 +569,18 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.cod_municipio} disabled={errors.cod_municipio!==""}>Ciudad de residencia</Label>
+            <Label error={errors.cod_municipio} disabled={errors.cod_municipio !== undefined}>
+              Ciudad de residencia
+            </Label>
             {formData.country_of_residence === "-" || formData.country_of_residence === "169" ? (
               <FormControl variant="outlined" fullWidth>
-                <Select name="cod_municipio" value={formData.cod_municipio} disabled={formData.cod_municipio!==""} onChange={handleInputChange} error={errors.cod_municipio}>
+                <Select
+                  name="cod_municipio"
+                  value={formData.cod_municipio}
+                  disabled={initialState?.cod_municipio !== undefined}
+                  onChange={handleInputChange}
+                  error={errors.cod_municipio}
+                >
                   <MenuItem value="-" selected disabled>
                     Seleccione una opción
                   </MenuItem>
@@ -541,13 +596,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             )}
           </Column>
           <Column>
-            <Label error={errors.residence_neighborhood} disabled={errors.residence_neighborhood!==""}>Barrio de residencia (nombre)</Label>
+            <Label error={errors.residence_neighborhood} disabled={errors.residence_neighborhood !== undefined}>
+              Barrio de residencia (nombre)
+            </Label>
             <TextField
               required
               fullWidth
               name="residence_neighborhood"
               value={formData.residence_neighborhood}
-              disabled={formData.residence_neighborhood!==""}
+              disabled={initialState?.residence_neighborhood !== undefined}
               onChange={handleInputChange}
               error={errors.residence_neighborhood}
             />
@@ -556,21 +613,31 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.address_residence} disabled={errors.address_residence!==""}>Dirección de residencia</Label>
+            <Label error={errors.address_residence} disabled={errors.address_residence !== undefined}>
+              Dirección de residencia
+            </Label>
             <TextField
               required
               fullWidth
               name="address_residence"
               value={formData.address_residence}
-              disabled={formData.address_residence!==""}
+              disabled={initialState?.address_residence !== undefined}
               error={errors.address_residence}
               onChange={handleInputChange}
             />
           </Column>
           <Column>
-            <Label error={errors.civil_status} disabled={errors.civil_status!==""}>Estado civil</Label>
+            <Label error={errors.civil_status} disabled={errors.civil_status !== undefined}>
+              Estado civil
+            </Label>
             <FormControl variant="outlined" fullWidth>
-              <Select name="civil_status" value={formData.civil_status} disabled={formData.civil_status!==""} error={errors.civil_status} onChange={handleInputChange}>
+              <Select
+                name="civil_status"
+                value={formData.civil_status}
+                disabled={initialState?.civil_status !== undefined}
+                error={errors.civil_status}
+                onChange={handleInputChange}
+              >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -586,7 +653,9 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.education_level} disabled={errors.education_level!==""}>Nivel Educativo</Label>
+            <Label error={errors.education_level} disabled={errors.education_level !== undefined}>
+              Nivel Educativo
+            </Label>
             <FormControl variant="outlined" fullWidth>
               <Select
                 required
@@ -607,9 +676,20 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.he_has_children || errors.he_has_children_count} disabled={errors.he_has_children || errors.he_has_children_count !==""}>¿Actualmente tiene hijos?</Label>
+            <Label
+              error={errors.he_has_children || errors.he_has_children_count}
+              disabled={errors.he_has_children || errors.he_has_children_count !== undefined}
+            >
+              ¿Actualmente tiene hijos?
+            </Label>
             <Stack direction="row" spacing={1}>
-              <RadioGroup row name="he_has_children" value={formData.he_has_children} disabled={formData.he_has_children!==""} onChange={handleInputChange}>
+              <RadioGroup
+                row
+                name="he_has_children"
+                value={formData.he_has_children}
+                disabled={initialState?.he_has_children !== undefined}
+                onChange={handleInputChange}
+              >
                 <FormControlLabel value="No" control={<Radio />} label="No" />
                 <FormControlLabel value="Yes" control={<Radio />} label="Si" />
               </RadioGroup>
@@ -621,7 +701,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   name="he_has_children_count"
                   error={errors.he_has_children_count}
                   value={formData.he_has_children_count}
-                  disabled={formData.he_has_children_count!==""}
+                  disabled={initialState?.he_has_children_count !== undefined}
                   onChange={handleInputChange}
                 />
               </Zoom>
@@ -631,9 +711,17 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.occupation} disabled={errors.occupation!==""}>Usted es - Ocupación</Label>
+            <Label error={errors.occupation} disabled={errors.occupation !== undefined}>
+              Usted es - Ocupación
+            </Label>
             <FormControl variant="outlined" fullWidth>
-              <Select name="occupation" value={formData.occupation} disabled={formData.occupation!==""} error={errors.occupation} onChange={handleInputChange}>
+              <Select
+                name="occupation"
+                value={formData.occupation}
+                disabled={initialState?.occupation !== undefined}
+                error={errors.occupation}
+                onChange={handleInputChange}
+              >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -646,13 +734,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.profession} disabled={errors.profession!==""}>Profesión - ¿Qué estudió?</Label>
+            <Label error={errors.profession} disabled={errors.profession !== undefined}>
+              Profesión - ¿Qué estudió?
+            </Label>
             <TextField
               required
               fullWidth
               name="profession"
               value={formData.profession}
-              disabled={formData.profession!==""}
+              disabled={initialState?.profession !== undefined}
               error={errors.profession}
               onChange={handleInputChange}
             />
@@ -661,19 +751,23 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.economy_activity} disabled={errors.economy_activity!==""}>Actividad económica</Label>
+            <Label error={errors.economy_activity} disabled={errors.economy_activity !== undefined}>
+              Actividad económica
+            </Label>
             <TextField
               required
               fullWidth
               name="economy_activity"
               value={formData.economy_activity}
-              disabled={formData.economy_activity!==""}
+              disabled={initialState?.economy_activity !== undefined}
               error={errors.economy_activity}
               onChange={handleInputChange}
             />
           </Column>
           <Column>
-            <Label error={errors.monthly_income} disabled={errors.monthly_income!==""}>Ingreso Mensual</Label>
+            <Label error={errors.monthly_income} disabled={errors.monthly_income !== undefined}>
+              Ingreso Mensual
+            </Label>
             <NumericFormat
               thousandSeparator
               fullWidth
@@ -682,7 +776,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               name="monthly_income"
               error={errors.monthly_income}
               value={formData.monthly_income}
-              disabled={formData.monthly_income!==""}
+              disabled={initialState?.monthly_income !== undefined}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -702,8 +796,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               select
               fullWidth
               name="how_did_you_hear_about_us"
-              value={formData.how_did_you_hear_about_us}
-              disabled={formData.how_did_you_hear_about_us!==""}
+              value={initialState?.how_did_you_hear_about_us}
+              disabled={initialState?.how_did_you_hear_about_us !== undefined}
               onChange={handleInputChange}
             >
               <MenuItem disabled value="-">
@@ -735,9 +829,17 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.user_id_bank} disabled={errors.user_id_bank!==""}>Banco</Label>
+            <Label error={errors.user_id_bank} disabled={errors.user_id_bank !== undefined}>
+              Banco
+            </Label>
             <FormControl variant="outlined">
-              <Select name="user_id_bank" value={formData.user_id_bank} disabled={formData.user_id_bank!==""} onChange={handleInputChange} error={errors.user_id_bank}>
+              <Select
+                name="user_id_bank"
+                value={formData.user_id_bank}
+                disabled={initialState?.user_id_bank !== undefined}
+                onChange={handleInputChange}
+                error={errors.user_id_bank}
+              >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
@@ -752,11 +854,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           </Column>
           {formData.user_id_bank === "-1" && (
             <Column>
-              <Label error={errorControlFormData.bank_name} disabled={errorControlFormData.bank_name!==""}>Especifique Cuál Banco</Label>
+              <Label error={errorControlFormData.bank_name} disabled={errorControlFormData.bank_name !== undefined}>
+                Especifique Cuál Banco
+              </Label>
               <TextField
                 name="bank_name"
                 value={controlFormData.bank_name}
-                disabled={controlFormData.bank_name!==""}
+                disabled={controlFormData.bank_name !== undefined}
                 onChange={handleControlInputChange}
                 error={errorControlFormData.bank_name}
                 InputProps={{
@@ -775,13 +879,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.user_bank_account_type} disabled={errors.user_bank_account_type!==""}>Tipo de Cuenta</Label>
+            <Label error={errors.user_bank_account_type} disabled={errors.user_bank_account_type !== undefined}>
+              Tipo de Cuenta
+            </Label>
             <FormControl variant="outlined" fullWidth>
               <Select
                 name="user_bank_account_type"
                 id="tipoDeCuentaBeneficiaria"
                 value={formData.user_bank_account_type}
-                disabled={formData.user_bank_account_type!==""}
+                disabled={initialState?.user_bank_account_type !== undefined}
                 onChange={handleInputChange}
                 error={errors.user_bank_account_type}
               >
@@ -797,11 +903,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.user_bank_account_number} disabled={errors.user_bank_account_number!==""}>Número de Cuenta</Label>
+            <Label error={errors.user_bank_account_number} disabled={errors.user_bank_account_number !== undefined}>
+              Número de Cuenta
+            </Label>
             <TextField
               name="user_bank_account_number"
               value={formData.user_bank_account_number}
-              disabled={formData.user_bank_account_number!==""}
+              disabled={initialState?.user_bank_account_number !== undefined}
               onChange={handleInputChange}
               fullWidth
               error={errors.user_bank_account_number}
@@ -811,12 +919,14 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.does_account_belong_to_holder} disabled={errors.does_account_belong_to_holder!==""}>¿La cuenta le pertenece al titular del contrato?</Label>
+            <Label error={errors.does_account_belong_to_holder} disabled={errors.does_account_belong_to_holder !== undefined}>
+              ¿La cuenta le pertenece al titular del contrato?
+            </Label>
             <RadioGroup
               row
               name="does_account_belong_to_holder"
               value={formData.does_account_belong_to_holder}
-              disabled={formData.does_account_belong_to_holder!==""}
+              disabled={initialState?.does_account_belong_to_holder !== undefined}
               onChange={handleInputChange}
             >
               <FormControlLabel value="Yes" control={<Radio />} label="Si" />
@@ -829,25 +939,29 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           <>
             <Row>
               <Column>
-                <Label error={errors.full_name_of_account_holder} disabled={errors.full_name_of_account_holder!==""}>Nombre Completo del titular de la cuenta</Label>
+                <Label error={errors.full_name_of_account_holder} disabled={errors.full_name_of_account_holder !== undefined}>
+                  Nombre Completo del titular de la cuenta
+                </Label>
                 <TextField
                   required
                   fullWidth
                   name="full_name_of_account_holder"
                   value={formData.full_name_of_account_holder}
-                  disabled={formData.full_name_of_account_holder!==""}
+                  disabled={initialState?.full_name_of_account_holder !== undefined}
                   error={errors.full_name_of_account_holder}
                   onChange={handleInputChange}
                 />
               </Column>
               <Column>
-                <Label error={errors.account_holder_document_type} disabled={errors.account_holder_document_type!==""}>Tipo de Documento del titular de la cuenta</Label>
+                <Label error={errors.account_holder_document_type} disabled={errors.account_holder_document_type !== undefined}>
+                  Tipo de Documento del titular de la cuenta
+                </Label>
                 <FormControl variant="outlined" fullWidth>
                   <Select
                     required
                     name="account_holder_document_type"
                     value={formData.account_holder_document_type}
-                    disabled={formData.account_holder_document_type!==""}
+                    disabled={initialState?.account_holder_document_type !== undefined}
                     error={errors.account_holder_document_type}
                     onChange={handleInputChange}
                   >
@@ -866,13 +980,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
             <Row>
               <Column>
-                <Label error={errors.document_number_of_the_account_holder} disabled={errors.document_number_of_the_account_holder!==""}>Número de Documento del titular de la cuenta</Label>
+                <Label error={errors.document_number_of_the_account_holder} disabled={errors.document_number_of_the_account_holder !== undefined}>
+                  Número de Documento del titular de la cuenta
+                </Label>
                 <TextField
                   required
                   fullWidth
                   name="document_number_of_the_account_holder"
                   value={formData.document_number_of_the_account_holder}
-                  disabled={formData.document_number_of_the_account_holder!==""}
+                  disabled={initialState?.document_number_of_the_account_holder !== undefined}
                   onChange={handleInputChange}
                   error={errors.document_number_of_the_account_holder}
                 />
@@ -902,7 +1018,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="beneficiary_fullname"
               value={formData.beneficiary_fullname}
-              disabled={formData.beneficiary_fullname!==""}
+              disabled={initialState?.beneficiary_fullname !== undefined}
               onChange={handleInputChange}
               fullWidth
               error={errors.beneficiary_fullname}
@@ -913,7 +1029,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <TextField
               name="email_beneficiary"
               value={formData.email_beneficiary}
-              disabled={formData.email_beneficiary!==""}
+              disabled={initialState?.email_beneficiary !== undefined}
               required
               fullWidth
               error={errors.email_beneficiary}
@@ -924,24 +1040,28 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.beneficiary_id_number} disabled={errors.beneficiary_id_number!==""}>Número de Documento</Label>
+            <Label error={errors.beneficiary_id_number} disabled={errors.beneficiary_id_number !== undefined}>
+              Número de Documento
+            </Label>
             <TextField
               name="beneficiary_id_number"
               value={formData.beneficiary_id_number}
-              disabled={formData.beneficiary_id_number!==""}
+              disabled={initialState?.beneficiary_id_number !== undefined}
               onChange={handleInputChange}
               fullWidth
               error={errors.beneficiary_id_number}
             />
           </Column>
           <Column>
-            <Label error={errors.beneficiary_id_type} disabled={errors.beneficiary_id_type!==""}>Tipo de Documento</Label>
+            <Label error={errors.beneficiary_id_type} disabled={errors.beneficiary_id_type !== undefined}>
+              Tipo de Documento
+            </Label>
             <FormControl variant="outlined" fullWidth>
               <Select
                 name="beneficiary_id_type"
                 id="tipoDocumentoBeneficiario"
                 value={formData.beneficiary_id_type}
-                disabled={formData.beneficiary_id_type!==""}
+                disabled={initialState?.beneficiary_id_type !== undefined}
                 onChange={handleInputChange}
                 error={errors.beneficiary_id_type}
               >
@@ -960,22 +1080,26 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.beneficiary_id_location_expedition} disabled={errors.beneficiary_id_location_expedition!==""}>Lugar de Expedición del Documento</Label>
+            <Label error={errors.beneficiary_id_location_expedition} disabled={errors.beneficiary_id_location_expedition !== undefined}>
+              Lugar de Expedición del Documento
+            </Label>
             <TextField
               name="beneficiary_id_location_expedition"
               value={formData.beneficiary_id_location_expedition}
-              disabled={formData.beneficiary_id_location_expedition!==""}
+              disabled={initialState?.beneficiary_id_location_expedition !== undefined}
               fullWidth
               error={errors.beneficiary_id_location_expedition}
               onChange={handleInputChange}
             />
           </Column>
           <Column>
-            <Label error={errors.cellphone} disabled={errors.cellphone!==""}>Teléfono de Contacto</Label>
+            <Label error={errors.cellphone} disabled={errors.cellphone !== undefined}>
+              Teléfono de Contacto
+            </Label>
             <PhoneField
               enableSearch={true}
               value={formData.cellphone_beneficiary}
-              disabled={formData.cellphone_beneficiary!==""}
+              disabled={initialState?.cellphone_beneficiary !== undefined}
               country="co"
               specialLabel=""
               autoFormat={true}
@@ -1000,12 +1124,14 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.country_of_residence_beneficiary} disabled={errors.country_of_residence_beneficiary!==""}>País de residencia</Label>
+            <Label error={errors.country_of_residence_beneficiary} disabled={errors.country_of_residence_beneficiary !== undefined}>
+              País de residencia
+            </Label>
             <FormControl variant="outlined">
               <Select
                 name="country_of_residence_beneficiary"
                 value={formData.country_of_residence_beneficiary}
-                disabled={formData.country_of_residence_beneficiary!==""}
+                disabled={initialState?.country_of_residence_beneficiary !== undefined}
                 onChange={handleInputChange}
                 error={errors.country_of_residence_beneficiary}
               >
@@ -1022,12 +1148,14 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           </Column>
           {formData.country_of_residence_beneficiary === "169" && (
             <Column>
-              <Label error={errorControlFormData.state_beneficiary} disabled={errorControlFormData.state_beneficiary!==""}>Departamento de residencia</Label>
+              <Label error={errorControlFormData.state_beneficiary} disabled={errorControlFormData.state_beneficiary !== undefined}>
+                Departamento de residencia
+              </Label>
               <FormControl variant="outlined">
                 <Select
                   name="state_beneficiary"
                   value={controlFormData.state_beneficiary}
-                  disabled={controlFormData.state_beneficiary!==""}
+                  disabled={controlFormData.state_beneficiary !== undefined}
                   error={errorControlFormData.state_beneficiary}
                   onChange={handleControlInputChange}
                 >
@@ -1047,13 +1175,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.cod_municipio_beneficiary} disabled={errors.cod_municipio_beneficiary!==""}>Ciudad de residencia</Label>
+            <Label error={errors.cod_municipio_beneficiary} disabled={errors.cod_municipio_beneficiary !== undefined}>
+              Ciudad de residencia
+            </Label>
             {formData.country_of_residence_beneficiary === "-" || formData.country_of_residence_beneficiary === "169" ? (
               <FormControl variant="outlined">
                 <Select
                   name="cod_municipio_beneficiary"
                   value={formData.cod_municipio_beneficiary}
-                  disabled={formData.cod_municipio_beneficiary!==""}
+                  disabled={initialState?.cod_municipio_beneficiary !== undefined}
                   onChange={handleInputChange}
                   error={errors.cod_municipio_beneficiary}
                 >
@@ -1071,20 +1201,22 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <TextField
                 name="cod_municipio_beneficiary"
                 value={formData.cod_municipio_beneficiary}
-                disabled={formData.cod_municipio_beneficiary!==""}
+                disabled={initialState?.cod_municipio_beneficiary !== undefined}
                 onChange={handleInputChange}
                 error={errors.cod_municipio_beneficiary}
               />
             )}
           </Column>
           <Column>
-            <Label error={errors.address_residence_beneficiary} disabled={errors.address_residence_beneficiary!==""}>Dirección de residencia</Label>
+            <Label error={errors.address_residence_beneficiary} disabled={errors.address_residence_beneficiary !== undefined}>
+              Dirección de residencia
+            </Label>
             <TextField
               required
               fullWidth
               name="address_residence_beneficiary"
               value={formData.address_residence_beneficiary}
-              disabled={formData.address_residence_beneficiary!==""}
+              disabled={initialState?.address_residence_beneficiary !== undefined}
               error={errors.address_residence_beneficiary}
               onChange={handleInputChange}
             />
@@ -1093,13 +1225,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.civil_status_beneficiary} disabled={errors.civil_status_beneficiary!==""}>Estado civil</Label>
+            <Label error={errors.civil_status_beneficiary} disabled={errors.civil_status_beneficiary !== undefined}>
+              Estado civil
+            </Label>
             <FormControl variant="outlined" fullWidth>
               <Select
                 required
                 name="civil_status_beneficiary"
                 value={formData.civil_status_beneficiary}
-                disabled={formData.civil_status_beneficiary!==""}
+                disabled={initialState?.civil_status_beneficiary !== undefined}
                 error={errors.civil_status_beneficiary}
                 onChange={handleInputChange}
               >
@@ -1115,11 +1249,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             </FormControl>
           </Column>
           <Column>
-            <Label error={errors.economy_activity_beneficiary} disabled={errors.economy_activity_beneficiary!==""}>Ocupación</Label>
+            <Label error={errors.economy_activity_beneficiary} disabled={errors.economy_activity_beneficiary !== undefined}>
+              Ocupación
+            </Label>
             <TextField
               name="economy_activity_beneficiary"
               value={formData.economy_activity_beneficiary}
-              disabled={formData.economy_activity_beneficiary!==""}
+              disabled={initialState?.economy_activity_beneficiary !== undefined}
               error={errors.economy_activity_beneficiary}
               required
               fullWidth
