@@ -49,7 +49,6 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
   }, [detailsProduction, order, orderBy, page, rows, rowsPerPage]);
 
 
-  console.log(visibleRows)
   return (
     <>
       <TableContainer component={Paper}>

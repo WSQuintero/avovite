@@ -50,7 +50,7 @@ export const formatDate = (date) =>
 export const formatCurrency = (value, prefix = "", sufix = "") => (
   <>
     {prefix}
-    <NumericFormat displayType="text" value={value} thousandSeparator></NumericFormat>
+    <NumericFormat displayType="text" value={value.toFixed(0)} thousandSeparator></NumericFormat>
     {sufix}
   </>
 );

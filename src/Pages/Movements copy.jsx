@@ -184,11 +184,13 @@ function Movements({ handleClick }) {
   };
 
   const fetchData = async () => {
+    console.log("si")
     try {
       const { status, data } = await $Movement.get();
+      console.log(status)
       if (status, data) {
         setRows(
-          data.data.map((movement) => ({
+          data?.data?.map((movement) => ({
             contract_id: movement.contract_id,
             dateAproveed: movement.dateAproveed,
             dateCreate: movement.dateCreate,
