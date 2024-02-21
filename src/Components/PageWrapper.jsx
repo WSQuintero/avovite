@@ -27,10 +27,9 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
     return status;
   };
 
-  console.log(session.user)
   return (
     <>
-    { session.user &&!session.user.isAdmin()&&session.user.KYC===1?
+    { session.user &&session.user.KYC===1 ||session.user.isAdmin()?
   (
 
     <Grid display="flex">
