@@ -36,8 +36,7 @@ function Production() {
         label: "Inversión",
         align: "left",
         disablePadding: false,
-        format: (value, row) => formatCurrency(value * row.quantity * (1 - row.percent_discount / 100), "$"),
-      },
+        format: (value, row) => formatCurrency(((value * row.quantity) * (1 - row.percent_discount / 100)).toFixed(0), "$")      },
       {
         id: "tir",
         label: "Tir",
