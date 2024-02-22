@@ -126,7 +126,7 @@ function ContractValidation() {
           <WarningIcon /> Tienes contratos pendientes
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>Para poder continuar debes de efectuar pagos todos tus contratos.</DialogContentText>
+          <DialogContentText>Para poder continuar debes diligenciar los datos de tu contrato.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant="contained" onClick={() => setModal(null)}>

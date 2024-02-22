@@ -38,10 +38,16 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
     setPage(0);
   };
 
-  const visibleRows = useMemo(
-    () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rows, rowsPerPage]
-  );
+  const visibleRows = useMemo(() => {
+    if (detailsProduction) {
+      // Si detailsProduction es true, devolver los datos sin ordenar
+      return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    } else {
+      // Si detailsProduction es false, aplicar el ordenamiento normal
+      return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    }
+  }, [detailsProduction, order, orderBy, page, rows, rowsPerPage]);
+
 
   return (
     <>
