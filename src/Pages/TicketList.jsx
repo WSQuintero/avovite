@@ -24,6 +24,7 @@ import useSession from "../Hooks/useSession";
 import TicketModal from "../Components/Admin/TicketDetailModal";
 import MessageModal from "../Components/Admin/MessageModal";
 import { formatDate } from "../utilities";
+import BackButton from "../Components/BackButton";
 
 const InitialState = {
   id: "",
@@ -240,6 +241,7 @@ function TicketList({ handleClick }) {
   return (
     <>
       <PageWrapper>
+    <BackButton/>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />

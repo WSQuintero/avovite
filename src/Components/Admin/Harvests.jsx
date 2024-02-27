@@ -34,6 +34,7 @@ import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
 import { parseString } from "xml2js";
 import { formatCurrency } from "../../utilities";
+import BackButton from "../BackButton";
 
 const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
@@ -490,6 +491,7 @@ function Harvests() {
 
   return (
     <>
+    <BackButton/>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" gap={1} justifyContent="flex-end">
           <Box position="relative">

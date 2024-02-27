@@ -30,6 +30,7 @@ import TermsAndConditions from "../Components/TermsAndConditions";
 import useUser from "../Hooks/useUser";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from 'react-router-dom';
+import BackButton from "../Components/BackButton";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -116,6 +117,7 @@ function Dashboard() {
 
   return (
     <PageWrapper>
+      <BackButton/>
       <Container maxWidth="xxl">
         {user.status_terms_and_conditions === 1 && user.status_terms_and_conditions_date || user.isAdmin()? (
           <>

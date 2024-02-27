@@ -33,6 +33,7 @@ import { MuiFileInput } from "mui-file-input";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
 import ProductionService from "../../Services/production.service";
+import BackButton from "../BackButton";
 
 function Products({ service: $Shop, state, feedback }) {
   const [products, setProducts] = state;
@@ -847,6 +848,7 @@ function Shop() {
 
   return (
     <>
+    <BackButton/>
       <Stack direction="row" justifyContent="flex-end" alignItems="center">
         <Box position="relative">
           <LoadingButton loading={loading.importing} variant="contained" size="small">

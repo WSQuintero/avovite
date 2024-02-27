@@ -41,6 +41,7 @@ import { DOCUMENT_TYPES } from "../../utilities/constants";
 import DialogSendEmailAndSMS from "../Dialogs/SendEmailAndSMS";
 import DialogImportContacts from "../Dialogs/ImportContacts";
 import { useSnackbar } from "notistack";
+import BackButton from "../BackButton";
 
 function Users() {
   const [{ token }] = useSession();
@@ -359,6 +360,7 @@ function Users() {
 
   return (
     <>
+    <BackButton/>
       <MaterialReactTable
         columns={columns}
         data={users}

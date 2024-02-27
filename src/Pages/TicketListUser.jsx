@@ -24,6 +24,7 @@ import TicketService from "../Services/ticket.service";
 import TicketModalUser from "../Components/TicketDetailModalUser";
 import MessageModal from "../Components/Admin/MessageModal";
 import { formatDate } from "../utilities";
+import BackButton from "../Components/BackButton";
 
 const InitialState = {
   id: "",
@@ -236,6 +237,8 @@ function TicketListUser({ handleClick }) {
   return (
     <>
       <PageWrapper>
+    <BackButton/>
+
         <Button variant="contained" color="primary" sx={{ position: "absolute", right: "100px", margin: "auto" }} onClick={handleClick}>
           Crear ticket
         </Button>

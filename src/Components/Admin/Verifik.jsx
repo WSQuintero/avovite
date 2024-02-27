@@ -22,6 +22,7 @@ import useSession from "../../Hooks/useSession";
 import { VERIFIK_DOCUMENTS, VERIFIK_INTERNATIONAL } from "../../utilities/constants";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import BackButton from "../BackButton";
 
 function Tab1({ $, service }) {
   const $Verifik = $;
@@ -47,7 +48,9 @@ function Tab1({ $, service }) {
   };
 
   return (
+    <>
     <Container maxWidth="xxl">
+
       <Stack spacing={4}>
         <Typography fontWeight={600}>Registro Disciplinario en Colombia (Procuraduria)</Typography>
         <Stack spacing={2} component="form" onSubmit={handleSearch}>
@@ -100,6 +103,7 @@ function Tab1({ $, service }) {
         </Collapse>
       </Stack>
     </Container>
+    </>
   );
 }
 function Tab2({ $, service }) {
@@ -346,7 +350,11 @@ function Verifik() {
   const $Verifik = useMemo(() => (token ? new VerifikService(token) : null), []);
 
   return (
+    <>
+    <BackButton/>
+
     <Stack>
+
       <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 6 }}>
         <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
           <Tab label="Registros Disciplinarios" />
@@ -368,6 +376,7 @@ function Verifik() {
         <Tab4 $={$Verifik} service="international-criminal-records" />
       </TabPanel> */}
     </Stack>
+    </>
   );
 }
 

@@ -25,6 +25,7 @@ import EnhancedTable from "../Components/EnhancedTable";
 import { TRANSACTION_TYPES } from "../utilities/constants";
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack";
+import BackButton from "../Components/BackButton";
 
 function Transactions() {
   const navigate = useNavigate();
@@ -166,6 +167,7 @@ function Transactions() {
 
   return (
     <PageWrapper>
+    <BackButton/>
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>

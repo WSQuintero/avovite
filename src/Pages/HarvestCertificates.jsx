@@ -7,6 +7,7 @@ import IconWhite from "../assets/img/common/icon_white.svg";
 import Flex from "../utilities/Flex";
 import Theme from "../Theme";
 import { useSnackbar } from "notistack";
+import BackButton from "../Components/BackButton";
 
 function HarvestCertificates() {
   const { enqueueSnackbar } = useSnackbar();
@@ -42,6 +43,8 @@ function HarvestCertificates() {
 
   return (
     <PageWrapper>
+    <BackButton/>
+
       <Container maxWidth="xxl">
         <Stack spacing={6}>
           <Stack direction="row" alignItems="center" spacing={2}>
