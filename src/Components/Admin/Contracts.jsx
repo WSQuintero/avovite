@@ -44,6 +44,7 @@ import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import DateRangeModal from "./DateRangeModal";
+import BackButton from "../BackButton";
 
 const columns = [
   {
@@ -435,6 +436,7 @@ const Contracts = () => {
 
   return (
     <>
+    <BackButton/>
       <MaterialReactTable
         columns={columns}
         data={contracts}

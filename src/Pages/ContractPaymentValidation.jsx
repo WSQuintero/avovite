@@ -23,6 +23,7 @@ import useSession from "../Hooks/useSession";
 import PageWrapper from "../Components/PageWrapper";
 import { formatCurrency, formatDate } from "../utilities";
 import { TESTING_EPAYCO } from "../utilities/constants";
+import BackButton from "../Components/BackButton";
 
 function ContractPaymentValidation() {
   const navigate = useNavigate();
@@ -85,6 +86,8 @@ function ContractPaymentValidation() {
 
   return (
     <PageWrapper isInvalidSession>
+    <BackButton/>
+
       <Container maxWidth="xxl" disableGutters>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">Pagos pendientes:</Typography>

@@ -11,6 +11,7 @@ import useSession from "../Hooks/useSession";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import EnhancedTable from "../Components/EnhancedTable";
 import { useNavigate } from 'react-router-dom';
+import BackButton from "../Components/BackButton";
 
 function Harvests() {
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ function Harvests() {
 
   return (
     <PageWrapper>
+    <BackButton/>
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>

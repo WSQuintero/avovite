@@ -3,9 +3,12 @@ import PlaceIcon from "@mui/icons-material/Place";
 import PageWrapper from "../Components/PageWrapper";
 import MapImage from "../assets/img/contact/MapPlaceholder.png";
 import { AvoviteIcon, ClockIcon, MessageChat } from "../Components/Icons";
+import BackButton from "../Components/BackButton";
 function Contact() {
   return (
     <PageWrapper>
+    <BackButton/>
+
       <Container maxWidth="xxl">
         <Grid display="flex" flexDirection="column" gap={5}>
           <Typography

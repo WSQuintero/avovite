@@ -27,6 +27,7 @@ import { NumericFormat } from "react-number-format";
 import $Epayco from "../Services/epayco.service";
 import { v4 as uuid } from "uuid";
 import { useNavigate } from 'react-router-dom';
+import BackButton from "../Components/BackButton";
 
 function Payments() {
   const navigate = useNavigate();
@@ -217,6 +218,7 @@ function Payments() {
 
   return (
     <PageWrapper>
+    <BackButton/>
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>

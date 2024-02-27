@@ -23,6 +23,7 @@ import PageWrapper from "../Components/PageWrapper";
 import { formatDate } from "../utilities";
 import Form from "../Components/Form";
 import useLastContract from "../Hooks/useLastContract";
+import BackButton from "../Components/BackButton";
 
 function ContractValidation() {
   const navigate = useNavigate();
@@ -89,6 +90,8 @@ function ContractValidation() {
 
   return (
     <PageWrapper isInvalidSession>
+    <BackButton/>
+
       <Container maxWidth="xxl" disableGutters>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">Contratos pendientes:</Typography>

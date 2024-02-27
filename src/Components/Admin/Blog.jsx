@@ -24,6 +24,7 @@ import { formatDate } from "../../utilities";
 import usePost from "../../Hooks/usePost";
 import TiptapEditor from "../TiptapEditor";
 import sanitizeHtml from 'sanitize-html';
+import BackButton from "../BackButton";
 
 const isYouTubeVideo = (url) => {
   return url.includes("youtube.com") || url.includes("youtu.be");
@@ -271,6 +272,7 @@ function Blog() {
 
   return (
     <>
+        <BackButton/>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setCurrentModal("create")}>

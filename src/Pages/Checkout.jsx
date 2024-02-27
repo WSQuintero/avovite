@@ -4,6 +4,7 @@ import { ContentCopy as CopyIcon } from "@mui/icons-material";
 import PageWrapper from "../Components/PageWrapper";
 import useCart from "../Hooks/useCart";
 import { useSearchParams } from "react-router-dom";
+import BackButton from "../Components/BackButton";
 
 function Checkout() {
   const [params, setSearchParams] = useSearchParams();
@@ -31,6 +32,7 @@ function Checkout() {
 
   return (
     <PageWrapper>
+    <BackButton/>
       <Container maxWidth="xxl">
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">{!refPayco ? "Error al procesar pago" : "Pago realizado con éxito"}</Typography>

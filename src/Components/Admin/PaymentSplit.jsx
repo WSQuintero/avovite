@@ -41,6 +41,7 @@ import ContractSelector from "../ContractSelector";
 import { GetApp as DownloadIcon } from "@mui/icons-material";
 import { saveAs } from 'file-saver';
 import JSZip from "jszip";
+import BackButton from "../BackButton";
 
 const RowState = { id: null, total_money: "", payment_date: "", is_Cronjob: false };
 const CollapseState = { id: null, contract_number: "", split_payment_id: "" };
@@ -429,6 +430,7 @@ function PaymentSplit() {
 
   return (
     <>
+    <BackButton/>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>

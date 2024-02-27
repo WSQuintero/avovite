@@ -20,6 +20,7 @@ import SupplierService from "../../Services/supplier.service";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { CONTRACT_TYPES } from "../../utilities/constants";
+import BackButton from "../BackButton";
 
 const InitialState = { id: null, name: "", asWork: "" };
 
@@ -162,6 +163,7 @@ function Suppliers() {
 
   return (
     <>
+    <BackButton/>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>

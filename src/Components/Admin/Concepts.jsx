@@ -18,6 +18,7 @@ import {
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
 import { formatDate } from "../../utilities";
 import useConcept from "../../Hooks/useConcept";
+import BackButton from "../BackButton";
 
 function Concepts() {
   const $Concept = useConcept();
@@ -166,6 +167,7 @@ function Concepts() {
 
   return (
     <>
+    <BackButton/>
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setCurrentModal("create")}>

@@ -19,6 +19,7 @@ import WHiteListService from "../../Services/whitelist.service";
 import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { CONTRACT_TYPES } from "../../utilities/constants";
+import BackButton from "../BackButton";
 
 function Whitelist() {
   const [session] = useSession();
@@ -158,6 +159,8 @@ function Whitelist() {
 
   return (
     <>
+    <BackButton/>
+
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>

@@ -11,6 +11,7 @@ import DateRangeModal from "../Components/Admin/DateRangeModal";
 import DateRangeModalMovementsTwo from "../Components/Admin/DateRangeModalMovementsTwo";
 import { formatDate } from "../utilities";
 import { NumericFormat } from "react-number-format";
+import BackButton from "../Components/BackButton";
 
 function Movements({ handleClick }) {
   const [rows, setRows] = useState([]);
@@ -248,6 +249,8 @@ function Movements({ handleClick }) {
   return (
     <>
       <PageWrapper>
+      <BackButton/>
+
       <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">

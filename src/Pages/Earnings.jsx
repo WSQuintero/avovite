@@ -4,6 +4,7 @@ import PageWrapper from "../Components/PageWrapper";
 import EnhancedTable from "../Components/EnhancedTable";
 import useUser from "../Hooks/useUser";
 import { formatCurrency } from "../utilities";
+import BackButton from "../Components/BackButton";
 
 function Earnings() {
   const $User = useUser();
@@ -76,6 +77,8 @@ function Earnings() {
 
   return (
     <PageWrapper>
+    <BackButton/>
+
       <Container maxWidth="xxl">
         <EnhancedTable headCells={earningsHeadCells} rows={earnings} />
       </Container>

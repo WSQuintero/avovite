@@ -7,6 +7,7 @@ import CardProduct from "../Components/CardProduct";
 import PageWrapper from "../Components/PageWrapper";
 import { useNavigate } from 'react-router-dom';
 import ShopService from "../Services/product.service";
+import BackButton from "../Components/BackButton";
 
 function Shop() {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ function Shop() {
 
   return (
     <PageWrapper>
+      <BackButton/>
       <Container maxWidth="xxl">
         <Grid
           display="flex"
