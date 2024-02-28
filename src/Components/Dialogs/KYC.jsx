@@ -13,13 +13,13 @@ const initialFormData = {
   face2: null,
 };
 
-function DialogKYC({ open, initialData, onSubmit,logout }) {
+function DialogKYC({ open, initialData, onSubmit, logout }) {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState(initialData || initialFormData);
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const isFormValid = useMemo(() => formData.document && formData.face1 && formData.face2, [formData]);
-const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,10 +48,10 @@ const navigate=useNavigate()
     }
   };
 
-  const handleLogout=()=>{
-    logout()
-    navigate("/signin")
-  }
+  const handleLogout = () => {
+    logout();
+    navigate("/signin");
+  };
   return (
     <Dialog fullWidth maxWidth="md" open={open}>
       <DialogTitle>Primero tenemos que verificar tu identidad</DialogTitle>
@@ -59,10 +59,11 @@ const navigate=useNavigate()
         <Stack spacing={4}>
           {currentStep === 0 ? (
             <Typography>
-              Por favor suba una foto de su documento de identidad donde sea visible el rostro. Asegúrese que la foto sea legible.
+              Envía un documento que contenga tu número de identificación nacional, como pasaporte, DNI, cédula o licencia de conducción {"(el más reciente)"}.
             </Typography>
           ) : (
-            <Typography>Por favor suba una foto de su cara donde sea visible el rostro. Asegúrese que la foto sea legible.</Typography>
+            <Typography>A continuación, envía una selfie para validar tu identidad. Asegúrate de no llevar accesorios en el rostro,
+            como gafas, gorras o tapabocas.</Typography>
           )}
           <Stack spacing={2} width={{ xs: "100%", md: "50%" }} alignSelf="center">
             {currentStep === 0 && (
@@ -144,17 +145,18 @@ const navigate=useNavigate()
                   position="relative"
                   spacing={2}
                   alignItems="center"
-                  width='100%'
-                  sx={{
-                    // borderRadius: 1,
-
-                    // animation: "pulse 1s ease-in-out infinite alternate",
-                    // "@keyframes pulse": {
-                    //   to: {
-                    //     opacity: 0.5,
-                    //   },
-                    // },
-                  }}
+                  width="100%"
+                  sx={
+                    {
+                      // borderRadius: 1,
+                      // animation: "pulse 1s ease-in-out infinite alternate",
+                      // "@keyframes pulse": {
+                      //   to: {
+                      //     opacity: 0.5,
+                      //   },
+                      // },
+                    }
+                  }
                 >
                   <Typography color="primary.main">Cara</Typography>
                   <DropzoneImage
@@ -189,8 +191,8 @@ const navigate=useNavigate()
         )}
       </DialogActions>
       <Button variant="contained" color="primary" onClick={handleLogout}>
-      Logout
-    </Button>
+        Logout
+      </Button>
     </Dialog>
   );
 }
