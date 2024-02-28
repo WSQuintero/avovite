@@ -1073,20 +1073,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
         </Row>
 
         <Row>
-          <Column>
-            <Label error={errors.beneficiary_id_number} disabled={errors.beneficiary_id_number !== undefined}>
-              Número de Documento
-            </Label>
-            <TextField
-              name="beneficiary_id_number"
-              value={formData.beneficiary_id_number}
-              // disabled={initialState?.beneficiary_id_number !== undefined}
-              onChange={handleInputChange}
-              fullWidth
-              error={errors.beneficiary_id_number}
-            />
-          </Column>
-          <Column>
+        <Column>
             <Label error={errors.beneficiary_id_type} disabled={errors.beneficiary_id_type !== undefined}>
               Tipo de Documento
             </Label>
@@ -1109,6 +1096,19 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 ))}
               </Select>
             </FormControl>
+          </Column>
+          <Column>
+            <Label error={errors.beneficiary_id_number} disabled={errors.beneficiary_id_number !== undefined}>
+              Número de Documento
+            </Label>
+            <TextField
+              name="beneficiary_id_number"
+              value={formData.beneficiary_id_number}
+              // disabled={initialState?.beneficiary_id_number !== undefined}
+              onChange={handleInputChange}
+              fullWidth
+              error={errors.beneficiary_id_number}
+            />
           </Column>
         </Row>
 
