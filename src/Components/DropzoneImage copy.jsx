@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Alert, Box, Button, ButtonBase, Icon, Snackbar } from "@mui/material";
 import Webcam from "react-webcam";
 
@@ -6,11 +6,12 @@ function formatColor(hex) {
   return String(hex).split("#")[1];
 }
 
-function DropzoneImage({ width = "100%", placeholder, value, onChange, children, camera,showCamera,setShowCamera,setTakePhoto,setUploadPhoto}) {
+function DropzoneImage({ width = "100%", placeholder, value, onChange, children, camera }) {
   const [dragging, setDragging] = useState(false);
   const [file, setFile] = useState(value);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const webcamRef = useRef(null);
+  const [showCamera, setShowCamera] = useState(false);
 
   const handleDrag = (event, status) => {
     event.preventDefault();
@@ -22,9 +23,8 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
     const file = event.dataTransfer.files[0];
 
     if (file && file.type.startsWith("image/")) {
-      setFile(file);
+      setFile(URL.createObjectURL(file));
       onChange(file);
-
     } else {
       setFeedback({ open: true, message: "El archivo seleccionado no es una imagen.", status: "error" });
     }
@@ -36,56 +36,29 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
     const file = event.target.files[0];
 
     if (file && file.type.startsWith("image/")) {
-      setFile(file);
+      setFile(URL.createObjectURL(file));
       onChange(file);
     } else {
       setFeedback({ open: true, message: "El archivo seleccionado no es una imagen.", status: "error" });
     }
     setDragging(false);
-    setUploadPhoto(true)
   };
 
   const resetFeedback = () => {
     setFeedback((prev) => ({ ...prev, open: false }));
   };
 
-  const dataURItoBlob = (dataURI) => {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  };
-
   const handleCapture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
-    const file = dataURItoBlob(imageSrc);
-    setFile(file);
-    onChange(file);
-    setShowCamera(false);
-    setTakePhoto(true);
+    setFile(imageSrc);
+    onChange(imageSrc);
+    setShowCamera(false); // Cerrar la cámara después de tomar la foto
   };
-
 
   const handleRemoveImage = () => {
     setFile(null);
     onChange(null);
-    setTakePhoto(false)
-    setUploadPhoto(false)
-    setShowCamera(false);
-    setDragging(false);
-
   };
-
-  useEffect(()=>{
-    if(setShowCamera){
-      setShowCamera(false);
-    }
-
-  },[setShowCamera])
 
   return (
     <>
@@ -118,10 +91,10 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
         onDragLeave={(event) => handleDrag(event, false)}
         onClick={() => camera && !showCamera && setShowCamera(true)} // Abrir la cámara solo cuando camera sea true y no se haya mostrado aún
       >
-        {file && !showCamera &&(
+        {file && !showCamera && (
           <>
             <img
-              src={typeof file === "string" ? file : URL.createObjectURL(file) }
+              src={file}
               alt="Previsualización de la imagen"
               style={{
                 position: "absolute",
@@ -133,7 +106,6 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
                 borderRadius: 16,
               }}
             />
-
             <Button
               variant="contained"
               color="error"
@@ -152,8 +124,7 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
             </Button>
           </>
         )}
-
-        {!file && !showCamera && (!camera||camera)&& (
+        {!file && !showCamera && !camera && (
           <>
             <img
               src={placeholder}
@@ -169,15 +140,12 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
                 borderRadius: 16,
               }}
             />
-            {!camera&&(
-
             <input
               type="file"
               accept="image/*"
               style={{ position: "absolute", width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
               onChange={handlePick}
             />
-            )}
           </>
         )}
         {showCamera && camera && (
