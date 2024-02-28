@@ -340,8 +340,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
     }
   }, [user]);
 
-
-
   return (
     <Stack>
       <Grid display="flex" justifyContent="center">
@@ -469,7 +467,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <PhoneField
               enableSearch={true}
               value={user?.cellphone}
-              disabled={ user?.cellphone  }
+              disabled={user?.cellphone}
               country="co"
               specialLabel=""
               autoFormat={true}
@@ -552,8 +550,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               </Select>
             </FormControl>
           </Column>
-          {/* {countries?.find((country) => country?.nombrePais === (formData?.country_of_residence || "").toUpperCase())?.codigoPais ===
-            "169" && (
+          {formData.country_of_residence === "169" && (
             <Column>
               <Label error={errorControlFormData.state} disabled={errorControlFormData.state !== undefined}>
                 Departamento de residencia
@@ -561,10 +558,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               <FormControl variant="outlined" fullWidth>
                 <Select
                   name="state"
-                  value={
-                    states?.find((country) => country?.nombrePais === (controlFormData?.state !== undefined).toUpperCase())?.codigoPais ||
-                    controlFormData?.state
-                  }
+                  value={controlFormData?.state}
                   disabled={initialState.state !== undefined}
                   onChange={handleControlInputChange}
                   error={errorControlFormData.state}
@@ -580,7 +574,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 </Select>
               </FormControl>
             </Column>
-          )} */}
+          )}
         </Row>
 
         <Row>
@@ -591,8 +585,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             >
               Ciudad de residencia
             </Label>
-            {/* {initialState.country_of_residence === "-" || initialState.country_of_residence === ("colombia"||"COLOMBIA"||"Colombia") ? ( */}
-              {/* <FormControl variant="outlined" fullWidth>
+            {formData?.country_of_residence === "-" || formData?.country_of_residence === "169" ? (
+              <FormControl variant="outlined" fullWidth>
                 <Select
                   name="cod_municipio"
                   value={formData.cod_municipio}
@@ -610,15 +604,15 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   ))}
                 </Select>
               </FormControl>
-            ) : ( */}
+            ) : (
               <TextField
                 name="cod_municipio"
                 value={formData.cod_municipio}
-                disabled={formData?.cod_municipio && location.pathname !== "/validation/confirmation" ? true : false}
+                // disabled={formData?.cod_municipio && location.pathname !== "/validation/confirmation" ? true : false}
                 onChange={handleInputChange}
                 error={errors.cod_municipio}
               />
-            {/* )} */}
+            )}
           </Column>
           <Column>
             <Label error={errors.residence_neighborhood} disabled={errors.residence_neighborhood !== undefined}>
@@ -1073,7 +1067,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
         </Row>
 
         <Row>
-        <Column>
+          <Column>
             <Label error={errors.beneficiary_id_type} disabled={errors.beneficiary_id_type !== undefined}>
               Tipo de Documento
             </Label>
@@ -1212,8 +1206,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             <Label error={errors.cod_municipio_beneficiary} disabled={errors.cod_municipio_beneficiary !== undefined}>
               Ciudad de residencia
             </Label>
-            {/* {formData.country_of_residence_beneficiary === "-" || formData.country_of_residence_beneficiary === "169" ? ( */}
-              {/* <FormControl variant="outlined">
+            {formData.country_of_residence_beneficiary === "-" || formData.country_of_residence_beneficiary === "169" ? (
+              <FormControl variant="outlined">
                 <Select
                   name="cod_municipio_beneficiary"
                   value={formData.cod_municipio_beneficiary}
@@ -1230,8 +1224,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl> */}
-            {/* ) : ( */}
+              </FormControl>
+            ) : (
               <TextField
                 name="cod_municipio_beneficiary"
                 value={formData.cod_municipio_beneficiary}
@@ -1239,7 +1233,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 onChange={handleInputChange}
                 error={errors.cod_municipio_beneficiary}
               />
-            {/* )} */}
+            )}
           </Column>
           <Column>
             <Label error={errors.address_residence_beneficiary} disabled={errors.address_residence_beneficiary !== undefined}>
