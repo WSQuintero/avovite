@@ -394,9 +394,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   Seleccione una opción
                 </MenuItem>
                 {Object.keys(DOCUMENT_TYPES).map((key) => (
-                  <MenuItem key={key} value={key}>
-                    {DOCUMENT_TYPES[key]}
-                  </MenuItem>
+                  <>
+                    {DOCUMENT_TYPES[key] !== "Tarjeta de identidad" && (
+                      <MenuItem key={key} value={key}>
+                        {DOCUMENT_TYPES[key]}
+                      </MenuItem>
+                    )}
+                  </>
                 ))}
               </Select>
             </FormControl>
