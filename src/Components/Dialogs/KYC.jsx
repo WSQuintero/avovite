@@ -68,10 +68,10 @@ function DialogKYC({ open, initialData, onSubmit, logout }) {
         <Stack spacing={4}>
           {currentStep === 0 ? (
             <Typography>
-              Por favor suba una foto de su documento de identidad donde sea visible el rostro. Asegúrese que la foto sea legible.
+              Sube ahora una fotografía clara de cualquier documento oficial que contenga tu número de identificación nacional (ya sea pasaporte, DNI, cédula o licencia de conducción). Asegúrate de que en la imagen no haya objetos que no sean el propio documento.
             </Typography>
           ) : (
-            <Typography>Por favor suba una foto de su cara donde sea visible el rostro. Asegúrese que la foto sea legible.</Typography>
+            <Typography>Posteriormente, por favor, sube una selfie para validar tu identidad. Es importante que en esta no tengas puesto ningún accesorio que cubra tu rostro, como gafas, gorras o tapabocas.</Typography>
           )}
           <Stack spacing={2} width={{ xs: "100%", md: "50%" }} alignSelf="center">
             {currentStep === 0 && (

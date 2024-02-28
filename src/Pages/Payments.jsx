@@ -12,8 +12,9 @@ import {
   ListItemText,
   alpha,
   ListItemIcon,
+  ListItemSecondaryAction,
 } from "@mui/material";
-import { KeyboardArrowDown as CollapseIcon } from "@mui/icons-material";
+import { KeyboardArrowDown as CollapseIcon, Style } from "@mui/icons-material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
@@ -28,6 +29,7 @@ import $Epayco from "../Services/epayco.service";
 import { v4 as uuid } from "uuid";
 import { useNavigate } from 'react-router-dom';
 import BackButton from "../Components/BackButton";
+import TablePayments from "../Components/TablePayments";
 
 function Payments() {
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ function Payments() {
       },
       {
         id: "fullname",
-        label: "Nombre del pagador",
+        label: "Pagador",
         align: "left",
         disablePadding: false,
       },
@@ -132,33 +134,26 @@ function Payments() {
             {(history[row.id] || []).map((p) => (
               <ListItem
                 key={p.id}
-                secondaryAction={
-                  <Grid display="flex" justifyContent="flex-end" gap={1}>
-                    <Button
-                      variant="outlined"
-                      color="warning"
-                      sx={{ alignItems: "center", gap: 1 }}
-                      disabled={p.status === 1}
-                      onClick={() => handlePlayment(p)}
-                    >
-                      {p.status === 0 ? "Pagar" : "Pagado"}
-                      {p.status === 0 && <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />}
-                    </Button>
-                  </Grid>
-                }
-                sx={(t) => ({
+                alignItems="flex-start"
+                sx={{
                   borderRadius: 1,
                   "&:hover": {
-                    backgroundColor: alpha(t.palette.primary.main, 0.1),
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1),
                   },
-                })}
+                }}
               >
-                <ListItemIcon sx={{ minWidth: 128 + 8 }}>
-                  <Typography color="text.primary" fontWeight={600}>
-                    {p.quota_number === 0 ? "Cuota inicial" : `#${p.quota_number}`}
-                  </Typography>{" "}
-                </ListItemIcon>
-                <ListItemText primary={formatCurrency(p.payment_amount, "$")} />
+                <TablePayments
+                  data={{
+                    'Cuota': p.quota_number === 0 ? "Cuota inicial" : `#${p.quota_number}`,
+                    'Monto': formatCurrency(p.payment_amount, "$"),
+                    'Referencia Epayco': p.idtransacional[0]?.x_ref_payco || "N/A",
+                    'Fecha': p.idtransacional[0]?.x_transaction_date || "N/A"
+                  }}
+                  status={p.status}
+                  handlePlayment={handlePlayment}
+                  p={p}
+                />
+
               </ListItem>
             ))}
           </List>
@@ -167,6 +162,8 @@ function Payments() {
     ),
     [history, loading.collapse]
   );
+
+
 
   const handlePlayment = async (due) => {
     await $Epayco.pay({
@@ -196,6 +193,13 @@ function Payments() {
     setLoading((prev) => ({ ...prev, collapse: null }));
   };
 
+
+useEffect(()=>{
+  if(history){
+
+    console.log(history)
+  }
+},[history])
   useEffect(() => {
     (async () => {
       const { status, data } = await $Contract.get(user?.id);
