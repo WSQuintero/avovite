@@ -463,16 +463,13 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
         <Row>
           <Column>
-            <Label error={errors.cellphone} disabled={errors.cellphone !== undefined && location.pathname !== "/validation/confirmation"}>
+            <Label error={errors.cellphone} disabled={user?.cellphone}>
               Teléfono de Contacto
             </Label>
             <PhoneField
               enableSearch={true}
-              value={formData.cellphone}
-              disabled={
-                initialState?.cellphone !== undefined ||
-                (initialState?.cellphone !== "" && location.pathname !== "/validation/confirmation")
-              }
+              value={user?.cellphone}
+              disabled={ user?.cellphone  }
               country="co"
               specialLabel=""
               autoFormat={true}
