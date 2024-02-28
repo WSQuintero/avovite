@@ -155,7 +155,14 @@ function ShoppingCart() {
         navigate('/dashboard');
       }
     }
+
   }, [session.user]);
+
+  useEffect(() => {
+    if (shoppingCart.length > 0 && !product) {
+      setProduct(shoppingCart[0].id);
+    }
+  }, [shoppingCart, product]);
 
   return (
     <PageWrapper>
@@ -165,7 +172,7 @@ function ShoppingCart() {
             <Typography variant="h3">Carrito</Typography>
             <Grid display="flex" flexDirection="column" gap={2}>
               <FormControl>
-                <RadioGroup value={product} sx={{ gap: 2 }} onChange={(e) => setProduct(e.target.value)}>
+                <RadioGroup value={product} sx={{ gap: 2 }} onChange={(e) =>{setProduct(e.target.value);console.log(e.target.value)}}>
                   {shoppingCart.map((element, index) => (
                     <FormControlLabel
                       key={index}

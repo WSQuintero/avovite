@@ -88,7 +88,7 @@ function Shop() {
                       width: "100%",
                     },
                   })}
-                  onBuy={(product) => push(product)}
+                  onBuy={(product) => {push(product);navigate("/cart")}}
                 />
               ))}
         </Grid>
