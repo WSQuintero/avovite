@@ -347,11 +347,11 @@ function Dashboard() {
               onSubmit={(data) => handleUpdateSellingMode("sell-avocados", data)}
             />
 
-            <Grid display="flex" gap={2}>
+            {/* <Grid display="flex" gap={2}>
               <LoadingButton fullWidth loading={loadingSubmit} variant="contained" size="large" onClick={() => setModal("modal-terms")}>
                 Términos y Condiciones
               </LoadingButton>
-            </Grid>
+            </Grid> */}
           </>
         ) : (
           <Grid display="flex" flexDirection="column" gap={2} width="100%">
