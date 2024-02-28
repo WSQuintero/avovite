@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Alert, Box, Button, ButtonBase, Icon, Snackbar } from "@mui/material";
 import Webcam from "react-webcam";
-
+import ScannerAnimation from "./Dialogs/ScannerAnimation"
 function formatColor(hex) {
   return String(hex).split("#")[1];
 }
 
-function DropzoneImage({ width = "100%", placeholder, value, onChange, children, camera,showCamera,setShowCamera,setTakePhoto,setUploadPhoto}) {
+function DropzoneImage({ width = "100%", placeholder, value, onChange, children, camera,showCamera,setShowCamera,setTakePhoto,setUploadPhoto,loading}) {
   const [dragging, setDragging] = useState(false);
   const [file, setFile] = useState(value);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
@@ -204,6 +204,8 @@ function DropzoneImage({ width = "100%", placeholder, value, onChange, children,
         </Snackbar>
         {children}
       </Box>
+      {loading && <ScannerAnimation loading={loading} />} {/* Renderiza la animación de scanner si loading es true */}
+
     </>
   );
 }

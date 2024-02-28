@@ -97,6 +97,7 @@ function DialogKYC({ open, initialData, onSubmit, logout }) {
                       setShowCamera={setShowCamera}
                       setUploadPhoto={setUploadPhoto}
                       setTakePhoto={setTakePhoto}
+                      loading={loading}
                     />
                   </Box>
                 )}
@@ -112,6 +113,7 @@ function DialogKYC({ open, initialData, onSubmit, logout }) {
                       setShowCamera={setShowCamera}
                       setUploadPhoto={setUploadPhoto}
                       setTakePhoto={setTakePhoto}
+                      loading={loading}
                     />
                   </Box>
                 )}
@@ -128,8 +130,9 @@ function DialogKYC({ open, initialData, onSubmit, logout }) {
                       onChange={(value) => setFormData({ ...formData, face2: value })}
                       showCamera={showCamera}
                       setShowCamera={setShowCamera}
-                      setUploadPhoto={setUploadPhoto}
-                      setTakePhoto={setTakePhoto}
+                      setUploadPhoto={setUploadPhotoTwo}
+                      setTakePhoto={setTakePhotoTwo}
+                      loading={loading}
                     />
                   </Box>
                 )}
@@ -145,6 +148,7 @@ function DialogKYC({ open, initialData, onSubmit, logout }) {
                       setShowCamera={setShowCamera}
                       setUploadPhoto={setUploadPhotoTwo}
                       setTakePhoto={setTakePhotoTwo}
+                      loading={loading}
                     />
                   </Box>
                 )}
