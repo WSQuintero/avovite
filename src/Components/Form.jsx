@@ -1042,7 +1042,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
         >
           Información del beneficiario
           <Typography variant="caption" display="block">
-            Designa un beneficiario en tu contrato que pueda recibir pagos en caso de fuerza mayor o evento fortuito.
+            Designa un beneficiario en tu contrato que pueda recibir los frutos en caso de fuerza mayor o evento fortuito.
           </Typography>
         </Typography>
 
