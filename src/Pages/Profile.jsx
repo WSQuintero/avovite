@@ -249,7 +249,7 @@ function Profile() {
               labelId="label-document-type"
               label="Tipo de Documento"
               name="id_type"
-              value={user.id_type}
+              value={session.user.last_contract.id_type ? session.user.last_contract.id_type: user.id_type}
               required
               fullWidth
               disabled
@@ -269,7 +269,7 @@ function Profile() {
             name="id_number"
             type="number"
             label="Número de Documento"
-            value={user.id_number}
+            value={session.user.last_contract.id_number ? session.user.last_contract.id_number: user.id_number}
             required
             fullWidth
             InputProps={{
@@ -282,7 +282,7 @@ function Profile() {
           <TextField
             name="id_location_expedition"
             label="Lugar de Expedición del Documento"
-            value={user.id_location_expedition}
+            value={session.user.last_contract.id_location_expedition ? session.user.last_contract.id_location_expedition: user.id_location_expedition}
             required
             fullWidth
             InputProps={{
