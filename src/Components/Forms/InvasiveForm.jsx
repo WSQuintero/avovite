@@ -231,16 +231,9 @@ function InvasiveForm() {
         </Grid>
         <Box />
         <Grid display="flex" flexDirection="column" gap={3}>
-          <Typography
-            fontSize={24}
-            textAlign="center"
-            fontWeight={600}
-            color="primary"
-            paddingY={1}
-            marginX={-3}
-            // sx={(t) => ({ backgroundColor: alpha(t.palette.primary.main, 0.1) })}
-          >
-            Información pesona natural
+          {/* Datos personales */}
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Información persona natural
           </Typography>
           <Row>
             <Column>
@@ -274,21 +267,10 @@ function InvasiveForm() {
               <TextField required fullWidth name="issuePlaceAndDate" value={formData.issuePlaceAndDate} onChange={handleInputChange} />
             </Column>
           </Row>
-          {/* <Column>
-            <label>Tipo de Documento</label>
-            <FormControl variant="outlined" fullWidth>
-              <Select name="id_type" value={formData.id_type} onChange={handleInputChange}>
-                <MenuItem value="-" disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {Object.keys(DOCUMENT_TYPES).map((key) => (
-                  <MenuItem key={key} value={key}>
-                    {DOCUMENT_TYPES[key]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Column> */}
+          {/* Actividad económica */}
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Actividad económica
+          </Typography>
           <Row>
             <Column>
               <Label>Ocupación</Label>
@@ -316,10 +298,6 @@ function InvasiveForm() {
             </Column>
           </Row>
           <Row>
-            {/* <Column>
-              <Label>Código CIIU</Label>
-              <TextField required fullWidth name="ciiuCode" value={formData.ciiuCode} onChange={handleInputChange} />
-            </Column> */}
             <Column>
               <Label>Descripción de Actividad Económica</Label>
               <TextField
@@ -400,11 +378,11 @@ function InvasiveForm() {
               <Label>Tipo de Empresa</Label>
               <TextField required fullWidth name="companyType" value={formData.companyType} onChange={handleInputChange} />
             </Column>
-            {/* <Column>
-              <Label>Texto Tipo de Empresa</Label>
-              <TextField required fullWidth name="companyTypeTexto" value={formData.companyTypeTexto} onChange={handleInputChange} />
-            </Column> */}
           </Row>
+          {/* Información de accionistas */}
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Información de accionistas
+          </Typography>
           <Row>
             <Column>
               <Label>Tipo de Identificación</Label>
@@ -551,8 +529,6 @@ function InvasiveForm() {
             Enviar
           </LoadingButton>
         </Grid>
-
-        {/* <DialogKYC open={modal.kyc} onClose={() => setModal({ ...modal, kyc: false })} onSubmit={handleSubmitKYC} /> */}
       </Stack>
     </Container>
   );
