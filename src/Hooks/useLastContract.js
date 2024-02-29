@@ -24,7 +24,7 @@ function useLastContract() {
         address_residence: contract.address_residence || "",
         civil_status: contract.civil_status || "-",
         education_level: contract.education_level || "-",
-        he_has_children: contract.he_has_children === true ? "Yes" : "No",
+        he_has_children: contract.he_has_children === "1" ? "Yes" : "No",
         he_has_children_count: contract.he_has_children_count || "1",
         occupation: contract.occupation || "-",
         profession: contract.profession || "",

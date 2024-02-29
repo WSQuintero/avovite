@@ -210,6 +210,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
       }
     }
 
+
+
     if (name === "country_of_residence_beneficiary") {
       setControlFormData((prev) => ({ ...prev, state_beneficiary: "-" }));
       setCitiesBeneficiary([]);
@@ -281,7 +283,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
     const body = {
       ...formData,
-      he_has_children: formData.he_has_children === "Yes",
+      he_has_children: formData.he_has_children ==="Yes",
       does_account_belong_to_holder: formData.does_account_belong_to_holder === "Yes",
       birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
       ...(isMortgage ? { mortgage_contract: 1 } : {}),
@@ -305,6 +307,23 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
     return status;
   };
+
+  useEffect(()=>{
+
+    const fetchStates=async ()=>{
+      if (initialState?.country_of_residence === "169") {
+        const { status, data } = await $Utils.getLocation({ countryCode: "169" });
+
+        if (status) {
+          setStates(data.data);
+        }
+      } else {
+        setFormData((prev) => ({ ...prev, cod_municipio: "" }));
+      }
+  }
+
+  fetchStates()
+  },[initialState])
 
   useEffect(() => {
     (async () => {
@@ -379,32 +398,32 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               disabled={user?.fullname ? true : false}
             />
           </Column>
+          <Row>
           <Column>
-            <Label error={errors.id_type}>Tipo de Documento</Label>
+            <Label error={errors.id_type} disabled={errors.id_type !== undefined}>
+              Tipo de Documento
+            </Label>
             <FormControl variant="outlined" fullWidth>
               <Select
-                required
                 name="id_type"
+                id="tipoDocumento"
                 value={formData.id_type}
-                error={errors.id_type}
+                 disabled={initialState?.id_type !== "-"}
                 onChange={handleInputChange}
-                disabled={initialState?.id_type !== undefined && location.pathname !== "/validation/confirmation"}
+                error={errors.id_type}
               >
                 <MenuItem value="-" selected disabled>
                   Seleccione una opción
                 </MenuItem>
                 {Object.keys(DOCUMENT_TYPES).map((key) => (
-                  <>
-                    {DOCUMENT_TYPES[key] !== "Tarjeta de identidad" && (
-                      <MenuItem key={key} value={key}>
-                        {DOCUMENT_TYPES[key]}
-                      </MenuItem>
-                    )}
-                  </>
+                  <MenuItem key={key} value={key}>
+                    {DOCUMENT_TYPES[key]}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Column>
+        </Row>
         </Row>
 
         <Row>
@@ -417,7 +436,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_number}
               onChange={handleInputChange}
               error={errors.id_number}
-              disabled={initialState?.id_number !== undefined && location.pathname !== "/validation/confirmation"}
+              disabled={initialState?.id_number !== "" && location.pathname !== "/validation/confirmation"}
             />
           </Column>
           <Column>
@@ -429,7 +448,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_location_expedition}
               error={errors.id_location_expedition}
               onChange={handleInputChange}
-              disabled={initialState?.id_location_expedition !== undefined && location.pathname !== "/validation/confirmation"}
+              disabled={initialState?.id_location_expedition !== "" && location.pathname !== "/validation/confirmation"}
             />
           </Column>
         </Row>
@@ -563,7 +582,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                 <Select
                   name="state"
                   value={controlFormData?.state}
-                  disabled={initialState.state !== undefined}
+                  // disabled={initialState.state !== undefined}
                   onChange={handleControlInputChange}
                   error={errorControlFormData.state}
                 >
