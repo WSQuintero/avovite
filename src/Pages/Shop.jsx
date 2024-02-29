@@ -5,9 +5,10 @@ import useShop from "../Hooks/useShop";
 import useSession from "../Hooks/useSession";
 import CardProduct from "../Components/CardProduct";
 import PageWrapper from "../Components/PageWrapper";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import ShopService from "../Services/product.service";
 import BackButton from "../Components/BackButton";
+import InvasiveForm from "../Components/Forms/invasiveForm";
 
 function Shop() {
   const navigate = useNavigate();
@@ -39,16 +40,16 @@ function Shop() {
   }, [$Shop]);
 
   useEffect(() => {
-    if(user){
-      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
-        navigate('/dashboard');
+    if (user) {
+      if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
       }
     }
   }, [user]);
 
   return (
     <PageWrapper>
-      <BackButton/>
+      <BackButton />
       <Container maxWidth="xxl">
         <Grid
           display="flex"
@@ -88,11 +89,15 @@ function Shop() {
                       width: "100%",
                     },
                   })}
-                  onBuy={(product) => {push(product);navigate("/cart")}}
+                  onBuy={(product) => {
+                    push(product);
+                    navigate("/cart");
+                  }}
                 />
               ))}
         </Grid>
       </Container>
+      <InvasiveForm />
     </PageWrapper>
   );
 }

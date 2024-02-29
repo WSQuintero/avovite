@@ -10,7 +10,7 @@ export const DOCUMENT_TYPES = {
   pasaporte: "Pasaporte",
   dni: "DNI",
   nit: "NIT",
-  tarjetaDeIdentidad: "Tarjeta de identidad",
+  tarjetaIdentidad: "Tarjeta de identidad",
 };
 
 export const CIVIL_STATUS = {
