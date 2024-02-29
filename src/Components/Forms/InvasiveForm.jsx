@@ -15,6 +15,7 @@ import {
   RadioGroup,
   Select,
   Stack,
+  Switch,
   TextField,
   Typography,
   Zoom,
@@ -118,6 +119,7 @@ const initialState = {
   equity: "",
   otherIncome: "",
   otherIncomeDetails: "",
+  numberOfShareholders: "", //esto no va
   bankAccounts: [
     {
       accountNumber: "",
@@ -132,6 +134,7 @@ const initialState = {
       accountType: "",
     },
   ],
+  numberOfInternationalOperations: 0, //no va
   conductsForeignCurrencyTransactions: false,
   usesFinancialProductsAbroad: false,
   conductsForeignCurrencyTransactionsType: {
@@ -198,16 +201,6 @@ const Column = ({ children }) => (
 
 function InvasiveForm() {
   const [formData, setFormData] = useState(initialState);
-
-  const handleUsStayDetailsChange = (event) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      usStayDetails: {
-        ...prevState.usStayDetails,
-        [event.target.name]: event.target.checked,
-      },
-    }));
-  };
 
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
@@ -385,143 +378,377 @@ function InvasiveForm() {
           </Typography>
           <Row>
             <Column>
-              <Label>Tipo de Identificación</Label>
+              <Label>Número de Accionistas</Label>
               <TextField
+                type="number"
                 fullWidth
-                name="shareholder_identificationText"
-                value={formData.shareholdersIdentification[0]?.identificationText}
+                name="numberOfShareholders"
+                value={formData.numberOfShareholders}
                 onChange={handleInputChange}
               />
             </Column>
           </Row>
-          <Row>
-            <Column>
-              <Label>Número de Identificación</Label>
-              <TextField
-                fullWidth
-                name="shareholder_identificationNumber"
-                value={formData.shareholdersIdentification[0]?.identificationNumber}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Nombre Completo</Label>
-              <TextField
-                fullWidth
-                name="shareholder_fullName"
-                value={formData.shareholdersIdentification[0]?.fullName}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Nacionalidad</Label>
-              <TextField
-                fullWidth
-                name="shareholder_nationality"
-                value={formData.shareholdersIdentification[0]?.nationality}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Otra Nacionalidad</Label>
-              <TextField
-                fullWidth
-                name="shareholder_otherNationality"
-                value={formData.shareholdersIdentification[0]?.otherNationality}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Residencia Permanente en Otro País</Label>
-              <Stack direction="row" spacing={1}>
-                <RadioGroup
-                  row
-                  name="shareholder_permanentResidenceInOtherCountry"
-                  value={formData.shareholdersIdentification[0]?.permanentResidenceInOtherCountry.toString()}
-                  onChange={handleInputChange}
-                >
-                  <FormControlLabel value="false" control={<Radio />} label="No" />
-                  <FormControlLabel value="true" control={<Radio />} label="Sí" />
-                </RadioGroup>
-                <Zoom in={formData.shareholdersIdentification[0]?.permanentResidenceInOtherCountry}>
+
+          {/* Repetir la información del accionista según el número ingresado */}
+          {Array.from(formData.numberOfInternationalOperations, (_, index) => (
+            <div key={index}>
+              <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+                Accionista {index + 1}
+              </Typography>
+              {/* Aquí va la información del accionista */}
+              <Row>
+                <Column>
+                  <Label>Tipo de Identificación</Label>
+                  <TextField fullWidth name={`shareholder_identificationText_${index}`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Número de Identificación</Label>
+                  <TextField fullWidth name={`shareholder_identificationNumber_${index}`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+              {/* Agrega aquí los demás campos del accionista */}
+              <Row>
+                <Column>
+                  <Label>Nombre Completo</Label>
+                  <TextField fullWidth name={`shareholder_fullName_${index}`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Nacionalidad</Label>
+                  <TextField fullWidth name={`shareholder_nationality_${index}`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+                <Column>
+                  <Label>Otra Nacionalidad</Label>
+                  <TextField fullWidth name={`shareholder_otherNationality_${index}`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Residencia Permanente en Otro País</Label>
+                  <Switch name={`shareholder_permanentResidenceInOtherCountry_${index}`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Detalle de Residencia en EE. UU.</Label>
+                  <FormControl component="fieldset">
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            // checked={formData.usStayDetails.dueToContract183Days}
+                            // onChange={(e) => handleStayDetailsChange(e, index, "dueToContract183Days")}
+                            name={`shareholder_dueToContract183Days_${index}`}
+                          />
+                        }
+                        label="Due to contract (183 days)"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            // checked={formData.usStayDetails.consecutive31DaysCurrentYear}
+                            // onChange={(e) => handleStayDetailsChange(e, index, "consecutive31DaysCurrentYear")}
+                            name={`shareholder_consecutive31DaysCurrentYear_${index}`}
+                          />
+                        }
+                        label="Consecutive 31 days in current year"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            // checked={formData.usStayDetails.previousYear121Days}
+                            // onChange={(e) => handleStayDetailsChange(e, index, "previousYear121Days")}
+                            name={`shareholder_previousYear121Days_${index}`}
+                          />
+                        }
+                        label="Previous year: 121 days"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            // checked={formData.usStayDetails.secondYear60Days}
+                            // onChange={(e) => handleStayDetailsChange(e, index, "secondYear60Days")}
+                            name={`shareholder_secondYear60Days_${index}`}
+                          />
+                        }
+                        label="Second year: 60 days"
+                      />
+                    </FormGroup>
+                  </FormControl>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Porcentaje de Participación</Label>
                   <TextField
-                    size="small"
-                    type="text"
-                    placeholder="Detalle"
-                    name="shareholder_permanentResidenceInOtherCountryTexto"
-                    value={formData.shareholdersIdentification[0]?.permanentResidenceInOtherCountryTexto}
-                    onChange={handleInputChange}
+                    fullWidth
+                    name={`shareholder_percentageParticipation_${index}`}
+                    onChange={(e) => handleInputChange(e, index)}
                   />
-                </Zoom>
-              </Stack>
+                </Column>
+              </Row>
+            </div>
+          ))}
+
+          <Row>
+            <Column>
+              <Label>¿Persona Expuesta Políticamente?</Label>
+              <Switch name="politicallyExposedPerson" checked={formData.politicallyExposedPerson} onChange={handleInputChange} />
             </Column>
           </Row>
           <Row>
             <Column>
-              <Label>Detalles de Estancia</Label>
-              <FormControl component="fieldset">
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={formData.usStayDetails.dueToContract183Days}
-                        onChange={handleUsStayDetailsChange}
-                        name="dueToContract183Days"
-                      />
-                    }
-                    label="Debido a un contrato de al menos 183 días"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={formData.usStayDetails.consecutive31DaysCurrentYear}
-                        onChange={handleUsStayDetailsChange}
-                        name="consecutive31DaysCurrentYear"
-                      />
-                    }
-                    label="Por tener 31 días consecutivos en el año actual"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={formData.usStayDetails.previousYear121Days}
-                        onChange={handleUsStayDetailsChange}
-                        name="previousYear121Days"
-                      />
-                    }
-                    label="Por tener 121 días en el año anterior"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={formData.usStayDetails.secondYear60Days}
-                        onChange={handleUsStayDetailsChange}
-                        name="secondYear60Days"
-                      />
-                    }
-                    label="Por tener 60 días en el segundo año"
-                  />
-                </FormGroup>
-              </FormControl>
+              <Label>Representante Legal de Organización Internacional</Label>
+              <Switch name="InternationalOrgLegalRep" checked={formData.InternationalOrgLegalRep} onChange={handleInputChange} />
             </Column>
           </Row>
           <Row>
             <Column>
-              <Label>Participación Porcentual</Label>
+              <Label>Estatus de Administrador PEP</Label>
+              <Switch name="AdministratorPEPStatus" checked={formData.AdministratorPEPStatus} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Detalles de Respuesta Afirmativa</Label>
               <TextField
                 fullWidth
-                name="shareholder_percentageParticipation"
-                value={formData.shareholdersIdentification[0]?.percentageParticipation}
+                name="AffirmativeResponseDetails"
+                value={formData.AffirmativeResponseDetails}
                 onChange={handleInputChange}
               />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Activos</Label>
+              <TextField fullWidth name="assets" value={formData.assets} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Deudas</Label>
+              <TextField fullWidth name="liabilities" value={formData.liabilities} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Ingreso Mensual</Label>
+              <TextField fullWidth name="monthlyIncome" value={formData.monthlyIncome} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Gastos Mensuales</Label>
+              <TextField fullWidth name="monthlyExpenses" value={formData.monthlyExpenses} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Capital</Label>
+              <TextField fullWidth name="equity" value={formData.equity} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Otros Ingresos</Label>
+              <TextField fullWidth name="otherIncome" value={formData.otherIncome} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Detalles de Otros Ingresos</Label>
+              <TextField fullWidth name="otherIncomeDetails" value={formData.otherIncomeDetails} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Información Bancaria
+          </Typography>
+          <Row>
+            <Column>
+              <Label>Cantidad de Cuentas Bancarias</Label>
+              <TextField
+                type="number"
+                fullWidth
+                name="numberOfBankAccounts"
+                value={formData.numberOfBankAccounts}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
+          {/* Campos para cada cuenta bancaria */}
+          {Array.from({ length: formData.numberOfBankAccounts }, (_, index) => (
+            <div key={index}>
+              <Typography fontSize={20} fontWeight={600} color="primary" paddingY={1}>
+                Cuenta Bancaria {index + 1}
+              </Typography>
+              <Row>
+                <Column>
+                  <Label>Número de Cuenta</Label>
+                  <TextField fullWidth name={`bankAccount_${index}_accountNumber`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+                <Column>
+                  <Label>Nombre del Banco</Label>
+                  <TextField fullWidth name={`bankAccount_${index}_bankName`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Sucursal</Label>
+                  <TextField fullWidth name={`bankAccount_${index}_branchOffice`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+                <Column>
+                  <Label>Tipo de Cuenta</Label>
+                  <TextField fullWidth name={`bankAccount_${index}_accountType`} onChange={(e) => handleInputChange(e, index)} />
+                </Column>
+              </Row>
+            </div>
+          ))}
+          <Row>
+            <Column>
+              <Label>Realiza Transacciones en Moneda Extranjera</Label>
+              <Switch
+                name="conductsForeignCurrencyTransactions"
+                onChange={handleInputChange}
+                checked={formData.conductsForeignCurrencyTransactions}
+              />
+            </Column>
+            <Column>
+              <Label>Usa Productos Financieros en el Extranjero</Label>
+              <Switch name="usesFinancialProductsAbroad" onChange={handleInputChange} checked={formData.usesFinancialProductsAbroad} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Cantidad de Transferencias Internacionales</Label>
+              <TextField
+                type="number"
+                name="numberOfInternationalOperations"
+                value={formData.numberOfInternationalOperations}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
+
+          {/* Detalles de las transferencias internacionales */}
+          {Array.from({ length: formData.numberOfInternationalOperations }, (_, index) => (
+            <div key={index}>
+              <Typography fontSize={20} fontWeight={600} color="primary" paddingY={1}>
+                Detalles de la Transferencia Internacional {index + 1}
+              </Typography>
+              <Row>
+                <Column>
+                  <Label>Tipo de Identificación</Label>
+                  <TextField
+                    fullWidth
+                    name={`internationalOperationsDetails_${index}_identificationType`}
+                    value={formData.internationalOperationsDetails[index]?.identificationType || ""}
+                    onChange={(e) => handleInputChange(e, index)}
+                  />
+                </Column>
+                <Column>
+                  <Label>Entidad</Label>
+                  <TextField
+                    fullWidth
+                    name={`internationalOperationsDetails_${index}_entity`}
+                    value={formData.internationalOperationsDetails[index]?.entity || ""}
+                    onChange={(e) => handleInputChange(e, index)}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>País/Ciudad</Label>
+                  <TextField
+                    fullWidth
+                    name={`internationalOperationsDetails_${index}_countryCity`}
+                    value={formData.internationalOperationsDetails[index]?.countryCity || ""}
+                    onChange={(e) => handleInputChange(e, index)}
+                  />
+                </Column>
+                <Column>
+                  <Label>Monto/Currency</Label>
+                  <TextField
+                    fullWidth
+                    name={`internationalOperationsDetails_${index}_amountCurrency`}
+                    value={formData.internationalOperationsDetails[index]?.amountCurrency || ""}
+                    onChange={(e) => handleInputChange(e, index)}
+                  />
+                </Column>
+              </Row>
+            </div>
+          ))}
+          <Row>
+            <Column>
+              <Label>Tipo de Operaciones Internacionales</Label>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="internationalOperationsType_transfers"
+                    onChange={handleInputChange}
+                    checked={formData.internationalOperationsType.transfers}
+                  />
+                }
+                label="Transferencias"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="internationalOperationsType_other"
+                    onChange={handleInputChange}
+                    checked={formData.internationalOperationsType.other !== ""}
+                  />
+                }
+                label="Otro (Especificar)"
+              />
+              {formData.internationalOperationsType.other !== "" && (
+                <TextField
+                  fullWidth
+                  name="internationalOperationsTypeText"
+                  value={formData.internationalOperationsTypeText}
+                  onChange={handleInputChange}
+                />
+              )}
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Declaraciones de Nombre Completo</Label>
+              <TextField fullWidth name="fullNameDeclarations" value={formData.fullNameDeclarations} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Tipo de Identificación para Declaraciones</Label>
+              <TextField
+                fullWidth
+                name="identificationTypeDeclarations"
+                value={formData.identificationTypeDeclarations}
+                onChange={handleInputChange}
+              />
+            </Column>
+            <Column>
+              <Label>Número de Identificación para Declaraciones</Label>
+              <TextField
+                fullWidth
+                name="identificationNumberDeclarations"
+                value={formData.identificationNumberDeclarations}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Detalles de la Fuente de Recursos</Label>
+              <TextField fullWidth name="ResourceSourceDetails" value={formData.ResourceSourceDetails} onChange={handleInputChange} />
             </Column>
           </Row>
 
