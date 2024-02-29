@@ -62,7 +62,7 @@ const initialState = {
   companyName: "",
   jobTitle: "",
   address: "",
-  ciiuCode: "",
+  ciiuCode: "", //tener en cuenta que esto no lo llena el cliente
   economicActivityDescription: "",
   nit: "",
   businessName: "",
@@ -89,24 +89,25 @@ const initialState = {
         previousYear121Days: false,
         secondYear60Days: false,
       },
-      percentageParticipation: "",
     },
-    {
-      identificationText: "",
-      identificationNumber: "",
-      fullName: "",
-      nationality: "",
-      otherNationality: "",
-      permanentResidenceInOtherCountry: false,
-      permanentResidenceInOtherCountryTexto: "",
-      usStayDetails: {
-        dueToContract183Days: false,
-        consecutive31DaysCurrentYear: false,
-        previousYear121Days: false,
-        secondYear60Days: false,
-      },
-      percentageParticipation: "",
-    },
+    //   percentageParticipation: "",
+    // },
+    // {
+    //   identificationText: "",
+    //   identificationNumber: "",
+    //   fullName: "",
+    //   nationality: "",
+    //   otherNationality: "",
+    //   permanentResidenceInOtherCountry: false,
+    //   permanentResidenceInOtherCountryTexto: "",
+    //   usStayDetails: {
+    //     dueToContract183Days: false,
+    //     consecutive31DaysCurrentYear: false,
+    //     previousYear121Days: false,
+    //     secondYear60Days: false,
+    //   },
+    //   percentageParticipation: "",
+    // },
   ],
   politicallyExposedPerson: false,
   InternationalOrgLegalRep: false,
@@ -119,7 +120,7 @@ const initialState = {
   equity: "",
   otherIncome: "",
   otherIncomeDetails: "",
-  numberOfShareholders: "", //esto no va
+  numberOfShareholders: 0, //esto no va
   bankAccounts: [
     {
       accountNumber: "",
@@ -127,12 +128,12 @@ const initialState = {
       branchOffice: "",
       accountType: "",
     },
-    {
-      accountNumber: "",
-      bankName: "",
-      branchOffice: "",
-      accountType: "",
-    },
+    // {
+    //   accountNumber: "",
+    //   bankName: "",
+    //   branchOffice: "",
+    //   accountType: "",
+    // },
   ],
   numberOfInternationalOperations: 0, //no va
   conductsForeignCurrencyTransactions: false,
@@ -147,12 +148,6 @@ const initialState = {
   },
   internationalOperationsTypeText: "",
   internationalOperationsDetails: [
-    {
-      identificationType: "",
-      entity: "",
-      countryCity: "",
-      amountCurrency: "",
-    },
     {
       identificationType: "",
       entity: "",
@@ -204,14 +199,123 @@ function InvasiveForm() {
 
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    // Actualiza el estado con el nuevo valor del campo que cambió
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const { name, checked, value } = event.target;
+
+    // Verifica si el campo que cambió pertenece a usStayDetails antes de actualizar el estado
+    if (name in formData.usStayDetails) {
+      // Actualiza el estado con el nuevo valor del campo que cambió en usStayDetails
+      setFormData({
+        ...formData,
+        usStayDetails: {
+          ...formData.usStayDetails,
+          [name]: checked,
+        },
+      });
+    } else if (
+      name === "politicallyExposedPerson" ||
+      name === "InternationalOrgLegalRep" ||
+      name === "AdministratorPEPStatus" ||
+      name === "conductsForeignCurrencyTransactions" ||
+      name === "usesFinancialProductsAbroad"
+    ) {
+      // Actualiza el estado para los campos correspondientes
+      setFormData({
+        ...formData,
+        [name]: checked,
+      });
+    } else if (name === "internationalOperationsType_transfers" || name === "internationalOperationsType_other") {
+      // Actualiza el estado para los campos de operaciones internacionales
+      setFormData({
+        ...formData,
+        internationalOperationsType: {
+          ...formData.internationalOperationsType,
+          [name.split("_")[1]]: checked,
+        },
+      });
+    } else if (name === "identificationTypeDeclarations") {
+      // Actualiza el estado para el campo identificationTypeDeclarations
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    } else if (name === "conductsForeignCurrencyTransactionsType_imports" || name === "conductsForeignCurrencyTransactionsType_exports") {
+      // Actualiza el estado para los campos de conductsForeignCurrencyTransactionsType
+      setFormData({
+        ...formData,
+        conductsForeignCurrencyTransactionsType: {
+          ...formData.conductsForeignCurrencyTransactionsType,
+          [name.split("_")[1]]: checked,
+        },
+      });
+    } else {
+      // Actualiza el estado con el nuevo valor del campo que cambió si no pertenece a usStayDetails
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
   const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
+
+  const handleBankAccountChange = (event, index) => {
+    const { name, value } = event.target;
+    const updatedFormData = { ...formData };
+
+    if (name.startsWith(`bankAccount_${index}`)) {
+      const fieldName = name.split("_")[2];
+      updatedFormData.bankAccounts[index][fieldName] = value;
+    }
+
+    setFormData(updatedFormData);
+  };
+
+  const handleInputChangeAccionist = (event, index) => {
+    const { name, value, checked } = event.target;
+    const updatedFormData = { ...formData };
+
+    if (name === `shareholder_permanentResidenceInOtherCountry_${index}`) {
+      updatedFormData.shareholdersIdentification[index].permanentResidenceInOtherCountry = checked;
+    } else if (
+      name.startsWith(`shareholder_dueToContract183Days_`) ||
+      name.startsWith(`shareholder_consecutive31DaysCurrentYear_`) ||
+      name.startsWith(`shareholder_previousYear121Days_`) ||
+      name.startsWith(`shareholder_secondYear60Days_`)
+    ) {
+      const detailName = name.split(`_`)[1];
+      updatedFormData.shareholdersIdentification[index].usStayDetails[detailName] = checked;
+    } else if (name.startsWith(`shareholder_`)) {
+      const fieldName = name.split(`_`)[1];
+      updatedFormData.shareholdersIdentification[index][fieldName] = value;
+    } else if (name === "identificationTypeDeclarations") {
+      // Manejar el campo identificationTypeDeclarations
+      updatedFormData.shareholdersIdentification[index].identificationText = value;
+    } else {
+      updatedFormData[name] = value;
+    }
+
+    setFormData(updatedFormData);
+  };
+  const handleInternationalOperationsChange = (event, index) => {
+    const { name, value } = event.target;
+    const updatedFormData = { ...formData };
+
+    if (name === `internationalOperationsDetails_${index}_identificationType`) {
+      updatedFormData.internationalOperationsDetails[index].identificationType = value;
+    } else if (name === `internationalOperationsDetails_${index}_entity`) {
+      updatedFormData.internationalOperationsDetails[index].entity = value;
+    } else if (name === `internationalOperationsDetails_${index}_countryCity`) {
+      updatedFormData.internationalOperationsDetails[index].countryCity = value;
+    } else if (name === `internationalOperationsDetails_${index}_amountCurrency`) {
+      updatedFormData.internationalOperationsDetails[index].amountCurrency = value;
+    }
+
+    setFormData(updatedFormData);
+  };
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
@@ -238,12 +342,92 @@ function InvasiveForm() {
               <TextField required fullWidth name="lastName" value={formData.lastName} onChange={handleInputChange} />
             </Column>
           </Row>
+
+          <Row>
+            <Column>
+              <Label>Lugar de nacimiento</Label>
+              <TextField required fullWidth name="birthCountryAndCity" value={formData.birthCountryAndCity} onChange={handleInputChange} />
+            </Column>
+
+            <Column>
+              <Label>Fecha de nacimiento</Label>
+              <DatePicker
+                disableFuture
+                // slotProps={{ textField: { error: errors.birthdate } }}
+                value={dayjs(formData.birthdate)}
+                format="DD MMMM YYYY"
+                onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
+                disabled={initialState?.birthdate !== undefined && location.pathname !== "/validation/confirmation"}
+              />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Nacionalidad</Label>
+              <TextField required fullWidth name="nationality" value={formData.nationality} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Dirección de Residencia y Ciudad</Label>
+              <TextField
+                required
+                fullWidth
+                name="residenceAddressAndCity"
+                value={formData.residenceAddressAndCity}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Número de Teléfono</Label>
+              <TextField required fullWidth name="cellPhone" value={formData.cellPhone} onChange={handleInputChange} />
+            </Column>
+            <Column>
+              <Label>Correo Electrónico</Label>
+              <TextField required fullWidth name="email" value={formData.email} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Estado Civil</Label>
+              <TextField required fullWidth name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
           <Row>
             <Column>
               <Label>Nombres completos</Label>
               <TextField required fullWidth name="names" value={formData.names} onChange={handleInputChange} />
             </Column>
           </Row>
+
+          <Row>
+            <Column>
+              <Label>Tipo de Documento</Label>
+              <FormControl variant="outlined" fullWidth>
+                <Select
+                  name="identificationTypeDeclarations"
+                  id="tipoDocumento"
+                  value={formData.identificationTypeDeclarations}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="" disabled>
+                    Seleccione una opción
+                  </MenuItem>
+                  {Object.keys(DOCUMENT_TYPES).map((key) => (
+                    <MenuItem key={key} value={key}>
+                      {DOCUMENT_TYPES[key]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Column>
+          </Row>
+
           <Row>
             <Column>
               <Label>Número de Identificación</Label>
@@ -260,6 +444,78 @@ function InvasiveForm() {
               <TextField required fullWidth name="issuePlaceAndDate" value={formData.issuePlaceAndDate} onChange={handleInputChange} />
             </Column>
           </Row>
+
+          <Row>
+            <Column>
+              <Label>Detalle de Residencia en EE. UU.</Label>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="dueToContract183Days"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.dueToContract183Days || false}
+                      />
+                    }
+                    label="Due to contract (183 days)"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="consecutive31DaysCurrentYear"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.consecutive31DaysCurrentYear || false}
+                      />
+                    }
+                    label="Consecutive 31 days in current year"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="previousYear121Days"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.previousYear121Days || false}
+                      />
+                    }
+                    label="Previous year: 121 days"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="secondYear60Days"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.secondYear60Days || false}
+                      />
+                    }
+                    label="Second year: 60 days"
+                  />
+                </FormGroup>
+              </FormControl>
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>¿Persona Expuesta Políticamente?</Label>
+              <Switch name="politicallyExposedPerson" checked={Boolean(formData.politicallyExposedPerson)} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Representante Legal de Organización Internacional</Label>
+              <Switch name="InternationalOrgLegalRep" checked={Boolean(formData.InternationalOrgLegalRep)} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Estatus de Administrador PEP</Label>
+              <Switch name="AdministratorPEPStatus" checked={Boolean(formData.AdministratorPEPStatus)} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
           {/* Actividad económica */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
             Actividad económica
@@ -372,156 +628,6 @@ function InvasiveForm() {
               <TextField required fullWidth name="companyType" value={formData.companyType} onChange={handleInputChange} />
             </Column>
           </Row>
-          {/* Información de accionistas */}
-          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
-            Información de accionistas
-          </Typography>
-          <Row>
-            <Column>
-              <Label>Número de Accionistas</Label>
-              <TextField
-                type="number"
-                fullWidth
-                name="numberOfShareholders"
-                value={formData.numberOfShareholders}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
-
-          {/* Repetir la información del accionista según el número ingresado */}
-          {Array.from(formData.numberOfInternationalOperations, (_, index) => (
-            <div key={index}>
-              <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
-                Accionista {index + 1}
-              </Typography>
-              {/* Aquí va la información del accionista */}
-              <Row>
-                <Column>
-                  <Label>Tipo de Identificación</Label>
-                  <TextField fullWidth name={`shareholder_identificationText_${index}`} onChange={(e) => handleInputChange(e, index)} />
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <Label>Número de Identificación</Label>
-                  <TextField fullWidth name={`shareholder_identificationNumber_${index}`} onChange={(e) => handleInputChange(e, index)} />
-                </Column>
-              </Row>
-              {/* Agrega aquí los demás campos del accionista */}
-              <Row>
-                <Column>
-                  <Label>Nombre Completo</Label>
-                  <TextField fullWidth name={`shareholder_fullName_${index}`} onChange={(e) => handleInputChange(e, index)} />
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <Label>Nacionalidad</Label>
-                  <TextField fullWidth name={`shareholder_nationality_${index}`} onChange={(e) => handleInputChange(e, index)} />
-                </Column>
-                <Column>
-                  <Label>Otra Nacionalidad</Label>
-                  <TextField fullWidth name={`shareholder_otherNationality_${index}`} onChange={(e) => handleInputChange(e, index)} />
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <Label>Residencia Permanente en Otro País</Label>
-                  <Switch name={`shareholder_permanentResidenceInOtherCountry_${index}`} onChange={(e) => handleInputChange(e, index)} />
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <Label>Detalle de Residencia en EE. UU.</Label>
-                  <FormControl component="fieldset">
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            // checked={formData.usStayDetails.dueToContract183Days}
-                            // onChange={(e) => handleStayDetailsChange(e, index, "dueToContract183Days")}
-                            name={`shareholder_dueToContract183Days_${index}`}
-                          />
-                        }
-                        label="Due to contract (183 days)"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            // checked={formData.usStayDetails.consecutive31DaysCurrentYear}
-                            // onChange={(e) => handleStayDetailsChange(e, index, "consecutive31DaysCurrentYear")}
-                            name={`shareholder_consecutive31DaysCurrentYear_${index}`}
-                          />
-                        }
-                        label="Consecutive 31 days in current year"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            // checked={formData.usStayDetails.previousYear121Days}
-                            // onChange={(e) => handleStayDetailsChange(e, index, "previousYear121Days")}
-                            name={`shareholder_previousYear121Days_${index}`}
-                          />
-                        }
-                        label="Previous year: 121 days"
-                      />
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            // checked={formData.usStayDetails.secondYear60Days}
-                            // onChange={(e) => handleStayDetailsChange(e, index, "secondYear60Days")}
-                            name={`shareholder_secondYear60Days_${index}`}
-                          />
-                        }
-                        label="Second year: 60 days"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <Label>Porcentaje de Participación</Label>
-                  <TextField
-                    fullWidth
-                    name={`shareholder_percentageParticipation_${index}`}
-                    onChange={(e) => handleInputChange(e, index)}
-                  />
-                </Column>
-              </Row>
-            </div>
-          ))}
-
-          <Row>
-            <Column>
-              <Label>¿Persona Expuesta Políticamente?</Label>
-              <Switch name="politicallyExposedPerson" checked={formData.politicallyExposedPerson} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Representante Legal de Organización Internacional</Label>
-              <Switch name="InternationalOrgLegalRep" checked={formData.InternationalOrgLegalRep} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Estatus de Administrador PEP</Label>
-              <Switch name="AdministratorPEPStatus" checked={formData.AdministratorPEPStatus} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Detalles de Respuesta Afirmativa</Label>
-              <TextField
-                fullWidth
-                name="AffirmativeResponseDetails"
-                value={formData.AffirmativeResponseDetails}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
           <Row>
             <Column>
               <Label>Activos</Label>
@@ -564,7 +670,196 @@ function InvasiveForm() {
               <TextField fullWidth name="otherIncomeDetails" value={formData.otherIncomeDetails} onChange={handleInputChange} />
             </Column>
           </Row>
+          {/* Información de accionistas */}
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Información de accionistas
+          </Typography>
+          <Row>
+            <Column>
+              <Label>Número de Accionistas</Label>
+              <TextField
+                type="number"
+                fullWidth
+                name="numberOfShareholders"
+                value={formData.numberOfShareholders}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
 
+          {Array.from({ length: formData.numberOfShareholders }, (_, index) => (
+            <div key={index}>
+              <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+                Accionista {index + 1}
+              </Typography>
+              <Row>
+                <Column>
+                  <Label>Tipo de Documento</Label>
+                  <FormControl variant="outlined" fullWidth>
+                    <Select
+                      name="identificationTypeDeclarations"
+                      id="tipoDocumento"
+                      value={formData.shareholdersIdentification[index].identificationText}
+                      onChange={(e) => handleInputChangeAccionist(e, index)}
+                    >
+                      <MenuItem value="" disabled>
+                        Seleccione una opción
+                      </MenuItem>
+                      {Object.keys(DOCUMENT_TYPES).map((key) => (
+                        <MenuItem key={key} value={key}>
+                          {DOCUMENT_TYPES[key]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Número de Identificación</Label>
+                  <TextField
+                    fullWidth
+                    name={`shareholder_identificationNumber_${index}`}
+                    onChange={(e) => handleInputChangeAccionist(e, index)}
+                    value={formData.shareholdersIdentification[index].identificationNumber}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Nombre Completo</Label>
+                  <TextField
+                    fullWidth
+                    name={`shareholder_fullName_${index}`}
+                    onChange={(e) => handleInputChangeAccionist(e, index)}
+                    value={formData.shareholdersIdentification[index].fullName}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Nacionalidad</Label>
+                  <TextField
+                    fullWidth
+                    name={`shareholder_nationality_${index}`}
+                    onChange={(e) => handleInputChangeAccionist(e, index)}
+                    value={formData.shareholdersIdentification[index].nationality}
+                  />
+                </Column>
+                <Column>
+                  <Label>Otra Nacionalidad</Label>
+                  <TextField
+                    fullWidth
+                    name={`shareholder_otherNationality_${index}`}
+                    onChange={(e) => handleInputChangeAccionist(e, index)}
+                    value={formData.shareholdersIdentification[index].otherNationality}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Residencia Permanente en Otro País</Label>
+                  <Switch
+                    name={`shareholder_permanentResidenceInOtherCountry_${index}`}
+                    onChange={(e) => handleInputChangeAccionist(e, index)}
+                    checked={formData.shareholdersIdentification[index].permanentResidenceInOtherCountry}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Detalle de Residencia en EE. UU.</Label>
+                  <FormControl component="fieldset">
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name={`shareholder_dueToContract183Days_${index}`}
+                            onChange={(e) => handleInputChangeAccionist(e, index)}
+                            checked={formData.shareholdersIdentification[index].usStayDetails.dueToContract183Days}
+                          />
+                        }
+                        label="Due to contract (183 days)"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name={`shareholder_consecutive31DaysCurrentYear_${index}`}
+                            onChange={(e) => handleInputChangeAccionist(e, index)}
+                            checked={formData.shareholdersIdentification[index].usStayDetails.consecutive31DaysCurrentYear}
+                          />
+                        }
+                        label="Consecutive 31 days in current year"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name={`shareholder_previousYear121Days_${index}`}
+                            onChange={(e) => handleInputChangeAccionist(e, index)}
+                            checked={formData.shareholdersIdentification[index].usStayDetails.previousYear121Days}
+                          />
+                        }
+                        label="Previous year: 121 days"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            name={`shareholder_secondYear60Days_${index}`}
+                            onChange={(e) => handleInputChangeAccionist(e, index)}
+                            checked={formData.shareholdersIdentification[index].usStayDetails.secondYear60Days}
+                          />
+                        }
+                        label="Second year: 60 days"
+                      />
+                    </FormGroup>
+                  </FormControl>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Label>Porcentaje de Participación</Label>
+                  <TextField
+                    fullWidth
+                    name={`shareholder_percentageParticipation_${index}`}
+                    onChange={(e) => handleInputChangeAccionist(e, index)}
+                    value={formData.shareholdersIdentification[index].percentageParticipation}
+                  />
+                </Column>
+              </Row>
+            </div>
+          ))}
+
+          <Row>
+            <Column>
+              <Label>Conducts Foreign Currency Transactions</Label>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="conductsForeignCurrencyTransactionsType_imports"
+                        onChange={handleInputChange}
+                        checked={formData.conductsForeignCurrencyTransactionsType.imports}
+                      />
+                    }
+                    label="Imports"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="conductsForeignCurrencyTransactionsType_exports"
+                        onChange={handleInputChange}
+                        checked={formData.conductsForeignCurrencyTransactionsType.exports}
+                      />
+                    }
+                    label="Exports"
+                  />
+                </FormGroup>
+              </FormControl>
+            </Column>
+          </Row>
+
+          {/* Información Bancaria */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
             Información Bancaria
           </Typography>
@@ -580,7 +875,6 @@ function InvasiveForm() {
               />
             </Column>
           </Row>
-          {/* Campos para cada cuenta bancaria */}
           {Array.from({ length: formData.numberOfBankAccounts }, (_, index) => (
             <div key={index}>
               <Typography fontSize={20} fontWeight={600} color="primary" paddingY={1}>
@@ -589,37 +883,42 @@ function InvasiveForm() {
               <Row>
                 <Column>
                   <Label>Número de Cuenta</Label>
-                  <TextField fullWidth name={`bankAccount_${index}_accountNumber`} onChange={(e) => handleInputChange(e, index)} />
+                  <TextField fullWidth name={`bankAccount_${index}_accountNumber`} onChange={(e) => handleBankAccountChange(e, index)} />
                 </Column>
                 <Column>
                   <Label>Nombre del Banco</Label>
-                  <TextField fullWidth name={`bankAccount_${index}_bankName`} onChange={(e) => handleInputChange(e, index)} />
+                  <TextField fullWidth name={`bankAccount_${index}_bankName`} onChange={(e) => handleBankAccountChange(e, index)} />
                 </Column>
               </Row>
               <Row>
                 <Column>
                   <Label>Sucursal</Label>
-                  <TextField fullWidth name={`bankAccount_${index}_branchOffice`} onChange={(e) => handleInputChange(e, index)} />
+                  <TextField fullWidth name={`bankAccount_${index}_branchOffice`} onChange={(e) => handleBankAccountChange(e, index)} />
                 </Column>
                 <Column>
                   <Label>Tipo de Cuenta</Label>
-                  <TextField fullWidth name={`bankAccount_${index}_accountType`} onChange={(e) => handleInputChange(e, index)} />
+                  <TextField fullWidth name={`bankAccount_${index}_accountType`} onChange={(e) => handleBankAccountChange(e, index)} />
                 </Column>
               </Row>
             </div>
           ))}
+
           <Row>
             <Column>
               <Label>Realiza Transacciones en Moneda Extranjera</Label>
               <Switch
                 name="conductsForeignCurrencyTransactions"
                 onChange={handleInputChange}
-                checked={formData.conductsForeignCurrencyTransactions}
+                checked={Boolean(formData.conductsForeignCurrencyTransactions)}
               />
             </Column>
             <Column>
               <Label>Usa Productos Financieros en el Extranjero</Label>
-              <Switch name="usesFinancialProductsAbroad" onChange={handleInputChange} checked={formData.usesFinancialProductsAbroad} />
+              <Switch
+                name="usesFinancialProductsAbroad"
+                onChange={handleInputChange}
+                checked={Boolean(formData.usesFinancialProductsAbroad)}
+              />
             </Column>
           </Row>
 
@@ -635,7 +934,6 @@ function InvasiveForm() {
             </Column>
           </Row>
 
-          {/* Detalles de las transferencias internacionales */}
           {Array.from({ length: formData.numberOfInternationalOperations }, (_, index) => (
             <div key={index}>
               <Typography fontSize={20} fontWeight={600} color="primary" paddingY={1}>
@@ -648,7 +946,7 @@ function InvasiveForm() {
                     fullWidth
                     name={`internationalOperationsDetails_${index}_identificationType`}
                     value={formData.internationalOperationsDetails[index]?.identificationType || ""}
-                    onChange={(e) => handleInputChange(e, index)}
+                    onChange={(e) => handleInternationalOperationsChange(e, index)}
                   />
                 </Column>
                 <Column>
@@ -657,7 +955,7 @@ function InvasiveForm() {
                     fullWidth
                     name={`internationalOperationsDetails_${index}_entity`}
                     value={formData.internationalOperationsDetails[index]?.entity || ""}
-                    onChange={(e) => handleInputChange(e, index)}
+                    onChange={(e) => handleInternationalOperationsChange(e, index)}
                   />
                 </Column>
               </Row>
@@ -668,7 +966,7 @@ function InvasiveForm() {
                     fullWidth
                     name={`internationalOperationsDetails_${index}_countryCity`}
                     value={formData.internationalOperationsDetails[index]?.countryCity || ""}
-                    onChange={(e) => handleInputChange(e, index)}
+                    onChange={(e) => handleInternationalOperationsChange(e, index)}
                   />
                 </Column>
                 <Column>
@@ -677,12 +975,13 @@ function InvasiveForm() {
                     fullWidth
                     name={`internationalOperationsDetails_${index}_amountCurrency`}
                     value={formData.internationalOperationsDetails[index]?.amountCurrency || ""}
-                    onChange={(e) => handleInputChange(e, index)}
+                    onChange={(e) => handleInternationalOperationsChange(e, index)}
                   />
                 </Column>
               </Row>
             </div>
           ))}
+
           <Row>
             <Column>
               <Label>Tipo de Operaciones Internacionales</Label>
@@ -691,7 +990,7 @@ function InvasiveForm() {
                   <Checkbox
                     name="internationalOperationsType_transfers"
                     onChange={handleInputChange}
-                    checked={formData.internationalOperationsType.transfers}
+                    checked={Boolean(formData.internationalOperationsType.transfers)}
                   />
                 }
                 label="Transferencias"
@@ -701,12 +1000,12 @@ function InvasiveForm() {
                   <Checkbox
                     name="internationalOperationsType_other"
                     onChange={handleInputChange}
-                    checked={formData.internationalOperationsType.other !== ""}
+                    checked={Boolean(formData.internationalOperationsType.other)}
                   />
                 }
                 label="Otro (Especificar)"
               />
-              {formData.internationalOperationsType.other !== "" && (
+              {formData.internationalOperationsType.other && (
                 <TextField
                   fullWidth
                   name="internationalOperationsTypeText"

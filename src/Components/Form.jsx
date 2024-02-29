@@ -210,8 +210,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
       }
     }
 
-
-
     if (name === "country_of_residence_beneficiary") {
       setControlFormData((prev) => ({ ...prev, state_beneficiary: "-" }));
       setCitiesBeneficiary([]);
@@ -283,7 +281,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
 
     const body = {
       ...formData,
-      he_has_children: formData.he_has_children ==="Yes",
+      he_has_children: formData.he_has_children === "Yes",
       does_account_belong_to_holder: formData.does_account_belong_to_holder === "Yes",
       birthdate: dayjs(formData.birthdate).format("YYYY-MM-DD"),
       ...(isMortgage ? { mortgage_contract: 1 } : {}),
@@ -308,9 +306,8 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
     return status;
   };
 
-  useEffect(()=>{
-
-    const fetchStates=async ()=>{
+  useEffect(() => {
+    const fetchStates = async () => {
       if (initialState?.country_of_residence === "169") {
         const { status, data } = await $Utils.getLocation({ countryCode: "169" });
 
@@ -320,10 +317,10 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
       } else {
         setFormData((prev) => ({ ...prev, cod_municipio: "" }));
       }
-  }
+    };
 
-  fetchStates()
-  },[initialState])
+    fetchStates();
+  }, [initialState]);
 
   useEffect(() => {
     (async () => {
@@ -399,31 +396,35 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
             />
           </Column>
           <Row>
-          <Column>
-            <Label error={errors.id_type} disabled={errors.id_type !== undefined}>
-              Tipo de Documento
-            </Label>
-            <FormControl variant="outlined" fullWidth>
-              <Select
-                name="id_type"
-                id="tipoDocumento"
-                value={formData.id_type}
-                 disabled={initialState?.id_type !== "-"}
-                onChange={handleInputChange}
-                error={errors.id_type}
-              >
-                <MenuItem value="-" selected disabled>
-                  Seleccione una opción
-                </MenuItem>
-                {Object.keys(DOCUMENT_TYPES).map((key) => (
-                  <MenuItem key={key} value={key}>
-                    {DOCUMENT_TYPES[key]}
+            <Column>
+              <Label error={errors.id_type} disabled={errors.id_type !== undefined}>
+                Tipo de Documento
+              </Label>
+              <FormControl variant="outlined" fullWidth>
+                <Select
+                  name="id_type"
+                  id="tipoDocumento"
+                  value={formData.id_type}
+                  disabled={initialState?.id_type !== "-"}
+                  onChange={handleInputChange}
+                  error={errors.id_type}
+                >
+                  <MenuItem value="-" selected disabled>
+                    Seleccione una opción
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Column>
-        </Row>
+                  {Object.keys(DOCUMENT_TYPES).map((key) => (
+                    <>
+                      {key !== "tarjetaIdentidad" && (
+                        <MenuItem key={key} value={key}>
+                          {DOCUMENT_TYPES[key]}
+                        </MenuItem>
+                      )}
+                    </>
+                  ))}
+                </Select>
+              </FormControl>
+            </Column>
+          </Row>
         </Row>
 
         <Row>
