@@ -4,6 +4,8 @@ import {
   Button,
   Checkbox,
   Container,
+  Dialog,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -21,6 +23,8 @@ import {
   Zoom,
   alpha,
 } from "@mui/material";
+import { DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { HighlightOff as ErrorIcon, CheckCircle as CheckIcon } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Clear as ClearIcon } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -31,6 +35,9 @@ import { CIVIL_STATUS, DOCUMENT_TYPES, EDUCATIONAL_LEVEL, HOW_DID_YOU_HEAR_ABOUT
 import { validateJSON } from "../../utilities";
 import dayjs from "dayjs";
 import { NumericFormat } from "react-number-format";
+import ContractService from "../../Services/contract.service";
+import useSession from "../../Hooks/useSession";
+import { useNavigate } from "react-router-dom";
 // import DialogKYC from "./Dialogs/KYC";
 
 const initialState = {
@@ -195,15 +202,18 @@ const Column = ({ children }) => (
 );
 
 function InvasiveForm() {
+  const [{ token }] = useSession();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(initialState);
+  const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+  const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
+  const navigate = useNavigate();
 
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
     const { name, checked, value } = event.target;
 
-    // Verifica si el campo que cambió pertenece a usStayDetails antes de actualizar el estado
     if (name in formData.usStayDetails) {
-      // Actualiza el estado con el nuevo valor del campo que cambió en usStayDetails
       setFormData({
         ...formData,
         usStayDetails: {
@@ -216,15 +226,15 @@ function InvasiveForm() {
       name === "InternationalOrgLegalRep" ||
       name === "AdministratorPEPStatus" ||
       name === "conductsForeignCurrencyTransactions" ||
-      name === "usesFinancialProductsAbroad"
+      name === "usesFinancialProductsAbroad" ||
+      name === "hasPermanentResidencyInAnotherCountry" ||
+      name === "hasTaxObligationsInAnotherCountry"
     ) {
-      // Actualiza el estado para los campos correspondientes
       setFormData({
         ...formData,
         [name]: checked,
       });
     } else if (name === "internationalOperationsType_transfers" || name === "internationalOperationsType_other") {
-      // Actualiza el estado para los campos de operaciones internacionales
       setFormData({
         ...formData,
         internationalOperationsType: {
@@ -233,13 +243,11 @@ function InvasiveForm() {
         },
       });
     } else if (name === "identificationTypeDeclarations") {
-      // Actualiza el estado para el campo identificationTypeDeclarations
       setFormData({
         ...formData,
         [name]: value,
       });
     } else if (name === "conductsForeignCurrencyTransactionsType_imports" || name === "conductsForeignCurrencyTransactionsType_exports") {
-      // Actualiza el estado para los campos de conductsForeignCurrencyTransactionsType
       setFormData({
         ...formData,
         conductsForeignCurrencyTransactionsType: {
@@ -248,17 +256,12 @@ function InvasiveForm() {
         },
       });
     } else {
-      // Actualiza el estado con el nuevo valor del campo que cambió si no pertenece a usStayDetails
       setFormData({
         ...formData,
         [name]: value,
       });
     }
   };
-
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
 
   const Label = ({ error = false, children }) => <Typography color={error ? "error" : "primary"}>{children}</Typography>;
 
@@ -317,6 +320,29 @@ function InvasiveForm() {
     setFormData(updatedFormData);
   };
 
+  const resetFeedback = () => {
+    setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
+  };
+  const handleSubmit = async () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
+      console.log(formData);
+    }, 1000);
+    // const { status } = await $Contract.sendInvasiveForm(formData);
+
+    // setLoading(false);
+
+    // if (status) {
+    //   setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
+    //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    // } else {
+    //   setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    // }
+  };
+
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
       <Stack>
@@ -352,12 +378,10 @@ function InvasiveForm() {
             <Column>
               <Label>Fecha de nacimiento</Label>
               <DatePicker
-                disableFuture
                 // slotProps={{ textField: { error: errors.birthdate } }}
-                value={dayjs(formData.birthdate)}
+                value={dayjs(formData.birthDate)}
                 format="DD MMMM YYYY"
-                onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
-                disabled={initialState?.birthdate !== undefined && location.pathname !== "/validation/confirmation"}
+                onChange={(value) => handleInputChange({ target: { name: "birthDate", value: value.toDate() } })}
               />
             </Column>
           </Row>
@@ -516,6 +540,44 @@ function InvasiveForm() {
             </Column>
           </Row>
 
+          <Row>
+            <Column>
+              <Label>Tiene Residencia Permanente en Otro País</Label>
+              <Switch
+                name="hasPermanentResidencyInAnotherCountry"
+                checked={Boolean(formData.hasPermanentResidencyInAnotherCountry)}
+                onChange={handleInputChange}
+              />
+            </Column>
+            <Column>
+              <Label>Texto de Residencia Permanente en Otro País</Label>
+              <TextField
+                fullWidth
+                name="hasPermanentResidencyInAnotherCountryTexto"
+                value={formData.hasPermanentResidencyInAnotherCountryTexto}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Tiene Obligaciones Fiscales en Otro País</Label>
+              <Switch
+                name="hasTaxObligationsInAnotherCountry"
+                checked={Boolean(formData.hasTaxObligationsInAnotherCountry)}
+                onChange={handleInputChange}
+              />
+            </Column>
+            <Column>
+              <Label>Texto de Obligaciones Fiscales en Otro País</Label>
+              <TextField
+                fullWidth
+                name="hasTaxObligationsInAnotherCountryTexto"
+                value={formData.hasTaxObligationsInAnotherCountryTexto}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
           {/* Actividad económica */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
             Actividad económica
@@ -1051,11 +1113,32 @@ function InvasiveForm() {
             </Column>
           </Row>
 
-          <LoadingButton fullWidth type="submit" size="large" variant="contained">
+          <LoadingButton fullWidth type="submit" size="large" variant="contained" onClick={handleSubmit} loading={loading}>
             Enviar
           </LoadingButton>
         </Grid>
       </Stack>
+      <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
+        <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
+          <CheckIcon fontSize="large" />
+          <Typography textAlign="center" fontSize={22} fontWeight={500}>
+            Formulario completado exitosamente.
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText fontSize={18} textAlign="center">
+            ¿Desea rellenarlo una vez más?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center" }}>
+          <Button onClick={() => navigate("/")} fullWidth>
+            No
+          </Button>
+          <Button variant="contained" onClick={resetFeedback} fullWidth>
+            Si
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

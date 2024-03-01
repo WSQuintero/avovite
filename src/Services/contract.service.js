@@ -105,4 +105,7 @@ export default class ContractService {
       async () => (await axios.put(`${this.API_URL}/contracts/change/bankinformation/${id}`, body, this.config)).data
     );
   }
+  async sendInvasiveForm({ body }) {
+    return await handleCall(async () => (await axios.post(`${this.API_URL}/customerlinking/`, body, this.config)).data);
+  }
 }
