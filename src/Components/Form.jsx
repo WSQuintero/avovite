@@ -241,22 +241,28 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
       setFormData((prev) => ({ ...prev, cod_municipio: "-" }));
       setCities([]);
 
-      const { status, data } = await $Utils.getLocation({ stateCode: value });
+      const fetchData = async () => {
+        const { status, data } = await $Utils.getLocation({ stateCode: value });
+        if (status) {
+          setCities(data.data);
+        }
+      };
 
-      if (status) {
-        setCities(data.data);
-      }
+      fetchData();
     }
 
     if (name === "state_beneficiary") {
       setFormData((prev) => ({ ...prev, cod_municipio_beneficiary: "-" }));
       setCitiesBeneficiary([]);
 
-      const { status, data } = await $Utils.getLocation({ stateCode: value });
+      const fetchData = async () => {
+        const { status, data } = await $Utils.getLocation({ stateCode: value });
+        if (status) {
+          setCitiesBeneficiary(data.data);
+        }
+      };
 
-      if (status) {
-        setCitiesBeneficiary(data.data);
-      }
+      fetchData();
     }
   };
 
@@ -306,6 +312,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
     return status;
   };
 
+  useEffect(() => {}, []);
   useEffect(() => {
     const fetchStates = async () => {
       if (initialState?.country_of_residence === "169") {
@@ -353,6 +360,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   useEffect(() => {
     if (user) {
       setModal((prev) => ({ ...prev, kyc: user.KYC === 0 }));
+      setFormData({ ...InitialState, cellphone: user?.cellphone, email: user.email, fullname: user.fullname });
     }
   }, [user]);
 
@@ -405,21 +413,17 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   name="id_type"
                   id="tipoDocumento"
                   value={formData.id_type}
-                  disabled={initialState?.id_type !== "-"}
-                  onChange={handleInputChange}
+                  disabled={initialState?.id_type !== undefined}
+                  onChange={(event) => handleInputChange(event)}
                   error={errors.id_type}
                 >
-                  <MenuItem value="-" selected disabled>
+                  <MenuItem value="-" disabled>
                     Seleccione una opción
                   </MenuItem>
                   {Object.keys(DOCUMENT_TYPES).map((key) => (
-                    <>
-                      {key !== "tarjetaIdentidad" && (
-                        <MenuItem key={key} value={key}>
-                          {DOCUMENT_TYPES[key]}
-                        </MenuItem>
-                      )}
-                    </>
+                    <MenuItem key={key} value={key}>
+                      {key !== "tarjetaIdentidad" && <>{DOCUMENT_TYPES[key]}</>}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -437,7 +441,9 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_number}
               onChange={handleInputChange}
               error={errors.id_number}
-              disabled={initialState?.id_number !== "" && location.pathname !== "/validation/confirmation"}
+              disabled={
+                initialState?.id_number !== "" && initialState?.id_number !== undefined && location.pathname !== "/validation/confirmation"
+              }
             />
           </Column>
           <Column>
@@ -449,7 +455,11 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               value={formData.id_location_expedition}
               error={errors.id_location_expedition}
               onChange={handleInputChange}
-              disabled={initialState?.id_location_expedition !== "" && location.pathname !== "/validation/confirmation"}
+              disabled={
+                initialState?.id_location_expedition !== "" &&
+                initialState?.id_location_expedition !== undefined &&
+                location.pathname !== "/validation/confirmation"
+              }
             />
           </Column>
         </Row>

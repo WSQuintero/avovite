@@ -97,7 +97,6 @@ function Shop() {
               ))}
         </Grid>
       </Container>
-      {/* <InvasiveForm /> */}
     </PageWrapper>
   );
 }

@@ -444,7 +444,7 @@ function InvasiveForm() {
                   </MenuItem>
                   {Object.keys(DOCUMENT_TYPES).map((key) => (
                     <MenuItem key={key} value={key}>
-                      {DOCUMENT_TYPES[key]}
+                      {key !== "tarjetaIdentidad" && <>{DOCUMENT_TYPES[key]}</>}
                     </MenuItem>
                   ))}
                 </Select>
@@ -769,7 +769,7 @@ function InvasiveForm() {
                       </MenuItem>
                       {Object.keys(DOCUMENT_TYPES).map((key) => (
                         <MenuItem key={key} value={key}>
-                          {DOCUMENT_TYPES[key]}
+                          {key !== "tarjetaIdentidad" && <>{DOCUMENT_TYPES[key]}</>}
                         </MenuItem>
                       ))}
                     </Select>
