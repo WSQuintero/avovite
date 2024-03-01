@@ -108,4 +108,14 @@ export default class ContractService {
   async sendInvasiveForm(body) {
     return await handleCall(async () => (await axios.post(`${this.API_URL}/customerlinking/`, body, this.config)).data);
   }
+
+  async exportDocumentContract({ id }) {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/files/${id}`, this.config)).data);
+  }
+  async exportPropietyCertificate({ id }) {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/certificado/depropiedad/${id}`, this.config)).data);
+  }
+  async exportPayRollSheet({ id }) {
+    return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/certificado/planillapagos/${id}`, this.config)).data);
+  }
 }

@@ -348,7 +348,6 @@ function InvasiveForm({ contractId }) {
         await fetchContracts();
       })();
     }
-    console.log(user);
   }, [token]);
 
   const fetchContracts = async () => {

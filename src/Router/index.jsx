@@ -63,7 +63,10 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       if (session.user.pending_to_pay_contracts) {
         return <Navigate to="/validation/payment" />;
       }
-      if (session.user.pending_payed_contracts || session?.user?.last_contract?.state_second_form === 0) {
+      if (
+        session.user.pending_payed_contracts
+        // || session?.user?.last_contract?.state_second_form === 0
+      ) {
         return <Navigate to="/validation/confirmation" />;
       }
     }
