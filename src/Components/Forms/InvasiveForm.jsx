@@ -38,6 +38,7 @@ import { NumericFormat } from "react-number-format";
 import ContractService from "../../Services/contract.service";
 import useSession from "../../Hooks/useSession";
 import { useNavigate } from "react-router-dom";
+import useLastContract from "../../Hooks/useLastContract";
 // import DialogKYC from "./Dialogs/KYC";
 
 const initialState = {
@@ -201,14 +202,15 @@ const Column = ({ children }) => (
   </Grid>
 );
 
-function InvasiveForm() {
-  const [{ token }] = useSession();
+function InvasiveForm({ contractId }) {
+  const [{ user }, { token }] = useSession();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
+  const [actualContract, setActualContract] = useState(null);
+  const lastContract = useLastContract();
   const navigate = useNavigate();
-
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
     const { name, checked, value } = event.target;
@@ -324,23 +326,41 @@ function InvasiveForm() {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
   const handleSubmit = async () => {
+    const { numberOfShareholders, numberOfInternationalOperations, ...formDataToSend } = formData;
+
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    const { status, data } = await $Contract.sendInvasiveForm(formDataToSend);
+
+    setLoading(false);
+
+    if (status) {
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
-      console.log(formData);
-    }, 1000);
-    // const { status } = await $Contract.sendInvasiveForm(formData);
+      // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      navigate("/");
+    } else {
+      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+    }
+  };
+  useEffect(() => {
+    if (token) {
+      (async () => {
+        await fetchContracts();
+      })();
+    }
+    console.log(user);
+  }, [token]);
 
-    // setLoading(false);
+  const fetchContracts = async () => {
+    setFormData({
+      ...formData,
+      idContract: contractId,
+    });
+    const { status, data } = await $Contract.get();
 
-    // if (status) {
-    //   setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
-    //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    // } else {
-    //   setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-    // }
+    if (status) {
+      setActualContract(data.data[data.data.length - 1]);
+    }
   };
 
   return (
@@ -549,15 +569,17 @@ function InvasiveForm() {
                 onChange={handleInputChange}
               />
             </Column>
-            <Column>
-              <Label>Texto de Residencia Permanente en Otro País</Label>
-              <TextField
-                fullWidth
-                name="hasPermanentResidencyInAnotherCountryTexto"
-                value={formData.hasPermanentResidencyInAnotherCountryTexto}
-                onChange={handleInputChange}
-              />
-            </Column>
+            {Boolean(formData.hasPermanentResidencyInAnotherCountry) && (
+              <Column>
+                <Label>País de Residencia Permanente</Label>
+                <TextField
+                  fullWidth
+                  name="hasPermanentResidencyInAnotherCountryTexto"
+                  value={formData.hasPermanentResidencyInAnotherCountryTexto}
+                  onChange={handleInputChange}
+                />
+              </Column>
+            )}
           </Row>
           <Row>
             <Column>
@@ -568,15 +590,17 @@ function InvasiveForm() {
                 onChange={handleInputChange}
               />
             </Column>
-            <Column>
-              <Label>Texto de Obligaciones Fiscales en Otro País</Label>
-              <TextField
-                fullWidth
-                name="hasTaxObligationsInAnotherCountryTexto"
-                value={formData.hasTaxObligationsInAnotherCountryTexto}
-                onChange={handleInputChange}
-              />
-            </Column>
+            {Boolean(formData.hasTaxObligationsInAnotherCountry) && (
+              <Column>
+                <Label>Obligaciones Fiscales en Otro País</Label>
+                <TextField
+                  fullWidth
+                  name="hasTaxObligationsInAnotherCountryTexto"
+                  value={formData.hasTaxObligationsInAnotherCountryTexto}
+                  onChange={handleInputChange}
+                />
+              </Column>
+            )}
           </Row>
           {/* Actividad económica */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
@@ -693,25 +717,43 @@ function InvasiveForm() {
           <Row>
             <Column>
               <Label>Activos</Label>
-              <TextField fullWidth name="assets" value={formData.assets} onChange={handleInputChange} />
+              <TextField fullWidth name="assets" value={formData.assets} onChange={handleInputChange} inputProps={{ pattern: "[0-9]*" }} />
             </Column>
           </Row>
           <Row>
             <Column>
               <Label>Deudas</Label>
-              <TextField fullWidth name="liabilities" value={formData.liabilities} onChange={handleInputChange} />
+              <TextField
+                fullWidth
+                name="liabilities"
+                value={formData.liabilities}
+                onChange={handleInputChange}
+                inputProps={{ pattern: "[0-9]*" }}
+              />
             </Column>
           </Row>
           <Row>
             <Column>
               <Label>Ingreso Mensual</Label>
-              <TextField fullWidth name="monthlyIncome" value={formData.monthlyIncome} onChange={handleInputChange} />
+              <TextField
+                fullWidth
+                name="monthlyIncome"
+                value={formData.monthlyIncome}
+                onChange={handleInputChange}
+                inputProps={{ pattern: "[0-9]*" }}
+              />
             </Column>
           </Row>
           <Row>
             <Column>
               <Label>Gastos Mensuales</Label>
-              <TextField fullWidth name="monthlyExpenses" value={formData.monthlyExpenses} onChange={handleInputChange} />
+              <TextField
+                fullWidth
+                name="monthlyExpenses"
+                value={formData.monthlyExpenses}
+                onChange={handleInputChange}
+                inputProps={{ pattern: "[0-9]*" }}
+              />
             </Column>
           </Row>
           <Row>

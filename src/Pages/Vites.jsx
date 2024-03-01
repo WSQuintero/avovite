@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 import { AvoviteWhiteIcon } from "../Components/Icons";
 import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import AuthService from "../Services/user.service";
 import BackButton from "../Components/BackButton";
@@ -40,12 +40,12 @@ function Vites() {
       {
         accessorKey: "contract_label",
         header: "Número de contrato",
-        size: 210
+        size: 210,
       },
       {
         accessorKey: "paidVite",
         header: "vites pagos",
-        size: 210
+        size: 210,
       },
       {
         accessorKey: "debt",
@@ -70,7 +70,7 @@ function Vites() {
       {
         accessorKey: "contract_vites",
         header: "Vites contratados",
-        size: 210
+        size: 210,
       },
       {
         accessorKey: "first_payment_date",
@@ -129,21 +129,20 @@ function Vites() {
         setRows(data.data);
       }
     })();
-  }, [$Contract,user]);
-
-
+  }, [$Contract, user]);
 
   useEffect(() => {
-    if(user){
-      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
-        navigate('/dashboard');
+    if (user) {
+      if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
       }
+      console.log(user);
     }
   }, [user]);
 
   return (
     <PageWrapper>
-      <BackButton/>
+      <BackButton />
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>

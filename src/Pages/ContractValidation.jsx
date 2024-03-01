@@ -24,6 +24,7 @@ import { formatDate } from "../utilities";
 import Form from "../Components/Form";
 import useLastContract from "../Hooks/useLastContract";
 import BackButton from "../Components/BackButton";
+import InvasiveForm from "../Components/Forms/invasiveForm";
 
 function ContractValidation() {
   const navigate = useNavigate();
@@ -35,22 +36,33 @@ function ContractValidation() {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [resetForm, setResetForm] = useState(() => () => {});
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
-
+  const [openInvasiveForm, setOpenInvasiveForm] = useState(false);
+  const [contractsPendingSecondForm, setContractsPendingSecondForm] = useState([]);
   const fetchContracts = async () => {
-    const { status, data } = await $Contract.get({ pending: true });
+    setOpenInvasiveForm(false);
+    const statusSecondContract = await $Contract.get();
 
-    if (status) {
-      if (!data.data?.pendings?.length) {
-        navigate("/");
+    if (statusSecondContract.status) {
+      const { status, data } = await $Contract.get({ pending: true });
+
+      if (status) {
+        if (!data.data?.pendings?.length) {
+          if (!statusSecondContract.data.data[statusSecondContract.data.data.length - 1].state_second_form === 0) {
+            navigate("/");
+          } else {
+            setModal("warning");
+
+            setContractsPendingSecondForm(statusSecondContract.data.data.filter((a) => a.state_second_form === 0));
+          }
+        }
       }
-
-      setContracts(data.data);
     }
   };
 
   const handleSelectContract = ({ id }) => {
     setModal("contract-complete");
     setContract({ id });
+    setOpenInvasiveForm(true);
 
     /* const newContract = {};
 
@@ -89,88 +101,94 @@ function ContractValidation() {
   }, [token]);
 
   return (
-    <PageWrapper isInvalidSession>
-    <BackButton/>
+    <>
+      {!openInvasiveForm ? (
+        <PageWrapper isInvalidSession>
+          <BackButton />
 
-      <Container maxWidth="xxl" disableGutters>
-        <Grid display="flex" flexDirection="column" gap={2}>
-          <Typography variant="h2">Contratos pendientes:</Typography>
-          <List>
-            {(contracts.pendings || []).map((contract) => (
-              <ListItem
-                key={contract.id}
-                onClick={() => handleSelectContract(contract)}
-                secondaryAction={
-                  <Button variant="contained" edge="end">
-                    Completar
-                  </Button>
-                }
-                disablePadding
-              >
-                <ListItemButton role={undefined} onClick={() => {}}>
-                  <ListItemIcon>
-                    <ContractIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Contrato AV-${contract.id}`}
-                    secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
-                    primaryTypographyProps={{ fontSize: 20, color: "primary" }}
-                    secondaryTypographyProps={{ color: "text.main" }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Grid>
-      </Container>
-
-      <Dialog open={modal === "warning"} onClose={() => setModal(null)}>
-        <DialogTitle color="error" display="flex" alignItems="center" gap={1}>
-          <WarningIcon /> Tienes contratos pendientes
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>Para poder continuar debes diligenciar los datos de tu contrato.</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={() => setModal(null)}>
-            Continuar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        fullScreen
-        fullWidth
-        PaperProps={{ sx: { backgroundColor: "white" } }}
-        open={modal === "contract-complete"}
-        onClose={() => setModal(null)}
-      >
-        <DialogContent>
-          <Container maxWidth="xxl" sx={{ padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
-            <Form
-              loading={loadingSubmit}
-              initialState={initialFormData}
-              onSubmit={handleFormSubmit}
-              onLoad={({ reset }) => setResetForm(reset)}
-            />
+          <Container maxWidth="xxl" disableGutters>
+            <Grid display="flex" flexDirection="column" gap={2}>
+              <Typography variant="h2">Contratos pendientes:</Typography>
+              <List>
+                {(contracts.pendings || contractsPendingSecondForm || []).map((contract) => (
+                  <ListItem
+                    key={contract.id}
+                    onClick={() => handleSelectContract(contract)}
+                    secondaryAction={
+                      <Button variant="contained" edge="end">
+                        Completar
+                      </Button>
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton role={undefined} onClick={() => {}}>
+                      <ListItemIcon>
+                        <ContractIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`Contrato AV-${contract.id}`}
+                        secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
+                        primaryTypographyProps={{ fontSize: 20, color: "primary" }}
+                        secondaryTypographyProps={{ color: "text.main" }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
           </Container>
-        </DialogContent>
-      </Dialog>
 
-      <Dialog open={modal === "contract-success"} onClose={() => setModal(null)}>
-        <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
-          <CheckIcon fontSize="large" />
-          <Typography textAlign="center" fontSize={22} fontWeight={500}>
-            Formulario completado exitosamente.
-          </Typography>
-        </DialogTitle>
-        <DialogActions>
-          <Button variant="contained" onClick={() => setModal(null)}>
-            Continuar
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </PageWrapper>
+          <Dialog open={modal === "warning"} onClose={() => setModal(null)}>
+            <DialogTitle color="error" display="flex" alignItems="center" gap={1}>
+              <WarningIcon /> Tienes contratos pendientes
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>Para poder continuar debes diligenciar los datos de tu contrato.</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="contained" onClick={() => setModal(null)}>
+                Continuar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            fullScreen
+            fullWidth
+            PaperProps={{ sx: { backgroundColor: "white" } }}
+            open={modal === "contract-complete"}
+            onClose={() => setModal(null)}
+          >
+            <DialogContent>
+              <Container maxWidth="xxl" sx={{ padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
+                <Form
+                  loading={loadingSubmit}
+                  initialState={initialFormData}
+                  onSubmit={handleFormSubmit}
+                  onLoad={({ reset }) => setResetForm(reset)}
+                />
+              </Container>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={modal === "contract-success"} onClose={() => setModal(null)}>
+            <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
+              <CheckIcon fontSize="large" />
+              <Typography textAlign="center" fontSize={22} fontWeight={500}>
+                Formulario completado exitosamente.
+              </Typography>
+            </DialogTitle>
+            <DialogActions>
+              <Button variant="contained" onClick={() => setModal(null)}>
+                Continuar
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </PageWrapper>
+      ) : (
+        <InvasiveForm contractId={contract.id} />
+      )}
+    </>
   );
 }
 

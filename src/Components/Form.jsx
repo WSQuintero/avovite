@@ -413,7 +413,11 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   name="id_type"
                   id="tipoDocumento"
                   value={formData.id_type}
-                  disabled={initialState?.id_type !== undefined}
+                  disabled={
+                    initialState?.id_type !== undefined &&
+                    initialState?.id_type !== null &&
+                    location.pathname !== "/validation/confirmation"
+                  }
                   onChange={(event) => handleInputChange(event)}
                   error={errors.id_type}
                 >

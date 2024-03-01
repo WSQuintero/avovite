@@ -63,11 +63,12 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       if (session.user.pending_to_pay_contracts) {
         return <Navigate to="/validation/payment" />;
       }
-      if (session.user.pending_payed_contracts) {
+      if (session.user.pending_payed_contracts || session?.user?.last_contract?.state_second_form === 0) {
         return <Navigate to="/validation/confirmation" />;
       }
     }
-  }
+    console.log(session?.user?.last_contract?.state_second_form);
+  } //aquí está
 
   if (meta.includes(HIDE_FOR_AUTH)) {
     if (isAuthenticated) {
@@ -132,7 +133,7 @@ function Router() {
     },
     {
       path: "/dashboard",
-      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,  REQUIRES_CONTRACTS]} />,
+      element: <PrivateRoute component={Dashboard} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, REQUIRES_CONTRACTS]} />,
     },
     {
       path: "/vites",
@@ -210,15 +211,15 @@ function Router() {
     },
     {
       path: "/form-tickets",
-      element: <PrivateRoute component={TicketForm} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,HIDE_FOR_ADMIN]} />,
+      element: <PrivateRoute component={TicketForm} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION, HIDE_FOR_ADMIN]} />,
     },
     {
       path: "/admin/ticket-list",
-      element: <PrivateRoute component={TicketList} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,]} />,
+      element: <PrivateRoute component={TicketList} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/admin/movements",
-      element: <PrivateRoute component={Movements} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION,]} />,
+      element: <PrivateRoute component={Movements} meta={[REQUIRES_AUTH, REQUIRES_VALIDATION]} />,
     },
     {
       path: "/posts/:id",
