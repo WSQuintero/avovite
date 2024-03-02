@@ -16,12 +16,22 @@ import {
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableRow from "./EnhancedTableRow";
 
-function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy = "", footer = <></>, collapse = null, loading = false,detailsProduction }) {
+function EnhancedTable({
+  headCells,
+  rows,
+  initialOrder = "asc",
+  initialOrderBy = "",
+  footer = <></>,
+  collapse = null,
+  loading = false,
+  detailsProduction,
+  initialCount,
+}) {
   const [order, setOrder] = useState(initialOrder);
   const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(initialCount ? initialCount : 10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -48,7 +58,6 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
     }
   }, [detailsProduction, order, orderBy, page, rows, rowsPerPage]);
 
-
   return (
     <>
       <TableContainer component={Paper}>
@@ -57,7 +66,7 @@ function EnhancedTable({ headCells, rows, initialOrder = "asc", initialOrderBy =
             headCells={headCells}
             order={order}
             orderBy={orderBy}
-            onRequestSort={!detailsProduction&&handleRequestSort}
+            onRequestSort={!detailsProduction && handleRequestSort}
             rowCount={rows.length}
           />
           {loading ? (

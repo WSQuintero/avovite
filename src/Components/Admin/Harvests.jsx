@@ -518,7 +518,7 @@ function Harvests() {
             Crear
           </Button>
         </Grid>
-        <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} collapse={tableCollapse} />
+        <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} collapse={tableCollapse} initialCount={25} />
       </Grid>
 
       <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
