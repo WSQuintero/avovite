@@ -45,6 +45,7 @@ import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import DateRangeModal from "./DateRangeModal";
 import BackButton from "../BackButton";
+import CustomContractRangeFilter from "./CustomContractRangeFilter";
 
 const columns = [
   {
@@ -436,9 +437,16 @@ const Contracts = () => {
     setModalOpen(false);
   };
 
+  const [contractRangeFilter, setContractRangeFilter] = useState(null);
+
+  const handleApplyContractRangeFilter = (startIndex, endIndex) => {
+    setContractRangeFilter({ startIndex, endIndex });
+  };
   return (
     <>
       <BackButton />
+      <CustomContractRangeFilter onApplyFilter={handleApplyContractRangeFilter} contracts={contracts} setContracts={setContracts} />
+
       <MaterialReactTable
         columns={columns}
         data={contracts}
