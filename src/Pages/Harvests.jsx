@@ -10,7 +10,7 @@ import ContractService from "../Services/contract.service";
 import useSession from "../Hooks/useSession";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import EnhancedTable from "../Components/EnhancedTable";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import BackButton from "../Components/BackButton";
 
 function Harvests() {
@@ -34,7 +34,18 @@ function Harvests() {
       {
         id: "dateCreate",
         label: "Fecha de Cosecha",
+        width: 250,
         format: (value) => dayjs(new Date(new Date())).format("DD MMMM YYYY"),
+      },
+      {
+        id: "total_vite",
+        label: "Vites",
+        format: (value) => value,
+      },
+      {
+        id: "paid",
+        label: "Vites pagos",
+        format: (value) => value,
       },
       {
         id: "kg_correspondence",
@@ -76,6 +87,7 @@ function Harvests() {
 
     if (status) {
       setContracts(data.data);
+      console.log(data.data);
     }
   };
 
@@ -86,16 +98,16 @@ function Harvests() {
   }, []);
 
   useEffect(() => {
-    if(user){
-      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
-        navigate('/dashboard');
+    if (user) {
+      if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
       }
     }
   }, [user]);
 
   return (
     <PageWrapper>
-    <BackButton/>
+      <BackButton />
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
