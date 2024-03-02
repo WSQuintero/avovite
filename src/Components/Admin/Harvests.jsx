@@ -491,7 +491,7 @@ function Harvests() {
 
   return (
     <>
-    <BackButton/>
+      <BackButton />
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" gap={1} justifyContent="flex-end">
           <Box position="relative">
@@ -545,7 +545,7 @@ function Harvests() {
                 <TextField label="Estado" name="harvest_state" value={newRow.harvest_state} onChange={onChangeFields} fullWidth />
               </Stack>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <DatePicker
+                {/* <DatePicker
                   label="Fecha de siembra"
                   value={dayjs(newRow.sowing_date)}
                   format="DD/MM/YYYY"
@@ -559,7 +559,7 @@ function Harvests() {
                     })
                   }
                   sx={{ width: "100%" }}
-                />
+                /> */}
                 <DatePicker
                   label="Fecha de cosecha"
                   value={dayjs(newRow.harvest_date)}
