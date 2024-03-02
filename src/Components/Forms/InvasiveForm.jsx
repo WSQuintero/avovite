@@ -203,7 +203,7 @@ const Column = ({ children }) => (
 );
 
 function InvasiveForm({ contractId }) {
-  const [{ user }, { token }] = useSession();
+  const [{ token }] = useSession();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
@@ -330,38 +330,36 @@ function InvasiveForm({ contractId }) {
 
     setLoading(true);
 
-    const { status, data } = await $Contract.sendInvasiveForm(formDataToSend);
-
-    setLoading(false);
+    const { status } = await $Contract.sendInvasiveForm(formDataToSend);
 
     if (status) {
+      setLoading(false);
       setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
       // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-      navigate("/");
     } else {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
+
   useEffect(() => {
     if (token) {
       (async () => {
         await fetchContracts();
       })();
     }
-  }, [token]);
-
-  const fetchContracts = async () => {
     setFormData({
       ...formData,
       idContract: contractId,
     });
+  }, [token]);
+
+  const fetchContracts = async () => {
     const { status, data } = await $Contract.get();
 
     if (status) {
       setActualContract(data.data[data.data.length - 1]);
     }
   };
-
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
       <Stack>

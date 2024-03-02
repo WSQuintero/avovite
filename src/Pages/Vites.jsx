@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Typography, Container, Box, Stack, Button } from "@mui/material";
+import { Typography, Container, Box, Stack, Button, Select, MenuItem } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import dayjs from "dayjs";
@@ -12,6 +12,7 @@ import { NumericFormat } from "react-number-format";
 import AuthService from "../Services/user.service";
 import BackButton from "../Components/BackButton";
 import DownloadSharpIcon from "@mui/icons-material/DownloadSharp";
+import SelectorCell from "../Components/SelectorCell";
 
 function Vites() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function Vites() {
   const [{ user, token }] = useSession();
   const [rows, setRows] = useState([]);
   const $Contract = useMemo(() => new ContractService(token), [token]);
+
   const columns = useMemo(
     () => [
       {
@@ -118,115 +120,64 @@ function Vites() {
             )
           ),
       },
-      {
-        accessorKey: "download_contract",
-        header: "Contrato",
-        size: 100,
-        Cell: ({ row }) => (
-          <Button
-            onClick={() => handleDownloadContract(row.original.id)}
-            size="small"
-            variant="contained"
-            color="primary"
-            sx={{ fontSize: 1, minWidth: 5 }}
-          >
-            <DownloadSharpIcon />
-          </Button>
-        ),
-      },
-      {
-        accessorKey: "download_property_certificate",
-        header: "Certificado Propiedad",
-        size: 100,
-        Cell: ({ row }) => (
-          <Button
-            onClick={() => handleDownloadPropertyCertificate(row.original.id)}
-            size="small"
-            variant="contained"
-            color="primary"
-            sx={{ fontSize: 1, minWidth: 5 }}
-          >
-            <DownloadSharpIcon />
-          </Button>
-        ),
-      },
-      {
-        accessorKey: "download_bonding_form",
-        header: "Formulario Vinculación",
-        size: 100,
-        Cell: ({ row }) => (
-          <Button
-            onClick={() => handleDownloadbondingForm(row.original.id)}
-            size="small"
-            variant="contained"
-            color="primary"
-            sx={{ fontSize: 1, minWidth: 5 }}
-          >
-            <DownloadSharpIcon />
-          </Button>
-        ),
-      },
-      {
-        accessorKey: "download_payroll",
-        header: "Planilla Pago",
-        size: 100,
 
-        Cell: ({ row }) => (
-          <Button
-            onClick={() => handleDownloadPayroll(row.original.id)}
-            size="small"
-            variant="contained"
-            color="primary"
-            sx={{ fontSize: 1, minWidth: 5 }}
-          >
-            <DownloadSharpIcon />
-          </Button>
-        ),
+      // {
+      //   accessorKey: "download_contract",
+      //   header: "Contrato",
+      //   size: 100,
+      //   Cell: ({ row }) => (
+      //     <Button
+      //       onClick={() => handleDownloadContract(row.original.id)}
+      //       size="small"
+      //       variant="contained"
+      //       color="primary"
+      //       sx={{ fontSize: 1, minWidth: 5 }}
+      //     >
+      //       <DownloadSharpIcon />
+      //     </Button>
+      //   ),
+      // },
+      // {
+      //   accessorKey: "download_property_certificate",
+      //   header: "Certificado Propiedad",
+      //   size: 100,
+      //   Cell: ({ row }) => (
+      //     <Button
+      //       onClick={() => handleDownloadPropertyCertificate(row.original.id)}
+      //       size="small"
+      //       variant="contained"
+      //       color="primary"
+      //       sx={{ fontSize: 1, minWidth: 5 }}
+      //     >
+      //       <DownloadSharpIcon />
+      //     </Button>
+      //   ),
+      // },
+      // {
+      //   accessorKey: "download_bonding_form",
+      //   header: "Formulario Vinculación",
+      //   size: 100,
+      //   Cell: ({ row }) => (
+      //     <Button
+      //       onClick={() => handleDownloadbondingForm(row.original.id)}
+      //       size="small"
+      //       variant="contained"
+      //       color="primary"
+      //       sx={{ fontSize: 1, minWidth: 5 }}
+      //     >
+      //       <DownloadSharpIcon />
+      //     </Button>
+      //   ),
+      // },
+      {
+        accessorKey: "selector",
+        header: "Descargar",
+        size: 100,
+        Cell: SelectorCell,
       },
     ],
     []
   );
-
-  const handleDownloadbondingForm = (id) => {
-    console.log(id);
-  };
-  const handleDownloadPayroll = async (id) => {
-    const { status, data } = await $Contract.exportPayRollSheet({ id: id });
-    if (status) {
-      console.log(data);
-    }
-  };
-  const handleDownloadPropertyCertificate = async (id) => {
-    try {
-      const { status, data } = await $Contract.exportPropietyCertificate({ id: id });
-      if (status) {
-        const pdfUrl = data.data.datapdf;
-        window.open(pdfUrl, "_blank");
-      } else {
-        console.error("Error al exportar el contrato");
-      }
-    } catch (error) {
-      console.error("Error en la solicitud de descarga del contrato:", error);
-    }
-  };
-  const handleDownloadContract = async (id) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/contracts/files/${id}`);
-      const blob = await response.blob();
-      const pdfUrl = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = pdfUrl;
-      link.download = "contrato.pdf";
-      document.body.appendChild(link);
-
-      link.click();
-
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error en la solicitud de descarga del contrato:", error);
-    }
-  };
 
   useEffect(() => {
     (async () => {

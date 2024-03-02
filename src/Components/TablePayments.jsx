@@ -1,36 +1,25 @@
-import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Grid } from '@mui/material';
+import React from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Grid } from "@mui/material";
 
 const TablePayments = ({ data, status, handlePlayment, p }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
-        <TableHead>
-          <TableRow>
-            {Object.keys(data).map((key) => (
-              <TableCell key={key}>{key}</TableCell>
-            ))}
-            <TableCell>Estado de Pago</TableCell>
-          </TableRow>
-        </TableHead>
         <TableBody>
           <TableRow>
             {Object.values(data).map((value, index) => (
-              <TableCell key={index}>{value}</TableCell>
+              <TableCell key={index} sx={{ width: "21%", border: "1px solid rgba(128, 128, 128, 0.5)" }}>
+                {value}
+              </TableCell>
             ))}
-            <TableCell>
+            <TableCell sx={{ width: "21%", border: "1px solid rgba(128, 128, 128, 0.5)" }}>
+              {" "}
+              {/* Aquí establecemos el ancho de la última columna */}
               <Grid container justifyContent="center">
                 <Grid item>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    disabled={status === 1}
-                    onClick={() => handlePlayment(p)}
-                  >
+                  <Button variant="outlined" color="warning" disabled={status === 1} onClick={() => handlePlayment(p)}>
                     {status === 0 ? "Pagar" : "Pagado"}
-                    {status === 0 && (
-                      <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
-                    )}
+                    {status === 0 && <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />}
                   </Button>
                 </Grid>
               </Grid>

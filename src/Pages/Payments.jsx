@@ -13,6 +13,9 @@ import {
   alpha,
   ListItemIcon,
   ListItemSecondaryAction,
+  TableHead,
+  TableRow,
+  TableCell,
 } from "@mui/material";
 import { KeyboardArrowDown as CollapseIcon, Style } from "@mui/icons-material";
 import PageWrapper from "../Components/PageWrapper";
@@ -27,7 +30,7 @@ import DueService from "../Services/due.service";
 import { NumericFormat } from "react-number-format";
 import $Epayco from "../Services/epayco.service";
 import { v4 as uuid } from "uuid";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import BackButton from "../Components/BackButton";
 import TablePayments from "../Components/TablePayments";
 
@@ -127,34 +130,41 @@ function Payments() {
   const tableCollapse = useCallback(
     (row) => (
       <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
+        <TableHead>
+          <TableHead>
+            <TableRow>
+              {Object.keys({
+                Cuota: null,
+                Monto: null,
+                "Referencia Epayco": null,
+                Fecha: null,
+                "Estado de pago": null,
+              }).map((key, index) => (
+                <TableCell key={index} sx={{ width: "21%", border: "1px solid rgba(128, 128, 128, 0.5)" }}>
+                  {key}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+        </TableHead>
+
         {loading.collapse === row.id ? (
           <LinearProgress />
         ) : (
           <List sx={{ mb: 2 }}>
-            {(history[row.id] || []).map((p) => (
-              <ListItem
-                key={p.id}
-                alignItems="flex-start"
-                sx={{
-                  borderRadius: 1,
-                  "&:hover": {
-                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                  },
+            {(history[row.id] || []).map((payment) => (
+              <TablePayments
+                key={row.id}
+                data={{
+                  Cuota: payment.quota_number === 0 ? "Cuota inicial" : `#${payment.quota_number}`,
+                  Monto: formatCurrency(payment.payment_amount, "$"),
+                  "Referencia Epayco": payment.idtransacional[0]?.x_ref_payco || "N/A",
+                  Fecha: payment.idtransacional[0]?.x_transaction_date || "N/A",
                 }}
-              >
-                <TablePayments
-                  data={{
-                    'Cuota': p.quota_number === 0 ? "Cuota inicial" : `#${p.quota_number}`,
-                    'Monto': formatCurrency(p.payment_amount, "$"),
-                    'Referencia Epayco': p.idtransacional[0]?.x_ref_payco || "N/A",
-                    'Fecha': p.idtransacional[0]?.x_transaction_date || "N/A"
-                  }}
-                  status={p.status}
-                  handlePlayment={handlePlayment}
-                  p={p}
-                />
-
-              </ListItem>
+                status={payment.status}
+                handlePlayment={handlePlayment}
+                p={payment}
+              />
             ))}
           </List>
         )}
@@ -162,8 +172,6 @@ function Payments() {
     ),
     [history, loading.collapse]
   );
-
-
 
   const handlePlayment = async (due) => {
     await $Epayco.pay({
@@ -188,18 +196,12 @@ function Payments() {
 
     if (status) {
       setHistory((prev) => ({ ...prev, [contractId]: data.data }));
+      console.log(data);
     }
 
     setLoading((prev) => ({ ...prev, collapse: null }));
   };
 
-
-useEffect(()=>{
-  if(history){
-
-    console.log(history)
-  }
-},[history])
   useEffect(() => {
     (async () => {
       const { status, data } = await $Contract.get(user?.id);
@@ -210,19 +212,19 @@ useEffect(()=>{
 
       setLoading((prev) => ({ ...prev, fetching: false }));
     })();
-  }, [$Contract,user]);
+  }, [$Contract, user]);
 
   useEffect(() => {
-    if(user){
-      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
-        navigate('/dashboard');
+    if (user) {
+      if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
       }
     }
   }, [user]);
 
   return (
     <PageWrapper>
-    <BackButton/>
+      <BackButton />
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>

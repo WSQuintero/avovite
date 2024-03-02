@@ -40,21 +40,22 @@ function ContractValidation() {
   const [contractsPendingSecondForm, setContractsPendingSecondForm] = useState([]);
   const fetchContracts = async () => {
     setOpenInvasiveForm(false);
-    const statusSecondContract = await $Contract.get();
 
-    if (statusSecondContract.status) {
-      const { status, data } = await $Contract.get({ pending: true });
+    const { status, data } = await $Contract.get({ pending: true });
 
-      if (status) {
-        if (!data.data?.pendings?.length) {
-          if (!statusSecondContract.data.data[statusSecondContract.data.data.length - 1].state_second_form === 0) {
-            navigate("/");
-          } else {
-            setModal("warning");
-
-            setContractsPendingSecondForm(statusSecondContract.data.data.filter((a) => a.state_second_form === 0));
-          }
-        }
+    if (status) {
+      if (!data.data?.pendings?.length) {
+        console.log(data);
+        //   if (!statusSecondContract.data.data[statusSecondContract.data.data.length - 1].state_second_form === 0) {
+        //     navigate("/");
+        //     console.log(data);
+        //   } else {
+        //     setModal("warning");
+        //     setContractsPendingSecondForm(statusSecondContract.data.data.filter((a) => a.state_second_form === 0));
+        //   }
+      } else {
+        console.log(data);
+        setContracts(data.data);
       }
     }
   };
