@@ -110,7 +110,7 @@ const columns = [
   {
     accessorKey: "paidVite",
     header: "vites pagos",
-    size: 210
+    size: 210,
   },
   {
     accessorKey: "debt",
@@ -262,6 +262,9 @@ const Contracts = () => {
     setDues([]);
   };
   const onCreateContract = async () => {
+    const formatDateToISO8601 = (date) => {
+      return date.toISOString();
+    };
     const body = {
       mortgage_contract: contract.mortgage_contract,
       ...(totalFinancingValue !== 0
@@ -276,18 +279,18 @@ const Contracts = () => {
             contract_discount: parseFloat(discountValue),
             total_contract_with_discount: parseFloat(totalValue),
             first_payment: parseFloat(contract.firstPaymentValue),
-            first_payment_date: formatDate(contract.firstPaymentDate),
+            first_payment_date: formatDateToISO8601(contract.firstPaymentDate), // Modified to use ISO8601 format
             total_financed: parseFloat(totalDuesValue),
             payment_numbers: dues.length,
             financed_contracts: dues.map((d, index) => ({
               quota_number: index + 1,
               payment_amount: d.value,
-              date_payment: formatDate(d.date),
+              date_payment: formatDateToISO8601(d.date), // Modified to use ISO8601 format
             })),
             enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
           }
         : {
-            //  Financingn't
+            // Financingn't
             financed: 0,
             with_guarantee: 0,
             contract_vites: parseFloat(contract.vites),
@@ -297,7 +300,7 @@ const Contracts = () => {
             contract_discount: parseFloat(discountValue),
             total_contract_with_discount: parseFloat(totalValue),
             first_payment: parseFloat(contract.firstPaymentValue),
-            first_payment_date: formatDate(contract.firstPaymentDate),
+            first_payment_date: formatDateToISO8601(contract.firstPaymentDate), // Modified to use ISO8601 format
             enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
           }),
       ...(contract.mortgage_contract === 1
@@ -433,10 +436,9 @@ const Contracts = () => {
     setModalOpen(false);
   };
 
-
   return (
     <>
-    <BackButton/>
+      <BackButton />
       <MaterialReactTable
         columns={columns}
         data={contracts}
@@ -696,11 +698,12 @@ const Contracts = () => {
               Exportar a Excel
             </Button>
             <>
-      <Button variant="text" color="primary" onClick={handleExportDataByDate} startIcon={<DownloadIcon />} >
-        Exportar a Excel por fecha
-      </Button>
-      <DateRangeModal open={modalOpen} onClose={handleCloseModal} contract={$Contract} /> {/* Pasar propiedades de estado y función de cierre al modal */}
-    </>
+              <Button variant="text" color="primary" onClick={handleExportDataByDate} startIcon={<DownloadIcon />}>
+                Exportar a Excel por fecha
+              </Button>
+              <DateRangeModal open={modalOpen} onClose={handleCloseModal} contract={$Contract} />{" "}
+              {/* Pasar propiedades de estado y función de cierre al modal */}
+            </>
             <LoadingButton
               loading={loadingRefreshing}
               variant={loadingRefreshing ? "contained" : "text"}
@@ -1050,47 +1053,49 @@ const Contracts = () => {
                 <ListItemText primary="Cuota" primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
               </Grid>
             </ListItem>
-            {contractDues.dues.filter((fd)=>fd.id).map((due) => (
-              <ListItem
-                key={due.id}
-                secondaryAction={
-                  <Stack direction="row" alignItems="center" gap={1}>
-                    {due.url_image && <Image src={due.url_image} alt="Due image" height={32} width={32} borderRadius={0.5} />}
-                    <Box position="relative">
-                      <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
-                      <input
-                        type="file"
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          zIndex: 1,
-                          display: due.status ? "none" : "block",
-                          width: "100%",
-                          height: "100%",
-                          cursor: "pointer",
-                          aspectRatio: 1,
-                          opacity: 0,
-                        }}
-                        onChange={({ target }) =>
-                          onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })
-                        }
-                      />
-                    </Box>
-                  </Stack>
-                }
-              >
-                <Grid display="flex" gap={4} alignItems="center">
-                  <ListItemText primary={due.quota_number} primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
-                  <ListItemText
-                    primary={formatCurrency(due.payment_amount, "$")}
-                    secondary={formatLongDate(due.date_payment)}
-                    primaryTypographyProps={{ fontSize: 20, color: "black" }}
-                    secondaryTypographyProps={{ color: "text.main" }}
-                  />
-                </Grid>
-              </ListItem>
-            ))}
+            {contractDues.dues
+              .filter((fd) => fd.id)
+              .map((due) => (
+                <ListItem
+                  key={due.id}
+                  secondaryAction={
+                    <Stack direction="row" alignItems="center" gap={1}>
+                      {due.url_image && <Image src={due.url_image} alt="Due image" height={32} width={32} borderRadius={0.5} />}
+                      <Box position="relative">
+                        <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
+                        <input
+                          type="file"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            zIndex: 1,
+                            display: due.status ? "none" : "block",
+                            width: "100%",
+                            height: "100%",
+                            cursor: "pointer",
+                            aspectRatio: 1,
+                            opacity: 0,
+                          }}
+                          onChange={({ target }) =>
+                            onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })
+                          }
+                        />
+                      </Box>
+                    </Stack>
+                  }
+                >
+                  <Grid display="flex" gap={4} alignItems="center">
+                    <ListItemText primary={due.quota_number} primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
+                    <ListItemText
+                      primary={formatCurrency(due.payment_amount, "$")}
+                      secondary={formatLongDate(due.date_payment)}
+                      primaryTypographyProps={{ fontSize: 20, color: "black" }}
+                      secondaryTypographyProps={{ color: "text.main" }}
+                    />
+                  </Grid>
+                </ListItem>
+              ))}
           </List>
         </DialogContent>
       </Dialog>
