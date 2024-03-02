@@ -72,13 +72,13 @@ function Harvests() {
         disablePadding: false,
         format: (value) => formatCurrency(value, "", " Kg"),
       },
-      {
-        id: "sowing_date",
-        label: "Fecha de siembra",
-        align: "left",
-        disablePadding: false,
-        format: (value) => dayjs(value).format("DD MMMM YYYY"),
-      },
+      // {
+      //   id: "sowing_date",
+      //   label: "Fecha de siembra",
+      //   align: "left",
+      //   disablePadding: false,
+      //   format: (value) => dayjs(value).format("DD MMMM YYYY"),
+      // },
       {
         id: "harvest_date",
         label: "Fecha de cosecha",
