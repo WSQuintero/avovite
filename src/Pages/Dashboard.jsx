@@ -1,15 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Skeleton,
-  Typography,
-  Stack,
-  Icon,
-  Tooltip as MuiTooltip,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Skeleton, Typography, Stack, Icon, Tooltip as MuiTooltip } from "@mui/material";
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, Line, Tooltip, YAxis, Label } from "recharts";
 import useConfig from "../Hooks/useConfig";
 import usePost from "../Hooks/usePost";
@@ -29,7 +19,7 @@ import dayjs from "dayjs";
 import TermsAndConditions from "../Components/TermsAndConditions";
 import useUser from "../Hooks/useUser";
 import { LoadingButton } from "@mui/lab";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import BackButton from "../Components/BackButton";
 
 function Dashboard() {
@@ -53,6 +43,13 @@ function Dashboard() {
       })) || [],
     [user]
   );
+  useEffect(() => {
+    if (modal === "request-avocados" || modal === "sell-avocados") {
+      enqueueSnackbar(`Esta opción estará disponible próximamente`, {
+        variant: "success",
+      });
+    }
+  }, [modal]);
 
   const handleUpdateSellingMode = async (mode, formData) => {
     const methods = {
@@ -117,9 +114,9 @@ function Dashboard() {
 
   return (
     <PageWrapper>
-      <BackButton/>
+      <BackButton />
       <Container maxWidth="xxl">
-        {user.status_terms_and_conditions === 1 && user.status_terms_and_conditions_date || user.isAdmin()? (
+        {(user.status_terms_and_conditions === 1 && user.status_terms_and_conditions_date) || user.isAdmin() ? (
           <>
             <Grid display="flex" flexDirection="column" gap={8} width="100%">
               <Stack spacing={2}>
@@ -330,22 +327,24 @@ function Dashboard() {
                 <Grid display="flex" flexDirection="column" gap={2}>
                   {loading
                     ? [...Array(3).keys()].map((post) => <Skeleton key={post} height={240} sx={{ transform: "none" }} />)
-                    : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} video={post.url_video}/>)}
+                    : posts.map((post) => <Post key={post.id} post={post} route={`/posts/${post.id}`} video={post.url_video} />)}
                 </Grid>
               </Grid>
             </Grid>
 
-            <DialogRequestAvocados
+            {/* <DialogRequestAvocados
               open={modal === "request-avocados"}
               onClose={() => setModal("")}
               onSubmit={(data) => handleUpdateSellingMode("request-avocados", data)}
-            />
+            /> */}
 
-            <DialogSellAvocados
+            {/* <DialogSellAvocados
               open={modal === "sell-avocados"}
               onClose={() => setModal("")}
-              onSubmit={(data) => handleUpdateSellingMode("sell-avocados", data)}
-            />
+              onSubmit={(data) => {
+                handleUpdateSellingMode("sell-avocados", data);
+              }}
+            /> */}
 
             {/* <Grid display="flex" gap={2}>
               <LoadingButton fullWidth loading={loadingSubmit} variant="contained" size="large" onClick={() => setModal("modal-terms")}>
@@ -356,7 +355,7 @@ function Dashboard() {
         ) : (
           <Grid display="flex" flexDirection="column" gap={2} width="100%">
             <Typography variant="h2" textAlign="center">
-            ¡Bienvenido a la app de Avovite!
+              ¡Bienvenido a la app de Avovite!
             </Typography>
             <TermsAndConditions />
             <Grid display="flex" gap={2}>
