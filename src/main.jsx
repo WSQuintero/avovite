@@ -17,8 +17,9 @@ if (isDev) {
 } else {
   sentryDSN = "https://2e4b2df4cad64511ea10b948531d888d@o4505030736347136.ingest.sentry.io/4506836592164864";
 }
+console.log(sentryDSN);
 Sentry.init({
-  dsn: sentryDSN,
+  dsn: sentryDSN && sentryDSN,
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({

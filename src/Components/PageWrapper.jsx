@@ -40,37 +40,40 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
 
   return (
     <>
-      {isKyc && (
-        <Grid display="flex">
-          {!isInvalidSession && <Sidebar collapseOn={collapseSidebar} />}
-          <Grid flexGrow={1} display="flex" flexDirection="column" minHeight="100vh">
-            <Header isInvalidSession={isInvalidSession} />
-            <Box
-              component="main"
-              flexGrow={1}
-              padding={6}
-              sx={(t) => ({
-                maxWidth: isInvalidSession ? "100vw" : `calc(100vw - ${t.sizes.sidebar.main}px - 16px)`,
-                [t.breakpoints.down("lg")]: {
-                  maxWidth: "100vw",
-                  padding: 2,
-                  paddingTop: 12,
-                },
-              })}
-            >
-              {children}
-            </Box>
-          </Grid>
+      <Grid display="flex">
+        {!isInvalidSession && <Sidebar collapseOn={collapseSidebar} />}
+        <Grid flexGrow={1} display="flex" flexDirection="column" minHeight="100vh">
+          <Header isInvalidSession={isInvalidSession} />
+          <Box
+            component="main"
+            flexGrow={1}
+            padding={6}
+            sx={(t) => ({
+              maxWidth: isInvalidSession ? "100vw" : `calc(100vw - ${t.sizes.sidebar.main}px - 16px)`,
+              [t.breakpoints.down("lg")]: {
+                maxWidth: "100vw",
+                padding: 2,
+                paddingTop: 12,
+              },
+            })}
+          >
+            {isKyc && children}
+            {notIsKyc && (
+              <>
+                <DialogTitle style={{ textAlign: "center", marginTop: "100px" }}>
+                  Antes de iniciar, por favor acepta la política de KYC
+                </DialogTitle>
+                <DialogKYC
+                  open={true}
+                  onClose={() => setModal({ ...modal, kyc: false })}
+                  onSubmit={handleSubmitKYC}
+                  logout={() => logout()}
+                />
+              </>
+            )}{" "}
+          </Box>
         </Grid>
-      )}
-      {notIsKyc && (
-        <>
-          <DialogTitle style={{ textAlign: "center", marginTop: "100px" }}>
-            Antes de iniciar, por favor acepta la política de KYC
-          </DialogTitle>
-          <DialogKYC open={true} onClose={() => setModal({ ...modal, kyc: false })} onSubmit={handleSubmitKYC} logout={() => logout()} />
-        </>
-      )}
+      </Grid>
     </>
   );
 }
