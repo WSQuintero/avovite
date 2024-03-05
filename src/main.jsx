@@ -13,11 +13,10 @@ const isDev = hostname === "appdev.avovite.com" || hostname === "localhost";
 
 let sentryDSN;
 if (isDev) {
-  sentryDSN = "https://770c39cef117658f85797a931ce17681@o4505030736347136.ingest.sentry.io/4506836583448576";
+  sentryDSN = import.meta.env.VITE_API_SENTRYDSN_DEV;
 } else {
-  sentryDSN = "https://2e4b2df4cad64511ea10b948531d888d@o4505030736347136.ingest.sentry.io/4506836592164864";
+  sentryDSN = import.meta.env.VITE_API_SENTRYDSN_PROD;
 }
-console.log(sentryDSN);
 Sentry.init({
   dsn: sentryDSN && sentryDSN,
   integrations: [
@@ -30,7 +29,7 @@ Sentry.init({
   // Performance Monitoring
   tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-  tracePropagationTargets: ["localhost", /\/api\/v1$/],
+  tracePropagationTargets: ["localhost", /https:\/api\/v1$/],
   // Session Replay
   replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.

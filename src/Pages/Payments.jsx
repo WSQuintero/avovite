@@ -196,7 +196,6 @@ function Payments() {
 
     if (status) {
       setHistory((prev) => ({ ...prev, [contractId]: data.data }));
-      console.log(data);
     }
 
     setLoading((prev) => ({ ...prev, collapse: null }));

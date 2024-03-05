@@ -87,7 +87,6 @@ function Harvests() {
 
     if (status) {
       setContracts(data.data);
-      console.log(data.data);
     }
   };
 

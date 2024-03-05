@@ -24,7 +24,7 @@ import { formatDate } from "../utilities";
 import Form from "../Components/Form";
 import useLastContract from "../Hooks/useLastContract";
 import BackButton from "../Components/BackButton";
-import InvasiveForm from "../Components/Forms/invasiveForm";
+import InvasiveForm from "../Components/Forms/InvasiveForm";
 
 function ContractValidation() {
   const navigate = useNavigate();
@@ -45,14 +45,7 @@ function ContractValidation() {
 
     if (status) {
       if (!data.data?.pendings?.length) {
-        console.log(data);
-        //   if (!statusSecondContract.data.data[statusSecondContract.data.data.length - 1].state_second_form === 0) {
-        //     navigate("/");
-        //     console.log(data);
-        //   } else {
-        //     setModal("warning");
-        //     setContractsPendingSecondForm(statusSecondContract.data.data.filter((a) => a.state_second_form === 0));
-        //   }
+        navigate("/");
       } else {
         console.log(data);
         setContracts(data.data);

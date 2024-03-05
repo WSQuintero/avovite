@@ -36,9 +36,9 @@ function Movements({ handleClick }) {
         align: "left",
         disablePadding: false,
         format: (value) => {
-          if(!value)return
+          if (!value) return;
           const date = new Date(value);
-          return date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          return date.toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
         },
       },
       {
@@ -48,7 +48,7 @@ function Movements({ handleClick }) {
         disablePadding: false,
         format: (value) => {
           const date = new Date(value);
-          return date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          return date.toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
         },
       },
 
@@ -159,8 +159,8 @@ function Movements({ handleClick }) {
         label: "Resetear",
         align: "left",
         disablePadding: false,
-        format: (value,row) => (
-          <IconButton color="primary" onClick={()=>handleReset(row)}>
+        format: (value, row) => (
+          <IconButton color="primary" onClick={() => handleReset(row)}>
             <RefreshIcon />
           </IconButton>
         ),
@@ -185,11 +185,9 @@ function Movements({ handleClick }) {
   };
 
   const fetchData = async () => {
-    console.log("si")
     try {
       const { status, data } = await $Movement.get();
-      console.log(status)
-      if (status, data) {
+      if ((status, data)) {
         setRows(
           data?.data?.map((movement) => ({
             contract_id: movement.contract_id,
@@ -218,12 +216,11 @@ function Movements({ handleClick }) {
     }
   };
 
-
   useEffect(() => {
     if ($Movement) {
       fetchData();
     }
-  }, [$Movement,session]);
+  }, [$Movement, session]);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -231,7 +228,6 @@ function Movements({ handleClick }) {
   const handleCloseModalTwo = () => {
     setModalOpenTwo(false);
   };
-
 
   const handleExportDataByDate = () => {
     setModalOpen(true);
@@ -243,15 +239,25 @@ function Movements({ handleClick }) {
   return (
     <>
       <PageWrapper>
-      <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+        <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">
-          <Button variant="contained" sx={{ width: "300px", height: "50px" }} onClick={handleExportDataByDate} startIcon={<DownloadIcon />}>
-            Pagos transaccionales
-          </Button>
-          <Button variant="contained" sx={{ width: "300px", height: "50px" }} onClick={handleExportDataByDateTwo} startIcon={<DownloadIcon />}>
-            Movimientos
-          </Button>
+            <Button
+              variant="contained"
+              sx={{ width: "300px", height: "50px" }}
+              onClick={handleExportDataByDate}
+              startIcon={<DownloadIcon />}
+            >
+              Pagos transaccionales
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ width: "300px", height: "50px" }}
+              onClick={handleExportDataByDateTwo}
+              startIcon={<DownloadIcon />}
+            >
+              Movimientos
+            </Button>
           </Grid>
         </Typography>
 
