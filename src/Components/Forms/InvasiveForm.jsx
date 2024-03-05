@@ -39,6 +39,7 @@ import ContractService from "../../Services/contract.service";
 import useSession from "../../Hooks/useSession";
 import { useNavigate } from "react-router-dom";
 import useLastContract from "../../Hooks/useLastContract";
+import DocumentUploadModal from "./DocumentUploadModal ";
 // import DialogKYC from "./Dialogs/KYC";
 
 const initialState = {
@@ -211,6 +212,11 @@ function InvasiveForm({ contractId }) {
   const [actualContract, setActualContract] = useState(null);
   const lastContract = useLastContract();
   const navigate = useNavigate();
+  const [frontDoc, setFrontDoc] = useState(null);
+  const [backDoc, setBackDoc] = useState(null);
+  const [bankCert, setBankCert] = useState(null);
+  const [rut, setRut] = useState(null);
+
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
     const { name, checked, value } = event.target;
@@ -326,17 +332,37 @@ function InvasiveForm({ contractId }) {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
   const handleSubmit = async () => {
-    const { numberOfShareholders, numberOfInternationalOperations, ...formDataToSend } = formData;
-
     setLoading(true);
 
-    const { status } = await $Contract.sendInvasiveForm(formDataToSend);
+    // Crea un nuevo objeto FormData
+    const formDataToSend = new FormData();
 
-    if (status) {
-      setLoading(false);
-      setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
-      // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    } else {
+    // Agrega los datos del formulario al objeto FormData
+    const { numberOfShareholders, numberOfInternationalOperations, ...restFormData } = formData;
+    Object.entries(restFormData).forEach(([key, value]) => {
+      formDataToSend.append(key, value);
+    });
+
+    // Agrega los archivos al objeto FormData
+    formDataToSend.append("frontDoc", frontDoc);
+    formDataToSend.append("backDoc", backDoc);
+    formDataToSend.append("bankCert", bankCert);
+    formDataToSend.append("rut", rut);
+
+    try {
+      // Envía el objeto FormData a través de sendInvasiveForm
+      const { status } = await $Contract.sendInvasiveForm(formDataToSend);
+
+      if (status) {
+        setLoading(false);
+        setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
+        // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      } else {
+        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+      }
+    } catch (error) {
+      // Maneja cualquier error que pueda ocurrir durante la solicitud
+      console.error("Error:", error);
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
@@ -1151,6 +1177,16 @@ function InvasiveForm({ contractId }) {
               <TextField fullWidth name="ResourceSourceDetails" value={formData.ResourceSourceDetails} onChange={handleInputChange} />
             </Column>
           </Row>
+          <DocumentUploadModal
+            frontDoc={frontDoc}
+            setFrontDoc={setFrontDoc}
+            backDoc={backDoc}
+            setBackDoc={setBackDoc}
+            bankCert={bankCert}
+            setBankCert={setBankCert}
+            rut={rut}
+            setRut={setRut}
+          />
 
           <LoadingButton fullWidth type="submit" size="large" variant="contained" onClick={handleSubmit} loading={loading}>
             Enviar
