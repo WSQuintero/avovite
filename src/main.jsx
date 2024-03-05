@@ -9,16 +9,9 @@ import { GeneralContextProvider } from "./context/GeneralContext.jsx";
 import * as Sentry from "@sentry/react";
 
 const hostname = window.location.hostname;
-const isDev = hostname === "appdev.avovite.com" || hostname === "localhost";
 
-let sentryDSN;
-if (isDev) {
-  sentryDSN = import.meta.env.VITE_API_SENTRYDSN_DEV;
-} else {
-  sentryDSN = import.meta.env.VITE_API_SENTRYDSN_PROD;
-}
 Sentry.init({
-  dsn: sentryDSN && sentryDSN,
+  dsn: import.meta.env.VITE_API_SENTRYDSN,
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration({
