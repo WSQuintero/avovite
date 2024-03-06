@@ -22,6 +22,7 @@ function Vites() {
   const [rows, setRows] = useState([]);
   const $Contract = useMemo(() => new ContractService(token), [token]);
   const [openSignedModal, setOpenSignedModal] = useState(false);
+  const [contractsWithMortgageSigned, setContractsWithMortgageSigned] = useState();
   const columns = useMemo(
     () => [
       {
@@ -186,17 +187,19 @@ function Vites() {
 
       if (status) {
         setRows(data.data);
-        console.log(data);
         const formattedData = data.data.map((contract) => ({
           id: contract.id,
           isSigned: contract.stateFignature === "Firmado",
           hasMortgage: contract.mortgage_contract === 1,
         }));
-        console.log(formattedData);
-        const signedContract = formattedData?.filter((contract) => !contract.isSigned && !contract.hasMortgage);
-        if (signedContract.length > 0) {
+        const noSignedContract = formattedData?.filter((contract) => !contract.isSigned);
+        const signedContractWithMortgage = formattedData?.filter((contract) => contract.isSigned && contract.hasMortgage);
+        if (noSignedContract.length > 0) {
           setOpenSignedModal(true);
-          setInformationContractFilter(signedContract);
+          setInformationContractFilter(noSignedContract);
+        }
+        if (signedContractWithMortgage.length > 0) {
+          setContractsWithMortgageSigned(signedContractWithMortgage);
         }
       }
     })();
@@ -236,7 +239,12 @@ function Vites() {
       </Container>
 
       {informationContractFilter.length > 0 && (
-        <ModalFirmContract open={openSignedModal} handleClose={handleCloseModal} informationContractFilter={informationContractFilter} />
+        <ModalFirmContract
+          open={openSignedModal}
+          handleClose={handleCloseModal}
+          informationContractFilter={informationContractFilter}
+          contractsWithMortgageSigned={contractsWithMortgageSigned}
+        />
       )}
     </PageWrapper>
   );
