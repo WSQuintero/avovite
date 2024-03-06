@@ -8,7 +8,7 @@ export default class ContractService {
     this.API_URL = `${import.meta.env.VITE_API_URL}`;
   }
 
-  async get({ id = null, dateRangeId = null, pending = false, pendingToPay = false, harvest = false } = {}) {
+  async get({ id = null, dateRangeId = null, pending = false, pendingToPay = false, harvest = false, pageNumber = 1, pageSize = 10 } = {}) {
     return await handleCall(async () => {
       if (pendingToPay) {
         return (await axios.get(`${this.API_URL}/contract-transactional-payments/pending-to-pay`, this.config)).data;
@@ -21,7 +21,7 @@ export default class ContractService {
       } else if (id) {
         return (await axios.get(`${this.API_URL}/contracts/${id}`, this.config)).data;
       } else {
-        return (await axios.get(`${this.API_URL}/contracts`, this.config)).data;
+        return (await axios.get(`${this.API_URL}/contracts/page?page=${pageNumber}&pagezise=${pageSize}`, this.config)).data;
       }
     });
   }

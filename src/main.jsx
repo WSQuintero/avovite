@@ -8,8 +8,6 @@ import "react-phone-input-2/lib/material.css";
 import { GeneralContextProvider } from "./context/GeneralContext.jsx";
 import * as Sentry from "@sentry/react";
 
-const hostname = window.location.hostname;
-
 Sentry.init({
   dsn: import.meta.env.VITE_API_SENTRYDSN,
   integrations: [

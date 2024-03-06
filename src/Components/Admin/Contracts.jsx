@@ -46,7 +46,7 @@ import { useNavigate } from "react-router-dom";
 import DateRangeModal from "./DateRangeModal";
 import BackButton from "../BackButton";
 import CustomContractRangeFilter from "./CustomContractRangeFilter";
-
+import Pagination from "../Admin/Pagination";
 const columns = [
   {
     accessorKey: "id",
@@ -176,7 +176,6 @@ const Contracts = () => {
   const [modal, setModal] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [services, setServices] = useState([]);
-
   const [selectedContract, setSelectedContract] = useState(null);
   const [dues, setDues] = useState([]);
   const [contract, setContract] = useState({
@@ -213,23 +212,31 @@ const Contracts = () => {
     [contract.discount, contract.firstPaymentValue, contract.vites, dues, totalDuesValue, totalFinancingValue]
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentSize, setCurrentSize] = useState(10);
   // DUES
   const [contractDues, setContractDues] = useState({ id: null, dues: [] });
   const $Due = useMemo(() => new DueService(token), [token]);
   const [loadingDue, setLoadingDue] = useState(false);
 
   const fetchContracts = async () => {
-    const {
-      status,
-      data: { data },
-    } = await $Contract.get();
+    try {
+      const {
+        status,
+        data: { data },
+      } = await $Contract.get({ pageNumber: currentPage, pageSize: currentSize });
 
-    if (status) {
-      setContracts(data);
+      if (status) {
+        setContracts(data);
+      }
+    } catch (error) {
+      console.error("Error al obtener contratos:", error);
     }
   };
 
+  const onPageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
   const fetchContractDues = async (contractId) => {
     const { status, data } = await $Due.get({ contractId });
 
@@ -424,7 +431,7 @@ const Contracts = () => {
         setLoading(false);
       })();
     }
-  }, [token]);
+  }, [token, currentPage, currentSize]);
 
   const handleExportDataByDate = () => {
     // Abrir el modal al hacer clic en el botón
@@ -445,7 +452,13 @@ const Contracts = () => {
   return (
     <>
       <BackButton />
-      <CustomContractRangeFilter onApplyFilter={handleApplyContractRangeFilter} contracts={contracts} setContracts={setContracts} />
+      <CustomContractRangeFilter
+        onApplyFilter={handleApplyContractRangeFilter}
+        contracts={contracts}
+        setContracts={setContracts}
+        setCurrentSize={setCurrentSize}
+        setCurrentPage={setCurrentPage}
+      />
 
       <MaterialReactTable
         columns={columns}
@@ -458,6 +471,7 @@ const Contracts = () => {
         muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
         state={{ showSkeletons: loading }}
         localization={MRT_Localization_ES}
+        enablePagination={false}
         renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
           <MenuItem
             key={0}
@@ -721,6 +735,7 @@ const Contracts = () => {
             >
               Refrescar firmas
             </LoadingButton>
+            <Pagination currentPage={currentPage} onPageChange={onPageChange} />
           </Box>
         )}
       />
