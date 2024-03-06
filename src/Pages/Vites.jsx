@@ -104,22 +104,22 @@ function Vites() {
         header: "Estado de Cosecha",
         Cell: (value) => (value ? "Maduros" : "En crecimiento"),
       },
-      // {
-      //   accessorKey: "stateFignature",
-      //   header: "Estado firma",
-      //   Cell: ({ renderedCellValue, row: { original } }) =>
-      //     original.urlValidocus ? (
-      //       <Button component={RouterLink} to={original.urlValidocus} target="_blank" size="small" variant="contained">
-      //         Ver firma
-      //       </Button>
-      //     ) : (
-      //       renderedCellValue || (
-      //         <Typography fontSize={12} color="warning.light">
-      //           No firmado
-      //         </Typography>
-      //       )
-      //     ),
-      // },
+      {
+        accessorKey: "stateFignature",
+        header: "Estado firma",
+        Cell: ({ renderedCellValue, row: { original } }) =>
+          original.urlValidocus ? (
+            <Button component={RouterLink} to={original.urlValidocus} target="_blank" size="small" variant="contained">
+              Ver firma
+            </Button>
+          ) : (
+            renderedCellValue || (
+              <Typography fontSize={12} color="warning.light">
+                No firmado
+              </Typography>
+            )
+          ),
+      },
 
       // {
       //   accessorKey: "download_contract",
