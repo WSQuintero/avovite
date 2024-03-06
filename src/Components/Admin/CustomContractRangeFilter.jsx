@@ -19,7 +19,7 @@ function CustomContractRangeFilter({ setCurrentSize, setCurrentPage }) {
   return (
     <Box display="flex" gap={2} sx={{ width: "100%", height: 100, justifyContent: "end", alignItems: "center" }}>
       <TextField
-        label="Número de páginas"
+        label="Número de página"
         variant="outlined"
         value={startIndex}
         onChange={(e) => {
