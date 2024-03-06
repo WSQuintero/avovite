@@ -270,6 +270,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     [discount]
   );
 
+  const isValidURL = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
   const discountsHeadCells = useMemo(
     () => [
       {
@@ -281,9 +289,9 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         format: (value) => (
           <Box display="flex" width="100%" sx={{ aspectRatio: 1 }}>
             <img
-              src={value || IMAGE_PLACEHOLDER}
+              src={isValidURL(value) ? value : URL.createObjectURL(value)}
               width="100%"
-              style={{ objectFit: value ? "cover" : "contain", borderRadius: 8 }}
+              style={{ objectFit: isValidURL(value) ? "cover" : "contain", borderRadius: 8 }}
               alt="product image"
             />
           </Box>
@@ -366,7 +374,7 @@ function Discounts({ service: $Shop, state, products, feedback }) {
         ),
       },
     ],
-    []
+    [discounts]
   );
 
   const onChangeFields = ({ target }) => {
@@ -390,7 +398,6 @@ function Discounts({ service: $Shop, state, products, feedback }) {
 
   const onCreateDiscount = async (event) => {
     event.preventDefault();
-
     if (!isValidProduct) {
       setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
       return;
@@ -414,10 +421,13 @@ function Discounts({ service: $Shop, state, products, feedback }) {
       setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
       return;
     }
+    console.log(discount);
 
-    const { status } = await $Shop.discount.update(discount);
+    const { status, data } = await $Shop.discount.update(discount);
 
     if (status) {
+      console.log(data);
+
       setDiscounts((prev) => prev.map((p) => (p.id === discount.id ? discount : p)));
       setFeedback({ open: true, message: "Descuento actualizado exitosamente.", status: "success" });
       onClearFields();
@@ -438,6 +448,9 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     }
   };
 
+  useEffect(() => {
+    console.log(discount);
+  }, [discount]);
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>
@@ -518,6 +531,14 @@ function Discounts({ service: $Shop, state, products, feedback }) {
                   onChange={(value) => onChangeFields({ target: { name: "url_image", value } })}
                 />
               </Grid>
+              {/* <Grid display="flex" gap={2}>
+                <TextField
+                  fullWidth
+                  label="ImagenUrl"
+                  value={discount.url_image}
+                  onChange={(event) => onChangeFields({ target: { name: "url_image", value: event.target.value } })}
+                />
+              </Grid> */}
             </Grid>
           </Box>
         </DialogContent>
@@ -848,7 +869,7 @@ function Shop() {
 
   return (
     <>
-    <BackButton/>
+      <BackButton />
       <Stack direction="row" justifyContent="flex-end" alignItems="center">
         <Box position="relative">
           <LoadingButton loading={loading.importing} variant="contained" size="small">
