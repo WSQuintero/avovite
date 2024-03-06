@@ -13,14 +13,15 @@ import AuthService from "../Services/user.service";
 import BackButton from "../Components/BackButton";
 import DownloadSharpIcon from "@mui/icons-material/DownloadSharp";
 import SelectorCell from "../Components/SelectorCell";
+import ModalFirmContract from "../Components/ModalFirmContract";
 
 function Vites() {
   const navigate = useNavigate();
-
+  const [informationContractFilter, setInformationContractFilter] = useState([]);
   const [{ user, token }] = useSession();
   const [rows, setRows] = useState([]);
   const $Contract = useMemo(() => new ContractService(token), [token]);
-
+  const [openSignedModal, setOpenSignedModal] = useState(false);
   const columns = useMemo(
     () => [
       {
@@ -186,10 +187,24 @@ function Vites() {
       if (status) {
         setRows(data.data);
         console.log(data);
+        const formattedData = data.data.map((contract) => ({
+          id: contract.id,
+          isSigned: contract.stateFignature === "Firmado",
+          hasMortgage: contract.mortgage_contract === 1,
+        }));
+        console.log(formattedData);
+        const signedContract = formattedData?.filter((contract) => !contract.isSigned && !contract.hasMortgage);
+        if (signedContract.length > 0) {
+          setOpenSignedModal(true);
+          setInformationContractFilter(signedContract);
+        }
       }
     })();
   }, [$Contract, user]);
 
+  const handleCloseModal = () => {
+    setOpenSignedModal(false);
+  };
   useEffect(() => {
     if (user) {
       if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
@@ -198,6 +213,13 @@ function Vites() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (openSignedModal) {
+      setTimeout(() => {
+        handleCloseModal();
+      }, 5000);
+    }
+  }, [openSignedModal]);
   return (
     <PageWrapper>
       <BackButton />
@@ -212,6 +234,10 @@ function Vites() {
         </Stack>
         <Table columns={columns} data={rows} />
       </Container>
+
+      {informationContractFilter.length > 0 && (
+        <ModalFirmContract open={openSignedModal} handleClose={handleCloseModal} informationContractFilter={informationContractFilter} />
+      )}
     </PageWrapper>
   );
 }
