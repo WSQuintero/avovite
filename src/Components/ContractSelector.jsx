@@ -1,8 +1,10 @@
-import { Checkbox, Icon, InputAdornment, ListItemText, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, Icon, InputAdornment, ListItemText, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import useSession from "../Hooks/useSession";
 import ContractService from "../Services/contract.service";
+import PaginationComponent from "./PaginationComponent";
+import CustomContractRangeFilter from "./Admin/CustomContractRangeFilter";
 
 function ContractSelector({ initialValue = [], onChange }) {
   const [session] = useSession();
@@ -11,6 +13,24 @@ function ContractSelector({ initialValue = [], onChange }) {
   const [searchText, setSearchText] = useState("");
   const [order, setOrder] = useState("desc");
   const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
+  const [totalPages, setTotalPages] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const onPageChange = async (value) => {
+    setCurrentPage(value);
+    const { status, data } = await $Contract.get({ pageNumber: value, pageSize: 10 });
+
+    if (status) {
+      setContracts(data.data.reduce((acc, c) => ({ ...acc, [c.id]: c }), {}));
+    }
+  };
+  const filterContracts = async (page, size) => {
+    const { status, data } = await $Contract.get({ pageNumber: page, pageSize: size });
+
+    if (status) {
+      setContracts(data.data.reduce((acc, c) => ({ ...acc, [c.id]: c }), {}));
+    }
+  };
   const filteredContracts = useMemo(() => {
     const searched = searchText
       ? Object.values(contracts).filter((c) => `AV-${c.id}`.toLowerCase().includes(searchText.toLowerCase()))
@@ -78,6 +98,13 @@ function ContractSelector({ initialValue = [], onChange }) {
           </IconButton>
         </Tooltip> */}
       </Stack>
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "center", padding: 2 }}>
+        <CustomContractRangeFilter setCurrentSize={setTotalPages} setCurrentPage={setCurrentPage} filterContracts={filterContracts} />
+      </Box>
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <PaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
+      </Box>
+
       {filteredContracts.map((c) => {
         return (
           <MenuItem key={c.id} value={c.id} autoFocus={false}>

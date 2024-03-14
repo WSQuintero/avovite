@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { TextField, Box, Button } from "@mui/material";
 
-function CustomContractRangeFilter({ setCurrentSize, setCurrentPage }) {
+function CustomContractRangeFilter({ setCurrentSize, setCurrentPage, filterContracts }) {
   const [startIndex, setStartIndex] = useState(1);
   const [endIndex, setEndIndex] = useState(10);
 
   const handleApplyFilter = () => {
     setCurrentPage(startIndex);
     setCurrentSize(endIndex);
+    if (filterContracts) {
+      filterContracts(startIndex, endIndex);
+    }
   };
 
   const handleResetFilter = () => {
@@ -15,6 +18,9 @@ function CustomContractRangeFilter({ setCurrentSize, setCurrentPage }) {
     setCurrentSize(10);
     setStartIndex(1);
     setEndIndex(10);
+    if (filterContracts) {
+      filterContracts(1, 10);
+    }
   };
   return (
     <Box display="flex" gap={2} sx={{ width: "100%", height: 100, justifyContent: "end", alignItems: "center" }}>
