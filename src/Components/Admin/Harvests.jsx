@@ -36,7 +36,13 @@ import { parseString } from "xml2js";
 import { formatCurrency } from "../../utilities";
 import BackButton from "../BackButton";
 
-const RowState = { id: null, total_kilograms: "", harvest_date: "", sowing_date: "", harvest_state: "" };
+const RowState = {
+  id: null,
+  total_kilograms: "",
+  harvest_date: "",
+  //  sowing_date: "",
+  harvest_state: "",
+};
 const CollapseState = { id: null, contract_number: "", harvest_id: "" };
 const PaymentState = { harvest_profitability_id: null, harvest_id: null, contract_id: null, value: "" };
 
@@ -51,7 +57,14 @@ function Harvests() {
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const isValidForm = useMemo(() => newRow.total_kilograms && newRow.harvest_state && newRow.sowing_date && newRow.harvest_date, [newRow]);
+  const isValidForm = useMemo(
+    () =>
+      newRow.total_kilograms &&
+      newRow.harvest_state &&
+      // && newRow.sowing_date
+      newRow.harvest_date,
+    [newRow]
+  );
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
 
   const $Harvest = useMemo(() => (session?.token ? new HarvestService(session?.token) : null), [session?.token]);
@@ -117,7 +130,7 @@ function Harvests() {
                   total_kilograms: row.total_kilograms,
                   harvest_date: row.harvest_date,
                   harvest_state: row.harvest_state,
-                  sowing_date: row.sowing_date,
+                  // sowing_date: row.sowing_date,
                 });
                 setModal("update");
               }}
@@ -132,7 +145,7 @@ function Harvests() {
                   total_kilograms: row.total_kilograms,
                   harvest_date: row.harvest_date,
                   harvest_state: row.harvest_state,
-                  sowing_date: row.sowing_date,
+                  // sowing_date: row.sowing_date,
                 });
                 setModal("delete");
               }}
