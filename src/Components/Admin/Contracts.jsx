@@ -986,9 +986,10 @@ const Contracts = () => {
                       <TextField label="ID" variant="outlined" defaultValue={index + 1} disabled sx={{ width: "100%" }} />
                       <DatePicker
                         label="Fecha"
-                        value={dayjs(due.date)}
+                        value={dayjs(contract.firstPaymentDate).add(1, "day") || dayjs(due.date)}
                         format="DD/MM/YYYY"
                         sx={{ width: "100%" }}
+                        minDate={dayjs(contract.firstPaymentDate).add(1, "day")}
                         disablePast
                         onChange={(value) => setDues((prev) => prev.map((d) => (d.id === due.id ? { ...due, date: value.toDate() } : d)))}
                       />
