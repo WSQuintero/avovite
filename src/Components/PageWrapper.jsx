@@ -23,6 +23,7 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
 
     if (status) {
       setUser({ ...session?.user, KYC: 1 });
+      setIsKyc(true);
     }
 
     return status;
