@@ -129,23 +129,21 @@ function Payments() {
 
   const tableCollapse = useCallback(
     (row) => (
-      <Grid display="flex" flexDirection="column" gap={2} width="100%" paddingY={2}>
+      <Grid paddingY={2}>
         <TableHead>
-          <TableHead>
-            <TableRow>
-              {Object.keys({
-                Cuota: null,
-                Monto: null,
-                "Referencia Epayco": null,
-                Fecha: null,
-                "Estado de pago": null,
-              }).map((key, index) => (
-                <TableCell key={index} sx={{ width: "21%", border: "1px solid rgba(128, 128, 128, 0.5)" }}>
-                  {key}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+          <TableRow sx={{ width: "100%" }}>
+            {Object.keys({
+              Cuota: null,
+              Monto: null,
+              "Referencia Epayco": null,
+              Fecha: null,
+              "Estado de pago": null,
+            }).map((key, index) => (
+              <TableCell key={index} sx={{ width: "300px", border: "1px solid rgba(128, 128, 128, 0.5)" }}>
+                {key}
+              </TableCell>
+            ))}
+          </TableRow>
         </TableHead>
 
         {loading.collapse === row.id ? (
