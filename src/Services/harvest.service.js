@@ -65,4 +65,7 @@ export default class HarvestService {
   async payment({ id, ...body } = {}) {
     return await handleCall(async () => (await this.axios.put(`${this.API_URL}/harvest-profitability/payment/${id}`, body)).data);
   }
+  async resetVite({ id }) {
+    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/harvest/resetuncountable/${id}`)).data);
+  }
 }

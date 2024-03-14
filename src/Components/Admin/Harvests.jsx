@@ -145,13 +145,22 @@ function Harvests() {
                   total_kilograms: row.total_kilograms,
                   harvest_date: row.harvest_date,
                   harvest_state: row.harvest_state,
-                  // sowing_date: row.sowing_date,
+                  sowing_date: row.sowing_date,
                 });
                 setModal("delete");
               }}
             >
               <DeleteIcon />
             </IconButton>
+            <LoadingButton
+              loading={loading.split === row.id}
+              disabled={!row.can_split}
+              size="small"
+              variant="contained"
+              onClick={() => handleResetVite(row)}
+            >
+              Resetear
+            </LoadingButton>
             <LoadingButton
               loading={loading.split === row.id}
               disabled={!row.can_split}
@@ -173,6 +182,15 @@ function Harvests() {
     ],
     [collapse, loading.split]
   );
+  const handleResetVite = async (row) => {
+    const { status, data } = await $Harvest.resetVite({ id: Number(row.id) });
+
+    if (status) {
+      setFeedback({ open: true, message: "Cosecha reseteada correctamente", status: "success" });
+    } else {
+      setFeedback({ open: true, message: "Error al resetear la cosecha", status: "error" });
+    }
+  };
 
   const handleDownload = async (id) => {
     await $Harvest.download({ id: id });
