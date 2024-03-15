@@ -118,4 +118,7 @@ export default class ContractService {
   async exportPayRollSheet({ id }) {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/certificado/planillapagos/${id}`, this.config)).data);
   }
+  async createContract(body) {
+    return await handleCall(async () => (await axios.put(`${this.API_URL}/contracts/createContract`, body, this.config)).data);
+  }
 }

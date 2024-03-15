@@ -53,24 +53,24 @@ function SignUp() {
     () => ({
       minimumCharacters: user.password.length >= 8 ? true : false,
       atLeastOneUppercase: /^(?=.*[A-Z])/g.test(user.password) ? true : false,
-      atLeastOneSymbol: /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/.test(user.password) ? true : false
+      atLeastOneSymbol: /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/.test(user.password) ? true : false,
     }),
     [user.password]
   );
 
   const [error, setError] = useState(undefined);
 
-const onUserChange = (event) => {
-  setError(false)
-  const { name, value } = event.target;
-  setUser((prev) => ({ ...prev, [name]: value }));
+  const onUserChange = (event) => {
+    setError(false);
+    const { name, value } = event.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
 
-  if (name === "email") {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = emailRegex.test(value);
-    setError(!isValidEmail);
-  }
-};
+    if (name === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const isValidEmail = emailRegex.test(value);
+      setError(!isValidEmail);
+    }
+  };
 
   const onSignup = async (event) => {
     event.preventDefault();
@@ -104,7 +104,7 @@ const onUserChange = (event) => {
 
       return;
     }
-    if(error){
+    if (error) {
       setFeedback({
         show: true,
         message: "Se debe establecer un correo válido",
@@ -207,15 +207,7 @@ const onUserChange = (event) => {
         >
           <img src={LogoImage} alt="logos" style={{ width: "100%", height: "100%" }} />
         </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap={2}
-          component="form"
-          width="100%"
-          maxWidth={550}
-          onSubmit={onSignup}
-        >
+        <Box display="flex" flexDirection="column" gap={2} component="form" width="100%" maxWidth={550} onSubmit={onSignup}>
           <Typography
             variant="h2"
             color="primary"
@@ -243,23 +235,23 @@ const onUserChange = (event) => {
               ),
             }}
           />
-        <TextField
-  name="email"
-  type="email"
-  label="Correo electrónico"
-  sx={{ width: "100%" }}
-  value={user.email}
-  onInput={onUserChange}
-  error={error}
-  required
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <EmailIcon color="primary" />
-      </InputAdornment>
-    ),
-  }}
-/>
+          <TextField
+            name="email"
+            type="email"
+            label="Correo electrónico"
+            sx={{ width: "100%" }}
+            value={user.email}
+            onInput={onUserChange}
+            error={error}
+            required
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon color="primary" />
+                </InputAdornment>
+              ),
+            }}
+          />
           <Tooltip
             placement="right"
             title={
@@ -328,7 +320,7 @@ const onUserChange = (event) => {
             label={
               <Typography>
                 He leido y acepto los{" "}
-                <span style={{textAlign:"center",color:"#67AA36"}} onClick={() => setModal("modal-terms")}>
+                <span style={{ textAlign: "center", color: "#67AA36" }} onClick={() => setModal("modal-terms")}>
                   terminos y condiciones
                 </span>
               </Typography>
@@ -343,16 +335,16 @@ const onUserChange = (event) => {
         </Box>
       </Box>
       <Dialog open={modal === "modal-terms"} onClose={() => setModal(null)} maxWidth="md" fullWidth>
-          <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
-          <DialogContent>
-            <TermsAndConditions />
-          </DialogContent>
-          <DialogActions>
-            <Button variant="contained" onClick={() => setModal(null)}>
-              Cerrar
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <DialogTitle color="primary.main">Términos y Condiciones</DialogTitle>
+        <DialogContent>
+          <TermsAndConditions />
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={() => setModal(null)}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Snackbar
         open={feedback.show}
         autoHideDuration={3000}

@@ -28,16 +28,16 @@ function Movements({ handleClick }) {
         id: "contract_id",
         label: "ID del Contrato",
         disablePadding: false,
-        align:"center",
+        align: "center",
         format: (value) => value,
       },
       {
         id: "dateAproveed",
         label: "Fecha de Aprobación",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => {
-          if(!value)return
+          if (!value) return;
           const date = new Date(value);
           return formatDate(date);
         },
@@ -45,8 +45,8 @@ function Movements({ handleClick }) {
       {
         id: "dateCreate",
         label: "Fecha de Creación",
-        align:"center",
-        width:"200px",
+        align: "center",
+        width: "200px",
         disablePadding: false,
         format: (value) => {
           const date = new Date(value);
@@ -57,66 +57,66 @@ function Movements({ handleClick }) {
       {
         id: "email",
         label: "Correo Electrónico",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "fullname",
         label: "Nombre Completo",
-        align:"center",
+        align: "center",
         disablePadding: false,
-        width:"500px",
+        width: "500px",
         format: (value) => value,
       },
       {
         id: "id",
         label: "ID",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "id_number",
         label: "Número de Identificación",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "id_type",
         label: "Tipo de Identificación",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "id_user",
         label: "ID de Usuario",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "nombre_banco",
         label: "Nombre del Banco",
-        align:"center",
-        width:"300px",
+        align: "center",
+        width: "300px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "tipo_cuenta",
         label: "Tipo de Cuenta",
-        align:"center",
-        width:"200px",
+        align: "center",
+        width: "200px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "transaction",
         label: "Transacción",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
@@ -125,7 +125,7 @@ function Movements({ handleClick }) {
         label: "Valor de la Transacción",
         align: "center",
         disablePadding: false,
-        format: ( value ) => (
+        format: (value) => (
           <>
             $<NumericFormat displayType="text" value={parseInt(value)} thousandSeparator></NumericFormat>
           </>
@@ -134,41 +134,41 @@ function Movements({ handleClick }) {
       {
         id: "user_bank_account_number",
         label: "Número de Cuenta del Usuario",
-        align:"center",
-        width:"300px",
+        align: "center",
+        width: "300px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "user_bank_account_type",
         label: "Tipo de Cuenta del Usuario",
-        align:"center",
-        width:"200px",
+        align: "center",
+        width: "200px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "user_id_bank",
         label: "ID del Banco del Usuario",
-        align:"center",
-        width:"200px",
+        align: "center",
+        width: "200px",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "withdrawal",
         label: "Retiro",
-        align:"center",
+        align: "center",
         disablePadding: false,
         format: (value) => value,
       },
       {
         id: "reset",
         label: "Resetear",
-        align:"center",
+        align: "center",
         disablePadding: false,
-        format: (value,row) => (
-          <IconButton color="primary" onClick={()=>handleReset(row)}>
+        format: (value, row) => (
+          <IconButton color="primary" onClick={() => handleReset(row)}>
             <RefreshIcon />
           </IconButton>
         ),
@@ -195,7 +195,7 @@ function Movements({ handleClick }) {
   const fetchData = async () => {
     try {
       const { status, data } = await $Movement.get();
-      if (status, data) {
+      if ((status, data)) {
         setRows(
           data.data.map((movement) => ({
             contract_id: movement.contract_id,
@@ -224,12 +224,11 @@ function Movements({ handleClick }) {
     }
   };
 
-
   useEffect(() => {
     if ($Movement) {
       fetchData();
     }
-  }, [$Movement,session]);
+  }, [$Movement, session]);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -237,7 +236,6 @@ function Movements({ handleClick }) {
   const handleCloseModalTwo = () => {
     setModalOpenTwo(false);
   };
-
 
   const handleExportDataByDate = () => {
     setModalOpen(true);
@@ -249,17 +247,27 @@ function Movements({ handleClick }) {
   return (
     <>
       <PageWrapper>
-      <BackButton/>
+        <BackButton />
 
-      <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+        <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">
-          <Button variant="contained" sx={{ width: "200px", height: "50px",fontSize:"12px" }} onClick={handleExportDataByDate} startIcon={<DownloadIcon />}>
-            Pagos transaccionales
-          </Button>
-          <Button variant="contained" sx={{ width: "200px", height: "50px",fontSize:"12px" }} onClick={handleExportDataByDateTwo} startIcon={<DownloadIcon />}>
-            Movimientos
-          </Button>
+            <Button
+              variant="contained"
+              sx={{ width: "200px", height: "50px", fontSize: "12px" }}
+              onClick={handleExportDataByDate}
+              startIcon={<DownloadIcon />}
+            >
+              Pagos transaccionales
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ width: "200px", height: "50px", fontSize: "12px" }}
+              onClick={handleExportDataByDateTwo}
+              startIcon={<DownloadIcon />}
+            >
+              Movimientos
+            </Button>
           </Grid>
         </Typography>
 

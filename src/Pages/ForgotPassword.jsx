@@ -1,10 +1,10 @@
-import { Button, Container, Grow, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Grow, InputAdornment, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import BackgroundImage from "../assets/img/signin/background.jpg";
 import { useSnackbar } from "notistack";
 import AuthService from "../Services/auth.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
+import { LockOpenOutlined as LockIcon, Error as ErrorIcon, CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 const $Auth = new AuthService();
 
 function ForgotPassword() {
@@ -16,7 +16,14 @@ function ForgotPassword() {
 
   const token = useMemo(() => searchParams.get("token"), [searchParams]);
   const currentEmail = useMemo(() => searchParams.get("email"), [searchParams]);
-
+  const passwordStatus = useMemo(
+    () => ({
+      minimumCharacters: password.length >= 8 ? true : false,
+      atLeastOneUppercase: /^(?=.*[A-Z])/g.test(password) ? true : false,
+      atLeastOneSymbol: /^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/.test(password) ? true : false,
+    }),
+    [password]
+  );
   const handleForgotPassword = async (event) => {
     event.preventDefault();
 
@@ -39,7 +46,11 @@ function ForgotPassword() {
 
   const handleResetPassword = async (event) => {
     event.preventDefault();
+    if (!(passwordStatus.minimumCharacters && passwordStatus.atLeastOneUppercase && passwordStatus.atLeastOneSymbol)) {
+      enqueueSnackbar("La contraseña no cumple las condiciones", { variant: "error" });
 
+      return;
+    }
     if (!password) {
       enqueueSnackbar("Todos los campos son requeridos", { variant: "error" });
       return;
@@ -58,7 +69,9 @@ function ForgotPassword() {
   useEffect(() => {
     setEmail(currentEmail);
   }, [currentEmail]);
-
+  const StatusIcon = ({ status = false }) => {
+    return status ? <CheckCircleIcon /> : <ErrorIcon />;
+  };
   return (
     <Stack
       position="relative"
@@ -109,7 +122,41 @@ function ForgotPassword() {
             </Stack>
 
             <Stack component="form" spacing={2} width="100%" onSubmit={handleResetPassword}>
-              <TextField fullWidth label="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Tooltip
+                placement="right"
+                title={
+                  <Box display="flex" flexDirection="column">
+                    <Grid display="flex" gap={1}>
+                      <StatusIcon status={passwordStatus.minimumCharacters} />
+                      <Typography>Mínimo 8 caracteres.</Typography>
+                    </Grid>
+                    <Grid display="flex" gap={1}>
+                      <StatusIcon status={passwordStatus.atLeastOneSymbol} />
+                      <Typography>Al menos un símbolo.</Typography>
+                    </Grid>
+                    <Grid display="flex" gap={1}>
+                      <StatusIcon status={passwordStatus.atLeastOneUppercase} />
+                      <Typography>Al menos una mayúscula.</Typography>
+                    </Grid>
+                  </Box>
+                }
+              >
+                <TextField
+                  name="password"
+                  type="password"
+                  label="Contraseña"
+                  sx={{ width: "100%" }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Tooltip>
               <Button fullWidth variant="contained" type="submit" size="large">
                 Request new password
               </Button>

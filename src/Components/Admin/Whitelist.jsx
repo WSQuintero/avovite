@@ -159,7 +159,7 @@ function Whitelist() {
 
   return (
     <>
-    <BackButton/>
+      <BackButton />
 
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
@@ -193,6 +193,7 @@ function Whitelist() {
                   </MenuItem>
                 ))}
               </TextField>
+              <TextField label="Correo" name="email" value={user.email} onChange={onChangeFields} fullWidth />
             </Grid>
           </Box>
         </DialogContent>
