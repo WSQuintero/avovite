@@ -12,6 +12,8 @@ import DateRangeModalMovementsTwo from "../Components/Admin/DateRangeModalMoveme
 import { formatDate } from "../utilities";
 import { NumericFormat } from "react-number-format";
 import BackButton from "../Components/BackButton";
+import Pagination from "../Components/Admin/Pagination";
+import CustomContractRangeFilter from "../Components/Admin/CustomContractRangeFilter";
 
 function Movements({ handleClick }) {
   const [rows, setRows] = useState([]);
@@ -21,6 +23,8 @@ function Movements({ handleClick }) {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpenTwo, setModalOpenTwo] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentSize, setCurrentSize] = useState(10);
 
   const tableHeadCells = useMemo(
     () => [
@@ -139,14 +143,14 @@ function Movements({ handleClick }) {
         disablePadding: false,
         format: (value) => value,
       },
-      {
-        id: "user_bank_account_type",
-        label: "Tipo de Cuenta del Usuario",
-        align: "center",
-        width: "200px",
-        disablePadding: false,
-        format: (value) => value,
-      },
+      // {
+      //   id: "user_bank_account_type",
+      //   label: "Tipo de Cuenta del Usuario",
+      //   align: "center",
+      //   width: "200px",
+      //   disablePadding: false,
+      //   format: (value) => value,
+      // },
       // {
       //   id: "user_id_bank",
       //   label: "ID del Banco del Usuario",
@@ -194,7 +198,7 @@ function Movements({ handleClick }) {
 
   const fetchData = async () => {
     try {
-      const { status, data } = await $Movement.get({ page: 1, pagezise: 10 });
+      const { status, data } = await $Movement.get({ page: currentPage, pagezise: currentSize });
       if ((status, data)) {
         setRows(
           data.data.map((movement) => ({
@@ -212,7 +216,7 @@ function Movements({ handleClick }) {
             transaction: movement.transaction,
             transaction_value: movement.transaction_value,
             user_bank_account_number: movement.user_bank_account_number,
-            user_bank_account_type: movement.user_bank_account_type,
+            // user_bank_account_type: movement.user_bank_account_type,
             // user_id_bank: movement.user_id_bank,
             withdrawal: movement.withdrawal,
           }))
@@ -228,7 +232,7 @@ function Movements({ handleClick }) {
     if ($Movement) {
       fetchData();
     }
-  }, [$Movement, session]);
+  }, [$Movement, session, currentSize, currentPage]);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -243,12 +247,15 @@ function Movements({ handleClick }) {
   const handleExportDataByDateTwo = () => {
     setModalOpenTwo(true);
   };
+  const onPageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <>
       <PageWrapper>
         <BackButton />
-
+        <CustomContractRangeFilter setCurrentSize={setCurrentSize} setCurrentPage={setCurrentPage} />
         <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">
@@ -272,7 +279,14 @@ function Movements({ handleClick }) {
         </Typography>
 
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="desc" />
+          <EnhancedTable
+            loading={loading.fetching}
+            headCells={tableHeadCells}
+            rows={rows}
+            initialOrder="desc"
+            currentPage={currentPage}
+            onPageChange={onPageChange}
+          />
         </Grid>
 
         <Snackbar

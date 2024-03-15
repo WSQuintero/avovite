@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableRow from "./EnhancedTableRow";
+import Pagination from "./Admin/Pagination";
 
 function EnhancedTable({
   headCells,
@@ -26,6 +27,8 @@ function EnhancedTable({
   loading = false,
   detailsProduction,
   initialCount,
+  currentPage,
+  onPageChange,
 }) {
   const [order, setOrder] = useState(initialOrder);
   const [orderBy, setOrderBy] = useState(initialOrderBy || headCells[0]?.id || "");
@@ -101,16 +104,20 @@ function EnhancedTable({
       <Grid display="flex" alignItems="center" paddingLeft={2}>
         {footer}
         <Box flexGrow={1} />
-        <TablePagination
-          labelRowsPerPage="Filas por página"
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        {currentPage ? (
+          <Pagination currentPage={currentPage} onPageChange={onPageChange} />
+        ) : (
+          <TablePagination
+            labelRowsPerPage="Filas por página"
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
       </Grid>
     </>
   );
