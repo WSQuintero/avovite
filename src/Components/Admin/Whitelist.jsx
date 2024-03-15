@@ -20,6 +20,7 @@ import useSession from "../../Hooks/useSession";
 import EnhancedTable from "../EnhancedTable";
 import { CONTRACT_TYPES } from "../../utilities/constants";
 import BackButton from "../BackButton";
+import ModalCreateContractWhitelist from "../ModalCreateContractWhitelist";
 
 function Whitelist() {
   const [session] = useSession();
@@ -29,7 +30,7 @@ function Whitelist() {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const isValidUser = useMemo(() => user.email && user.mortgage !== "-", [user]);
   const $Whitelist = useMemo(() => (session.token ? new WHiteListService(session.token) : null), [session.token]);
-
+  const [modalCreateContractWhitelistIsOpen, setModalCreateContractWhitelistIsOpen] = useState(false);
   const productsHeadCells = useMemo(
     () => [
       {
@@ -163,13 +164,11 @@ function Whitelist() {
 
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
-          <Button variant="contained" size="small" onClick={() => setModal("create")}>
-            Crear
-          </Button>
+          <ModalCreateContractWhitelist setFeedback={setFeedback} />
         </Grid>
         <EnhancedTable headCells={productsHeadCells} rows={users} />
       </Grid>
-
+      {/*
       <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
         <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} producto</DialogTitle>
         <DialogContent>
@@ -205,7 +204,7 @@ function Whitelist() {
             </Button>
           </Grid>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       <Dialog maxWidth="sm" open={modal === "delete"} onClose={onClearFields} fullWidth>
         <DialogTitle>Eliminar usuario de la lista</DialogTitle>
@@ -221,7 +220,6 @@ function Whitelist() {
           </Button>
         </DialogActions>
       </Dialog>
-
       <Snackbar
         open={feedback.open}
         autoHideDuration={3000}
