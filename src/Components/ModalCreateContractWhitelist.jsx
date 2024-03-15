@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Switch, TextField, Typography } from "@mui/material";
 import useSession from "../Hooks/useSession";
 import useUser from "../Hooks/useUser";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import ContractService from "../Services/contract.service";
 const initialState = {
   enable_to_pay_epayco: "",
   mortgage_contract: "",
@@ -45,7 +46,9 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
   const [values, setValues] = useState(initialState);
   const [financedContracts, setFinancedContracts] = useState([]);
-  const [quotes, setQuotes] = useState([]); // Definimos el estado del array de citas
+  const [quotes, setQuotes] = useState([]);
+  const [session] = useSession();
+  const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
 
   const [id, setId] = useState(0);
   const handleOpen = () => {
@@ -62,10 +65,38 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
     setUserInfoLoaded(true);
     // Lógica para buscar y mostrar los textos
   };
+  function formatDateToYYYYMMDD(dateString) {
+    const fecha = new Date(dateString);
 
-  const handleCaptureData = () => {
-    const toSend = { ...values, financed_contracts: JSON.stringify(quotes) };
-    console.log(toSend);
+    // Obtener año, mes y día de la fecha
+    const año = fecha.getFullYear();
+    const mes = fecha.getMonth() + 1; // Los meses son indexados desde 0, por lo que necesitamos sumar 1
+    const dia = fecha.getDate();
+
+    // Formatear la fecha en el formato deseado (YYYY-MM-DD)
+    const fechaFormateada = `${año}-${mes < 10 ? "0" + mes : mes}-${dia < 10 ? "0" + dia : dia}`;
+
+    return fechaFormateada;
+  }
+
+  const handleCaptureData = async () => {
+    const toSend = {
+      ...values,
+      financed: values.financed ? 1 : 0,
+      with_guarantee: values.with_guarantee ? 1 : 0,
+      enable_to_pay_epayco: values.enable_to_pay_epayco ? 1 : 0,
+      mortgage_contract: values.mortgage_contract ? 1 : 0,
+      financed_contracts: quotes,
+      id_user: Number(id),
+    };
+
+    const { status, data } = await $Contract.createContract(toSend);
+    if (status) {
+      setFeedback({ open: true, message: "Contrato creado correctamente", status: "success" });
+      setOpen(false);
+    } else {
+      setFeedback({ open: true, message: "Hubo un error al crear el contrato", status: "error" });
+    }
   };
 
   const resetData = () => {
@@ -116,10 +147,10 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
         <DialogContent sx={{ padding: "100px" }}>
           <TextField
             label="Id usuario a buscar"
-            type="text"
+            type="number"
             fullWidth
             value={id}
-            onChange={({ target: { value } }) => setId(value)}
+            onChange={({ target: { value } }) => setId(Number(value))}
             sx={{ marginTop: "20px" }}
           />
           <Button variant="contained" onClick={handleSearchUser} sx={{ marginTop: "20px" }}>
@@ -143,7 +174,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                       value={dayjs(values["first_payment_date"])}
                       format="DD/MM/YYYY"
                       slotProps={{ textField: { error: false } }}
-                      onChange={(value) => setValues((prev) => ({ ...prev, [prop]: value.toDate() }))}
+                      onChange={(value) => setValues((prev) => ({ ...prev, [prop]: formatDateToYYYYMMDD(value.toDate()) }))}
                       sx={{ width: "100%", marginTop: 2 }}
                     />
                   ) : (
@@ -206,7 +237,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                     id={`date_payment${index + 1}`}
                     slotProps={{ textField: { error: false } }}
                     sx={{ width: "100%", marginTop: 2 }}
-                    onChange={(value) => handleGetCharge({ name: `date_payment${index + 1}`, value: value.toDate() })}
+                    onChange={(value) => handleGetCharge({ name: `date_payment${index + 1}`, value: formatDateToYYYYMMDD(value.toDate()) })}
                   />
                 </Grid>
               </Grid>
