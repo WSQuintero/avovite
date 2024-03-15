@@ -19,7 +19,7 @@ const initialState = {
   first_payment: "",
   first_payment_date: "",
   total_financed: "",
-  payment_numbers: "",
+  payment_numbers: 0,
 };
 const translate = {
   enable_to_pay_epayco: "Habilitado para pagar con Epayco",
@@ -63,7 +63,10 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
     // Lógica para buscar y mostrar los textos
   };
 
-  const handleCaptureData = () => {};
+  const handleCaptureData = () => {
+    const toSend = { ...values, financed_contracts: JSON.stringify(quotes) };
+    console.log(toSend);
+  };
 
   const resetData = () => {
     setUserInfoLoaded(false);
@@ -131,7 +134,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                       <Typography>{translate[prop]}</Typography>
                       <Switch
                         checked={values.prop}
-                        onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: value }))}
+                        onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: Number(value) }))}
                       />
                     </>
                   ) : prop === "first_payment_date" ? (
@@ -151,25 +154,25 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                       fullWidth
                       value={prop === "id_user" ? id : values.prop}
                       disbled={prop === "id_user"}
-                      onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: value }))}
+                      onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: Number(value) }))}
                       sx={{ marginTop: "20px" }}
                     />
                   )}
                 </div>
               ))}
 
-              <TextField
+              {/* <TextField
                 label="Número de cuotas"
                 type="number"
                 value={numCuotas}
                 onChange={(e) => setNumCuotas(e.target.value)}
                 fullWidth
                 sx={{ marginTop: 2 }}
-              />
+              /> */}
             </Box>
           )}
 
-          {Array.from({ length: numCuotas }).map((_, index) => (
+          {Array.from({ length: values.payment_numbers }).map((_, index) => (
             <Paper elevation={3} style={{ padding: 20 }} key={index}>
               <Typography variant="h6" gutterBottom>
                 Cuota {index + 1}
