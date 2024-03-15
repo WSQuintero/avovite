@@ -40,6 +40,8 @@ import useSession from "../../Hooks/useSession";
 import { useNavigate } from "react-router-dom";
 import useLastContract from "../../Hooks/useLastContract";
 import DocumentUploadModal from "./DocumentUploadModal ";
+import useUser from "../../Hooks/useUser";
+import DialogKYC from "../Dialogs/KYC";
 // import DialogKYC from "./Dialogs/KYC";
 
 const initialState = {
@@ -216,7 +218,27 @@ function InvasiveForm({ contractId }) {
   const [backDoc, setBackDoc] = useState(null);
   const [bankCert, setBankCert] = useState(null);
   const [rut, setRut] = useState(null);
+  const [session, { setUser, logout }] = useSession();
+  const [notIsKyc, setNotIsKyc] = useState(false);
+  const [isKyc, setIsKyc] = useState(false);
+  const $User = useUser();
+  const [modal, setModal] = useState({ kyc: false });
 
+  const handleSubmitKYC = async (form) => {
+    const body = new FormData();
+    body.append("faces", form.document);
+    body.append("faces", form.face1);
+    body.append("faces", form.face2);
+
+    const { status } = await $User.sendKYC(body);
+
+    if (status) {
+      setUser({ ...session?.user, KYC: 1 });
+      setIsKyc(true);
+    }
+
+    return status;
+  };
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
     const { name, checked, value } = event.target;
@@ -355,6 +377,7 @@ function InvasiveForm({ contractId }) {
 
       if (status) {
         setLoading(false);
+        setNotIsKyc(false)
         setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
         // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else {
@@ -386,6 +409,15 @@ function InvasiveForm({ contractId }) {
       setActualContract(data.data[data.data.length - 1]);
     }
   };
+  useEffect(() => {
+    if (session?.user) {
+      if (session?.user?.KYC === 1 || session?.user?.isAdmin()) {
+        setIsKyc(true);
+      } else {
+        setNotIsKyc(true);
+      }
+    }
+  }, [session]);
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
       <Stack>
@@ -1193,6 +1225,14 @@ function InvasiveForm({ contractId }) {
           </LoadingButton>
         </Grid>
       </Stack>
+      {notIsKyc && (
+        <>
+          <DialogTitle style={{ textAlign: "center", marginTop: "100px" }}>
+            Antes de iniciar, por favor acepta la política de KYC
+          </DialogTitle>
+          <DialogKYC open={true} onClose={() => setModal({ ...modal, kyc: false })} onSubmit={handleSubmitKYC} logout={() => logout()} />
+        </>
+      )}{" "}
       <Dialog open={feedback.open && feedback.status === "success"} onClose={resetFeedback}>
         <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
           <CheckIcon fontSize="large" />

@@ -8,36 +8,9 @@ import { useEffect, useState } from "react";
 
 function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
   const [session, { setUser, logout }] = useSession();
-  const [modal, setModal] = useState({ kyc: false });
   const $User = useUser();
   const [isKyc, setIsKyc] = useState(false);
   const [notIsKyc, setNotIsKyc] = useState(false);
-
-  const handleSubmitKYC = async (form) => {
-    const body = new FormData();
-    body.append("faces", form.document);
-    body.append("faces", form.face1);
-    body.append("faces", form.face2);
-
-    const { status } = await $User.sendKYC(body);
-
-    if (status) {
-      setUser({ ...session?.user, KYC: 1 });
-      setIsKyc(true);
-    }
-
-    return status;
-  };
-
-  useEffect(() => {
-    if (session?.user) {
-      if (session?.user?.KYC === 1 || session?.user?.isAdmin()) {
-        setIsKyc(true);
-      } else {
-        setNotIsKyc(true);
-      }
-    }
-  }, [session]);
 
   return (
     <>
@@ -58,20 +31,7 @@ function PageWrapper({ collapseSidebar, isInvalidSession = false, children }) {
               },
             })}
           >
-            {isKyc && children}
-            {notIsKyc && (
-              <>
-                <DialogTitle style={{ textAlign: "center", marginTop: "100px" }}>
-                  Antes de iniciar, por favor acepta la política de KYC
-                </DialogTitle>
-                <DialogKYC
-                  open={true}
-                  onClose={() => setModal({ ...modal, kyc: false })}
-                  onSubmit={handleSubmitKYC}
-                  logout={() => logout()}
-                />
-              </>
-            )}{" "}
+            {children}
           </Box>
         </Grid>
       </Grid>
