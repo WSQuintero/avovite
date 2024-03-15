@@ -47,6 +47,7 @@ import DateRangeModal from "./DateRangeModal";
 import BackButton from "../BackButton";
 import CustomContractRangeFilter from "./CustomContractRangeFilter";
 import Pagination from "../Admin/Pagination";
+import ConfirmCancelModal from "../ConfirmCancelModal";
 const columns = [
   {
     accessorKey: "id",
@@ -218,7 +219,10 @@ const Contracts = () => {
   const [contractDues, setContractDues] = useState({ id: null, dues: [] });
   const $Due = useMemo(() => new DueService(token), [token]);
   const [loadingDue, setLoadingDue] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
   const fetchContracts = async () => {
     try {
       const {
@@ -449,6 +453,10 @@ const Contracts = () => {
   const handleApplyContractRangeFilter = (startIndex, endIndex) => {
     setContractRangeFilter({ startIndex, endIndex });
   };
+
+  const handleCancelContract = () => {
+    console.log("cancelado");
+  };
   return (
     <>
       <BackButton />
@@ -488,16 +496,17 @@ const Contracts = () => {
             disabled={original.status_contracts !== 0}
             onClick={() => {
               closeMenu();
-              setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
+              // setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
             }}
           >
             Completar contrato
           </MenuItem>,
           <MenuItem
             key={2}
-            disabled={original.status_contracts !== 0}
+            // disabled={original.status_contracts !== 0}
             onClick={() => {
               closeMenu();
+              setOpen(true);
             }}
           >
             Cancelar contrato
@@ -748,7 +757,7 @@ const Contracts = () => {
           </Box>
         )}
       />
-
+      <ConfirmCancelModal open={open} handleClose={handleClose} handleConfirm={handleCancelContract} />
       <Dialog open={!!selectedContract} onClose={onCancelCreateContract} maxWidth="xl" fullWidth>
         <DialogTitle color="primary.main">Completar contrato</DialogTitle>
         <DialogContent>
