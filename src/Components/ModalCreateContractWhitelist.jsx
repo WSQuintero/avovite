@@ -90,6 +90,23 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
       id_user: Number(id),
     };
 
+    if (
+      Object.keys(toSend).some((key) => {
+        if (
+          key !== "financed" ||
+          key !== "with_guarantee" ||
+          key !== "enable_to_pay_epayco" ||
+          key !== "mortgage_contract" ||
+          key !== "financed_contracts"
+        ) {
+          return initialState[key] === toSend[key];
+        }
+      })
+    ) {
+      setFeedback({ open: true, message: "Debes diligenciar todos los campos", status: "error" });
+      return;
+    }
+
     const { status, data } = await $Contract.createContract(toSend);
     if (status) {
       setFeedback({ open: true, message: "Contrato creado correctamente", status: "success" });
@@ -152,6 +169,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
             value={id}
             onChange={({ target: { value } }) => setId(Number(value))}
             sx={{ marginTop: "20px" }}
+            required
           />
           <Button variant="contained" onClick={handleSearchUser} sx={{ marginTop: "20px" }}>
             Buscar
@@ -176,6 +194,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                       slotProps={{ textField: { error: false } }}
                       onChange={(value) => setValues((prev) => ({ ...prev, [prop]: formatDateToYYYYMMDD(value.toDate()) }))}
                       sx={{ width: "100%", marginTop: 2 }}
+                      required
                     />
                   ) : (
                     <TextField
@@ -187,6 +206,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                       disbled={prop === "id_user"}
                       onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: Number(value) }))}
                       sx={{ marginTop: "20px" }}
+                      required
                     />
                   )}
                 </div>
@@ -218,6 +238,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                     value={index + 1}
                     disabled={index !== undefined}
                     onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
+                    required
                   />
                 </Grid>
                 <Grid item xs={12} sm={4} marginTop={2}>
@@ -227,6 +248,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                     id={`payment_amount${index + 1}`}
                     fullWidth
                     label="Cantidad de pago"
+                    required
                   />
                 </Grid>
                 <Grid item xs={12} sm={4} marginTop={2}>
@@ -238,6 +260,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                     slotProps={{ textField: { error: false } }}
                     sx={{ width: "100%", marginTop: 2 }}
                     onChange={(value) => handleGetCharge({ name: `date_payment${index + 1}`, value: formatDateToYYYYMMDD(value.toDate()) })}
+                    required
                   />
                 </Grid>
               </Grid>
