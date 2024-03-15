@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Switch, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, Switch, TextField, Typography } from "@mui/material";
 import useSession from "../Hooks/useSession";
 import useUser from "../Hooks/useUser";
 import dayjs from "dayjs";
@@ -44,6 +44,9 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
   const [numCuotas, setNumCuotas] = useState(0);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
   const [values, setValues] = useState(initialState);
+  const [financedContracts, setFinancedContracts] = useState([]);
+  const [quotes, setQuotes] = useState([]); // Definimos el estado del array de citas
+
   const [id, setId] = useState(0);
   const handleOpen = () => {
     resetData();
@@ -60,13 +63,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
     // Lógica para buscar y mostrar los textos
   };
 
-  const handleGenerateCuotas = () => {
-    // Lógica para generar las cuotas
-  };
-
-  const handleCaptureData = () => {
-    // Lógica para capturar los datos del modal
-  };
+  const handleCaptureData = () => {};
 
   const resetData = () => {
     setUserInfoLoaded(false);
@@ -75,9 +72,37 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
     setId(0);
   };
 
+  // useEffect(() => {
+  //   console.log(values);
+  // }, [values]);
+
+  const handleGetCharge = ({ name, value }) => {
+    const existingQuoteIndex = quotes.findIndex((quote) => quote.quota_number === Number(name.charAt(name.length - 1)));
+    const quote = existingQuoteIndex !== -1 ? quotes[existingQuoteIndex] : {};
+    if (name.slice(0, -1) === "payment_amount") {
+      quote.payment_amount = value;
+    }
+    if (name.slice(0, -1) === "date_payment") {
+      quote.date_payment = value;
+    }
+    if (existingQuoteIndex === -1) {
+      quote.quota_number = Number(name.charAt(name.length - 1));
+    }
+
+    const updatedQuotes = [...quotes];
+    if (existingQuoteIndex !== -1) {
+      updatedQuotes[existingQuoteIndex] = quote;
+    } else {
+      updatedQuotes.push(quote);
+    }
+
+    setQuotes(updatedQuotes);
+  };
+
   useEffect(() => {
-    console.log(values);
-  }, [values]);
+    console.log(financedContracts);
+  }, [financedContracts]);
+
   return (
     <div>
       <Button variant="contained" onClick={handleOpen}>
@@ -141,18 +166,54 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                 fullWidth
                 sx={{ marginTop: 2 }}
               />
-              <Button variant="contained" onClick={handleGenerateCuotas} sx={{ marginTop: 2 }}>
-                Generar Cuotas
-              </Button>
             </Box>
           )}
 
-          {/* Aquí van los contenedores de cuotas */}
+          {Array.from({ length: numCuotas }).map((_, index) => (
+            <Paper elevation={3} style={{ padding: 20 }} key={index}>
+              <Typography variant="h6" gutterBottom>
+                Cuota {index + 1}
+              </Typography>
+              <Grid item spacing={2}>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    name={`quota_number${index + 1}`}
+                    id={`quota_number${index + 1}`}
+                    fullWidth
+                    label="Número de cuota"
+                    value={index + 1}
+                    disabled={index !== undefined}
+                    onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} marginTop={2}>
+                  <TextField
+                    onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
+                    name={`payment_amount${index + 1}`}
+                    id={`payment_amount${index + 1}`}
+                    fullWidth
+                    label="Cantidad de pago"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} marginTop={2}>
+                  <DatePicker
+                    label="Fecha de pago"
+                    // value={dayjs(values["first_payment_date"])}
+                    format="DD/MM/YYYY"
+                    id={`date_payment${index + 1}`}
+                    slotProps={{ textField: { error: false } }}
+                    sx={{ width: "100%", marginTop: 2 }}
+                    onChange={(value) => handleGetCharge({ name: `date_payment${index + 1}`, value: value.toDate() })}
+                  />
+                </Grid>
+              </Grid>
+            </Paper>
+          ))}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cerrar</Button>
           <Button onClick={handleCaptureData} variant="contained">
-            Capturar Datos
+            Crear
           </Button>
         </DialogActions>
       </Dialog>
