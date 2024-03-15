@@ -421,13 +421,10 @@ function Discounts({ service: $Shop, state, products, feedback }) {
       setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
       return;
     }
-    console.log(discount);
 
     const { status, data } = await $Shop.discount.update(discount);
 
     if (status) {
-      console.log(data);
-
       setDiscounts((prev) => prev.map((p) => (p.id === discount.id ? discount : p)));
       setFeedback({ open: true, message: "Descuento actualizado exitosamente.", status: "success" });
       onClearFields();
@@ -448,9 +445,6 @@ function Discounts({ service: $Shop, state, products, feedback }) {
     }
   };
 
-  useEffect(() => {
-    console.log(discount);
-  }, [discount]);
   return (
     <>
       <Grid display="flex" flexDirection="column" gap={2}>

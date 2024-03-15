@@ -47,7 +47,6 @@ function ContractValidation() {
       if (!data.data?.pendings?.length) {
         navigate("/");
       } else {
-        console.log(data);
         setContracts(data.data);
       }
     }

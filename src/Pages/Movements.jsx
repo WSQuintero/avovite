@@ -147,14 +147,14 @@ function Movements({ handleClick }) {
         disablePadding: false,
         format: (value) => value,
       },
-      {
-        id: "user_id_bank",
-        label: "ID del Banco del Usuario",
-        align: "center",
-        width: "200px",
-        disablePadding: false,
-        format: (value) => value,
-      },
+      // {
+      //   id: "user_id_bank",
+      //   label: "ID del Banco del Usuario",
+      //   align: "center",
+      //   width: "200px",
+      //   disablePadding: false,
+      //   format: (value) => value,
+      // },
       {
         id: "withdrawal",
         label: "Retiro",
@@ -194,7 +194,7 @@ function Movements({ handleClick }) {
 
   const fetchData = async () => {
     try {
-      const { status, data } = await $Movement.get();
+      const { status, data } = await $Movement.get({ page: 1, pagezise: 10 });
       if ((status, data)) {
         setRows(
           data.data.map((movement) => ({
@@ -213,14 +213,14 @@ function Movements({ handleClick }) {
             transaction_value: movement.transaction_value,
             user_bank_account_number: movement.user_bank_account_number,
             user_bank_account_type: movement.user_bank_account_type,
-            user_id_bank: movement.user_id_bank,
+            // user_id_bank: movement.user_id_bank,
             withdrawal: movement.withdrawal,
           }))
         );
         setLoading((prev) => ({ ...prev, fetching: false }));
       }
     } catch (error) {
-      console.error("Error al obtener los tickets:", error);
+      console.error("Error al obtener los movimientos:", error);
     }
   };
 

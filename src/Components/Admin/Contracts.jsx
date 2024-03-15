@@ -494,6 +494,15 @@ const Contracts = () => {
             Completar contrato
           </MenuItem>,
           <MenuItem
+            key={2}
+            disabled={original.status_contracts !== 0}
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+            Cancelar contrato
+          </MenuItem>,
+          <MenuItem
             key={3}
             disabled={original.status_contracts === 0}
             onClick={async () => {

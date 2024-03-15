@@ -61,7 +61,6 @@ export default class TicketService {
       );
     } else {
       // Si no hay archivos, enviar la información directamente sin FormData
-      console.log("No hay archivos para enviar. Enviando los demás datos sin FormData.");
 
       // Eliminar la clave 'files' del body antes de enviar
       delete body.files;

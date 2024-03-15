@@ -61,7 +61,6 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
   };
 
   const handleSearchUser = async () => {
-    console.log(values);
     setUserInfoLoaded(true);
     // Lógica para buscar y mostrar los textos
   };
@@ -123,10 +122,6 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
     setId(0);
   };
 
-  // useEffect(() => {
-  //   console.log(values);
-  // }, [values]);
-
   const handleGetCharge = ({ name, value }) => {
     const existingQuoteIndex = quotes.findIndex((quote) => quote.quota_number === Number(name.charAt(name.length - 1)));
     const quote = existingQuoteIndex !== -1 ? quotes[existingQuoteIndex] : {};
@@ -149,10 +144,6 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
 
     setQuotes(updatedQuotes);
   };
-
-  useEffect(() => {
-    console.log(financedContracts);
-  }, [financedContracts]);
 
   return (
     <div>
