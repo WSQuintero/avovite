@@ -24,7 +24,7 @@ import PageWrapper from "../Components/PageWrapper";
 import CoverImage from "../assets/img/signup/background.png";
 import AuthService from "../Services/user.service";
 import { DOCUMENT_TYPES } from "../utilities/constants";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import useUser from "../Hooks/useUser";
 
 const Row = ({ children }) => (
@@ -59,23 +59,22 @@ function Profile() {
     user_bank_account_number: "",
   });
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
-  const [countryInfo,setCountry]=useState(null)
+  const [countryInfo, setCountry] = useState(null);
   const $User = useUser();
 
+  useEffect(() => {
+    if ($User) {
+      const getInformationUser = async () => {
+        const { status, data } = await $User.get();
 
-  useEffect(()=>{
-    if($User){
-      const getInformationUser=async ()=>{
-        const {status,data}=await $User.get()
-
-        if(status){
-          const country =data.data.find((a)=>a.id===session.user.id).country
-          setCountry(country)
+        if (status) {
+          const country = data.data.find((a) => a.id === session.user.id).country;
+          setCountry(country);
         }
-      }
-      getInformationUser()
+      };
+      getInformationUser();
     }
-      },[$User,session])
+  }, [$User, session]);
 
   const resetAlert = () => {
     setAlert((prev) => ({ show: false, message: prev.message, status: prev.status }));
@@ -83,9 +82,9 @@ function Profile() {
 
   useEffect(() => {
     if (session.user) {
-      if(session.user.status_terms_and_conditions==0||!session.user.status_terms_and_conditions_date){
-        navigate('/dashboard');
-      }else{
+      if (session.user.status_terms_and_conditions == 0 || !session.user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
+      } else {
         setUser({
           avatar: session.user.avatar || null,
           fullname: session.user.fullname || "",
@@ -97,9 +96,7 @@ function Profile() {
           location_residence: session.user.location_residence || "",
         });
       }
-
     }
-
   }, [session.user]);
 
   if (!session.user) {
@@ -107,10 +104,10 @@ function Profile() {
   }
 
   const handleReadOnlyInputChange = () => {
-    resetAlert()
-    setTimeout(()=>{
+    resetAlert();
+    setTimeout(() => {
       setAlert({ show: true, message: "Por favor, para modificar tu información, crea un ticket.", status: "info" });
-    },500)
+    }, 500);
   };
   return (
     <PageWrapper>
@@ -146,12 +143,7 @@ function Profile() {
               },
             })}
           >
-            <TextField
-              type="file"
-              accept="image/*"
-              id="input-select-avatar"
-              sx={{ display: "none" }}
-            />
+            <TextField type="file" accept="image/*" id="input-select-avatar" sx={{ display: "none" }} />
             {/*<label htmlFor="input-select-avatar">
               <IconButton
                 component="span"
@@ -210,124 +202,115 @@ function Profile() {
           </Grid>
         </Box>
         <Box height={32} />
-        <Grid
-        component="form"
-        display="flex"
-        flexDirection="column"
-        padding={2}
-        gap={4}
-        noValidate
-      >
-        <Row>
-          <TextField
-            name="fullname"
-            label="Nombres y Apellidos"
-            value={user.fullname}
-            required
-            fullWidth
-            InputProps={{
-              readOnly: true,
-              onFocus: handleReadOnlyInputChange,
-            }}
-          />
-          <TextField
-            name="email"
-            label="Correo Electrónico"
-            value={user.email}
-            required
-            fullWidth
-            InputProps={{
-              readOnly: true,
-              onFocus: handleReadOnlyInputChange,
-            }}
-          />
-        </Row>
-        <Row>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel id="label-document-type">Tipo de Documento *</InputLabel>
-            <Select
-              labelId="label-document-type"
-              label="Tipo de Documento"
-              name="id_type"
-              value={session.user.last_contract.id_type ? session.user.last_contract.id_type: user.id_type}
+        <Grid component="form" display="flex" flexDirection="column" padding={2} gap={4} noValidate>
+          <Row>
+            <TextField
+              name="fullname"
+              label="Nombres y Apellidos"
+              value={user.fullname}
               required
               fullWidth
-              disabled
-              onFocus={handleReadOnlyInputChange}
-            >
-              <MenuItem value="-" selected disabled>
-                Seleccione una opción
-              </MenuItem>
-              {Object.keys(DOCUMENT_TYPES).map((key) => (
-                <MenuItem key={key} value={key}>
-                  {DOCUMENT_TYPES[key]}
+              InputProps={{
+                readOnly: true,
+                onFocus: handleReadOnlyInputChange,
+              }}
+            />
+            <TextField
+              name="email"
+              label="Correo Electrónico"
+              value={user.email}
+              required
+              fullWidth
+              InputProps={{
+                readOnly: true,
+                onFocus: handleReadOnlyInputChange,
+              }}
+            />
+          </Row>
+          <Row>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel id="label-document-type">Tipo de Documento *</InputLabel>
+              <Select
+                labelId="label-document-type"
+                label="Tipo de Documento"
+                name="id_type"
+                value={session.user.last_contract.id_type ? session.user.last_contract.id_type : user.id_type}
+                required
+                fullWidth
+                disabled
+                onFocus={handleReadOnlyInputChange}
+              >
+                <MenuItem value="-" selected disabled>
+                  Seleccione una opción
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            name="id_number"
-            type="number"
-            label="Número de Documento"
-            value={session.user.last_contract.id_number ? session.user.last_contract.id_number: user.id_number}
-            required
-            fullWidth
-            InputProps={{
-              readOnly: true,
-              onFocus: handleReadOnlyInputChange,
-            }}
-          />
-        </Row>
-        <Row>
-          <TextField
-            name="id_location_expedition"
-            label="Lugar de Expedición del Documento"
-            value={session.user.last_contract.id_location_expedition ? session.user.last_contract.id_location_expedition: user.id_location_expedition}
-            required
-            fullWidth
-            InputProps={{
-              readOnly: true,
-              onFocus: handleReadOnlyInputChange,
-            }}
-          />
-        </Row>
-        <Row>
-          {/* PhoneField component disabled */}
-          <TextField
-            name="cellphone"
-            label="Teléfono de Contacto"
-            value={user.cellphone}
-            required
-            fullWidth
-            InputProps={{
-              readOnly: true,
-              onFocus: handleReadOnlyInputChange,
-            }}
-          />
-          <TextField
-            name="location_residence"
-            label="País de Residencia"
-            value={countryInfo ===null?"Colombia":countryInfo}
-            required
-            fullWidth
-            InputProps={{
-              readOnly: true,
-              onFocus: handleReadOnlyInputChange,
-            }}
-          />
-
-        </Row>
-      </Grid>
-      <Snackbar
-        open={alert.show}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        onClose={resetAlert}
-      >
-        <Alert severity={alert.status} sx={{ width: "100%" }}>
-          {alert.message}
-        </Alert>
-      </Snackbar>
+                {Object.keys(DOCUMENT_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {DOCUMENT_TYPES[key]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              name="id_number"
+              type="number"
+              label="Número de Documento"
+              value={session.user.last_contract.id_number ? session.user.last_contract.id_number : user.id_number}
+              required
+              fullWidth
+              InputProps={{
+                readOnly: true,
+                onFocus: handleReadOnlyInputChange,
+              }}
+            />
+          </Row>
+          <Row>
+            <TextField
+              name="id_location_expedition"
+              label="Lugar de Expedición del Documento"
+              value={
+                session.user.last_contract.id_location_expedition
+                  ? session.user.last_contract.id_location_expedition
+                  : user.id_location_expedition
+              }
+              required
+              fullWidth
+              InputProps={{
+                readOnly: true,
+                onFocus: handleReadOnlyInputChange,
+              }}
+            />
+          </Row>
+          <Row>
+            {/* PhoneField component disabled */}
+            <TextField
+              name="cellphone"
+              label="Teléfono de Contacto"
+              value={user.cellphone}
+              required
+              fullWidth
+              InputProps={{
+                readOnly: true,
+                onFocus: handleReadOnlyInputChange,
+              }}
+            />
+            <TextField
+              name="location_residence"
+              label="País de Residencia"
+              value={countryInfo === null ? "Colombia" : countryInfo}
+              required
+              fullWidth
+              InputProps={{
+                readOnly: true,
+                onFocus: handleReadOnlyInputChange,
+              }}
+            />
+          </Row>
+        </Grid>
+        <Snackbar open={alert.show} autoHideDuration={3000} anchorOrigin={{ vertical: "top", horizontal: "right" }} onClose={resetAlert}>
+          <Alert severity={alert.status} sx={{ width: "100%" }}>
+            {alert.message}
+          </Alert>
+        </Snackbar>
       </Container>
     </PageWrapper>
   );

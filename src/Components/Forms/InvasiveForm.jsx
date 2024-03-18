@@ -358,7 +358,6 @@ function InvasiveForm({ contractId }) {
 
     // Crea un nuevo objeto FormData
     const formDataToSend = new FormData();
-
     // Agrega los datos del formulario al objeto FormData
     const { numberOfShareholders, numberOfInternationalOperations, ...restFormData } = formData;
     Object.entries(restFormData).forEach(([key, value]) => {
@@ -373,11 +372,11 @@ function InvasiveForm({ contractId }) {
 
     try {
       // Envía el objeto FormData a través de sendInvasiveForm
-      const { status } = await $Contract.sendInvasiveForm(formDataToSend);
+      const { status } = await $Contract.sendInvasiveForm(restFormData);
 
       if (status) {
         setLoading(false);
-        setNotIsKyc(false)
+        setNotIsKyc(false);
         setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
         // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else {

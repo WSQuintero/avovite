@@ -88,7 +88,6 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
       financed_contracts: quotes,
       id_user: Number(id),
     };
-
     if (
       Object.keys(toSend).some((key) => {
         if (
@@ -174,7 +173,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
                       <Typography>{translate[prop]}</Typography>
                       <Switch
                         checked={values.prop}
-                        onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: Number(value) }))}
+                        onChange={({ target: { checked } }) => setValues((prev) => ({ ...prev, [prop]: checked }))}
                       />
                     </>
                   ) : prop === "first_payment_date" ? (

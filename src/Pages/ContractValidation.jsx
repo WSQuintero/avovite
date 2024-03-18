@@ -28,16 +28,17 @@ import InvasiveForm from "../Components/Forms/InvasiveForm";
 
 function ContractValidation() {
   const navigate = useNavigate();
-  const [{ token }] = useSession();
+  const [session] = useSession();
   const initialFormData = useLastContract();
   const [contracts, setContracts] = useState({});
   const [contract, setContract] = useState({});
   const [modal, setModal] = useState("warning");
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [resetForm, setResetForm] = useState(() => () => {});
-  const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
+  const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
   const [openInvasiveForm, setOpenInvasiveForm] = useState(false);
   const [contractsPendingSecondForm, setContractsPendingSecondForm] = useState([]);
+  const [whiteListContracts, setWhiteListContracts] = useState();
   const fetchContracts = async () => {
     setOpenInvasiveForm(false);
 
@@ -51,7 +52,16 @@ function ContractValidation() {
       }
     }
   };
+  const fetchContractsWhitelist = async () => {
+    setOpenInvasiveForm(false);
 
+    const { status, data } = await $Contract.get();
+
+    if (status) {
+      console.log(data.data.filter((contract) => contract.whiteList === 1));
+      setWhiteListContracts(data.data.filter((contract) => contract.whitelist === 1));
+    }
+  };
   const handleSelectContract = ({ id }) => {
     setModal("contract-complete");
     setContract({ id });
@@ -86,13 +96,20 @@ function ContractValidation() {
   };
 
   useEffect(() => {
-    if (token) {
+    if (session.token) {
       (async () => {
         await fetchContracts();
       })();
     }
-  }, [token]);
+  }, [session.token]);
 
+  useEffect(() => {
+    if (session.token) {
+      (async () => {
+        await fetchContractsWhitelist();
+      })();
+    }
+  }, [session.token]);
   return (
     <>
       {!openInvasiveForm ? (
@@ -104,6 +121,30 @@ function ContractValidation() {
               <Typography variant="h2">Contratos pendientes:</Typography>
               <List>
                 {(contracts.pendings || contractsPendingSecondForm || []).map((contract) => (
+                  <ListItem
+                    key={contract.id}
+                    onClick={() => handleSelectContract(contract)}
+                    secondaryAction={
+                      <Button variant="contained" edge="end">
+                        Completar
+                      </Button>
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton role={undefined} onClick={() => {}}>
+                      <ListItemIcon>
+                        <ContractIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`Contrato AV-${contract.id}`}
+                        secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
+                        primaryTypographyProps={{ fontSize: 20, color: "primary" }}
+                        secondaryTypographyProps={{ color: "text.main" }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+                {(whiteListContracts || []).map((contract) => (
                   <ListItem
                     key={contract.id}
                     onClick={() => handleSelectContract(contract)}
