@@ -91,7 +91,9 @@ export default class ContractService {
   async export() {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/all/excel`, this.config)).data);
   }
-
+  async cancelContract({ id }) {
+    return await handleCall(async () => (await axios.delete(`${this.API_URL}/contracts/cancelationAdmin/${id}`, this.config)).data);
+  }
   async sendSignature({ id }) {
     return await handleCall(async () => (await axios.get(`${this.API_URL}/contracts/signature/${id}`, this.config)).data);
   }
@@ -108,7 +110,7 @@ export default class ContractService {
     );
   }
   async sendInvasiveForm(body) {
-    return handleCall(async () => await axios.post(`${this.API_URL}/customerlinking/`, body, this.config).data);
+    return handleCall(async () => await axios.post(`${this.API_URL}/customerlinking/`, this.config).data);
   }
 
   async exportDocumentContract({ id }) {

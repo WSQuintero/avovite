@@ -363,22 +363,22 @@ function InvasiveForm({ contractId }) {
     Object.entries(restFormData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-
+    console.log(restFormData);
     // Agrega los archivos al objeto FormData
-    formDataToSend.append("frontDoc", frontDoc);
-    formDataToSend.append("backDoc", backDoc);
-    formDataToSend.append("bankCert", bankCert);
-    formDataToSend.append("rut", rut);
+    formDataToSend.append("files", frontDoc);
+    formDataToSend.append("files", backDoc);
+    formDataToSend.append("files", bankCert);
+    formDataToSend.append("files", rut);
 
     try {
       // Envía el objeto FormData a través de sendInvasiveForm
-      const { status } = await $Contract.sendInvasiveForm(restFormData);
+      const { status } = await $Contract.sendInvasiveForm(formDataToSend);
 
       if (status) {
         setLoading(false);
         setNotIsKyc(false);
         setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
-        // window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else {
         setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
       }

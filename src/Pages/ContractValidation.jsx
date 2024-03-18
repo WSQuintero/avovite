@@ -49,6 +49,7 @@ function ContractValidation() {
         navigate("/");
       } else {
         setContracts(data.data);
+        console.log(data.data);
       }
     }
   };
@@ -144,7 +145,7 @@ function ContractValidation() {
                     </ListItemButton>
                   </ListItem>
                 ))}
-                {(whiteListContracts || []).map((contract) => (
+                {whiteListContracts.map((contract) => (
                   <ListItem
                     key={contract.id}
                     onClick={() => handleSelectContract(contract)}

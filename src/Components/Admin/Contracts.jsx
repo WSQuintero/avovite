@@ -161,6 +161,12 @@ const columns = [
     id: "stateFignature",
     header: "Estado de la firma",
   },
+  {
+    accessorKey: "whiteList",
+    id: "whiteList",
+    header: "¿WhiteList?",
+    Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue === 0 ? "No" : "Si"}</Typography>,
+  },
 ];
 
 const Contracts = () => {
@@ -220,6 +226,7 @@ const Contracts = () => {
   const $Due = useMemo(() => new DueService(token), [token]);
   const [loadingDue, setLoadingDue] = useState(false);
   const [open, setOpen] = useState(false);
+  const [actualContractId, setActualContractId] = useState();
   const handleClose = () => {
     setOpen(false);
   };
@@ -231,6 +238,7 @@ const Contracts = () => {
       } = await $Contract.get({ pageNumber: currentPage, pageSize: currentSize });
 
       if (status) {
+        console.log(data);
         setContracts(data);
       }
     } catch (error) {
@@ -454,8 +462,14 @@ const Contracts = () => {
     setContractRangeFilter({ startIndex, endIndex });
   };
 
-  const handleCancelContract = () => {
-    console.log("cancelado");
+  const handleCancelContract = async () => {
+    const { status, data } = await $Contract.cancelContract({ id: actualContractId });
+    if (status) {
+      setFeedback({ open: true, message: "Contrato cancelado correctamente", status: "success" });
+      setOpen(false);
+    } else {
+      setFeedback({ open: true, message: "Hubo un error al cancelar el contrato", status: "error" });
+    }
   };
   return (
     <>
@@ -507,6 +521,7 @@ const Contracts = () => {
             onClick={() => {
               closeMenu();
               setOpen(true);
+              setActualContractId(original.id);
             }}
           >
             Cancelar contrato
