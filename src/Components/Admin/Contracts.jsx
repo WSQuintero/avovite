@@ -167,6 +167,16 @@ const columns = [
     header: "¿WhiteList?",
     Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue === 0 ? "No" : "Si"}</Typography>,
   },
+  {
+    accessorKey: "cancel_contract",
+    id: "cancel_contract",
+    header: "¿Contrato cancelado?",
+    Cell: ({ renderedCellValue }) => (
+      <Typography sx={{ backgroundColor: renderedCellValue === 0 ? "green" : "red", color: "white", textAlign: "center" }}>
+        {renderedCellValue === 0 ? "No" : "Si"}
+      </Typography>
+    ),
+  },
 ];
 
 const Contracts = () => {
@@ -227,6 +237,7 @@ const Contracts = () => {
   const [loadingDue, setLoadingDue] = useState(false);
   const [open, setOpen] = useState(false);
   const [actualContractId, setActualContractId] = useState();
+  const [isCancelContract, setIsCancelContract] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
@@ -443,7 +454,7 @@ const Contracts = () => {
         setLoading(false);
       })();
     }
-  }, [token, currentPage, currentSize]);
+  }, [token, currentPage, currentSize, isCancelContract]);
 
   const handleExportDataByDate = () => {
     // Abrir el modal al hacer clic en el botón
@@ -463,10 +474,12 @@ const Contracts = () => {
   };
 
   const handleCancelContract = async () => {
+    setIsCancelContract(false);
     const { status, data } = await $Contract.cancelContract({ id: actualContractId });
     if (status) {
       setFeedback({ open: true, message: "Contrato cancelado correctamente", status: "success" });
       setOpen(false);
+      setIsCancelContract(true);
     } else {
       setFeedback({ open: true, message: "Hubo un error al cancelar el contrato", status: "error" });
     }
