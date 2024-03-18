@@ -22,7 +22,7 @@ function ContractSelector({ allContracts, initialValue = [], onChange }) {
   const [endIndex, setEndIndex] = useState(10);
   const [rangeContracts, setRangeContracts] = useState(undefined);
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-
+  const [allChecked, setAllChecked] = useState(false);
   const onPageChange = async (value) => {
     setCurrentPage(value);
     const { status, data } = await $Contract.get({ pageNumber: value, pageSize: 10 });
@@ -54,6 +54,9 @@ function ContractSelector({ allContracts, initialValue = [], onChange }) {
     if (onChange) onChange(value);
   };
 
+  useEffect(() => {
+    console.log(selected);
+  }, [selected]);
   useAsyncEffect(async () => {
     const { status, data } = await $Contract.get();
 
@@ -140,7 +143,28 @@ function ContractSelector({ allContracts, initialValue = [], onChange }) {
             setTotalPages={setTotalPages}
           />
         </Box>
+        <Box sx={{ width: "100%", display: "flex", justifyContent: "left", alignItems: "center", paddingLeft: 2 }}>
+          <Checkbox
+            checked={allChecked}
+            onChange={() => {
+              onChange(
+                (rangeContracts || filteredContracts).length !== selected.length
+                  ? (rangeContracts || filteredContracts).map((a) => a.id)
+                  : []
+              );
+              setSelected(
+                (rangeContracts || filteredContracts).length !== selected.length
+                  ? (rangeContracts || filteredContracts).map((a) => a.id)
+                  : []
+              );
+              setAllChecked(!allChecked);
+            }}
+          />
 
+          <Typography noWrap width={{ xs: "100%", sm: "40%" }}>
+            Seleccionar todos
+          </Typography>
+        </Box>
         {(rangeContracts || filteredContracts).map((c) => {
           return (
             <MenuItem key={c.id} value={c.id} autoFocus={false}>

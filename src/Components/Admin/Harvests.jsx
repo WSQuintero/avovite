@@ -532,6 +532,7 @@ function Harvests() {
 
     getAllContracts();
   }, []);
+
   return (
     <>
       <BackButton />
