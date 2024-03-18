@@ -25,7 +25,9 @@ export default class ContractService {
       }
     });
   }
-
+  async getAll() {
+    return (await axios.get(`${this.API_URL}/contracts`, this.config)).data;
+  }
   async getById({ id = null }) {
     return await handleCall(async () => {
       if (id) {

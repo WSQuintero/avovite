@@ -35,6 +35,7 @@ import ContractSelector from "../ContractSelector";
 import { parseString } from "xml2js";
 import { formatCurrency } from "../../utilities";
 import BackButton from "../BackButton";
+import ContractService from "../../Services/contract.service";
 
 const RowState = {
   id: null,
@@ -57,6 +58,9 @@ function Harvests() {
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null, importing: false, payment: false });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
+  const [allContracts, setAllContracts] = useState(null);
+  const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
+
   const isValidForm = useMemo(
     () =>
       newRow.total_kilograms &&
@@ -520,6 +524,14 @@ function Harvests() {
     }
   }, [$Harvest, session]);
 
+  useEffect(() => {
+    const getAllContracts = async () => {
+      const { status, data } = await $Contract.getAll();
+      setAllContracts(data);
+    };
+
+    getAllContracts();
+  }, []);
   return (
     <>
       <BackButton />
@@ -662,7 +674,7 @@ function Harvests() {
             onSubmit={modal === "collapse.create" ? onCreateCollapse : onUpdateCollapse}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
-              <ContractSelector initialValue={multiple} onChange={(value) => setMultiple(value)} />
+              <ContractSelector allContracts={allContracts} initialValue={multiple} onChange={(value) => setMultiple(value)} />
             </Grid>
           </Box>
         </DialogContent>

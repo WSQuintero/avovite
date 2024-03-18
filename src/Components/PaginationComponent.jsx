@@ -5,7 +5,15 @@ function PaginationComponent({ totalPages, currentPage, onPageChange }) {
     onPageChange(value);
   };
 
-  return <Pagination count={totalPages} page={currentPage} onChange={handleChange} variant="outlined" shape="rounded" />;
+  return (
+    <Pagination
+      count={totalPages !== 0 ? Infinity : 0} // Establecer totalPages como Infinity
+      page={currentPage}
+      onChange={handleChange}
+      variant="outlined"
+      shape="rounded"
+    />
+  );
 }
 
 export default PaginationComponent;
