@@ -11,7 +11,9 @@ import {
   IconButton,
   MenuItem,
   Snackbar,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/icons-material";
@@ -21,9 +23,16 @@ import EnhancedTable from "../EnhancedTable";
 import { CONTRACT_TYPES } from "../../utilities/constants";
 import BackButton from "../BackButton";
 import ModalCreateContractWhitelist from "../ModalCreateContractWhitelist";
+import MaterialReactTable from "material-react-table";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
+import { formatDate } from "../../utilities";
+import ContractService from "../../Services/contract.service";
+import { NumericFormat } from "react-number-format";
+import Pagination from "./Pagination";
 
 function Whitelist() {
   const [session] = useSession();
+  const $Contract = useMemo(() => new ContractService(session.token), [session.token]);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({ id: null, email: "", mortgage: "-" });
   const [modal, setModal] = useState(null);
@@ -77,7 +86,24 @@ function Whitelist() {
     ],
     []
   );
+  const [actualPage, setActualPage] = useState(1);
+  const [actualSize, setActualSize] = useState(10);
+  const [contracts, setContracts] = useState([]);
+  const fetchContracts = async () => {
+    try {
+      const {
+        status,
+        data: { data },
+      } = await $Contract.get({ awaitlist: 1, pageNumber: actualPage, pageSize: actualSize });
 
+      if (status) {
+        setContracts(data);
+        console.log(data);
+      }
+    } catch (error) {
+      console.error("Error al obtener contratos:", error);
+    }
+  };
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -141,7 +167,9 @@ function Whitelist() {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
-
+  const onPageChange = (newPage) => {
+    setActualPage(newPage);
+  };
   const fetchWhitelist = async () => {
     const { status, data } = await $Whitelist.get();
 
@@ -149,7 +177,14 @@ function Whitelist() {
       setUsers(data.data);
     }
   };
-
+  useEffect(() => {
+    if (session.token) {
+      (async () => {
+        console.log("si");
+        await fetchContracts();
+      })();
+    }
+  }, [$Contract, session, actualPage, actualSize]);
   useEffect(() => {
     if ($Whitelist) {
       (async () => {
@@ -157,7 +192,126 @@ function Whitelist() {
       })();
     }
   }, [$Whitelist]);
+  const columns = [
+    {
+      accessorKey: "id",
+      id: "id",
+      header: "Número",
+      Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "created_at",
+      id: "contract_date",
+      header: "Fecha del contrato",
+      Cell: ({ renderedCellValue }) => {
+        return <Typography>{formatDate(renderedCellValue)}</Typography>;
+      },
+    },
+    {
+      accessorKey: "contract_label",
+      id: "contract_label",
+      header: "Etiqueta",
+    },
+    {
+      accessorKey: "fullname",
+      id: "fullname",
+      header: "Pagador",
+      Cell: ({ renderedCellValue, row: { original } }) => (
+        <Stack>
+          <Typography>{renderedCellValue}</Typography>
+          <Typography fontSize={12}>{original.email}</Typography>
+        </Stack>
+      ),
+    },
+    {
+      accessorKey: "id_type",
+      id: "id_type",
+      header: "Tipo de documento",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "id_number",
+      id: "id_number",
+      header: "Número de documento",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "id_location_expedition",
+      id: "id_location_expedition",
+      header: "Lugar de expedición",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "mortgage_contract",
+      id: "mortgage_contract",
+      header: "Hipotecado",
+      size: 50,
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue === 0 ? "No" : "Si"}</Typography>,
+    },
+    {
+      accessorKey: "contract_vites",
+      id: "contract_vites",
+      header: "Vites",
+    },
+    {
+      accessorKey: "paidVite",
+      header: "vites pagos",
+      size: 210,
+    },
+    {
+      accessorKey: "debt",
+      header: "Deuda actual",
+      size: 210,
+      Cell: ({ renderedCellValue }) => (
+        <>
+          $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+        </>
+      ),
+    },
+    {
+      accessorKey: "contract_amount",
+      id: "contract_amount",
+      header: "Valor de contrato",
+      Cell: ({ renderedCellValue }) => (
+        <>
+          $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+        </>
+      ),
+    },
+    {
+      accessorKey: "total_contract_with_discount",
+      id: "total_contract_with_discount",
+      header: "Valor contrato con descuento",
+      size: 300,
 
+      Cell: ({ renderedCellValue }) => (
+        <>
+          $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+        </>
+      ),
+    },
+    {
+      accessorKey: "payment_numbers",
+      id: "payment_numbers",
+      header: "Cuotas",
+    },
+    {
+      accessorKey: "overdue_quotas",
+      id: "overdue_quotas",
+      header: "Cuotas en mora",
+    },
+    {
+      accessorKey: "stateFignature",
+      id: "stateFignature",
+      header: "Estado de la firma",
+    },
+    {
+      accessorKey: "whiteList",
+      id: "whiteList",
+      header: "¿WhiteList?",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue === 0 ? "No" : "Si"}</Typography>,
+    },
+  ];
   return (
     <>
       <BackButton />
@@ -166,60 +320,21 @@ function Whitelist() {
         <Grid display="flex" justifyContent="flex-end">
           <ModalCreateContractWhitelist setFeedback={setFeedback} />
         </Grid>
-        <EnhancedTable headCells={productsHeadCells} rows={users} />
+        <MaterialReactTable
+          columns={columns}
+          data={contracts}
+          enableColumnFilterModes
+          enableColumnOrdering
+          enableRowActions
+          muiTablePaperProps={{ elevation: 0 }}
+          initialState={{ density: "compact" }}
+          muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
+          localization={MRT_Localization_ES}
+          enablePagination={false}
+        />
+        <Pagination onPageChange={onPageChange} currentPage={actualPage} />
       </Grid>
-      {/*
-      <Dialog open={modal === "create" || modal === "update"} onClose={onClearFields} maxWidth="md" fullWidth>
-        <DialogTitle color="primary.main">{modal === "create" ? "Crear" : "Editar"} producto</DialogTitle>
-        <DialogContent>
-          <Box
-            component="form"
-            display="flex"
-            flexDirection="column"
-            gap={3}
-            padding={1}
-            onSubmit={modal === "create" ? onCreateProduct : onUpdateProduct}
-          >
-            <Grid display="flex" flexDirection="column" gap={2}>
-              <TextField label="Correo" name="email" value={user.email} onChange={onChangeFields} fullWidth />
-              <TextField select label="Tipo de contrato" name="mortgage" value={user.mortgage} onChange={onChangeFields} fullWidth>
-                <MenuItem disabled value="-">
-                  Seleccionar opción
-                </MenuItem>
-                {Object.keys(CONTRACT_TYPES).map((key) => (
-                  <MenuItem key={key} value={key}>
-                    {CONTRACT_TYPES[key]}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField label="Correo" name="email" value={user.email} onChange={onChangeFields} fullWidth />
-            </Grid>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-            <Button onClick={onClearFields}>Cancelar</Button>
-            <Button onClick={modal === "create" ? onCreateProduct : onUpdateProduct} variant="contained" disabled={!isValidUser}>
-              {modal === "create" ? "Crear" : "Editar"}
-            </Button>
-          </Grid>
-        </DialogActions>
-      </Dialog> */}
 
-      <Dialog maxWidth="sm" open={modal === "delete"} onClose={onClearFields} fullWidth>
-        <DialogTitle>Eliminar usuario de la lista</DialogTitle>
-        <DialogContent>
-          <DialogContentText>¿Estás seguro que quieres eliminar este usuario de la lista?</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={onClearFields}>
-            Cancelar
-          </Button>
-          <Button variant="contained" onClick={onDeleteProduct}>
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Snackbar
         open={feedback.open}
         autoHideDuration={3000}
