@@ -180,7 +180,6 @@ function Whitelist() {
   useEffect(() => {
     if (session.token) {
       (async () => {
-        console.log("si");
         await fetchContracts();
       })();
     }

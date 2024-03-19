@@ -121,31 +121,7 @@ function ContractValidation() {
             <Grid display="flex" flexDirection="column" gap={2}>
               <Typography variant="h2">Contratos pendientes:</Typography>
               <List>
-                {(contracts.pendings || contractsPendingSecondForm || []).map((contract) => (
-                  <ListItem
-                    key={contract.id}
-                    onClick={() => handleSelectContract(contract)}
-                    secondaryAction={
-                      <Button variant="contained" edge="end">
-                        Completar
-                      </Button>
-                    }
-                    disablePadding
-                  >
-                    <ListItemButton role={undefined} onClick={() => {}}>
-                      <ListItemIcon>
-                        <ContractIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`Contrato AV-${contract.id}`}
-                        secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
-                        primaryTypographyProps={{ fontSize: 20, color: "primary" }}
-                        secondaryTypographyProps={{ color: "text.main" }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-                {whiteListContracts.map((contract) => (
+                {contracts?.pendings?.map((contract) => (
                   <ListItem
                     key={contract.id}
                     onClick={() => handleSelectContract(contract)}

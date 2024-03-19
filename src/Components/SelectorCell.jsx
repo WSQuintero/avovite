@@ -26,7 +26,7 @@ const SelectorCell = ({ row }) => {
     try {
       const { status, data } = await $Contract.exportPayRollSheet({ id: id });
       if (status) {
-        console.log(data);
+        window.open(data.data, "_blank");
       }
     } catch (error) {
       console.error("Error al exportar la planilla de pago:", error);
