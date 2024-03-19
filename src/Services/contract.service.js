@@ -121,7 +121,12 @@ export default class ContractService {
     );
   }
   async sendInvasiveForm(body) {
-    return handleCall(async () => await axios.post(`${this.API_URL}/customerlinking/`, this.config).data);
+    try {
+      const response = await axios.post(`${this.API_URL}/customerlinking/`, body, this.config);
+      return response.data;
+    } catch (error) {
+      return error;
+    }
   }
 
   async exportDocumentContract({ id }) {

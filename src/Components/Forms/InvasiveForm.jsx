@@ -42,6 +42,8 @@ import useLastContract from "../../Hooks/useLastContract";
 import DocumentUploadModal from "./DocumentUploadModal ";
 import useUser from "../../Hooks/useUser";
 import DialogKYC from "../Dialogs/KYC";
+import ModalExistForm from "../ModalExistForm";
+import ModalErrorSendForm from "../ModalErrorSendForm";
 // import DialogKYC from "./Dialogs/KYC";
 
 const initialState = {
@@ -223,7 +225,8 @@ function InvasiveForm({ contractId }) {
   const [isKyc, setIsKyc] = useState(false);
   const $User = useUser();
   const [modal, setModal] = useState({ kyc: false });
-
+  const [open, setOpen] = useState(false);
+  const [openError, setOpenError] = useState(false);
   const handleSubmitKYC = async (form) => {
     const body = new FormData();
     body.append("faces", form.document);
@@ -238,6 +241,12 @@ function InvasiveForm({ contractId }) {
     }
 
     return status;
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
+  const onCloseError = () => {
+    setOpenError(false);
   };
   // Función para manejar cambios en los campos del formulario
   const handleInputChange = (event) => {
@@ -355,35 +364,39 @@ function InvasiveForm({ contractId }) {
   };
   const handleSubmit = async () => {
     setLoading(true);
+    setOpen(false);
+    setOpenError(false);
 
-    // Crea un nuevo objeto FormData
     const formDataToSend = new FormData();
-    // Agrega los datos del formulario al objeto FormData
     const { numberOfShareholders, numberOfInternationalOperations, ...restFormData } = formData;
+
     Object.entries(restFormData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-    console.log(restFormData);
-    // Agrega los archivos al objeto FormData
+
     formDataToSend.append("files", frontDoc);
     formDataToSend.append("files", backDoc);
     formDataToSend.append("files", bankCert);
     formDataToSend.append("files", rut);
 
     try {
-      // Envía el objeto FormData a través de sendInvasiveForm
-      const { status } = await $Contract.sendInvasiveForm(formDataToSend);
+      const data = await $Contract.sendInvasiveForm(formDataToSend);
 
-      if (status) {
-        setLoading(false);
-        setNotIsKyc(false);
-        setFeedback({ open: true, message: "Formulario completado exitosamente.", status: "success" });
-        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-      } else {
-        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+      if (data?.response?.data.success === "you already have an associated contract") {
+        setOpen(true);
+        return;
       }
+      if (data?.name === "AxiosError") {
+        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+        setLoading(false);
+        setOpenError(true);
+        return;
+      }
+      setFeedback({ open: true, message: "Formulario completado exitosamente, por favor verifica tu correo.", status: "success" });
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+
+      setNotIsKyc(false);
     } catch (error) {
-      // Maneja cualquier error que pueda ocurrir durante la solicitud
       console.error("Error:", error);
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
@@ -1253,6 +1266,8 @@ function InvasiveForm({ contractId }) {
           </Button>
         </DialogActions>
       </Dialog>
+      <ModalExistForm open={open} onClose={onClose} />
+      <ModalErrorSendForm open={openError} onClose={onCloseError} />
     </Container>
   );
 }
