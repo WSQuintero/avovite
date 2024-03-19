@@ -19,7 +19,11 @@ const SelectorCell = ({ row }) => {
   };
 
   const handleDownloadbondingForm = async (id) => {
-    console.log(id);
+    setDownloading(true);
+    setTimeout(() => {
+      console.log(id);
+      setDownloading(false);
+    }, 2000);
   };
 
   const handleDownloadPayroll = async (id) => {
@@ -70,7 +74,7 @@ const SelectorCell = ({ row }) => {
     { key: "selection", label: "Documento a descargar" },
     { key: "download_contract", label: "Contrato", handler: handleDownloadContract },
     { key: "download_property_certificate", label: "Certificado Propiedad", handler: handleDownloadPropertyCertificate },
-    // { key: "download_bonding_form", label: "Formulario Vinculación", handler: handleDownloadbondingForm },
+    { key: "download_bonding_form", label: "Formulario Vinculación", handler: handleDownloadbondingForm },
     { key: "download_payroll", label: "Planilla Pago", handler: handleDownloadPayroll },
   ];
 
