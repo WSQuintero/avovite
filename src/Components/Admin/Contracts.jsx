@@ -115,6 +115,26 @@ const columns = [
     size: 210,
   },
   {
+    accessorKey: "overdue_quotas",
+    id: "overdue_quotas",
+    header: "Cuotas en mora",
+  },
+  {
+    accessorKey: "pay_quotas",
+    id: "pay_quotas",
+    header: "Cuotas pagadas",
+  },
+  {
+    accessorKey: "pending_quotas",
+    id: "pay_quotas",
+    header: "Cuotas pendientes",
+  },
+  {
+    accessorKey: "total_quotas",
+    id: "total_quotes",
+    header: "Total de cuotas",
+  },
+  {
     accessorKey: "debt",
     header: "Deuda actual",
     size: 210,
@@ -146,16 +166,12 @@ const columns = [
       </>
     ),
   },
-  {
-    accessorKey: "payment_numbers",
-    id: "payment_numbers",
-    header: "Cuotas",
-  },
-  {
-    accessorKey: "overdue_quotas",
-    id: "overdue_quotas",
-    header: "Cuotas en mora",
-  },
+  // {
+  //   accessorKey: "payment_numbers",
+  //   id: "payment_numbers",
+  //   header: "Número de cuotas",
+  // },
+
   {
     accessorKey: "stateFignature",
     id: "stateFignature",
@@ -484,6 +500,7 @@ const Contracts = () => {
       setFeedback({ open: true, message: "Hubo un error al cancelar el contrato", status: "error" });
     }
   };
+
   return (
     <>
       <BackButton />
