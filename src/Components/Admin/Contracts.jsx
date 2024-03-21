@@ -135,7 +135,7 @@ const columns = [
     header: "Total de cuotas",
   },
   {
-    accessorKey: "debt",
+    accessorKey: "Total pagado",
     header: "Deuda actual",
     size: 210,
     Cell: ({ renderedCellValue }) => (

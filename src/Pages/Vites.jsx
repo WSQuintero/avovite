@@ -54,6 +54,36 @@ function Vites() {
       },
       {
         accessorKey: "debt",
+        header: "Total pagado",
+        size: 210,
+        Cell: ({ renderedCellValue }) => (
+          <>
+            $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+          </>
+        ),
+      },
+      {
+        accessorKey: "overdue_quotas",
+        id: "overdue_quotas",
+        header: "Cuotas en mora",
+      },
+      {
+        accessorKey: "pay_quotas",
+        id: "pay_quotas",
+        header: "Cuotas pagadas",
+      },
+      {
+        accessorKey: "pending_quotas",
+        id: "pay_quotas",
+        header: "Cuotas pendientes",
+      },
+      {
+        accessorKey: "total_quotas",
+        id: "total_quotes",
+        header: "Total de cuotas",
+      },
+      {
+        accessorKey: "Total pagado",
         header: "Deuda actual",
         size: 210,
         Cell: ({ renderedCellValue }) => (
