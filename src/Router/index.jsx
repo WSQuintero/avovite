@@ -70,16 +70,20 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
         if (status) {
           return data.data;
         } else {
-          console.log(data);
+          return undefined;
         }
       };
-      if (
-        session.user.pending_payed_contracts ||
-        session?.user?.last_contract?.state_second_form === 0 ||
-        session?.user?.contractPedingWhiteList?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0) ||
-        getContracts()?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)
-      ) {
-        return <Navigate to="/validation/confirmation" />;
+
+      const actualContracts = getContracts();
+      if (!session.user.isAdmin()) {
+        if (
+          session.user.pending_payed_contracts ||
+          session?.user?.last_contract?.state_second_form === 0 ||
+          session?.user?.contractPedingWhiteList?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0) ||
+          (actualContracts && actualContracts?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0))
+        ) {
+          return <Navigate to="/validation/confirmation" />;
+        }
       }
     }
   } //aquí está la validación para saber si tiene contratos pendientes
