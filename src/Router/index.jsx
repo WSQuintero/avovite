@@ -34,6 +34,7 @@ import DetailsProduction from "../Pages/DetailsProduction";
 import TicketForm from "../Pages/TicketForm";
 import TicketList from "../Pages/TicketList";
 import Movements from "../Pages/Movements";
+import ContractService from "../Services/contract.service";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -48,6 +49,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   const [session] = useSession();
   const isAuthenticated = useMemo(() => session.token, [session.token]);
   const isAdmin = useMemo(() => session.user?.isAdmin(), [session.user]);
+  const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
 
   if (isAuthenticated === false) {
     return <></>;
@@ -60,10 +62,26 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 
   if (meta.includes(REQUIRES_VALIDATION)) {
     if (session.user) {
-      if (session.user.pending_to_pay_contracts) {
-        return <Navigate to="/validation/payment" />;
-      }
-      if (session.user.pending_payed_contracts || session?.user?.last_contract?.state_second_form === 0) {
+      // if (session.user.pending_to_pay_contracts) {
+      //   return <Navigate to="/validation/payment" />;
+      // }
+
+      const getContracts = async () => {
+        const { status, data } = await $Contract.get();
+        if (status) {
+          return data.data;
+        } else {
+          console.log(data);
+        }
+      };
+
+      if (
+        session.user.pending_payed_contracts ||
+        session?.user?.last_contract?.state_second_form === 0 ||
+        session?.user?.contractPedingWhiteList?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0) ||
+        getContracts()?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)
+      ) {
+        console.log(session?.user);
         return <Navigate to="/validation/confirmation" />;
       }
     }

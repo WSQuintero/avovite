@@ -25,12 +25,14 @@ import Form from "../Components/Form";
 import useLastContract from "../Hooks/useLastContract";
 import BackButton from "../Components/BackButton";
 import InvasiveForm from "../Components/Forms/InvasiveForm";
+import DialogKYC from "../Components/Dialogs/KYC";
+import useUser from "../Hooks/useUser";
 
 function ContractValidation() {
   const navigate = useNavigate();
-  const [session] = useSession();
+  const [session, { setUser, logout }] = useSession();
   const initialFormData = useLastContract();
-  const [contracts, setContracts] = useState({});
+  const [contracts, setContracts] = useState([]);
   const [contract, setContract] = useState({});
   const [modal, setModal] = useState("warning");
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -39,47 +41,27 @@ function ContractValidation() {
   const [openInvasiveForm, setOpenInvasiveForm] = useState(false);
   const [contractsPendingSecondForm, setContractsPendingSecondForm] = useState([]);
   const [whiteListContracts, setWhiteListContracts] = useState();
-  const fetchContracts = async () => {
-    setOpenInvasiveForm(false);
-
-    const { status, data } = await $Contract.get({ pending: true });
-
-    if (status) {
-      if (!data.data?.pendings?.length) {
-        navigate("/");
-      } else {
-        setContracts(data.data);
-        console.log(data.data);
-      }
-    }
-  };
+  const [isKyc, setIsKyc] = useState(true);
+  const $User = useUser();
   const fetchContractsWhitelist = async () => {
     setOpenInvasiveForm(false);
 
     const { status, data } = await $Contract.get();
 
     if (status) {
-      console.log(data.data.filter((contract) => contract.whiteList === 1));
-      setWhiteListContracts(data.data.filter((contract) => contract.whitelist === 1));
+      // if (data.data.some((contract) => contract.state_second_form === 1 && contract.status_contracts === 0) && session.user.KYC === 0) {
+      //   setIsKyc(false);
+      // }
+      if (data.data.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)) {
+        setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
+      }
     }
   };
   const handleSelectContract = ({ id }) => {
     setModal("contract-complete");
     setContract({ id });
     setOpenInvasiveForm(true);
-
-    /* const newContract = {};
-
-    contracts?.lastContract[0] &&
-      Object.keys(contract).forEach((key) => {
-        if (contracts.lastContract[0][key]) {
-          newContract[key] = contracts.lastContract[0][key];
-        }
-      });
-
-    setContract((prev) => ({ ...prev, ...newContract, id })); */
   };
-
   const handleFormSubmit = async (body) => {
     setLoadingSubmit(true);
 
@@ -95,14 +77,21 @@ function ContractValidation() {
 
     setLoadingSubmit(false);
   };
+  const handleSubmitKYC = async (form) => {
+    const body = new FormData();
+    body.append("faces", form.document);
+    body.append("faces", form.face1);
+    body.append("faces", form.face2);
 
-  useEffect(() => {
-    if (session.token) {
-      (async () => {
-        await fetchContracts();
-      })();
+    const { status } = await $User.sendKYC(body);
+
+    if (status) {
+      setUser({ ...session?.user, KYC: 1 });
+      setIsKyc(true);
     }
-  }, [session.token]);
+
+    return status;
+  };
 
   useEffect(() => {
     if (session.token) {
@@ -111,8 +100,10 @@ function ContractValidation() {
       })();
     }
   }, [session.token]);
+
   return (
     <>
+      {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} />}
       {!openInvasiveForm ? (
         <PageWrapper isInvalidSession>
           <BackButton />
@@ -121,7 +112,7 @@ function ContractValidation() {
             <Grid display="flex" flexDirection="column" gap={2}>
               <Typography variant="h2">Contratos pendientes:</Typography>
               <List>
-                {contracts?.pendings?.map((contract) => (
+                {contracts?.map((contract) => (
                   <ListItem
                     key={contract.id}
                     onClick={() => handleSelectContract(contract)}
@@ -145,6 +136,30 @@ function ContractValidation() {
                     </ListItemButton>
                   </ListItem>
                 ))}
+                {/* {whiteListContracts?.map((contract) => (
+                  <ListItem
+                    key={contract.id}
+                    onClick={() => handleSelectContract(contract)}
+                    secondaryAction={
+                      <Button variant="contained" edge="end">
+                        Completar
+                      </Button>
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton role={undefined} onClick={() => {}}>
+                      <ListItemIcon>
+                        <ContractIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`Contrato AV-${contract.id}`}
+                        secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
+                        primaryTypographyProps={{ fontSize: 20, color: "primary" }}
+                        secondaryTypographyProps={{ color: "text.main" }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))} */}
               </List>
             </Grid>
           </Container>
