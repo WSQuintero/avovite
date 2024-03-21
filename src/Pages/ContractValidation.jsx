@@ -49,23 +49,26 @@ function ContractValidation() {
     const { status, data } = await $Contract.get();
 
     if (status) {
-      if (data.data.some((contract) => contract.state_second_form === 1 && contract.status_contracts === 0) && session.user.KYC === 0) {
-        setIsKyc(false);
-      }
       if (data.data.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)) {
         setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
       }
     }
   };
   const handleSelectContract = ({ id }) => {
+    setIsKyc(true);
     const actualContract = contracts.find((contract) => contract.id === id);
+    if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
+      setIsKyc(false);
+      setContract({ id });
+      return;
+    }
     if (actualContract.status_contracts === 0) {
       setModal("contract-complete");
       setContract({ id });
 
       return;
     }
-    setContract({ id });
+
     if (actualContract.state_second_form === 0) {
       setOpenInvasiveForm(true);
       setContract({ id });
@@ -112,7 +115,7 @@ function ContractValidation() {
 
   return (
     <>
-      {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} />}
+      {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
       {!openInvasiveForm ? (
         <PageWrapper isInvalidSession>
           <BackButton />
@@ -197,7 +200,7 @@ function ContractValidation() {
           </Dialog>
         </PageWrapper>
       ) : (
-        <InvasiveForm contractId={contract.id} />
+        <InvasiveForm contractId={contract?.id} />
       )}
     </>
   );
