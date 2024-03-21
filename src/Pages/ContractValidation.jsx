@@ -49,9 +49,9 @@ function ContractValidation() {
     const { status, data } = await $Contract.get();
 
     if (status) {
-      // if (data.data.some((contract) => contract.state_second_form === 1 && contract.status_contracts === 0) && session.user.KYC === 0) {
-      //   setIsKyc(false);
-      // }
+      if (data.data.some((contract) => contract.state_second_form === 1 && contract.status_contracts === 0) && session.user.KYC === 0) {
+        setIsKyc(false);
+      }
       if (data.data.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)) {
         setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
       }
