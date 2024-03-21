@@ -135,8 +135,8 @@ const columns = [
     header: "Total de cuotas",
   },
   {
-    accessorKey: "Total pagado",
-    header: "Deuda actual",
+    accessorKey: "debt",
+    header: "Total pagado",
     size: 210,
     Cell: ({ renderedCellValue }) => (
       <>
@@ -265,7 +265,6 @@ const Contracts = () => {
       } = await $Contract.get({ pageNumber: currentPage, pageSize: currentSize });
 
       if (status) {
-        console.log(data);
         setContracts(data);
       }
     } catch (error) {

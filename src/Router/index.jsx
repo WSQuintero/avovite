@@ -65,25 +65,23 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       // if (session.user.pending_to_pay_contracts) {
       //   return <Navigate to="/validation/payment" />;
       // }
-
-      const getContracts = async () => {
-        const { status, data } = await $Contract.get();
-        if (status) {
-          return data.data;
-        } else {
-          console.log(data);
-        }
-      };
-
-      if (
-        session.user.pending_payed_contracts ||
-        session?.user?.last_contract?.state_second_form === 0 ||
-        session?.user?.contractPedingWhiteList?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0) ||
-        getContracts()?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)
-      ) {
-        console.log(session?.user);
-        return <Navigate to="/validation/confirmation" />;
-      }
+      // const getContracts = async () => {
+      //   const { status, data } = await $Contract.get();
+      //   if (status) {
+      //     return data.data;
+      //   } else {
+      //     console.log(data);
+      //   }
+      // };
+      // if (
+      //   session.user.pending_payed_contracts ||
+      //   session?.user?.last_contract?.state_second_form === 0 ||
+      //   session?.user?.contractPedingWhiteList?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0) ||
+      //   getContracts()?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)
+      // ) {
+      //   console.log(session?.user);
+      //   return <Navigate to="/validation/confirmation" />;
+      // }
     }
   } //aquí está la validación para saber si tiene contratos pendientes
 
