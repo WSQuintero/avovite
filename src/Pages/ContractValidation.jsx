@@ -58,17 +58,26 @@ function ContractValidation() {
     }
   };
   const handleSelectContract = ({ id }) => {
-    setModal("contract-complete");
+    const actualContract = contracts.find((contract) => contract.id === id);
+    if (actualContract.status_contracts === 0) {
+      setModal("contract-complete");
+      setContract({ id });
+
+      return;
+    }
     setContract({ id });
-    setOpenInvasiveForm(true);
+    if (actualContract.state_second_form === 0) {
+      setOpenInvasiveForm(true);
+      setContract({ id });
+    }
   };
   const handleFormSubmit = async (body) => {
     setLoadingSubmit(true);
 
-    const { status } = await $Contract.complete({ id: contract.id, pending: true, ...body });
+    const { status } = await $Contract.complete({ id: contract.id, ...body });
 
     if (status) {
-      setContracts((prev) => ({ ...prev, pendings: prev.pendings.filter((c) => c.id !== contract.id) }));
+      setContracts((prev) => ({ ...prev, pendings: prev.filter((c) => c.id !== contract.id) }));
       setModal("contract-success");
       location.reload();
     } else {
@@ -136,30 +145,6 @@ function ContractValidation() {
                     </ListItemButton>
                   </ListItem>
                 ))}
-                {/* {whiteListContracts?.map((contract) => (
-                  <ListItem
-                    key={contract.id}
-                    onClick={() => handleSelectContract(contract)}
-                    secondaryAction={
-                      <Button variant="contained" edge="end">
-                        Completar
-                      </Button>
-                    }
-                    disablePadding
-                  >
-                    <ListItemButton role={undefined} onClick={() => {}}>
-                      <ListItemIcon>
-                        <ContractIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`Contrato AV-${contract.id}`}
-                        secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
-                        primaryTypographyProps={{ fontSize: 20, color: "primary" }}
-                        secondaryTypographyProps={{ color: "text.main" }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))} */}
               </List>
             </Grid>
           </Container>
