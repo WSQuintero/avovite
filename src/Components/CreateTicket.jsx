@@ -146,21 +146,22 @@ function CreateTicket({ setShowCreateTicket }) {
     if (event.target.elements.ticketCategory.value === "Change information beneficiary") {
       informationToSend.informationBeneficiary.ticketCategory = "Change information beneficiary";
       informationToSend.ticketCategory = "Change information beneficiary";
-      informationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event.target.elements.codMunicipioBeneficiary.value;
-      informationToSend.informationBeneficiary["beneficiary_fullname"] = event.target.elements.beneficiaryFullname.value;
-      informationToSend.informationBeneficiary["beneficiary_id_number"] = event.target.elements.beneficiaryIdNumber.value;
-      informationToSend.informationBeneficiary["beneficiary_id_type"] = event.target.elements.idType.value.toLowerCase();
+      informationToSend.informationBeneficiary["cod_municipio_beneficiary"] = event?.target?.elements?.codMunicipioBeneficiary?.value;
+      informationToSend.informationBeneficiary["beneficiary_fullname"] = event?.target?.elements?.beneficiaryFullname?.value;
+      informationToSend.informationBeneficiary["beneficiary_id_number"] = event?.target?.elements?.beneficiaryIdNumber?.value;
+      informationToSend.informationBeneficiary["beneficiary_id_type"] = event?.target?.elements?.idType?.value?.toLowerCase();
       informationToSend.informationBeneficiary["beneficiary_id_location_expedition"] =
-        event.target.elements.beneficiaryIdLocationExpedition.value;
-      informationToSend.informationBeneficiary["address_residence_beneficiary"] = event.target.elements.addressResidenceBeneficiary.value;
-      informationToSend.informationBeneficiary["email_beneficiary"] = event.target.elements.emailBeneficiary.value;
-      informationToSend.informationBeneficiary["cellphone_beneficiary"] = event.target.elements.cellphoneBeneficiary.value;
-      informationToSend.informationBeneficiary["civil_status_beneficiary"] = event.target.elements.civilStatus.value;
-      informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event.target.elements.economyActivityBeneficiary.value;
+        event?.target?.elements?.beneficiaryIdLocationExpedition?.value;
+      informationToSend.informationBeneficiary["address_residence_beneficiary"] =
+        event?.target?.elements?.addressResidenceBeneficiary.value;
+      informationToSend.informationBeneficiary["email_beneficiary"] = event?.target?.elements?.emailBeneficiary?.value;
+      informationToSend.informationBeneficiary["cellphone_beneficiary"] = event?.target?.elements?.cellphoneBeneficiary?.value;
+      informationToSend.informationBeneficiary["civil_status_beneficiary"] = event?.target?.elements?.civilStatus?.value;
+      informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event?.target?.elements?.economyActivityBeneficiary?.value;
       informationToSend.informationBeneficiary["country_of_residence_beneficiary"] =
-        event.target.elements.countryOfResidenceBeneficiary.value;
+        event?.target?.elements?.countryOfResidenceBeneficiary?.value;
       if (filesOther) {
-        informationToSend.informationBeneficiary.files.push(filesOther);
+        informationToSend?.informationBeneficiary?.files?.push(filesOther);
         setFilesOther(null);
       }
     }
@@ -173,7 +174,6 @@ function CreateTicket({ setShowCreateTicket }) {
       });
       return;
     }
-
     sendInformation(informationToSend);
   };
 

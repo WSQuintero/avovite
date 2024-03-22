@@ -46,7 +46,7 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
               value={selectedCell}
               onChange={(value) => {
                 setSelectedCell(value);
-                handleInputChange({ target: { name: "cellphone", value } });
+                handleInputChange({ target: { name: "cellphoneBeneficiary", value } });
               }}
               name="cellphoneBeneficiary"
               enableSearch={true}
@@ -57,7 +57,7 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
                 width: "100%",
               }}
               inputProps={{
-                name: "cellphone",
+                name: "cellphoneBeneficiary",
                 required: true,
               }}
             />
