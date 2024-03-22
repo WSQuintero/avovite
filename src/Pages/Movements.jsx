@@ -144,14 +144,14 @@ function Movements({ handleClick }) {
         disablePadding: false,
         format: (value) => value,
       },
-      // {
-      //   id: "user_bank_account_type",
-      //   label: "Tipo de Cuenta del Usuario",
-      //   align: "center",
-      //   width: "200px",
-      //   disablePadding: false,
-      //   format: (value) => value,
-      // },
+      {
+        id: "user_bank_account_type",
+        label: "Tipo de Cuenta del Usuario",
+        align: "center",
+        width: "200px",
+        disablePadding: false,
+        format: (value) => value,
+      },
       // {
       //   id: "user_id_bank",
       //   label: "ID del Banco del Usuario",
