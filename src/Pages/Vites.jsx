@@ -417,14 +417,12 @@ function Vites() {
           data={rows}
           enableColumnFilterModes
           enableColumnOrdering
-          enableRowActions
           muiTablePaperProps={{ elevation: 0 }}
           initialState={{ density: "compact" }}
           muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
           state={{ showSkeletons: loading }}
           localization={MRT_Localization_ES}
-          enablePagination={false}
-          renderRowActionMenuItems={({ closeMenu, row: { original } }) => [<Divider key="divider-1" />, <Divider key="divider-2" />]}
+          enablePagination={true}
           renderDetailPanel={({ row: { original: row } }) => (
             <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
               <Grid display="flex" flexDirection="column" gap={1}>

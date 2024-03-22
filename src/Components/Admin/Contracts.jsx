@@ -26,6 +26,9 @@ import {
   FormControlLabel,
   Stack,
   DialogContentText,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
@@ -48,6 +51,7 @@ import BackButton from "../BackButton";
 import CustomContractRangeFilter from "./CustomContractRangeFilter";
 import Pagination from "../Admin/Pagination";
 import ConfirmCancelModal from "../ConfirmCancelModal";
+import FilterIdContract from "./FilterIdContract";
 const columns = [
   {
     accessorKey: "id",
@@ -254,6 +258,9 @@ const Contracts = () => {
   const [open, setOpen] = useState(false);
   const [actualContractId, setActualContractId] = useState();
   const [isCancelContract, setIsCancelContract] = useState(false);
+  const [filterContract, setFilterContract] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("-");
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -500,20 +507,53 @@ const Contracts = () => {
     }
   };
 
+  const handleSearchId = async (id) => {
+    const { status, data } = await $Contract.get({ id });
+
+    if (status) {
+      console.log(data.data);
+      setFilterContract(data.data);
+    }
+  };
+
+  const handleChange = (event) => {
+    setSelectedFilter(event.target.value);
+  };
   return (
     <>
       <BackButton />
-      <CustomContractRangeFilter
-        onApplyFilter={handleApplyContractRangeFilter}
-        contracts={contracts}
-        setContracts={setContracts}
-        setCurrentSize={setCurrentSize}
-        setCurrentPage={setCurrentPage}
-      />
+      <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%", marginBottom: 2 }}>
+        <FormControl variant="outlined" sx={{ minWidth: "150px" }}>
+          <InputLabel id="filter-select-label">Filtrar</InputLabel>
+          <Select
+            labelId="filter-select-label"
+            value={selectedFilter}
+            onChange={handleChange}
+            label="Filtrar"
+            sx={{ width: "230px", height: "30px" }}
+            inputProps={{ sx: { height: "30px" } }}
+          >
+            <MenuItem value="" disabled>
+              Seleccione una opción
+            </MenuItem>
+            <MenuItem value="contractId">Filtrar por ID de contrato</MenuItem>
+            <MenuItem value="page">Filtrar por página</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
+      {selectedFilter === "contractId" && (
+        <FilterIdContract
+          setFilterContract={setFilterContract}
+          handleSearchId={handleSearchId}
+          setCurrentSize={setCurrentSize}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
+      {selectedFilter === "page" && <CustomContractRangeFilter setCurrentSize={setCurrentSize} setCurrentPage={setCurrentPage} />}
       <MaterialReactTable
         columns={columns}
-        data={contracts}
+        data={filterContract.length ? filterContract : contracts}
         enableColumnFilterModes
         enableColumnOrdering
         enableRowActions
