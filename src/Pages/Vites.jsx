@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Typography, Container, Box, Stack } from "@mui/material";
+import { Typography, Container, Box, Stack, MenuItem, Divider, Grid } from "@mui/material";
 import PageWrapper from "../Components/PageWrapper";
 import Table from "../Components/Table";
 import { AvoviteWhiteIcon } from "../Components/Icons";
@@ -10,16 +10,22 @@ import { NumericFormat } from "react-number-format";
 import BackButton from "../Components/BackButton";
 import SelectorCell from "../Components/SelectorCell";
 import ModalFirmContract from "../Components/ModalFirmContract";
-import { formatDate } from "../utilities";
+import { formatCurrency, formatDate, formatDate as formatLongDate } from "../utilities";
+import useConfig from "../Hooks/useConfig";
+import MaterialReactTable from "material-react-table";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
 
 function Vites() {
   const navigate = useNavigate();
+  const [{ constants }] = useConfig();
   const [informationContractFilter, setInformationContractFilter] = useState([]);
   const [{ user, token }] = useSession();
   const [rows, setRows] = useState([]);
   const $Contract = useMemo(() => new ContractService(token), [token]);
   const [openSignedModal, setOpenSignedModal] = useState(false);
   const [contractsWithMortgageSigned, setContractsWithMortgageSigned] = useState();
+  const [loading, setLoading] = useState(true);
+
   // const columns = useMemo(
   //   () => [
   //     {
@@ -373,6 +379,7 @@ function Vites() {
         if (signedContractWithMortgage.length > 0) {
           setContractsWithMortgageSigned(signedContractWithMortgage);
         }
+        setLoading(false);
       }
     })();
   }, [$Contract, user]);
@@ -405,7 +412,172 @@ function Vites() {
             VITES
           </Typography>
         </Stack>
-        <Table columns={columns} data={rows} />
+        <MaterialReactTable
+          columns={columns}
+          data={rows}
+          enableColumnFilterModes
+          enableColumnOrdering
+          enableRowActions
+          muiTablePaperProps={{ elevation: 0 }}
+          initialState={{ density: "compact" }}
+          muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
+          state={{ showSkeletons: loading }}
+          localization={MRT_Localization_ES}
+          enablePagination={false}
+          renderRowActionMenuItems={({ closeMenu, row: { original } }) => [<Divider key="divider-1" />, <Divider key="divider-2" />]}
+          renderDetailPanel={({ row: { original: row } }) => (
+            <Grid display="flex" flexDirection="column" gap={2} width="100%" padding={2}>
+              <Grid display="flex" flexDirection="column" gap={1}>
+                <Typography variant="h4" mt={4}>
+                  Información financiera
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Financiado:{" "}
+                  </Typography>
+                  {row.financed ? "Si" : "No"}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Descuento:{" "}
+                  </Typography>
+                  {row.percentage_discount}%
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Valor descontado:{" "}
+                  </Typography>
+                  ${formatCurrency(row.contract_discount)}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Total con descuento:{" "}
+                  </Typography>
+                  ${formatCurrency(row.total_contract_with_discount)}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Fecha de contrato:{" "}
+                  </Typography>
+                  {formatDate(row.created_at)}
+                </Typography>
+                <Typography variant="h4" mt={4}>
+                  Información de primer pago
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Valor:{" "}
+                  </Typography>
+                  ${formatCurrency(row.first_payment)}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Fecha:{" "}
+                  </Typography>
+                  {formatLongDate(row.first_payment_date)}
+                </Typography>
+
+                <Typography variant="h4" mt={4}>
+                  Información del titular
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Nombre:{" "}
+                  </Typography>
+                  {row.fullname}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Teléfono:{" "}
+                  </Typography>
+                  {row.cellphone}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Correo:{" "}
+                  </Typography>
+                  {row.email}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Tipo de documento:{" "}
+                  </Typography>
+                  {row.id_type}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Número de documento:{" "}
+                  </Typography>
+                  {row.id_number}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Lugar de expedición documento:{" "}
+                  </Typography>
+                  {row.id_location_expedition}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Número de cuenta:{" "}
+                  </Typography>
+                  {row.user_bank_account_number}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Tipo de cuenta:{" "}
+                  </Typography>
+                  {constants?.account_type?.find((a) => String(a.id) === String(row.user_bank_account_type))?.name}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Banco:{" "}
+                  </Typography>
+                  {constants?.banks?.find((a) => String(a.id) === String(row.user_id_bank))?.name}
+                </Typography>
+
+                <Typography variant="h4" mt={4}>
+                  Información del beneficiario
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Nombre:{" "}
+                  </Typography>
+                  {row.beneficiary_fullname}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Tipo de documento:{" "}
+                  </Typography>
+                  {row.beneficiary_id_type}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Número de documento:{" "}
+                  </Typography>
+                  {row.beneficiary_id_number}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Lugar de expedición del documento:{" "}
+                  </Typography>
+                  {row.beneficiary_id_location_expedition}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Teléfono:{" "}
+                  </Typography>
+                  {row.cellphone_beneficiary}
+                </Typography>
+                <Typography>
+                  <Typography component="span" fontWeight={600}>
+                    Correo electrónico:{" "}
+                  </Typography>
+                  {row.email_beneficiary}
+                </Typography>
+              </Grid>
+            </Grid>
+          )}
+        />
       </Container>
       {informationContractFilter.length > 0 && (
         <ModalFirmContract
