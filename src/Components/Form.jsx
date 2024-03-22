@@ -312,7 +312,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
     return status;
   };
 
-  useEffect(() => {}, []);
   useEffect(() => {
     const fetchStates = async () => {
       if (initialState?.country_of_residence === "169") {

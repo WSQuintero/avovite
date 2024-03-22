@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, handleInputChange, informationContract }) {
   const session = useSession();
   const $Contract = useMemo(() => new ContractService(session[0].token), [session[0].token]);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [alert, setAlert] = useState({ show: false, message: "", status: "success" });
   const [beneficiaryFullname, setBeneficiaryFullname] = useState("");
   const [beneficiaryIdNumber, setBeneficiaryIdNumber] = useState("");
@@ -24,7 +24,6 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
   const [statusCivil, setStatusCivil] = useState("");
   const [beneficiaryNacionality, setBeneficiarynacionality] = useState("");
   const [residenceNeighborhoodBeneficiary, setResidenceNeighborhoodBeneficiary] = useState("");
-
 
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -45,9 +44,8 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
       setStatusCivil(informationContract?.civil_status_beneficiary);
       setBeneficiarynacionality(informationContract?.nationality);
       setResidenceNeighborhoodBeneficiary(informationContract?.residence_neighborhood);
-
     }
-  }, [ informationContract]);
+  }, [informationContract]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -65,8 +63,8 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
       // id_type: selectedIdType,
       civil_status_beneficiary: statusCivil,
       nationality: beneficiaryNacionality || "",
-      residence_neighborhood:residenceNeighborhoodBeneficiary,
-      country_of_residence:countryOfResidenceBeneficiary
+      residence_neighborhood: residenceNeighborhoodBeneficiary,
+      country_of_residence: countryOfResidenceBeneficiary,
     };
 
     const emptyFields = Object.values(formData).some((field) => field === "");
@@ -159,7 +157,7 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
               </Grid>
               {/* Cod Municipio Beneficiary cambiar a selected con todos los códigos*/}
               <Grid item xs={12} sm={12}>
-                <Typography variant="subtitle1">Código Municipio Beneficiario</Typography>
+                <Typography variant="subtitle1">Ciudad de residencia beneficiario</Typography>
                 <TextField
                   name="codMunicipioBeneficiary"
                   fullWidth
@@ -231,7 +229,13 @@ function IsChangeInformationBeneficiaryAdmin({ isChangeInformationBeneficiary, h
                 <Button type="submit" variant="contained" color="primary">
                   Enviar
                 </Button>
-                <Button type="button" variant="contained" color="primary" sx={{marginLeft:"20px"}} onClick={()=>navigate("/admin/contracts")}>
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginLeft: "20px" }}
+                  onClick={() => navigate("/admin/contracts")}
+                >
                   Volver
                 </Button>
               </Grid>

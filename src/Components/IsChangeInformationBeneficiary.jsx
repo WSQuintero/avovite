@@ -65,7 +65,7 @@ function IsChangeInformationBeneficiary({ isChangeInformationBeneficiary, handle
           {/* Cod Municipio Beneficiary cambiar a selected con todos los códigos*/}
           <Grid item spacing={2} fullWidth>
             <Grid item xs={12} sm={12}>
-              <Typography variant="subtitle1">Código Municipio Beneficiario</Typography>
+              <Typography variant="subtitle1">Ciudad de residencia beneficiario</Typography>
               <TextField name="codMunicipioBeneficiary" fullWidth onChange={handleInputChange} required />
             </Grid>
             <Grid item xs={12} sm={12}>

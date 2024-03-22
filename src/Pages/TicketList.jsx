@@ -261,7 +261,14 @@ function TicketList({ handleClick }) {
           </Typography>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="asc" />
+          <EnhancedTable
+            loading={loading.fetching}
+            headCells={tableHeadCells}
+            rows={rows.sort(function (a, b) {
+              return b.id - a.id;
+            })}
+            initialOrder="desc"
+          />
         </Grid>
 
         {actualTicket && (
