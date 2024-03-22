@@ -30,7 +30,7 @@ const InitialState = {
   id: "",
   name: "",
   asWork: "",
-  created_at:"",
+  created_at: "",
   state: "",
   actions: [
     { label: "Front Document", url: null },
@@ -100,7 +100,13 @@ function TicketList({ handleClick }) {
         align: "left",
         disablePadding: false,
         format: (value, row) => (
-          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)} disabled={!row.actions.some((a)=>a.url!==null)}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ width: "100px", fontSize: "12px" }}
+            onClick={() => handleDownload(row)}
+            disabled={!row.actions.some((a) => a.url !== null)}
+          >
             Descargar
           </Button>
         ),
@@ -195,10 +201,10 @@ function TicketList({ handleClick }) {
   };
 
   const handleDownload = (row) => {
-    const document=row.actions.find((a)=>a.url!==null)
-    if(document){
-      window.open(row.actions.find((a)=>a.url!==null).url)
-    }else{
+    const document = row.actions.find((a) => a.url !== null);
+    if (document) {
+      window.open(row.actions.find((a) => a.url !== null).url);
+    } else {
       setFeedback({ open: true, message: "No hay archivos que descargar", status: "error" });
     }
   };
@@ -212,18 +218,22 @@ function TicketList({ handleClick }) {
       const { status, data } = await $Ticket.getAll();
       if (status) {
         setRows(
-          data.data.map((ticket) => ({
-            id: ticket.id,
-            name: ticket.title,
-            created_at:ticket.created_at,
-            asWork: ticket.description,
-            state: ticket.ticketStatus,
-            actions: [
-              { label: "Front Document", url: ticket.frontDocumentUrl },
-              { label: "Back Document", url: ticket.backDocumentUrl },
-              { label: "Bank Document", url: ticket.bankUrl },
-            ],
-          }))
+          data.data
+            .map((ticket) => ({
+              id: ticket.id,
+              name: ticket.title,
+              created_at: ticket.created_at,
+              asWork: ticket.description,
+              state: ticket.ticketStatus,
+              actions: [
+                { label: "Front Document", url: ticket.frontDocumentUrl },
+                { label: "Back Document", url: ticket.backDocumentUrl },
+                { label: "Bank Document", url: ticket.bankUrl },
+              ],
+            }))
+            .sort(function (a, b) {
+              return b.id - a.id;
+            })
         );
         setLoading((prev) => ({ ...prev, fetching: false }));
       }
@@ -241,7 +251,7 @@ function TicketList({ handleClick }) {
   return (
     <>
       <PageWrapper>
-    <BackButton/>
+        <BackButton />
         <Stack direction="row" alignItems="center" spacing={2}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
             <AvoviteWhiteIcon color="transparent" sx={{ fontSize: 32 }} />
@@ -251,7 +261,7 @@ function TicketList({ handleClick }) {
           </Typography>
         </Stack>
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="desc" />
+          <EnhancedTable loading={loading.fetching} headCells={tableHeadCells} rows={rows} initialOrder="asc" />
         </Grid>
 
         {actualTicket && (

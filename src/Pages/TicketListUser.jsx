@@ -30,7 +30,7 @@ const InitialState = {
   id: "",
   name: "",
   asWork: "",
-  created_at:"",
+  created_at: "",
   state: "",
   actions: [
     { label: "Front Document", url: null },
@@ -58,7 +58,7 @@ function TicketListUser({ handleClick }) {
         id: "name",
         label: "Título",
         align: "left",
-        width:200,
+        width: 200,
         disablePadding: false,
         format: (value) => value,
       },
@@ -66,7 +66,7 @@ function TicketListUser({ handleClick }) {
         id: "asWork",
         label: "Descripción",
         align: "left",
-        width:400,
+        width: 400,
         disablePadding: false,
         format: (value) => value,
       },
@@ -83,15 +83,17 @@ function TicketListUser({ handleClick }) {
         label: "Estado",
         align: "center",
         disablePadding: false,
-        width:160,
+        width: 160,
         format: (value) => (
-          <span style={{
-            backgroundColor: value === "Completed" ? "#4CAF50" : value === "In Progress" ? "#FFEB3B" : "inherit",
-            color: value === "Completed" ? "white" : value === "In Progress" ? "green" : "inherit",
-            padding: "10px",
-            borderRadius: "10px",
-            fontSize:"12px"
-          }}>
+          <span
+            style={{
+              backgroundColor: value === "Completed" ? "#4CAF50" : value === "In Progress" ? "#FFEB3B" : "inherit",
+              color: value === "Completed" ? "white" : value === "In Progress" ? "green" : "inherit",
+              padding: "10px",
+              borderRadius: "10px",
+              fontSize: "12px",
+            }}
+          >
             {value}
           </span>
         ),
@@ -102,7 +104,13 @@ function TicketListUser({ handleClick }) {
         align: "left",
         disablePadding: false,
         format: (value, row) => (
-          <Button variant="contained" color="primary" sx={{ width: "100px", fontSize: "12px" }} onClick={() => handleDownload(row)} disabled={!row.actions.some((a)=>a.url!==null)}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ width: "100px", fontSize: "12px" }}
+            onClick={() => handleDownload(row)}
+            disabled={!row.actions.some((a) => a.url !== null)}
+          >
             Descargar
           </Button>
         ),
@@ -177,14 +185,13 @@ function TicketListUser({ handleClick }) {
   };
 
   const handleDownload = (row) => {
-    const document=row.actions.find((a)=>a.url!==null)
-    if(document){
-      window.open(row.actions.find((a)=>a.url!==null).url)
-    }else{
+    const document = row.actions.find((a) => a.url !== null);
+    if (document) {
+      window.open(row.actions.find((a) => a.url !== null).url);
+    } else {
       setFeedback({ open: true, message: "No hay archivos que descargar", status: "error" });
     }
   };
-
 
   const resetFeedback = () => {
     setFeedback((prev) => ({ ...prev, open: false }));
@@ -202,7 +209,32 @@ function TicketListUser({ handleClick }) {
     setModal(null);
     setNewRow(InitialState);
   };
+  function parseDate(dateString) {
+    var parts = dateString.split(" ");
+    var day = parseInt(parts[0], 10);
+    var monthName = parts[1];
+    var year = parseInt(parts[2], 10);
 
+    // Mapear el nombre del mes a su número correspondiente
+    var monthNames = [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
+    ];
+    var month = monthNames.indexOf(monthName);
+
+    // Devolver un objeto Date
+    return new Date(year, month, day);
+  }
   const fetchData = async () => {
     const { status, data } = await $Ticket.getAll();
 
@@ -214,7 +246,7 @@ function TicketListUser({ handleClick }) {
             id: ticket.id,
             name: ticket.title,
             asWork: ticket.description,
-            created_at:ticket.created_at,
+            created_at: ticket.created_at,
             state: ticket.ticketStatus,
             actions: [
               { label: "Front Document", url: ticket.frontDocumentUrl },
@@ -222,8 +254,10 @@ function TicketListUser({ handleClick }) {
               { label: "Bank Document", url: ticket.bankUrl },
             ],
           }))
+          .sort(function (a, b) {
+            return b.id - a.id;
+          })
       );
-
       setLoading((prev) => ({ ...prev, fetching: false }));
     }
   };
@@ -237,7 +271,7 @@ function TicketListUser({ handleClick }) {
   return (
     <>
       <PageWrapper>
-    <BackButton/>
+        <BackButton />
 
         <Button variant="contained" color="primary" sx={{ position: "absolute", right: "100px", margin: "auto" }} onClick={handleClick}>
           Crear ticket
@@ -257,7 +291,7 @@ function TicketListUser({ handleClick }) {
             loading={loading.fetching}
             headCells={tableHeadCells}
             rows={rows}
-            initialOrder="desc"
+            initialOrder="asc"
             initialOrderBy="creationDate"
           />
         </Grid>
