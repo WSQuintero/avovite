@@ -29,6 +29,13 @@ function Movements({ handleClick }) {
   const tableHeadCells = useMemo(
     () => [
       {
+        id: "id",
+        label: "Id movimiento",
+        align: "center",
+        disablePadding: false,
+        format: (value) => value,
+      },
+      {
         id: "contract_id",
         label: "ID del Contrato",
         disablePadding: false,
@@ -57,14 +64,6 @@ function Movements({ handleClick }) {
           return formatDate(date);
         },
       },
-
-      {
-        id: "email",
-        label: "Correo Electrónico",
-        align: "center",
-        disablePadding: false,
-        format: (value) => value,
-      },
       {
         id: "fullname",
         label: "Nombre Completo",
@@ -73,13 +72,15 @@ function Movements({ handleClick }) {
         width: "500px",
         format: (value) => value,
       },
+
       {
-        id: "id",
-        label: "ID",
+        id: "email",
+        label: "Correo Electrónico",
         align: "center",
         disablePadding: false,
         format: (value) => value,
       },
+
       {
         id: "id_number",
         label: "Número de Identificación",
@@ -161,10 +162,10 @@ function Movements({ handleClick }) {
       // },
       {
         id: "withdrawal",
-        label: "Retiro",
+        label: "¿Retirado?",
         align: "center",
         disablePadding: false,
-        format: (value) => value,
+        format: (value) => (value === 1 ? "Si" : "No"),
       },
       {
         id: "reset",
