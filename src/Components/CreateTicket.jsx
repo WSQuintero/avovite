@@ -73,7 +73,7 @@ function CreateTicket({ setShowCreateTicket }) {
         civil_status_beneficiary: "",
         economy_activity_beneficiary: "",
         country_of_residence_beneficiary: "",
-        files:[]
+        files: [],
       },
       informationBank: {
         title: event.target.title.value,
@@ -85,32 +85,31 @@ function CreateTicket({ setShowCreateTicket }) {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        files:[]
+        files: [],
       },
       bugs: {
         title: event.target.title.value,
         description: event.target.description.value,
         ticketCategory: null,
-        files:[]
+        files: [],
       },
     };
-
 
     if (event.target.elements.ticketCategory.value === "Bugs") {
       informationToSend.bugs.ticketCategory = "Bugs";
       informationToSend.ticketCategory = "Bugs";
-      if(filesOther){
-        informationToSend.bugs.files.push(filesOther)
-        setFilesOther(null)
+      if (filesOther) {
+        informationToSend.bugs.files.push(filesOther);
+        setFilesOther(null);
       }
     }
 
     if (event.target.elements.ticketCategory.value === "Oter") {
       informationToSend.oter.ticketCategory = "Oter";
       informationToSend.ticketCategory = "Oter";
-      if(filesOther){
-        informationToSend.oter.files.push(filesOther)
-        setFilesOther(null)
+      if (filesOther) {
+        informationToSend.oter.files.push(filesOther);
+        setFilesOther(null);
       }
     }
 
@@ -160,10 +159,10 @@ function CreateTicket({ setShowCreateTicket }) {
       informationToSend.informationBeneficiary["economy_activity_beneficiary"] = event.target.elements.economyActivityBeneficiary.value;
       informationToSend.informationBeneficiary["country_of_residence_beneficiary"] =
         event.target.elements.countryOfResidenceBeneficiary.value;
-        if(filesOther){
-          informationToSend.informationBeneficiary.files.push(filesOther)
-          setFilesOther(null)
-        }
+      if (filesOther) {
+        informationToSend.informationBeneficiary.files.push(filesOther);
+        setFilesOther(null);
+      }
     }
 
     if (!informationToSend.title || !informationToSend.description || !informationToSend.ticketCategory) {
@@ -186,7 +185,7 @@ function CreateTicket({ setShowCreateTicket }) {
         setTimeout(() => {
           setShowCreateTicket(false);
         }, 2000);
-      }else{
+      } else {
         setAlert({
           show: true,
           message: "Hubo en error al enviar la información",
@@ -202,7 +201,7 @@ function CreateTicket({ setShowCreateTicket }) {
         setTimeout(() => {
           setShowCreateTicket(false);
         }, 2000);
-      }else{
+      } else {
         setAlert({
           show: true,
           message: "Hubo en error al enviar la información",
@@ -222,7 +221,7 @@ function CreateTicket({ setShowCreateTicket }) {
         setTimeout(() => {
           setShowCreateTicket(false);
         }, 2000);
-      }else{
+      } else {
         setAlert({
           show: true,
           message: "Hubo en error al enviar la información",
@@ -243,13 +242,13 @@ function CreateTicket({ setShowCreateTicket }) {
         setTimeout(() => {
           setShowCreateTicket(false);
         }, 2000);
-      }else{
+      } else {
         setAlert({
           show: true,
           message: "Hubo en error al enviar la información",
           status: "error",
         });
-      }// falta files[foto frontal, foto trasera]
+      } // falta files[foto frontal, foto trasera]
     }
 
     if (
@@ -263,14 +262,13 @@ function CreateTicket({ setShowCreateTicket }) {
         setTimeout(() => {
           setShowCreateTicket(false);
         }, 2000);
-      }else{
+      } else {
         setAlert({
           show: true,
           message: "Hubo en error al enviar la información",
           status: "error",
         });
       }
-
     }
   };
 
@@ -421,8 +419,17 @@ function CreateTicket({ setShowCreateTicket }) {
               </Grid>
 
               <Grid item xs={12}>
-
-                <Button type="submit" variant="contained" color="primary" sx={{ marginTop: "20px" }} disabled={!valueOption && true}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginTop: "20px" }}
+                  disabled={
+                    (!valueOption && true) ||
+                    (isChangeInformationUser && !frontalImage && !traseraImage) ||
+                    (isChangeInformationBank && !certificateBank)
+                  }
+                >
                   Enviar Solicitud
                 </Button>
                 {!isChangeInformationBank && !isChangeInformationUser && (
