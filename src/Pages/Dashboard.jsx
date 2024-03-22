@@ -95,7 +95,7 @@ function Dashboard() {
     const { status, data } = await $Post.get();
 
     if (status) {
-      setPosts(data.data);
+      setPosts(data.data.sort((a, b) => b.id - a.id));
     }
   };
 

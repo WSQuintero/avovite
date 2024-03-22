@@ -23,7 +23,7 @@ import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from "@mui/ico
 import { formatDate } from "../../utilities";
 import usePost from "../../Hooks/usePost";
 import TiptapEditor from "../TiptapEditor";
-import sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from "sanitize-html";
 import BackButton from "../BackButton";
 
 const isYouTubeVideo = (url) => {
@@ -66,7 +66,12 @@ function Blog() {
         disablePadding: false,
         format: (value) => (
           <Box display="flex" width={200} sx={{ aspectRatio: 1 }}>
-            <img src={value instanceof File ? URL.createObjectURL(value) : value} alt="Post image" width="100%" style={{ objectFit: "cover", borderRadius: 8 }} />
+            <img
+              src={value instanceof File ? URL.createObjectURL(value) : value}
+              alt="Post image"
+              width="100%"
+              style={{ objectFit: "cover", borderRadius: 8 }}
+            />
           </Box>
         ),
       },
@@ -110,7 +115,10 @@ function Blog() {
         align: "left",
         disablePadding: false,
         format: (value) => (
-          <Box sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}  dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}/>
+          <Box
+            sx={{ display: "-webkit-box", overflow: "hidden", WebkitBoxOrient: "vertical", WebkitLineClamp: 3 }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}
+          />
         ),
       },
       {
@@ -118,7 +126,7 @@ function Blog() {
         label: "Actualizado en",
         align: "left",
         disablePadding: false,
-        format: (value) => value ? formatDate(value) : formatDate(new Date()),
+        format: (value) => (value ? formatDate(value) : formatDate(new Date())),
       },
       {
         id: "",
@@ -155,7 +163,7 @@ function Blog() {
     const { status, data } = await $Post.get();
 
     if (status) {
-      setPosts(data.data);
+      setPosts(data.data.sort((a, b) => b.id - a.id));
     }
   };
 
@@ -163,19 +171,14 @@ function Blog() {
     const { name } = target;
     let value;
 
-    if (target.type === 'file') {
+    if (target.type === "file") {
       value = target.files[0];
     } else {
       value = target.value;
     }
 
-
     setSelectedPost((prev) => ({ ...prev, [name]: value }));
   };
-
-
-
-
 
   const onClearFields = () => {
     setCurrentModal(null);
@@ -187,7 +190,6 @@ function Blog() {
       url_video: "",
     });
   };
-
 
   const onCreatePost = async (event) => {
     event.preventDefault();
@@ -209,12 +211,10 @@ function Blog() {
         setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
-
-
 
   const onUpdatePost = async (event) => {
     event.preventDefault();
@@ -229,8 +229,8 @@ function Blog() {
       id: selectedPost.id,
       title: selectedPost.title,
       description: selectedPost.description,
-      url_video:selectedPost.url_video,
-      url_image:selectedPost.url_image
+      url_video: selectedPost.url_video,
+      url_image: selectedPost.url_image,
       // Otras propiedades necesarias...
     };
 
@@ -244,7 +244,6 @@ function Blog() {
       setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
     }
   };
-
 
   const onDeletePost = async () => {
     const { status } = await $Post.delete(selectedPost);
@@ -272,7 +271,7 @@ function Blog() {
 
   return (
     <>
-        <BackButton/>
+      <BackButton />
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setCurrentModal("create")}>
@@ -302,7 +301,7 @@ function Blog() {
                   placeholder="Descripción"
                   name="description"
                   value={selectedPost.description}
-                  onChange={({ html }) =>{
+                  onChange={({ html }) => {
                     setSelectedPost((prev) => ({ ...prev, ["description"]: html }));
                   }}
                 />
@@ -324,7 +323,6 @@ function Blog() {
                     onChange={onChangeFields} // Aquí handleImageUpload es el manejador de eventos que procesa la imagen seleccionada
                     style={{ border: "1px solid #999", borderRadius: "10px", padding: "15px", width: "100%" }}
                     name="url_image"
-
                   />
                 </Grid>
 
