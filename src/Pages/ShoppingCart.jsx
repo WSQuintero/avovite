@@ -27,7 +27,8 @@ import DiscountService from "../Services/discount.service";
 import PaymentService from "../Services/payment.service";
 import Theme from "../Theme";
 import { useSnackbar } from "notistack";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import ModalConfirmationPay from "../Components/Admin/ModalConfirmationPay";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -50,6 +51,7 @@ function ShoppingCart() {
   const [loadingPayment, setLoadingPayment] = useState(false);
   const $Discount = useMemo(() => new DiscountService(token), [token]);
   const $Payment = useMemo(() => new PaymentService(token), [token]);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const selectedProduct = useMemo(() => shoppingCart.find((p) => p.id === product), [shoppingCart, product]);
   const subTotal = useMemo(
     () =>
@@ -94,6 +96,7 @@ function ShoppingCart() {
   };
 
   const handlePayment = async () => {
+    setOpenConfirmationModal(false);
     if (!shoppingCart || !shoppingCart.length || !product) {
       return;
     }
@@ -151,11 +154,10 @@ function ShoppingCart() {
 
   useEffect(() => {
     if (session.user) {
-      if(session.user.status_terms_and_conditions==0||!session.user.status_terms_and_conditions_date){
-        navigate('/dashboard');
+      if (session.user.status_terms_and_conditions == 0 || !session.user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
       }
     }
-
   }, [session.user]);
 
   useEffect(() => {
@@ -172,7 +174,14 @@ function ShoppingCart() {
             <Typography variant="h3">Carrito</Typography>
             <Grid display="flex" flexDirection="column" gap={2}>
               <FormControl>
-                <RadioGroup value={product} sx={{ gap: 2 }} onChange={(e) =>{setProduct(e.target.value);console.log(e.target.value)}}>
+                <RadioGroup
+                  value={product}
+                  sx={{ gap: 2 }}
+                  onChange={(e) => {
+                    setProduct(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                >
                   {shoppingCart.map((element, index) => (
                     <FormControlLabel
                       key={index}
@@ -389,10 +398,16 @@ function ShoppingCart() {
                   de mayor valor.
                 </Alert>
               </Collapse>
-              <LoadingButton loading={loadingPayment} disabled={!product} variant="contained" onClick={handlePayment}>
+              <LoadingButton
+                loading={loadingPayment}
+                disabled={!product}
+                variant="contained"
+                onClick={() => setOpenConfirmationModal(true)}
+              >
                 {product ? "Proceder a pago" : "Seleccione un producto para realizar el pago"}
               </LoadingButton>
             </Grid>
+            <ModalConfirmationPay open={openConfirmationModal} handlePayment={handlePayment} />
           </Grid>
         </Grid>
       </Container>

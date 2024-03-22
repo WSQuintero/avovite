@@ -817,7 +817,7 @@ const Contracts = () => {
           </Grid>
         )}
         renderBottomToolbarCustomActions={({ table }) => (
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box fullWidth sx={{ display: "flex", gap: 1, justifyContent: "space-around", width: "100%" }}>
             <Button variant="text" color="primary" onClick={handleExportData} startIcon={<DownloadIcon />}>
               Exportar a Excel
             </Button>
