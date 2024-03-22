@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
-  DialogContentText
+  DialogContentText,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import PageWrapper from "../Components/PageWrapper";
@@ -23,7 +23,7 @@ import MovementService from "../Services/movement.service";
 import useAsyncEffect from "../Hooks/useAsyncEffect";
 import EnhancedTable from "../Components/EnhancedTable";
 import { TRANSACTION_TYPES } from "../utilities/constants";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import BackButton from "../Components/BackButton";
 
@@ -33,7 +33,7 @@ function Transactions() {
   const [{ user, token }] = useSession();
   const [rows, setRows] = useState([]);
   const [modal, setModal] = useState([]);
-  const [filesUser, setFilesUser] = useState({cedula: null, certificado: null});
+  const [filesUser, setFilesUser] = useState({ cedula: null, certificado: null });
   const [withdrawalMovId, setWithdrawalMovId] = useState(null);
 
   const [{ loading }, { setLoading }] = useConfig();
@@ -69,29 +69,40 @@ function Transactions() {
         id: "id",
         label: "",
         format: (mov, data) => {
-          return (<Stack direction="row" spacing={1}>
-            <Button disabled size="small" variant="contained">
-              Ver detalles
-            </Button>
+          return (
+            <Stack direction="row" spacing={1}>
+              <Button disabled size="small" variant="contained">
+                Ver detalles
+              </Button>
 
-            {data.withdrawal==0&&(<Button size="small" onClick={()=>{
-              setWithdrawalMovId(data);
-              setModal("modal-withdrawal");
-            }} variant="contained">
-              Retirar
-            </Button>)}
-          </Stack>);
+              {data.withdrawal == 0 && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setWithdrawalMovId(data);
+                    setModal("modal-withdrawal");
+                  }}
+                  variant="contained"
+                >
+                  Retirar
+                </Button>
+              )}
+            </Stack>
+          );
         },
       },
     ],
     []
   );
 
-  const loadMovs = async()=>{
-    const { status, data } = await $Movement.get(user?.id);
+  const loadMovs = async () => {
+    const { status, data } = await $Movement.get({ page: 1, pagezise: 10 });
 
     if (status) {
       setRows(data.data);
+      console.log(data.data);
+    } else {
+      console.log(data);
     }
 
     setLoadingTransactions((prev) => ({ ...prev, fetching: false }));
@@ -104,20 +115,20 @@ function Transactions() {
   }, [$Movement]);
 
   useEffect(() => {
-    if(user){
-      if(user.status_terms_and_conditions==0||!user.status_terms_and_conditions_date){
-        navigate('/dashboard');
+    if (user) {
+      if (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date) {
+        navigate("/dashboard");
       }
     }
   }, [user]);
 
-  const cancelWithdrawalMov = async ()=>{
+  const cancelWithdrawalMov = async () => {
     setModal("");
     setWithdrawalMovId(null);
-    setFilesUser({cedula: null, certificado: null});
+    setFilesUser({ cedula: null, certificado: null });
   };
 
-  const withdrawalMov = async ()=>{
+  const withdrawalMov = async () => {
     setLoading(true);
 
     await $Movement.withdrawal(withdrawalMovId?.id);
@@ -141,10 +152,10 @@ function Transactions() {
 
     setFilesUser(alter);
 
-    setTimeout(()=>setModal("modal-update-payment-docs"),1);
+    setTimeout(() => setModal("modal-update-payment-docs"), 1);
   };
 
-  const updateDocsUser = async ()=>{
+  const updateDocsUser = async () => {
     setLoading(true);
 
     const body = new FormData();
@@ -167,7 +178,7 @@ function Transactions() {
 
   return (
     <PageWrapper>
-    <BackButton/>
+      <BackButton />
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
@@ -180,78 +191,80 @@ function Transactions() {
         <EnhancedTable loading={loadingTransactions.fetching} headCells={columns} rows={rows} />
       </Container>
 
-      <Dialog open={modal === "modal-update-payment-docs"} onClose={() => cancelWithdrawalMov()}  maxWidth="md" fullWidth>
+      <Dialog open={modal === "modal-update-payment-docs"} onClose={() => cancelWithdrawalMov()} maxWidth="md" fullWidth>
         <DialogTitle color="primary.main">Actualizar datos</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará  actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br /><br />
-
-              <u>"<b>RECUERDE:</b>    el documento de identidad y la certificación bancaria deben
-              estar a nombre del titular del contrato, de lo contrario sus datos NO se
-              actualizarán y NO se podrá realizar el procesamiento de sus retiros”</u>
-
-              <br />
-              <br />
-
-              ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!
-
-              </DialogContentText>
+        <DialogContent>
+          <DialogContentText>
+            Cargue su Documento de identidad y certificación bancaria para actualizar sus datos. En 1-3 días habiles, su información estará
+            actualizada, permitiéndole realizar solicitudes de retiro sin inconvenientes. <br />
             <br />
+            <u>
+              "<b>RECUERDE:</b> el documento de identidad y la certificación bancaria deben estar a nombre del titular del contrato, de lo
+              contrario sus datos NO se actualizarán y NO se podrá realizar el procesamiento de sus retiros”
+            </u>
+            <br />
+            <br />
+            ¡Apreciamos su cooperación para agilizar el proceso y mejorar su experiencia!
+          </DialogContentText>
+          <br />
 
-            <Grid display="flex" gap={1}>
-              <Box position="relative">
-                <LoadingButton loading={loading.importing} variant={(filesUser.cedula?"contained":"")} size="small">
-                  {(filesUser.cedula?"Cambiar cédula cargada":"Anexar Cédula")}
-                </LoadingButton>
+          <Grid display="flex" gap={1}>
+            <Box position="relative">
+              <LoadingButton loading={loading.importing} variant={filesUser.cedula ? "contained" : ""} size="small">
+                {filesUser.cedula ? "Cambiar cédula cargada" : "Anexar Cédula"}
+              </LoadingButton>
 
-                <input
-                  type="file"
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    zIndex: 1,
-                    width: "100%",
-                    height: "100%",
-                    cursor: "pointer",
-                    aspectRatio: 1,
-                    opacity: 0,
-                  }}
-                  onChange={({ target }) => onImport(target.files[0], "cedula")}
-                />
+              <input
+                type="file"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                  aspectRatio: 1,
+                  opacity: 0,
+                }}
+                onChange={({ target }) => onImport(target.files[0], "cedula")}
+              />
             </Box>
 
             <Box position="relative">
-                <LoadingButton loading={loading.importing} variant={(filesUser.certificado?"contained":"")} size="small">
-                  {(filesUser.certificado?"Cambiar certificación bancaria cargada":"Anexar certificación bancaria")}
-                </LoadingButton>
-                <input
-                  type="file"
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    zIndex: 1,
-                    width: "100%",
-                    height: "100%",
-                    cursor: "pointer",
-                    aspectRatio: 1,
-                    opacity: 0,
-                  }}
-                  onChange={({ target }) => onImport(target.files[0], "certificado")}
-                />
+              <LoadingButton loading={loading.importing} variant={filesUser.certificado ? "contained" : ""} size="small">
+                {filesUser.certificado ? "Cambiar certificación bancaria cargada" : "Anexar certificación bancaria"}
+              </LoadingButton>
+              <input
+                type="file"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                  aspectRatio: 1,
+                  opacity: 0,
+                }}
+                onChange={({ target }) => onImport(target.files[0], "certificado")}
+              />
             </Box>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button variant={(filesUser.cedula&&filesUser.certificado?"contained":"")} onClick={() => {
-              if(filesUser.cedula&&filesUser.certificado){
+          <Button
+            variant={filesUser.cedula && filesUser.certificado ? "contained" : ""}
+            onClick={() => {
+              if (filesUser.cedula && filesUser.certificado) {
                 updateDocsUser();
               }
-            }}>
+            }}
+          >
             Actualizar
-          </Button>
-          {" "}
-          <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
+          </Button>{" "}
+          <Button variant="warning" onClick={() => cancelWithdrawalMov()}>
             Cancelar
           </Button>
         </DialogActions>
@@ -261,17 +274,27 @@ function Transactions() {
         <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.<br />
-            <b>RECUERDE:</b> el documento de identidad y la cuenta bancaria deben estar a nombre del titular del contrato y los datos deben estar correctos, de lo contrario puede sufrir una pérdida del valor retirado, la cual usted asume la responsabilidad.<br /><br />
+            ¿Seguro de proceder?, Al aceptar, asume responsabilidad por los datos proporcionados y confirma su exactitud.
+            <br />
+            <b>RECUERDE:</b> el documento de identidad y la cuenta bancaria deben estar a nombre del titular del contrato y los datos deben
+            estar correctos, de lo contrario puede sufrir una pérdida del valor retirado, la cual usted asume la responsabilidad.
+            <br />
+            <br />
             <hr />
-            <b>Valor Retiro:</b> $ {withdrawalMovId?.transaction_value.toLocaleString("es-ES")}<br />
+            <b>Valor Retiro:</b> $ {withdrawalMovId?.transaction_value.toLocaleString("es-ES")}
+            <br />
             <hr />
-            <b>Nombre:</b> {withdrawalMovId?.fullname}<br />
-            <b>Tipo de Documento:</b> {withdrawalMovId?.id_type}<br />
-            <b>Número de Documento:</b> {withdrawalMovId?.id_number}<br />
+            <b>Nombre:</b> {withdrawalMovId?.fullname}
+            <br />
+            <b>Tipo de Documento:</b> {withdrawalMovId?.id_type}
+            <br />
+            <b>Número de Documento:</b> {withdrawalMovId?.id_number}
+            <br />
             <hr />
-            <b>Banco:</b> {withdrawalMovId?.nombre_banco}<br />
-            <b>Tipo de Cuenta:</b> {withdrawalMovId?.tipo_cuenta}<br />
+            <b>Banco:</b> {withdrawalMovId?.nombre_banco}
+            <br />
+            <b>Tipo de Cuenta:</b> {withdrawalMovId?.tipo_cuenta}
+            <br />
             <b>Número de Cuenta:</b> {withdrawalMovId?.user_bank_account_number}
             <hr />
           </DialogContentText>
@@ -279,13 +302,9 @@ function Transactions() {
         <DialogActions>
           <Button variant="contained" onClick={() => withdrawalMov()}>
             RETIRAR
-          </Button>
-          {" "}
-          <Button onClick={() => setModal("modal-update-payment-docs")}>
-            No, Actualizar Datos
-          </Button>
-          {" "}
-          <Button variant="warning" onClick={()=>cancelWithdrawalMov()}>
+          </Button>{" "}
+          <Button onClick={() => setModal("modal-update-payment-docs")}>No, Actualizar Datos</Button>{" "}
+          <Button variant="warning" onClick={() => cancelWithdrawalMov()}>
             Cancelar
           </Button>
         </DialogActions>
@@ -295,11 +314,11 @@ function Transactions() {
         <DialogTitle color="primary.main">¡Confirmación de retiro!</DialogTitle>
         <DialogContent>
           <DialogContentText>
-              Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.
+            Felicidades su retiro se procesara de inmediato y en un lapso de 1 a 5 días hábiles estará en su cuenta bancaria.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={()=>cancelWithdrawalMov()}>
+          <Button variant="contained" onClick={() => cancelWithdrawalMov()}>
             !Gracias!
           </Button>
         </DialogActions>
