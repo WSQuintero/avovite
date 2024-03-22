@@ -419,6 +419,11 @@ function CreateTicket({ setShowCreateTicket }) {
               </Grid>
 
               <Grid item xs={12}>
+                {(isChangeInformationUser && !frontalImage && !traseraImage) || (isChangeInformationBank && !certificateBank) ? (
+                  <Typography sx={{ marginTop: 2, marginLeft: 1 }}>Recuerda cargar los documentos</Typography>
+                ) : (
+                  false
+                )}
                 <Button
                   type="submit"
                   variant="contained"
