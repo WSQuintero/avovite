@@ -7,7 +7,7 @@ import FacePlaceholderImage from "../../assets/img/form/face_placeholder.jpg";
 import camera_placeholder from "../../assets/img/form/camera_placeholder.jpg";
 import IdDocumentPlaceholderImage from "../../assets/img/form/id_document_placeholder.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import InvasiveForm from "../Forms/invasiveForm";
+import InvasiveForm from "../Forms/InvasiveForm";
 
 const initialFormData = {
   document: null,

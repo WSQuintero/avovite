@@ -24,9 +24,9 @@ import { formatDate } from "../utilities";
 import Form from "../Components/Form";
 import useLastContract from "../Hooks/useLastContract";
 import BackButton from "../Components/BackButton";
-import InvasiveForm from "../Components/Forms/InvasiveForm";
 import DialogKYC from "../Components/Dialogs/KYC";
 import useUser from "../Hooks/useUser";
+import InvasiveForm from "../Components/Forms/InvasiveForm";
 
 function ContractValidation() {
   const navigate = useNavigate();
