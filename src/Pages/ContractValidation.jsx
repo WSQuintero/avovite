@@ -82,7 +82,6 @@ function ContractValidation() {
     if (status) {
       setContracts((prev) => ({ ...prev, pendings: prev.filter((c) => c.id !== contract.id) }));
       setModal("contract-success");
-      location.reload();
     } else {
       console.log("Error");
     }
@@ -160,7 +159,7 @@ function ContractValidation() {
               <DialogContentText>Para poder continuar debes diligenciar los datos de tu contrato.</DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button variant="contained" onClick={() => setModal(null)}>
+              <Button variant="contained" onClick={() => setModal(null)} disabled={contracts.length < 1}>
                 Continuar
               </Button>
             </DialogActions>
@@ -193,7 +192,13 @@ function ContractValidation() {
               </Typography>
             </DialogTitle>
             <DialogActions>
-              <Button variant="contained" onClick={() => setModal(null)}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setModal(null);
+                  location.reload();
+                }}
+              >
                 Continuar
               </Button>
             </DialogActions>

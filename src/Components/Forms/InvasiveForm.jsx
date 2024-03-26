@@ -364,6 +364,8 @@ function InvasiveForm({ contractId }) {
 
       if (data?.response?.data.success === "you already have an associated contract") {
         setOpen(true);
+        setLoading(false);
+        navigate("/validation/confirmation");
         return;
       }
       if (data?.name === "AxiosError") {
