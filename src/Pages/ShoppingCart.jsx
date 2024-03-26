@@ -179,7 +179,6 @@ function ShoppingCart() {
                   sx={{ gap: 2 }}
                   onChange={(e) => {
                     setProduct(e.target.value);
-                    console.log(e.target.value);
                   }}
                 >
                   {shoppingCart.map((element, index) => (
