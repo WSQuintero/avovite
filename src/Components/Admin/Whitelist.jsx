@@ -108,65 +108,6 @@ function Whitelist() {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
 
-  const onChangeFields = ({ target }) => {
-    const { name, value } = target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const onClearFields = () => {
-    setModal(null);
-    setUser({ id: null, email: "", mortgage: "-" });
-  };
-
-  const onCreateProduct = async (event) => {
-    event.preventDefault();
-
-    if (!isValidUser) {
-      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
-      return;
-    }
-
-    const { status, data } = await $Whitelist.add({ email: user.email, mortgage: user.mortgage === "mortgage" });
-
-    if (status) {
-      setUsers((prev) => [...prev, { ...user, id: data.data }]);
-      setFeedback({ open: true, message: "Usuario creado exitosamente.", status: "success" });
-      onClearFields();
-    } else {
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-    }
-  };
-
-  const onUpdateProduct = async (event) => {
-    event.preventDefault();
-
-    if (!isValidUser) {
-      setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
-      return;
-    }
-
-    const { status } = await $Whitelist.update({ id: user.id, email: user.email, mortgage: user.mortgage === "mortgage" });
-
-    if (status) {
-      setUsers((prev) => prev.map((p) => (p.id === user.id ? { ...user, mortgage: user.mortgage === "mortgage" ? 1 : 0 } : p)));
-      setFeedback({ open: true, message: "Usuario actualizado exitosamente.", status: "success" });
-      onClearFields();
-    } else {
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-    }
-  };
-
-  const onDeleteProduct = async () => {
-    const { status } = await $Whitelist.delete(user);
-
-    if (status) {
-      setUsers((prev) => prev.filter((p) => p.id !== user.id));
-      setFeedback({ open: true, message: "Usuario eliminado exitosamente.", status: "success" });
-      onClearFields();
-    } else {
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
-    }
-  };
   const onPageChange = (newPage) => {
     setActualPage(newPage);
   };

@@ -42,6 +42,7 @@ function ContractValidation() {
   const [contractsPendingSecondForm, setContractsPendingSecondForm] = useState([]);
   const [whiteListContracts, setWhiteListContracts] = useState();
   const [isKyc, setIsKyc] = useState(true);
+  const [actualCont, setActualCont] = useState(null);
   const $User = useUser();
   const fetchContractsWhitelist = async () => {
     setOpenInvasiveForm(false);
@@ -57,6 +58,7 @@ function ContractValidation() {
   const handleSelectContract = ({ id }) => {
     setIsKyc(true);
     const actualContract = contracts.find((contract) => contract.id === id);
+    setActualCont(actualContract);
     if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
       setIsKyc(false);
       setContract({ id });
@@ -76,11 +78,12 @@ function ContractValidation() {
   };
   const handleFormSubmit = async (body) => {
     setLoadingSubmit(true);
+    const { mortgage_contract, ...rest } = body.body;
 
-    const { status } = await $Contract.complete({ id: contract.id, ...body });
+    const { status } = await $Contract.complete({ id: contract.id, body: rest });
 
     if (status) {
-      setContracts((prev) => ({ ...prev, pendings: prev.filter((c) => c.id !== contract.id) }));
+      setContracts((prev) => prev.filter((c) => c.id !== contract.id));
       setModal("contract-success");
     } else {
       console.log("Error");
@@ -111,7 +114,6 @@ function ContractValidation() {
       })();
     }
   }, [session.token]);
-
   return (
     <>
       {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
@@ -123,30 +125,31 @@ function ContractValidation() {
             <Grid display="flex" flexDirection="column" gap={2}>
               <Typography variant="h2">Contratos pendientes:</Typography>
               <List>
-                {contracts?.map((contract) => (
-                  <ListItem
-                    key={contract.id}
-                    onClick={() => handleSelectContract(contract)}
-                    secondaryAction={
-                      <Button variant="contained" edge="end">
-                        Completar
-                      </Button>
-                    }
-                    disablePadding
-                  >
-                    <ListItemButton role={undefined} onClick={() => {}}>
-                      <ListItemIcon>
-                        <ContractIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={`Contrato AV-${contract.id}`}
-                        secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
-                        primaryTypographyProps={{ fontSize: 20, color: "primary" }}
-                        secondaryTypographyProps={{ color: "text.main" }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+                {contracts.length > 0 &&
+                  contracts?.map((contract) => (
+                    <ListItem
+                      key={contract.id}
+                      onClick={() => handleSelectContract(contract)}
+                      secondaryAction={
+                        <Button variant="contained" edge="end">
+                          Completar
+                        </Button>
+                      }
+                      disablePadding
+                    >
+                      <ListItemButton role={undefined} onClick={() => {}}>
+                        <ListItemIcon>
+                          <ContractIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`Contrato AV-${contract.id}`}
+                          secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
+                          primaryTypographyProps={{ fontSize: 20, color: "primary" }}
+                          secondaryTypographyProps={{ color: "text.main" }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
               </List>
             </Grid>
           </Container>
@@ -179,6 +182,7 @@ function ContractValidation() {
                   initialState={initialFormData}
                   onSubmit={handleFormSubmit}
                   onLoad={({ reset }) => setResetForm(reset)}
+                  isMortgage={actualCont?.mortgage_contract === 1 ? true : false}
                 />
               </Container>
             </DialogContent>
@@ -196,7 +200,7 @@ function ContractValidation() {
                 variant="contained"
                 onClick={() => {
                   setModal(null);
-                  location.reload();
+                  navigate("/");
                 }}
               >
                 Continuar

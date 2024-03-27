@@ -183,7 +183,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
   });
   const $Utils = useMemo(() => new UtilsService(), []);
   const $User = useUser();
-
   const handleInputChange = async (event) => {
     const { name, value } = event.target;
 

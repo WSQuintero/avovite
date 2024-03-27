@@ -100,7 +100,6 @@ function Transactions() {
 
     if (status) {
       setRows(data.data);
-      console.log(data.data);
     } else {
       console.log(data);
     }
