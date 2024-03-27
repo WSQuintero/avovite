@@ -39,7 +39,7 @@ import { NumericFormat } from "react-number-format";
 import DialogContractDetail from "../Dialogs/ContractDetail";
 import ContractSelector from "../ContractSelector";
 import { GetApp as DownloadIcon } from "@mui/icons-material";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import BackButton from "../BackButton";
 
@@ -57,7 +57,7 @@ function PaymentSplit() {
   const [modal, setModal] = useState(null);
   const [loading, setLoading] = useState({ fetching: true, collapse: null, split: null });
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
-  const isValidForm = useMemo(() => newRow.total_money && newRow.payment_date, [newRow]);
+  const isValidForm = useMemo(() => newRow.total_money && newRow.concept && newRow.payment_date, [newRow]);
   const isValidFormCollapse = useMemo(() => newCollapse.contract_number, [newCollapse]);
 
   const $Split = useMemo(() => (session.token ? new SplitService(session.token) : null), [session.token]);
@@ -68,6 +68,13 @@ function PaymentSplit() {
       {
         id: "id",
         label: "ID",
+        align: "left",
+        disablePadding: false,
+        format: (value) => value,
+      },
+      {
+        id: "concept",
+        label: "Concepto",
         align: "left",
         disablePadding: false,
         format: (value) => value,
@@ -120,7 +127,13 @@ function PaymentSplit() {
             </IconButton>
             <IconButton
               onClick={() => {
-                setNewRow({ id: row.id, total_money: row.total_money, payment_date: row.payment_date, is_Cronjob: row.is_Cronjob === 1 });
+                setNewRow({
+                  id: row.id,
+                  total_money: row.total_money,
+                  payment_date: row.payment_date,
+                  is_Cronjob: row.is_Cronjob === 1,
+                  concept: row.concept,
+                });
                 setModal("update");
               }}
             >
@@ -129,7 +142,13 @@ function PaymentSplit() {
             <IconButton
               color="error"
               onClick={() => {
-                setNewRow({ id: row.id, total_money: row.total_money, payment_date: row.payment_date, is_Cronjob: row.is_Cronjob === 1 });
+                setNewRow({
+                  id: row.id,
+                  total_money: row.total_money,
+                  payment_date: row.payment_date,
+                  is_Cronjob: row.is_Cronjob === 1,
+                  concept: row.concept,
+                });
                 setModal("delete");
               }}
             >
@@ -152,7 +171,7 @@ function PaymentSplit() {
             </Button>
           </Grid>
         ),
-      }
+      },
     ],
     [collapse, loading.split]
   );
@@ -179,10 +198,10 @@ function PaymentSplit() {
         </Grid>
         {loading.collapse === row.id ? (
           <LinearProgress />
-          ) : (collapse[row.id] || []).length === 0 ? (
-            <Typography fontWeight={600} textAlign="center" color="success.main">
-              No tiene contratos asignados
-            </Typography>
+        ) : (collapse[row.id] || []).length === 0 ? (
+          <Typography fontWeight={600} textAlign="center" color="success.main">
+            No tiene contratos asignados
+          </Typography>
         ) : (
           <Table size="small" sx={{ mb: 6, "& th, & td": { paddingY: 0, border: "none" } }}>
             <TableHead>
@@ -270,7 +289,6 @@ function PaymentSplit() {
 
   const onCreate = async (event) => {
     event.preventDefault();
-
     if (!isValidForm) {
       setFeedback({ open: true, message: "Todos los campos son requeridos.", status: "error" });
       return;
@@ -427,10 +445,9 @@ function PaymentSplit() {
     }
   }, [$Split]);
 
-
   return (
     <>
-    <BackButton/>
+      <BackButton />
       <Grid display="flex" flexDirection="column" gap={2}>
         <Grid display="flex" justifyContent="flex-end">
           <Button variant="contained" size="small" onClick={() => setModal("create")}>
@@ -452,6 +469,20 @@ function PaymentSplit() {
             onSubmit={modal === "create" ? onCreate : onUpdate}
           >
             <Grid display="flex" flexDirection="column" gap={2}>
+              <TextField
+                label="Concepto"
+                variant="outlined"
+                fullWidth
+                onChange={(event) =>
+                  onChangeFields({
+                    target: {
+                      name: "concept",
+                      value: event.target.value,
+                    },
+                  })
+                }
+              />
+
               <NumericFormat
                 customInput={TextField}
                 label="Dinero total"
