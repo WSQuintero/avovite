@@ -68,24 +68,24 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       const getContracts = async () => {
         const { status, data } = await $Contract.get();
         if (status) {
+          if (!session?.user?.isAdmin()) {
+            if (
+              session?.user?.pending_payed_contracts ||
+              session?.user?.last_contract?.state_second_form === 0 ||
+              session?.user?.contractPedingWhiteList?.some(
+                (contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0
+              ) ||
+              data?.data?.some((contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0)
+            ) {
+              return <Navigate to="/validation/confirmation" />;
+            }
+          }
           return data?.data;
         } else {
           return undefined;
         }
       };
-      const actualContracts = getContracts();
-      if (!session?.user?.isAdmin()) {
-        if (
-          session?.user?.pending_payed_contracts ||
-          session?.user?.last_contract?.state_second_form === 0 ||
-          session?.user?.contractPedingWhiteList?.some(
-            (contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0
-          ) ||
-          actualContracts?.some((contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0)
-        ) {
-          return <Navigate to="/validation/confirmation" />;
-        }
-      }
+      getContracts();
     }
   } //aquí está la validación para saber si tiene contratos pendientes
 
