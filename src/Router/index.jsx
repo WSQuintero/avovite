@@ -55,31 +55,33 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
     return <></>;
   }
 
-  if (!isAdmin && session.user?.totalVites === 0 && !wasRedirected && meta.includes(REQUIRES_CONTRACTS)) {
+  if (!isAdmin && session?.user?.totalVites === 0 && !wasRedirected && meta.includes(REQUIRES_CONTRACTS)) {
     wasRedirected = true;
     return <Navigate to="/shop" />;
   }
 
   if (meta.includes(REQUIRES_VALIDATION)) {
-    if (session.user) {
-      if (session.user.pending_to_pay_contracts) {
+    if (session?.user) {
+      if (session?.user?.pending_to_pay_contracts) {
         return <Navigate to="/validation/payment" />;
       }
       const getContracts = async () => {
         const { status, data } = await $Contract.get();
         if (status) {
-          return data.data;
+          return data?.data;
         } else {
           return undefined;
         }
       };
       const actualContracts = getContracts();
-      if (!session.user.isAdmin()) {
+      if (!session?.user?.isAdmin()) {
         if (
-          session.user.pending_payed_contracts ||
+          session?.user?.pending_payed_contracts ||
           session?.user?.last_contract?.state_second_form === 0 ||
-          session?.user?.contractPedingWhiteList?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0) ||
-          (actualContracts && actualContracts?.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0))
+          session?.user?.contractPedingWhiteList?.some(
+            (contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0
+          ) ||
+          (actualContracts && actualContracts?.some((contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0))
         ) {
           return <Navigate to="/validation/confirmation" />;
         }
