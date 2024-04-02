@@ -348,12 +348,12 @@ function InvasiveForm({ contractId }) {
     setOpenError(false);
 
     const formDataToSend = new FormData();
-    const { numberOfShareholders, numberOfInternationalOperations, ...restFormData } = formData;
+    const { numberOfShareholders, numberOfInternationalOperations, numberOfBankAccounts, ...restFormData } = formData;
 
-    Object.entries(restFormData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
-      console.log(key, value);
-    });
+    // Object.entries(restFormData).forEach(([key, value]) => {
+    //   formDataToSend.append(key, value);
+    //   console.log(key, value);
+    // });
     formDataToSend.append("files", frontDoc);
     formDataToSend.append("files", backDoc);
     formDataToSend.append("files", bankCert);
@@ -369,7 +369,11 @@ function InvasiveForm({ contractId }) {
         return;
       }
       if (data?.name === "AxiosError") {
-        setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+        setFeedback({
+          open: true,
+          message: "Ha ocurrido un error inesperado. Por favor revisa que hayas cargado los documentos",
+          status: "error",
+        });
         setLoading(false);
         setOpenError(true);
         return;
@@ -378,7 +382,11 @@ function InvasiveForm({ contractId }) {
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } catch (error) {
       console.error("Error:", error);
-      setFeedback({ open: true, message: "Ha ocurrido un error inesperado.", status: "error" });
+      setFeedback({
+        open: true,
+        message: "Ha ocurrido un error inesperado. Por favor revisa que hayas cargado los documentos.",
+        status: "error",
+      });
     }
   };
 

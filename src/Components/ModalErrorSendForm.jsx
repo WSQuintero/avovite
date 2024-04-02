@@ -14,7 +14,7 @@ function ModalErrorSendForm({ open, onClose }) {
           Ha ocurrido un error al enviar el formulario
         </Typography>
         <Typography variant="body1" id="simple-modal-description" sx={{ color: "white", marginBottom: 2 }}>
-          Por favor, verifica la información.
+          Por favor revisa que hayas cargado los documentos y que la información sea correcta.
         </Typography>
         <Button variant="contained" color="primary" onClick={onClose}>
           Cerrar
