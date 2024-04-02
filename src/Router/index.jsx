@@ -81,7 +81,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
           session?.user?.contractPedingWhiteList?.some(
             (contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0
           ) ||
-          (actualContracts && actualContracts?.some((contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0))
+          actualContracts?.some((contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0)
         ) {
           return <Navigate to="/validation/confirmation" />;
         }
