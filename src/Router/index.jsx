@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 import useSession from "../Hooks/useSession";
 import Signup from "../Pages/Signup";
@@ -50,7 +50,6 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   const isAuthenticated = useMemo(() => session.token, [session.token]);
   const isAdmin = useMemo(() => session.user?.isAdmin(), [session.user]);
   const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
-
   if (isAuthenticated === false) {
     return <></>;
   }
@@ -62,30 +61,18 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 
   if (meta.includes(REQUIRES_VALIDATION)) {
     if (session?.user) {
-      if (session?.user?.pending_to_pay_contracts) {
-        return <Navigate to="/validation/payment" />;
-      }
-      const getContracts = async () => {
-        const { status, data } = await $Contract.get();
-        if (status) {
-          if (!session?.user?.isAdmin()) {
-            if (
-              session?.user?.pending_payed_contracts ||
-              session?.user?.last_contract?.state_second_form === 0 ||
-              session?.user?.contractPedingWhiteList?.some(
-                (contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0
-              ) ||
-              data?.data?.some((contract) => contract?.state_second_form === 0 || contract?.status_contracts === 0)
-            ) {
-              return <Navigate to="/validation/confirmation" />;
-            }
-          }
-          return data?.data;
-        } else {
-          return undefined;
-        }
-      };
-      getContracts();
+      // if (session?.user?.pending_to_pay_contracts) {
+      //   return <Navigate to="/validation/payment" />;
+      // }
+      // if (!session?.user?.isAdmin()) {
+      //   if (
+      //     session?.user?.pending_payed_contracts ||
+      //     session?.user?.last_contract?.state_second_form === 0 ||
+      //     session.user.contractPedingWhiteList.length > 0
+      //   ) {
+      //     return <Navigate to="/validation/confirmation" />;
+      //   }
+      // }
     }
   } //aquí está la validación para saber si tiene contratos pendientes
 

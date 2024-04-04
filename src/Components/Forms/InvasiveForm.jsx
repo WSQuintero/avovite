@@ -350,15 +350,14 @@ function InvasiveForm({ contractId }) {
     const formDataToSend = new FormData();
     const { numberOfShareholders, numberOfInternationalOperations, numberOfBankAccounts, ...restFormData } = formData;
 
-    // Object.entries(restFormData).forEach(([key, value]) => {
-    //   formDataToSend.append(key, value);
-    //   console.log(key, value);
-    // });
+    Object.entries(restFormData).forEach(([key, value]) => {
+      formDataToSend.append(key, value);
+      console.log(key, value);
+    });
     formDataToSend.append("files", frontDoc);
     formDataToSend.append("files", backDoc);
     formDataToSend.append("files", bankCert);
     formDataToSend.append("files", rut);
-
     try {
       const data = await $Contract.sendInvasiveForm(formDataToSend);
 

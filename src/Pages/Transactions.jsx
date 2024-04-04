@@ -66,6 +66,11 @@ function Transactions() {
         format: (value) => formatCurrency(value, "$"),
       },
       {
+        id: "concept",
+        label: "Concepto",
+        format: (value) => value,
+      },
+      {
         id: "id",
         label: "",
         format: (mov, data) => {
