@@ -399,9 +399,9 @@ function ShoppingCart() {
               </Collapse>
               <LoadingButton
                 loading={loadingPayment}
-                disabled={!product}
                 variant="contained"
                 onClick={() => setOpenConfirmationModal(true)}
+                disabled={session?.user.rejectedCounter.length === 2 || !product}
               >
                 {product ? "Proceder a pago" : "Seleccione un producto para realizar el pago"}
               </LoadingButton>

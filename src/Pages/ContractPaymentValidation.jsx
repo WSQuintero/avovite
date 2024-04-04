@@ -27,7 +27,7 @@ import BackButton from "../Components/BackButton";
 
 function ContractPaymentValidation() {
   const navigate = useNavigate();
-  const [{ token }] = useSession();
+  const [{ user, token }] = useSession();
   const [contracts, setContracts] = useState([]);
   const [modal, setModal] = useState("warning");
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
@@ -39,7 +39,7 @@ function ContractPaymentValidation() {
       if (!data.data?.payment?.length) {
         navigate("/");
       }
-
+      console.log(data.data.payment);
       setContracts(data.data.payment);
     }
   };
@@ -86,18 +86,24 @@ function ContractPaymentValidation() {
 
   return (
     <PageWrapper isInvalidSession>
-    <BackButton/>
+      <BackButton />
 
       <Container maxWidth="xxl" disableGutters>
         <Grid display="flex" flexDirection="column" gap={2}>
           <Typography variant="h2">Pagos pendientes:</Typography>
           <List>
-            {contracts.map((contract, index) => (
+            {contracts?.map((contract, index) => (
               <ListItem
                 key={index}
-                onClick={() => handlePayment(contract)}
+                onClick={() => (user?.rejectedCounter.length === 2 ? false : handlePayment(contract))}
                 secondaryAction={
-                  <Button edge="end" variant="outlined" color="warning" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Button
+                    edge="end"
+                    variant="outlined"
+                    color="warning"
+                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    disabled={user?.rejectedCounter.length === 2}
+                  >
                     Pagar con
                     <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
                   </Button>
