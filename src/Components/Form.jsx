@@ -473,7 +473,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
               disableFuture
               slotProps={{ textField: { error: errors.birthdate } }}
               value={dayjs(formData.birthdate)}
-              format="DD MMMM YYYY"
+              format="DD MM YYYY"
               onChange={(value) => handleInputChange({ target: { name: "birthdate", value: value.toDate() } })}
               disabled={initialState?.birthdate !== undefined && location.pathname !== "/validation/confirmation"}
             />

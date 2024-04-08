@@ -61,11 +61,11 @@ function ContractValidation() {
     setActualCont(actualContract);
     console.log(actualContract);
 
-    // if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
-    //   setIsKyc(false);
-    //   setContract({ id });
-    //   return;
-    // }
+    if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
+      setIsKyc(false);
+      setContract({ id });
+      return;
+    }
     if (actualContract.status_contracts === 0) {
       setModal("contract-complete");
       setContract({ id });
@@ -117,7 +117,7 @@ function ContractValidation() {
   }, [session.token]);
   return (
     <>
-      {isKyc === false && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
+      {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
       {!openInvasiveForm ? (
         <PageWrapper isInvalidSession>
           <BackButton />
