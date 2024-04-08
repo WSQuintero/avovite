@@ -53,22 +53,23 @@ const SelectorCell = ({ row }) => {
   };
 
   const handleDownloadContract = async (id) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/contracts/files/${id}`);
-      const blob = await response.blob();
-      const pdfUrl = URL.createObjectURL(blob);
+    // try {
+    //   const response = await fetch(`${import.meta.env.VITE_API_URL}/contracts/files/${id}`);
+    //   const blob = await response.blob();
+    //   const pdfUrl = URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = pdfUrl;
-      link.download = "contrato.pdf";
-      document.body.appendChild(link);
+    //   const link = document.createElement("a");
+    //   link.href = pdfUrl;
+    //   link.download = "contrato.pdf";
+    //   document.body.appendChild(link);
 
-      link.click();
+    //   link.click();
 
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error en la solicitud de descarga del contrato:", error);
-    }
+    //   document.body.removeChild(link);
+    // } catch (error) {
+    //   console.error("Error en la solicitud de descarga del contrato:", error);
+    // }
+    window.open(row.original.urlValidocus);
   };
 
   const options = [
