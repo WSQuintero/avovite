@@ -1341,8 +1341,6 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
           Enviar
         </LoadingButton>
       </Grid>
-
-      <DialogKYC open={modal.kyc} onClose={() => setModal({ ...modal, kyc: false })} onSubmit={handleSubmitKYC} />
     </Stack>
   );
 }

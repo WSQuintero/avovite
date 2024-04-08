@@ -59,18 +59,18 @@ function ContractValidation() {
     setIsKyc(true);
     const actualContract = contracts.find((contract) => contract.id === id);
     setActualCont(actualContract);
-    if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
-      setIsKyc(false);
-      setContract({ id });
-      return;
-    }
+    console.log(actualContract);
+
+    // if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
+    //   setIsKyc(false);
+    //   setContract({ id });
+    //   return;
+    // }
     if (actualContract.status_contracts === 0) {
       setModal("contract-complete");
       setContract({ id });
-
       return;
     }
-
     if (actualContract.state_second_form === 0) {
       setOpenInvasiveForm(true);
       setContract({ id });
@@ -84,6 +84,7 @@ function ContractValidation() {
 
     if (status) {
       setContracts((prev) => prev.filter((c) => c.id !== contract.id));
+
       setModal("contract-success");
     } else {
       console.log("Error");
@@ -106,7 +107,7 @@ function ContractValidation() {
 
     return status;
   };
-
+  console.log(session.user);
   useEffect(() => {
     if (session.token) {
       (async () => {
@@ -116,7 +117,7 @@ function ContractValidation() {
   }, [session.token]);
   return (
     <>
-      {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
+      {isKyc === false && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
       {!openInvasiveForm ? (
         <PageWrapper isInvalidSession>
           <BackButton />
