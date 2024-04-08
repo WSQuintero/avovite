@@ -245,6 +245,11 @@ function Vites() {
       ),
     },
     {
+      accessorKey: "harvest_state",
+      header: "Estado de Cosecha",
+      // Cell: (value) => value,
+    },
+    {
       accessorKey: "id_type",
       id: "id_type",
       header: "Tipo de documento",
