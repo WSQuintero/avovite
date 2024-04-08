@@ -579,7 +579,7 @@ const Contracts = () => {
             disabled={original.status_contracts !== 0}
             onClick={() => {
               closeMenu();
-              // setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
+              setSelectedContract(original), setContract((prev) => ({ ...prev, mortgage_contract: original.mortgage_contract || 0 }));
             }}
           >
             Completar contrato
