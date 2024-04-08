@@ -59,22 +59,22 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
     return <Navigate to="/shop" />;
   }
 
-  // if (meta.includes(REQUIRES_VALIDATION)) {
-  //   if (session?.user) {
-  //     if (session?.user?.pending_to_pay_contracts) {
-  //       return <Navigate to="/validation/payment" />;
-  //     }
-  //     if (!session?.user?.isAdmin()) {
-  //       if (
-  //         session?.user?.pending_payed_contracts ||
-  //         session?.user?.last_contract?.state_second_form === 0 ||
-  //         session.user.contractPedingWhiteList.length > 0
-  //       ) {
-  //         return <Navigate to="/validation/confirmation" />;
-  //       }
-  //     }
-  //   }
-  // } //aquí está la validación para saber si tiene contratos pendientes
+  if (meta.includes(REQUIRES_VALIDATION)) {
+    if (session?.user) {
+      if (session?.user?.pending_to_pay_contracts) {
+        return <Navigate to="/validation/payment" />;
+      }
+      if (!session?.user?.isAdmin()) {
+        if (
+          session?.user?.pending_payed_contracts ||
+          session?.user?.last_contract?.state_second_form === 0 ||
+          session.user.contractPedingWhiteList.length > 0
+        ) {
+          return <Navigate to="/validation/confirmation" />;
+        }
+      }
+    }
+  } //aquí está la validación para saber si tiene contratos pendientes
 
   if (meta.includes(HIDE_FOR_AUTH)) {
     if (isAuthenticated) {
