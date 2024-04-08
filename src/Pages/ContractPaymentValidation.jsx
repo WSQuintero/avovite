@@ -46,12 +46,13 @@ function ContractPaymentValidation() {
         navigate("/");
       }
       setContracts(data.data.payment);
+      console.log(data.data.payment);
     }
   };
 
   const handlePayment = async (contract) => {
-    console.log(user?.rejectedCounter.length);
-    if (user?.rejectedCounter.length === 1) {
+    console.log(contract);
+    if (contract?.rejectedCounter === 1) {
       setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
       setOpenFirstTime(true);
       setTimeout(() => {
@@ -59,7 +60,7 @@ function ContractPaymentValidation() {
       }, 5000);
       return;
     }
-    if (user?.rejectedCounter.length === 2) {
+    if (contract?.rejectedCounter === 2) {
       setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
       setOpenFirstTime(true);
       setTimeout(() => {
@@ -67,8 +68,9 @@ function ContractPaymentValidation() {
       }, 5000);
       return;
     }
+
     const mandatory = {
-      name: "Page del contrato pendiente",
+      name: "Pago del contrato pendiente",
       description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
       invoice: `AV-${uuid()}`,
       currency: "cop",
@@ -158,7 +160,7 @@ function ContractPaymentValidation() {
           <WarningIcon /> Tienes pagos pendientes
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>Para poder continuar debes de efectuar pagos todos tus contratos.</DialogContentText>
+          <DialogContentText>Para poder continuar debes diligenciar los datos de tu contrato.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant="contained" onClick={() => setModal(null)}>

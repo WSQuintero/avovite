@@ -759,6 +759,7 @@ function Form({ title, isMortgage = false, loading = false, initialState = null,
                   name="he_has_children_count"
                   error={errors.he_has_children_count}
                   value={formData.he_has_children_count}
+                  min={0}
                   // disabled={initialState?.he_has_children_count !== undefined}
                   onChange={handleInputChange}
                 />

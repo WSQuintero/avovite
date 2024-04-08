@@ -365,6 +365,7 @@ function Vites() {
 
       if (status) {
         setRows(data.data);
+        console.log(data.data);
         const formattedData = data.data.map((contract) => ({
           id: contract.id,
           isSigned: contract.stateFignature === "Firmado",
