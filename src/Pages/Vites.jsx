@@ -357,7 +357,7 @@ function Vites() {
       accessorKey: "selector",
       header: "Descargar",
       size: 100,
-      Cell: SelectorCell,
+      Cell: ({ row }) => <SelectorCell row={row} />,
     },
   ];
   const handleCloseModal = () => {

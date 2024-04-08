@@ -833,6 +833,10 @@ function InvasiveForm({ contractId }) {
                 name="numberOfShareholders"
                 value={formData.numberOfShareholders}
                 onChange={handleInputChange}
+                inputProps={{
+                  min: 0,
+                  max: 10,
+                }}
               />
             </Column>
           </Row>

@@ -51,7 +51,6 @@ function ContractPaymentValidation() {
   };
 
   const handlePayment = async (contract) => {
-    console.log(contract);
     if (contract?.rejectedCounter === 1) {
       setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
       setOpenFirstTime(true);

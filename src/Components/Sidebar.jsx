@@ -102,9 +102,8 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         icon: <EcommerceIcon />,
         name: "Comprar Vites",
         route: "/shop",
-        show: !user?.isAdmin()
+        show: !user?.isAdmin(),
         //  && user?.isWhitelisted(),
-
       },
       {
         icon: <LoanIcon />,
@@ -153,11 +152,11 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         route: "/admin/blog",
         show: user?.isAdmin(),
       },
-      {
-        name: "Conceptos",
-        route: "/admin/concepts",
-        show: user?.isAdmin(),
-      },
+      // {
+      //   name: "Conceptos",
+      //   route: "/admin/concepts",
+      //   show: user?.isAdmin(),
+      // },
       {
         name: "Contratos",
         route: "/admin/contracts",
@@ -232,7 +231,7 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
 
   if (!user) {
     return <></>;
-  } else if (!user.isAdmin()&&(user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date)) {
+  } else if (!user.isAdmin() && (user.status_terms_and_conditions == 0 || !user.status_terms_and_conditions_date)) {
     return <></>;
   }
 
@@ -290,18 +289,23 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         </List>
 
         <Stack spacing={1} alignItems="center" mt="auto" mb={1}>
-      {!user.isAdmin() && (
-
-          <Typography variant="caption" color="white" lineHeight={1} style={{ cursor: "pointer" }} onClick={() => setModal("modal-terms")}>
-            TÉRMINOS Y CONDICIONES
-          </Typography>)
-}
+          {!user.isAdmin() && (
+            <Typography
+              variant="caption"
+              color="white"
+              lineHeight={1}
+              style={{ cursor: "pointer" }}
+              onClick={() => setModal("modal-terms")}
+            >
+              TÉRMINOS Y CONDICIONES
+            </Typography>
+          )}
         </Stack>
 
         <Stack direction="row" spacing={4} alignItems="center" pr={2} mb={1} sx={{ opacity: 0.5 }}>
           <Image src={WhiteIcon} alt="Logo" width={128} marginLeft={-6} flexShrink={0} />
           <Typography variant="caption" color="white" lineHeight={1}>
-          Los frutos del aguacate Hass colombiano son para todos
+            Los frutos del aguacate Hass colombiano son para todos
           </Typography>
         </Stack>
       </Drawer>

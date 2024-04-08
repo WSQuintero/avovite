@@ -9,6 +9,7 @@ const SelectorCell = ({ row }) => {
   const [selectedOption, setSelectedOption] = useState("selection");
   const [downloading, setDownloading] = useState(false);
 
+  console.log(row.original);
   const handleOptionSelect = async (key, id) => {
     const option = options.find((opt) => opt.key === key);
     if (option) {
@@ -21,7 +22,7 @@ const SelectorCell = ({ row }) => {
   const handleDownloadbondingForm = async (id) => {
     setDownloading(true);
     setTimeout(() => {
-      console.log(id);
+      window.open(row.original.urlSeconFromValidocus);
       setDownloading(false);
     }, 2000);
   };

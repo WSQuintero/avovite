@@ -30,6 +30,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import ModalConfirmationPay from "../Components/Admin/ModalConfirmationPay";
 import BackButton from "../Components/BackButton";
+import ModalFirstTry from "../Components/ModalFirstTry";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -54,6 +55,9 @@ function ShoppingCart() {
   const $Payment = useMemo(() => new PaymentService(token), [token]);
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const selectedProduct = useMemo(() => shoppingCart.find((p) => p.id === product), [shoppingCart, product]);
+  const [openFirstTime, setOpenFirstTime] = useState(false);
+  const [message, setMessage] = useState("");
+
   const subTotal = useMemo(
     () =>
       selectedProduct
@@ -95,8 +99,20 @@ function ShoppingCart() {
       }
     }
   };
-
+  const onCloseFirstTime = () => {
+    setOpenFirstTime(false);
+    setMessage("");
+    setOpenConfirmationModal(false);
+  };
   const handlePayment = async () => {
+    if (session?.user?.rejectedCounter?.some((contract) => contract.rejectedCounter >= 2)) {
+      setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
+      setOpenFirstTime(true);
+      setTimeout(() => {
+        onCloseFirstTime();
+      }, 5000);
+      return;
+    }
     setOpenConfirmationModal(false);
     if (!shoppingCart || !shoppingCart.length || !product) {
       return;
@@ -403,7 +419,7 @@ function ShoppingCart() {
                 loading={loadingPayment}
                 variant="contained"
                 onClick={() => setOpenConfirmationModal(true)}
-                // disabled={session?.user?.rejectedCounter.length === 2 || !product}
+                // disabled={session?.user?.rejectedCounter.some((contract)=>contract.rejectedCounter===2)  !product}
               >
                 {product ? "Proceder a pago" : "Seleccione un producto para realizar el pago"}
               </LoadingButton>
@@ -412,6 +428,7 @@ function ShoppingCart() {
           </Grid>
         </Grid>
       </Container>
+      <ModalFirstTry open={openFirstTime} onClose={onCloseFirstTime} message={message} />
     </PageWrapper>
   );
 }

@@ -59,7 +59,6 @@ function ContractValidation() {
     setIsKyc(true);
     const actualContract = contracts.find((contract) => contract.id === id);
     setActualCont(actualContract);
-    console.log(actualContract);
 
     if (actualContract.state_second_form === 0 && actualContract.status_contracts === 1 && session.user.KYC === 0) {
       setIsKyc(false);
