@@ -24,6 +24,7 @@ import PageWrapper from "../Components/PageWrapper";
 import { formatCurrency, formatDate } from "../utilities";
 import { TESTING_EPAYCO } from "../utilities/constants";
 import BackButton from "../Components/BackButton";
+import ModalFirstTry from "../Components/ModalFirstTry";
 
 function ContractPaymentValidation() {
   const navigate = useNavigate();
@@ -31,7 +32,12 @@ function ContractPaymentValidation() {
   const [contracts, setContracts] = useState([]);
   const [modal, setModal] = useState("warning");
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
-
+  const [openFirstTime, setOpenFirstTime] = useState(false);
+  const [message, setMessage] = useState("");
+  const onCloseFirstTime = () => {
+    setOpenFirstTime(false);
+    setMessage("");
+  };
   const fetchContracts = async () => {
     const { status, data } = await $Contract.get({ pendingToPay: true });
 
@@ -39,12 +45,28 @@ function ContractPaymentValidation() {
       if (!data.data?.payment?.length) {
         navigate("/");
       }
-      console.log(data.data.payment);
       setContracts(data.data.payment);
     }
   };
 
   const handlePayment = async (contract) => {
+    console.log(user?.rejectedCounter.length);
+    if (user?.rejectedCounter.length === 1) {
+      setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
+      setOpenFirstTime(true);
+      setTimeout(() => {
+        onCloseFirstTime();
+      }, 5000);
+      return;
+    }
+    if (user?.rejectedCounter.length === 2) {
+      setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
+      setOpenFirstTime(true);
+      setTimeout(() => {
+        onCloseFirstTime();
+      }, 5000);
+      return;
+    }
     const mandatory = {
       name: "Page del contrato pendiente",
       description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
@@ -95,14 +117,14 @@ function ContractPaymentValidation() {
             {contracts?.map((contract, index) => (
               <ListItem
                 key={index}
-                onClick={() => (user?.rejectedCounter.length === 2 ? false : handlePayment(contract))}
+                onClick={() => handlePayment(contract)}
                 secondaryAction={
                   <Button
                     edge="end"
                     variant="outlined"
                     color="warning"
                     sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                    disabled={user?.rejectedCounter.length === 2}
+                    // disabled={user?.rejectedCounter.length === 2}
                   >
                     Pagar con
                     <img src="https://www.drupal.org/files/project-images/ePayco-logo.png" alt="" width="50" />
@@ -144,6 +166,7 @@ function ContractPaymentValidation() {
           </Button>
         </DialogActions>
       </Dialog>
+      <ModalFirstTry open={openFirstTime} onClose={onCloseFirstTime} message={message} />
     </PageWrapper>
   );
 }

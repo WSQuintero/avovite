@@ -29,6 +29,7 @@ import Theme from "../Theme";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import ModalConfirmationPay from "../Components/Admin/ModalConfirmationPay";
+import BackButton from "../Components/BackButton";
 
 const APP_URL = import.meta.env.VITE_APP_URL;
 
@@ -153,21 +154,22 @@ function ShoppingCart() {
   };
 
   useEffect(() => {
-    if (session.user) {
-      if (session.user.status_terms_and_conditions == 0 || !session.user.status_terms_and_conditions_date) {
+    if (session?.user) {
+      if (session?.user.status_terms_and_conditions == 0 || !session.user.status_terms_and_conditions_date) {
         navigate("/dashboard");
       }
     }
   }, [session.user]);
 
   useEffect(() => {
-    if (shoppingCart.length > 0 && !product) {
-      setProduct(shoppingCart[0].id);
+    if (shoppingCart?.length > 0 && !product) {
+      setProduct(shoppingCart[0]?.id);
     }
   }, [shoppingCart, product]);
 
   return (
     <PageWrapper>
+      <BackButton />
       <Container maxWidth="xxl">
         <Grid display="flex" gap={2} flexDirection="column">
           <Grid display="flex" flexDirection="column" gap={4}>
@@ -181,7 +183,7 @@ function ShoppingCart() {
                     setProduct(e.target.value);
                   }}
                 >
-                  {shoppingCart.map((element, index) => (
+                  {shoppingCart?.map((element, index) => (
                     <FormControlLabel
                       key={index}
                       value={element.id}
@@ -235,7 +237,7 @@ function ShoppingCart() {
                               bgcolor="primary.main"
                             >
                               <Typography fontSize={12} fontWeight={500} color="white">
-                                -{element.package.percent_discount}%
+                                -{element?.package.percent_discount}%
                               </Typography>
                             </Box>
                           )}
@@ -401,7 +403,7 @@ function ShoppingCart() {
                 loading={loadingPayment}
                 variant="contained"
                 onClick={() => setOpenConfirmationModal(true)}
-                disabled={session?.user.rejectedCounter.length === 2 || !product}
+                disabled={session?.user?.rejectedCounter.length === 2 || !product}
               >
                 {product ? "Proceder a pago" : "Seleccione un producto para realizar el pago"}
               </LoadingButton>

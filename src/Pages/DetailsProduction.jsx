@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Box, Container, Grid, IconButton, Stack, Typography, Button } from "@mui/material";
+import { Box, Container, Grid, IconButton, Stack, Typography, Button, TextField } from "@mui/material";
 import { AddOutlined as AddIcon, RemoveOutlined as RemoveIcon } from "@mui/icons-material";
 import EnhancedTable from "../Components/EnhancedTable";
 import { AvoviteWhiteIcon } from "../Components/Icons";
@@ -37,8 +37,13 @@ function DetailsProduction() {
               <IconButton color="primary" size="small" onClick={() => updateQuantity(-1)}>
                 <RemoveIcon />
               </IconButton>
-              <Box display="flex" justifyContent="center" paddingX={0.5} color="primary.main" width={32}>
-                {quantity}
+              <Box display="flex" justifyContent="center" color="primary.main" width={64}>
+                <TextField
+                  type={"number"}
+                  value={quantity}
+                  sx={{ padding: 0, fontSize: 10, border: "none", width: 150 }}
+                  onChange={(event) => updateQuantityTwo(event.target.value)}
+                />
               </Box>
               <IconButton color="primary" size="small" onClick={() => updateQuantity(1)}>
                 <AddIcon />
@@ -74,9 +79,13 @@ function DetailsProduction() {
   );
 
   const updateQuantity = async (action) => {
+    console.log("aquí");
     setQuantity((prev) => (prev + action === -1 ? 0 : prev + action));
   };
-
+  const updateQuantityTwo = async (value) => {
+    console.log("aquí");
+    setQuantity(value);
+  };
   const fetchProductions = async () => {
     setLoading((prev) => ({ ...prev, fetching: true }));
 
@@ -121,7 +130,7 @@ function DetailsProduction() {
             Kilogramos
           </Typography>
         </Stack>
-        <EnhancedTable loading={loading.fetching} headCells={columns} rows={production} detailsProduction={true}  />
+        <EnhancedTable loading={loading.fetching} headCells={columns} rows={production} detailsProduction={true} />
       </Container>
     </PageWrapper>
   );
