@@ -849,7 +849,7 @@ function InvasiveForm({ contractId }) {
                     <Select
                       name="identificationTypeDeclarations"
                       id="tipoDocumento"
-                      value={formData.shareholdersIdentification[index].identificationText}
+                      value={formData?.shareholdersIdentification[index]?.identificationText}
                       onChange={(e) => handleInputChangeAccionist(e, index)}
                     >
                       <MenuItem value="" disabled>
@@ -871,7 +871,7 @@ function InvasiveForm({ contractId }) {
                     fullWidth
                     name={`shareholder_identificationNumber_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
-                    value={formData.shareholdersIdentification[index].identificationNumber}
+                    value={formData.shareholdersIdentification[index]?.identificationNumber}
                   />
                 </Column>
               </Row>
@@ -882,7 +882,7 @@ function InvasiveForm({ contractId }) {
                     fullWidth
                     name={`shareholder_fullName_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
-                    value={formData.shareholdersIdentification[index].fullName}
+                    value={formData.shareholdersIdentification[index]?.fullName}
                   />
                 </Column>
               </Row>
@@ -893,7 +893,7 @@ function InvasiveForm({ contractId }) {
                     fullWidth
                     name={`shareholder_nationality_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
-                    value={formData.shareholdersIdentification[index].nationality}
+                    value={formData.shareholdersIdentification[index]?.nationality}
                   />
                 </Column>
                 <Column>
@@ -902,7 +902,7 @@ function InvasiveForm({ contractId }) {
                     fullWidth
                     name={`shareholder_otherNationality_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
-                    value={formData.shareholdersIdentification[index].otherNationality}
+                    value={formData.shareholdersIdentification[index]?.otherNationality}
                   />
                 </Column>
               </Row>
@@ -912,7 +912,7 @@ function InvasiveForm({ contractId }) {
                   <Switch
                     name={`shareholder_permanentResidenceInOtherCountry_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
-                    checked={formData.shareholdersIdentification[index].permanentResidenceInOtherCountry}
+                    checked={formData.shareholdersIdentification[index]?.permanentResidenceInOtherCountry}
                   />
                 </Column>
               </Row>
@@ -926,7 +926,7 @@ function InvasiveForm({ contractId }) {
                           <Checkbox
                             name={`shareholder_dueToContract183Days_${index}`}
                             onChange={(e) => handleInputChangeAccionist(e, index)}
-                            checked={formData.shareholdersIdentification[index].usStayDetails.dueToContract183Days}
+                            checked={formData.shareholdersIdentification[index]?.usStayDetails.dueToContract183Days}
                           />
                         }
                         label="Due to contract (183 days)"
@@ -936,7 +936,7 @@ function InvasiveForm({ contractId }) {
                           <Checkbox
                             name={`shareholder_consecutive31DaysCurrentYear_${index}`}
                             onChange={(e) => handleInputChangeAccionist(e, index)}
-                            checked={formData.shareholdersIdentification[index].usStayDetails.consecutive31DaysCurrentYear}
+                            checked={formData.shareholdersIdentification[index]?.usStayDetails.consecutive31DaysCurrentYear}
                           />
                         }
                         label="Consecutive 31 days in current year"
@@ -946,7 +946,7 @@ function InvasiveForm({ contractId }) {
                           <Checkbox
                             name={`shareholder_previousYear121Days_${index}`}
                             onChange={(e) => handleInputChangeAccionist(e, index)}
-                            checked={formData.shareholdersIdentification[index].usStayDetails.previousYear121Days}
+                            checked={formData.shareholdersIdentification[index]?.usStayDetails.previousYear121Days}
                           />
                         }
                         label="Previous year: 121 days"
@@ -956,7 +956,7 @@ function InvasiveForm({ contractId }) {
                           <Checkbox
                             name={`shareholder_secondYear60Days_${index}`}
                             onChange={(e) => handleInputChangeAccionist(e, index)}
-                            checked={formData.shareholdersIdentification[index].usStayDetails.secondYear60Days}
+                            checked={formData.shareholdersIdentification[index]?.usStayDetails.secondYear60Days}
                           />
                         }
                         label="Second year: 60 days"
@@ -972,7 +972,7 @@ function InvasiveForm({ contractId }) {
                     fullWidth
                     name={`shareholder_percentageParticipation_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
-                    value={formData.shareholdersIdentification[index].percentageParticipation}
+                    value={formData.shareholdersIdentification[index]?.percentageParticipation}
                   />
                 </Column>
               </Row>
