@@ -35,6 +35,7 @@ import TicketForm from "../Pages/TicketForm";
 import TicketList from "../Pages/TicketList";
 import Movements from "../Pages/Movements";
 import ContractService from "../Services/contract.service";
+import PendingFirm from "../Pages/PendingFirm";
 
 const REQUIRES_AUTH = "REQUIRES_AUTH";
 const REQUIRES_ADMIN = "REQUIRES_ADMIN";
@@ -63,6 +64,12 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
     if (session?.user) {
       if (session?.user?.pending_to_pay_contracts) {
         return <Navigate to="/validation/payment" />;
+      }
+      console.log(session?.user);
+      if (!session?.user?.isAdmin()) {
+        if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
+          return <Navigate to="/validation/firm" />;
+        }
       }
       if (!session?.user?.isAdmin()) {
         if (
@@ -242,6 +249,10 @@ function Router() {
     {
       path: "/validation/confirmation",
       element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />,
+    },
+    {
+      path: "/validation/firm",
+      element: <PrivateRoute component={PendingFirm} meta={[REQUIRES_AUTH]} />,
     },
     {
       path: "/callback/:section",

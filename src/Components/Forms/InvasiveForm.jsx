@@ -351,12 +351,30 @@ function InvasiveForm({ contractId }) {
     const { numberOfShareholders, numberOfInternationalOperations, numberOfBankAccounts, ...restFormData } = formData;
 
     Object.entries(restFormData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
+      if (
+        [
+          "usStayDetails",
+          "shareholdersIdentification",
+          "bankAccounts",
+          "conductsForeignCurrencyTransactionsType",
+          "internationalOperationsType",
+          "internationalOperationsDetails",
+        ].includes(key)
+      ) {
+        formDataToSend.append(key, JSON.stringify(value)); // Serializar como JSON
+      } else {
+        formDataToSend.append(key, value); // Agregar como está
+      }
     });
-    formDataToSend.append("files", frontDoc);
-    formDataToSend.append("files", backDoc);
-    formDataToSend.append("files", bankCert);
-    formDataToSend.append("files", rut);
+    // formDataToSend.append("files", frontDoc);
+    // formDataToSend.append("files", backDoc);
+    // formDataToSend.append("files", bankCert);
+    // formDataToSend.append("files", rut);
+
+    const files = [frontDoc, backDoc, bankCert, rut];
+    files.forEach((file, index) => {
+      formDataToSend.append(`files`, file);
+    });
     try {
       const data = await $Contract.sendInvasiveForm(formDataToSend);
 
@@ -376,9 +394,13 @@ function InvasiveForm({ contractId }) {
         setOpenError(true);
         return;
       }
+      setLoading(false);
+
       setFeedback({ open: true, message: "Formulario completado exitosamente, por favor verifica tu correo.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } catch (error) {
+      setLoading(false);
+
       console.error("Error:", error);
       setFeedback({
         open: true,
