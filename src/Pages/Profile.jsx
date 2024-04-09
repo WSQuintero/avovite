@@ -26,6 +26,7 @@ import AuthService from "../Services/user.service";
 import { DOCUMENT_TYPES } from "../utilities/constants";
 import { useNavigate } from "react-router-dom";
 import useUser from "../Hooks/useUser";
+import BackButton from "../Components/BackButton";
 
 const Row = ({ children }) => (
   <Grid
@@ -111,6 +112,7 @@ function Profile() {
   };
   return (
     <PageWrapper>
+      <BackButton />
       <Container maxWidth="xxl">
         <Box position="relative">
           <Box

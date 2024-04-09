@@ -8,6 +8,7 @@ import useAsyncEffect from "../Hooks/useAsyncEffect";
 import useSession from "../Hooks/useSession";
 import ProductionService from "../Services/production.service";
 import { formatCurrency } from "../utilities";
+import BackButton from "../Components/BackButton";
 
 const LABELS = {
   estimatedTreeProductionKg: "Produccion Estimada x Arbol (KG Año)",
@@ -43,6 +44,7 @@ function DetailsProduction() {
                   value={quantity}
                   sx={{ padding: 0, fontSize: 10, border: "none", width: 150 }}
                   onChange={(event) => updateQuantityTwo(event.target.value)}
+                  inputProps={{ min: 0 }}
                 />
               </Box>
               <IconButton color="primary" size="small" onClick={() => updateQuantity(1)}>
@@ -119,6 +121,7 @@ function DetailsProduction() {
 
   return (
     <PageWrapper>
+      <BackButton />
       <Container maxWidth="xxl">
         <Stack direction="row" alignItems="center" spacing={2} mb={6}>
           <Box width={48} height={48} padding={1} bgcolor="primary.main" borderRadius={4}>
