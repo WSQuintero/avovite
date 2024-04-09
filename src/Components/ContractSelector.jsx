@@ -54,9 +54,6 @@ function ContractSelector({ allContracts, initialValue = [], onChange }) {
     if (onChange) onChange(value);
   };
 
-  useEffect(() => {
-    console.log(selected);
-  }, [selected]);
   useAsyncEffect(async () => {
     const { status, data } = await $Contract.get();
 

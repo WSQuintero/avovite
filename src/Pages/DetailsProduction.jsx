@@ -79,11 +79,9 @@ function DetailsProduction() {
   );
 
   const updateQuantity = async (action) => {
-    console.log("aquí");
     setQuantity((prev) => (prev + action === -1 ? 0 : prev + action));
   };
   const updateQuantityTwo = async (value) => {
-    console.log("aquí");
     setQuantity(value);
   };
   const fetchProductions = async () => {

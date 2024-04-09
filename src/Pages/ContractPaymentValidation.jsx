@@ -46,7 +46,7 @@ function ContractPaymentValidation() {
         navigate("/");
       }
       setContracts(data.data.payment);
-      console.log(data.data.payment);
+      data.data.payment);
     }
   };
 

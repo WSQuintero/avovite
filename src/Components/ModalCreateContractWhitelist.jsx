@@ -49,8 +49,10 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
   const [quotes, setQuotes] = useState([]);
   const [session] = useSession();
   const $Contract = useMemo(() => (session.token ? new ContractService(session.token) : null), [session.token]);
-
+  const [value, setValue] = useState("");
+  const [contracts, setContracts] = useState([]);
   const [id, setId] = useState(0);
+  const [email, setEmail] = useState();
   const handleOpen = () => {
     resetData();
     setOpen(true);
@@ -60,7 +62,20 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    const getContracts = async () => {
+      const { status, data } = await $Contract.get({ pageNumber: 1, pageSize: 50000 });
+
+      if (status) {
+        setContracts(data.data);
+      }
+    };
+    getContracts();
+  }, []);
   const handleSearchUser = async () => {
+    const idContract = contracts?.find((em) => em.email === email).id;
+
+    setId(Number(idContract));
     setUserInfoLoaded(true);
     // Lógica para buscar y mostrar los textos
   };
@@ -152,7 +167,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
       <Dialog open={open} onClose={handleClose} maxWidth="xl">
         <DialogTitle>Crear contrato financiado</DialogTitle>
         <DialogContent>
-          <TextField
+          {/* <TextField
             label="Id usuario a buscar"
             type="number"
             fullWidth
@@ -160,10 +175,24 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
             onChange={({ target: { value } }) => setId(Number(value))}
             sx={{ marginTop: "20px" }}
             required
-          />
-          <Button variant="contained" onClick={handleSearchUser} sx={{ marginTop: "20px" }}>
-            Buscar
-          </Button>
+          /> */}
+          <div style={{ display: "flex", alignItems: "center", gap: "5px", justifyContent: "left" }}>
+            <TextField
+              id="email-input"
+              label="Email"
+              type="email"
+              variant="outlined"
+              fullWidth
+              autoComplete="email"
+              value={email}
+              sx={{ marginTop: 5, width: "500px" }}
+              onChange={(event) => setEmail(event.target.value)}
+              // Agrega más propiedades según sea necesario, como required, onChange, etc.
+            />
+            <Button variant="contained" onClick={handleSearchUser} sx={{ marginTop: 5 }}>
+              Buscar
+            </Button>
+          </div>
           {userInfoLoaded && (
             <Box sx={{ marginTop: 2 }}>
               <Grid container spacing={2}>
@@ -215,7 +244,7 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
             </Box>
           )}
         </DialogContent>
-        <Box sx={{ maxHeight: "500px", overflow: "scroll" }}>
+        <Box sx={{ maxHeight: "500px", overflow: "auto" }}>
           {Array.from({ length: values.payment_numbers }).map((_, index) => (
             <React.Fragment key={index}>
               <Paper elevation={3} style={{ padding: 20 }}>

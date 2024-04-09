@@ -352,7 +352,6 @@ function InvasiveForm({ contractId }) {
 
     Object.entries(restFormData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
-      console.log(key, value);
     });
     formDataToSend.append("files", frontDoc);
     formDataToSend.append("files", backDoc);

@@ -106,7 +106,6 @@ function ContractValidation() {
 
     return status;
   };
-  console.log(session.user);
   useEffect(() => {
     if (session.token) {
       (async () => {

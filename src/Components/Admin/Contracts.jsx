@@ -511,7 +511,6 @@ const Contracts = () => {
     const { status, data } = await $Contract.get({ id });
 
     if (status) {
-      console.log(data.data);
       setFilterContract(data.data);
     }
   };
