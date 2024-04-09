@@ -149,9 +149,9 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
       <Button variant="contained" onClick={handleOpen}>
         Crear contrato
       </Button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} maxWidth="xl">
         <DialogTitle>Crear contrato financiado</DialogTitle>
-        <DialogContent sx={{ padding: "100px" }}>
+        <DialogContent>
           <TextField
             label="Id usuario a buscar"
             type="number"
@@ -166,97 +166,97 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
           </Button>
           {userInfoLoaded && (
             <Box sx={{ marginTop: 2 }}>
-              {Object.keys(initialState).map((prop) => (
-                <div key={prop}>
-                  {prop === "enable_to_pay_epayco" || prop === "mortgage_contract" || prop === "financed" || prop === "with_guarantee" ? (
-                    <>
-                      <Typography>{translate[prop]}</Typography>
-                      <Switch
-                        checked={values.prop}
-                        onChange={({ target: { checked } }) => setValues((prev) => ({ ...prev, [prop]: checked }))}
+              <Grid container spacing={2}>
+                {Object.keys(initialState).map((prop, index) => (
+                  <Grid item xs={12} sm={6} key={prop}>
+                    {prop === "enable_to_pay_epayco" || prop === "mortgage_contract" || prop === "financed" || prop === "with_guarantee" ? (
+                      <>
+                        <Typography>{translate[prop]}</Typography>
+                        <Switch
+                          checked={values[prop]}
+                          onChange={({ target: { checked } }) => setValues((prev) => ({ ...prev, [prop]: checked }))}
+                        />
+                      </>
+                    ) : prop === "first_payment_date" ? (
+                      <DatePicker
+                        label="Fecha de pago"
+                        value={dayjs(values["first_payment_date"])}
+                        format="DD/MM/YYYY"
+                        slotProps={{ textField: { error: false } }}
+                        onChange={(value) => setValues((prev) => ({ ...prev, [prop]: formatDateToYYYYMMDD(value.toDate()) }))}
+                        sx={{ width: "100%", marginTop: 2 }}
+                        required
                       />
-                    </>
-                  ) : prop === "first_payment_date" ? (
-                    <DatePicker
-                      label="Fecha de pago"
-                      value={dayjs(values["first_payment_date"])}
-                      format="DD/MM/YYYY"
-                      slotProps={{ textField: { error: false } }}
-                      onChange={(value) => setValues((prev) => ({ ...prev, [prop]: formatDateToYYYYMMDD(value.toDate()) }))}
-                      sx={{ width: "100%", marginTop: 2 }}
-                      required
-                    />
-                  ) : (
-                    <TextField
-                      key={prop}
-                      label={translate[prop]}
-                      type="number"
-                      fullWidth
-                      value={prop === "id_user" ? id : values.prop}
-                      disbled={prop === "id_user"}
-                      onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: Number(value) }))}
-                      sx={{ marginTop: "20px" }}
-                      required
-                    />
-                  )}
-                </div>
-              ))}
+                    ) : (
+                      <TextField
+                        key={prop}
+                        label={translate[prop]}
+                        type="number"
+                        fullWidth
+                        value={prop === "id_user" ? id : values[prop]}
+                        disabled={prop === "id_user"}
+                        onChange={({ target: { value } }) => setValues((prev) => ({ ...prev, [prop]: Number(value) }))}
+                        sx={{ marginTop: "20px" }}
+                        required
+                      />
+                    )}
+                  </Grid>
+                ))}
+              </Grid>
 
               {/* <TextField
-                label="Número de cuotas"
-                type="number"
-                value={numCuotas}
-                onChange={(e) => setNumCuotas(e.target.value)}
-                fullWidth
-                sx={{ marginTop: 2 }}
-              /> */}
+              label="Número de cuotas"
+              type="number"
+              value={numCuotas}
+              onChange={(e) => setNumCuotas(e.target.value)}
+              fullWidth
+              sx={{ marginTop: 2 }}
+            /> */}
             </Box>
           )}
-
-          {Array.from({ length: values.payment_numbers }).map((_, index) => (
-            <Paper elevation={3} style={{ padding: 20 }} key={index}>
-              <Typography variant="h6" gutterBottom>
-                Cuota {index + 1}
-              </Typography>
-              <Grid item spacing={2}>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    name={`quota_number${index + 1}`}
-                    id={`quota_number${index + 1}`}
-                    fullWidth
-                    label="Número de cuota"
-                    value={index + 1}
-                    disabled={index !== undefined}
-                    onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4} marginTop={2}>
-                  <TextField
-                    onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
-                    name={`payment_amount${index + 1}`}
-                    id={`payment_amount${index + 1}`}
-                    fullWidth
-                    label="Cantidad de pago"
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4} marginTop={2}>
-                  <DatePicker
-                    label="Fecha de pago"
-                    // value={dayjs(values["first_payment_date"])}
-                    format="DD/MM/YYYY"
-                    id={`date_payment${index + 1}`}
-                    slotProps={{ textField: { error: false } }}
-                    sx={{ width: "100%", marginTop: 2 }}
-                    onChange={(value) => handleGetCharge({ name: `date_payment${index + 1}`, value: formatDateToYYYYMMDD(value.toDate()) })}
-                    required
-                  />
-                </Grid>
-              </Grid>
-            </Paper>
-          ))}
         </DialogContent>
+        <Box sx={{ maxHeight: "500px", overflow: "scroll" }}>
+          {Array.from({ length: values.payment_numbers }).map((_, index) => (
+            <React.Fragment key={index}>
+              <Paper elevation={3} style={{ padding: 20 }}>
+                <Typography variant="h6" gutterBottom>
+                  Cuota {index + 1}
+                </Typography>
+                <TextField
+                  name={`quota_number${index + 1}`}
+                  id={`quota_number${index + 1}`}
+                  fullWidth
+                  label="Número de cuota"
+                  value={index + 1}
+                  disabled={index !== undefined}
+                  onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
+                  required
+                />
+              </Paper>
+              <Paper elevation={3} style={{ padding: 20, marginTop: 10 }}>
+                <TextField
+                  onChange={(event) => handleGetCharge({ name: event.target.name, value: event.target.value })}
+                  name={`payment_amount${index + 1}`}
+                  id={`payment_amount${index + 1}`}
+                  fullWidth
+                  label="Cantidad de pago"
+                  required
+                />
+                <DatePicker
+                  label="Fecha de pago"
+                  // value={dayjs(values["first_payment_date"])}
+                  format="DD/MM/YYYY"
+                  id={`date_payment${index + 1}`}
+                  slotProps={{ textField: { error: false } }}
+                  sx={{ width: "100%", marginTop: 2 }}
+                  onChange={(value) => handleGetCharge({ name: `date_payment${index + 1}`, value: formatDateToYYYYMMDD(value.toDate()) })}
+                  required
+                />
+              </Paper>
+            </React.Fragment>
+          ))}
+        </Box>
+
         <DialogActions>
           <Button onClick={handleClose}>Cerrar</Button>
           <Button onClick={handleCaptureData} variant="contained">
