@@ -31,6 +31,7 @@ import AuthService from "../Services/auth.service";
 import BackgroundImage from "../assets/img/signup/background.png";
 import LogoImage from "../assets/img/common/logo.svg";
 import TermsAndConditions from "../Components/TermsAndConditions";
+import ConfirmationModal from "../Components/ConfirmationModal";
 
 const StatusIcon = ({ status = false }) => {
   return status ? <CheckCircleIcon /> : <ErrorIcon />;
@@ -39,7 +40,7 @@ const StatusIcon = ({ status = false }) => {
 function SignUp() {
   const navigate = useNavigate();
   const [modal, setModal] = useState("");
-
+  const [openModal, setOpenModal] = useState(false);
   const [user, setUser] = useState({
     fullname: "",
     email: "",
@@ -128,14 +129,17 @@ function SignUp() {
         message: "Te has registrado exitosamente.",
         status: "success",
       });
-      navigate("/signin");
+      setOpenModal(true);
     }
   };
 
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
-
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    navigate("/signin");
+  };
   return (
     <Grid
       display="flex"
@@ -355,6 +359,7 @@ function SignUp() {
           {feedback.message}
         </Alert>
       </Snackbar>
+      <ConfirmationModal open={openModal} onClose={handleCloseModal} />
     </Grid>
   );
 }
