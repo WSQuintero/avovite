@@ -38,6 +38,7 @@ function ContractPaymentValidation() {
     setOpenFirstTime(false);
     setMessage("");
   };
+
   const fetchContracts = async () => {
     const { status, data } = await $Contract.get({ pendingToPay: true });
 

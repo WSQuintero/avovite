@@ -44,6 +44,24 @@ function PendingFirm() {
   const [isKyc, setIsKyc] = useState(true);
   const [actualCont, setActualCont] = useState(null);
   const $User = useUser();
+
+  useEffect(() => {
+    const get = async () => {
+      const { status, data } = await $Contract.get();
+
+      if (status) {
+        if (
+          !data.data.some(
+            (contract) => contract.urlSeconFromValidocus !== "Pendiente de firma" || contract.urlValidocus !== "Pendiente de firma"
+          )
+        ) {
+          navigate("/");
+        }
+      }
+    };
+    get();
+  }, []);
+
   const fetchContractsWhitelist = async () => {
     setOpenInvasiveForm(false);
 
