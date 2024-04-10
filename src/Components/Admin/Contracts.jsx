@@ -52,6 +52,7 @@ import CustomContractRangeFilter from "./CustomContractRangeFilter";
 import Pagination from "../Admin/Pagination";
 import ConfirmCancelModal from "../ConfirmCancelModal";
 import FilterIdContract from "./FilterIdContract";
+import ContractButton from "./ContractButton";
 const columns = [
   {
     accessorKey: "id",
@@ -197,6 +198,12 @@ const columns = [
       </Typography>
     ),
   },
+  {
+    accessorKey: "snapshotContract",
+    id: "snapshotContract",
+    header: "¿Historial de contrato?",
+    Cell: ({ renderedCellValue }) => <ContractButton renderedCellValue={renderedCellValue} />,
+  },
 ];
 
 const Contracts = () => {
@@ -273,6 +280,7 @@ const Contracts = () => {
 
       if (status) {
         setContracts(data);
+        console.log(data);
       }
     } catch (error) {
       console.error("Error al obtener contratos:", error);
@@ -495,9 +503,10 @@ const Contracts = () => {
     setContractRangeFilter({ startIndex, endIndex });
   };
 
-  const handleCancelContract = async () => {
+  const handleCancelContract = async (file1, file2) => {
     setIsCancelContract(false);
-    const { status, data } = await $Contract.cancelContract({ id: actualContractId });
+
+    const { status, data } = await $Contract.cancelContract({ id: actualContractId, files: [file1, file2] });
     if (status) {
       setFeedback({ open: true, message: "Contrato cancelado correctamente", status: "success" });
       setOpen(false);
