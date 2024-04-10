@@ -191,8 +191,8 @@ const ContractButton = ({ renderedCellValue, actual }) => {
     },
   ];
   const [openModal, setOpenModal] = useState(false);
-  const [snapshotData, setSnapshotData] = useState(null);
-  const [SnapshotFinanced, setSnapshotFinanced] = useState();
+  const [snapshotData, setSnapshotData] = useState([]);
+  const [SnapshotFinanced, setSnapshotFinanced] = useState([]);
 
   const handleModalOpen = () => {
     setOpenModal(true);
