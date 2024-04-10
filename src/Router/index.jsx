@@ -62,10 +62,10 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
 
   if (meta.includes(REQUIRES_VALIDATION)) {
     if (session?.user) {
-      if (session?.user?.pending_to_pay_contracts) {
+      if (session?.user?.pending_to_pay_contracts && !session?.user?.isAdmin()) {
         return <Navigate to="/validation/payment" />;
       }
-
+      console.log(session.user);
       if (!session?.user?.isAdmin()) {
         if (
           session?.user?.pending_payed_contracts ||
@@ -244,15 +244,15 @@ function Router() {
     },
     {
       path: "/validation/payment",
-      element: <PrivateRoute component={ContractPaymentValidation} meta={[REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={ContractPaymentValidation} meta={[REQUIRES_AUTH, HIDE_FOR_AUTH]} />,
     },
     {
       path: "/validation/confirmation",
-      element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={ContractValidation} meta={[REQUIRES_AUTH, HIDE_FOR_AUTH]} />,
     },
     {
       path: "/validation/firm",
-      element: <PrivateRoute component={PendingFirm} meta={[REQUIRES_AUTH]} />,
+      element: <PrivateRoute component={PendingFirm} meta={[REQUIRES_AUTH, HIDE_FOR_AUTH]} />,
     },
     {
       path: "/callback/:section",
