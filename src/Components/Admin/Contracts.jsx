@@ -286,7 +286,6 @@ const Contracts = () => {
 
       if (status) {
         setContracts(data);
-        console.log(data);
       }
     } catch (error) {
       console.error("Error al obtener contratos:", error);

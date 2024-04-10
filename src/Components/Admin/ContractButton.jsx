@@ -175,12 +175,10 @@ const ContractButton = ({ renderedCellValue, actual }) => {
   useEffect(() => {
     if (actual === "snapshotContract" && renderedCellValue?.row?.original.snapshotContract) {
       const snaptshot = JSON.parse(renderedCellValue?.row?.original.snapshotContract);
-      console.log(snaptshot[0]);
       setSnapshotData(snaptshot[0]);
     }
     if (actual === "snapshotFinanced" && renderedCellValue?.row?.original.snapshotFinanced) {
       const snaptshot = JSON.parse(renderedCellValue?.row?.original.snapshotFinanced);
-      console.log(snaptshot[0]);
       setSnapshotFinanced(snaptshot[0]);
     }
   }, [renderedCellValue]);
