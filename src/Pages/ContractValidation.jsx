@@ -82,7 +82,6 @@ function ContractValidation() {
         )
       ) {
         setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
-        console.log(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
       } else {
         navigate("/");
       }

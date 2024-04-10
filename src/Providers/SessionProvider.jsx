@@ -23,6 +23,7 @@ export const SessionProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem(sessionKey);
+    localStorage.removeItem("shopping_cart");
     setToken(null);
   };
 

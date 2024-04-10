@@ -416,7 +416,6 @@ const Contracts = () => {
 
   const onCheckDue = async ({ id, file, status, id_contracts }) => {
     setLoadingDue(true);
-    console.log(status);
     if (id) {
       if (status === 0) {
         const { status: reqStatus } = await $Due.updateStatus({ id, status });
