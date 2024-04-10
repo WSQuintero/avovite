@@ -50,20 +50,21 @@ function ContractPaymentValidation() {
   };
 
   const handlePayment = async (contract) => {
+    console.log(contract);
     if (contract?.rejectedCounter === 1) {
       setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
       setOpenFirstTime(true);
-      setTimeout(() => {
-        onCloseFirstTime();
-      }, 5000);
+      // setTimeout(() => {
+      //   onCloseFirstTime();
+      // }, 5000);
       return;
     }
-    if (contract?.rejectedCounter === 2) {
+    if (contract?.rejectedCounter >= 2) {
       setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
       setOpenFirstTime(true);
-      setTimeout(() => {
-        onCloseFirstTime();
-      }, 5000);
+      // setTimeout(() => {
+      //   onCloseFirstTime();
+      // }, 5000);
       return;
     }
 
