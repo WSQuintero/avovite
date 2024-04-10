@@ -156,8 +156,38 @@ const ContractButton = ({ renderedCellValue, actual }) => {
     {
       accessorKey: "id",
       id: "id",
-      header: "Número",
+      header: "Id",
       Cell: ({ renderedCellValue }) => <Typography>AV-{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "id_contracts",
+      id: "id_contracts",
+      header: "id contrato",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "quota_number",
+      id: "quota_number",
+      header: "Número de cuota",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "payment_amount",
+      id: "payment_amount",
+      header: "Valor del pago",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "date_payment",
+      id: "date_payment",
+      header: "Fecha de pago",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
+    },
+    {
+      accessorKey: "idtransacional",
+      id: "idtransacional",
+      header: "Id de transacción",
+      Cell: ({ renderedCellValue }) => <Typography>{renderedCellValue}</Typography>,
     },
   ];
   const [openModal, setOpenModal] = useState(false);
@@ -175,11 +205,11 @@ const ContractButton = ({ renderedCellValue, actual }) => {
   useEffect(() => {
     if (actual === "snapshotContract" && renderedCellValue?.row?.original.snapshotContract) {
       const snaptshot = JSON.parse(renderedCellValue?.row?.original.snapshotContract);
-      setSnapshotData(snaptshot[0]);
+      setSnapshotData(snaptshot);
     }
     if (actual === "snapshotFinanced" && renderedCellValue?.row?.original.snapshotFinanced) {
       const snaptshot = JSON.parse(renderedCellValue?.row?.original.snapshotFinanced);
-      setSnapshotFinanced(snaptshot[0]);
+      setSnapshotFinanced(snaptshot);
     }
   }, [renderedCellValue]);
 
@@ -207,7 +237,7 @@ const ContractButton = ({ renderedCellValue, actual }) => {
           {snapshotData && actual === "snapshotContract" && (
             <MaterialReactTable
               columns={columns}
-              data={[snapshotData]}
+              data={snapshotData}
               muiTablePaperProps={{ elevation: 0 }}
               initialState={{ density: "compact" }}
               muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
@@ -219,7 +249,7 @@ const ContractButton = ({ renderedCellValue, actual }) => {
           {SnapshotFinanced && actual === "snapshotFinanced" && (
             <MaterialReactTable
               columns={columnsFinanced}
-              data={[SnapshotFinanced]}
+              data={SnapshotFinanced}
               muiTablePaperProps={{ elevation: 0 }}
               initialState={{ density: "compact" }}
               muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
