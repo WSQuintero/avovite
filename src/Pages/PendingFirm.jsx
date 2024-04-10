@@ -50,7 +50,11 @@ function PendingFirm() {
     const { status, data } = await $Contract.get();
 
     if (status) {
-      if (data.data.some((contract) => !contract.urlSeconFromValidocus || !contract.urlValidocus)) {
+      if (
+        data.data.some(
+          (contract) => contract.urlSeconFromValidocus !== "Pendiente de firma" || contract.urlValidocus !== "Pendiente de firma"
+        )
+      ) {
         setContracts(data.data.filter((contract) => !contract.urlSeconFromValidocus || !contract.urlValidocus));
       }
     }

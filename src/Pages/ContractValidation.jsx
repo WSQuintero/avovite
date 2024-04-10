@@ -50,12 +50,20 @@ function ContractValidation() {
     const { status, data } = await $Contract.get();
 
     if (status) {
-      if (data.data.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)) {
+      if (
+        data.data.some(
+          (contract) =>
+            contract.state_second_form === 0 ||
+            (contract.status_contracts === 0 &&
+              contract.stateFignature !== "Pendiente de firma" &&
+              contract.state_second_form_validocus !== "Pendiente de firma")
+        )
+      ) {
         setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
+        console.log(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
+      } else {
+        navigate("/");
       }
-      // else {
-      //   navigate("/");
-      // }
     }
   };
   const handleSelectContract = ({ id }) => {
