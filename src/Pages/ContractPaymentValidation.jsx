@@ -50,42 +50,42 @@ function ContractPaymentValidation() {
   };
 
   const handlePayment = async (contract) => {
-    console.log(contract);
     if (contract?.rejectedCounter === 1) {
       setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
       setOpenFirstTime(true);
-      // setTimeout(() => {
-      //   onCloseFirstTime();
-      // }, 5000);
-      const mandatory = {
-        name: "Pago del contrato pendiente",
-        description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
-        invoice: `AV-${uuid()}`,
-        currency: "cop",
-        amount: contract.payment,
-        tax_base: "4000",
-        tax: "500",
-        tax_ico: "500",
-        country: "co",
-        lang: "es",
-      };
+      setTimeout(() => {
+        onCloseFirstTime();
+        const mandatory = {
+          name: "Pago del contrato pendiente",
+          description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
+          invoice: `AV-${uuid()}`,
+          currency: "cop",
+          amount: contract.payment,
+          tax_base: "4000",
+          tax: "500",
+          tax_ico: "500",
+          country: "co",
+          lang: "es",
+        };
 
-      const aditional = {
-        extra1: null,
-        extra2: token,
-        extra3: contract.idcontrato,
-        extra4: null,
-        extra5: contract.dues,
-        confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments/financed`,
-        response: `${import.meta.env.VITE_APP_URL}/validation/payment`,
-      };
+        const aditional = {
+          extra1: null,
+          extra2: token,
+          extra3: contract.idcontrato,
+          extra4: null,
+          extra5: contract.dues,
+          confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments/financed`,
+          response: `${import.meta.env.VITE_APP_URL}/validation/payment`,
+        };
 
-      const handler = window.ePayco.checkout.configure({
-        key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-        test: TESTING_EPAYCO,
-      });
+        const handler = window.ePayco.checkout.configure({
+          key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
+          test: TESTING_EPAYCO,
+        });
 
-      handler.open({ ...mandatory, ...aditional });
+        handler.open({ ...mandatory, ...aditional });
+      }, 10000);
+
       return;
     }
     if (contract?.rejectedCounter >= 2) {
