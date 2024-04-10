@@ -300,6 +300,7 @@ const Contracts = () => {
     const { status, data } = await $Due.get({ contractId });
 
     if (status) {
+      console.log(data);
       setContractDues({ id: contractId, dues: data.data });
     }
   };
@@ -1193,49 +1194,47 @@ const Contracts = () => {
                 <ListItemText primary="Cuota" primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
               </Grid>
             </ListItem>
-            {contractDues.dues
-              .filter((fd) => fd.id)
-              .map((due) => (
-                <ListItem
-                  key={due.id}
-                  secondaryAction={
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      {due.url_image && <Image src={due.url_image} alt="Due image" height={32} width={32} borderRadius={0.5} />}
-                      <Box position="relative">
-                        <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
-                        <input
-                          type="file"
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            zIndex: 1,
-                            display: due.status ? "none" : "block",
-                            width: "100%",
-                            height: "100%",
-                            cursor: "pointer",
-                            aspectRatio: 1,
-                            opacity: 0,
-                          }}
-                          onChange={({ target }) =>
-                            onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })
-                          }
-                        />
-                      </Box>
-                    </Stack>
-                  }
-                >
-                  <Grid display="flex" gap={4} alignItems="center">
-                    <ListItemText primary={due.quota_number} primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
-                    <ListItemText
-                      primary={formatCurrency(due.payment_amount, "$")}
-                      secondary={formatLongDate(due.date_payment)}
-                      primaryTypographyProps={{ fontSize: 20, color: "black" }}
-                      secondaryTypographyProps={{ color: "text.main" }}
-                    />
-                  </Grid>
-                </ListItem>
-              ))}
+            {contractDues.dues.map((due) => (
+              <ListItem
+                key={due.id}
+                secondaryAction={
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    {due.url_image && <Image src={due.url_image} alt="Due image" height={32} width={32} borderRadius={0.5} />}
+                    <Box position="relative">
+                      <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
+                      <input
+                        type="file"
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          zIndex: 1,
+                          display: due.status ? "none" : "block",
+                          width: "100%",
+                          height: "100%",
+                          cursor: "pointer",
+                          aspectRatio: 1,
+                          opacity: 0,
+                        }}
+                        onChange={({ target }) =>
+                          onCheckDue({ id: due.id, file: target.files[0], status: 1, id_contracts: due.id_contracts })
+                        }
+                      />
+                    </Box>
+                  </Stack>
+                }
+              >
+                <Grid display="flex" gap={4} alignItems="center">
+                  <ListItemText primary={due.quota_number} primaryTypographyProps={{ fontSize: 20, fontWeight: 600, color: "black" }} />
+                  <ListItemText
+                    primary={formatCurrency(due.payment_amount, "$")}
+                    secondary={formatLongDate(due.date_payment)}
+                    primaryTypographyProps={{ fontSize: 20, color: "black" }}
+                    secondaryTypographyProps={{ color: "text.main" }}
+                  />
+                </Grid>
+              </ListItem>
+            ))}
           </List>
         </DialogContent>
       </Dialog>

@@ -14,8 +14,6 @@ const ContractButton = ({ renderedCellValue }) => {
 
   const parsedCellValue = JSON.parse(renderedCellValue);
 
-  console.log(parsedCellValue);
-
   return (
     <>
       <Button variant="contained" onClick={handleModalOpen}>
