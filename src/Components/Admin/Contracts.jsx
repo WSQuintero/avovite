@@ -201,14 +201,14 @@ const columns = [
   {
     accessorKey: "snapshotContract",
     id: "snapshotContract",
-    header: "Historial de contrato",
-    Cell: ({ renderedCellValue }) => <ContractButton renderedCellValue={renderedCellValue} />,
+    header: "Contrato anterior",
+    Cell: (value) => <ContractButton actual={"snapshotContract"} renderedCellValue={value} />,
   },
   {
     accessorKey: "snapshotFinanced ",
     id: "snapshotContract",
     header: "Historial de financiación",
-    Cell: ({ renderedCellValue }) => <ContractButton renderedCellValue={renderedCellValue} />,
+    Cell: (value) => <ContractButton actual={"snapshotFinanced"} renderedCellValue={value} />,
   },
 ];
 
@@ -300,7 +300,6 @@ const Contracts = () => {
     const { status, data } = await $Due.get({ contractId });
 
     if (status) {
-      console.log(data);
       setContractDues({ id: contractId, dues: data.data });
     }
   };
@@ -418,27 +417,44 @@ const Contracts = () => {
 
   const onCheckDue = async ({ id, file, status, id_contracts }) => {
     setLoadingDue(true);
-
+    console.log(status);
     if (id) {
-      const { status: reqStatus } = await $Due.updateStatus({ id, status, url_image: file });
-
-      if (reqStatus) {
-        setContractDues((prev) => ({
-          ...prev,
-          dues: prev.dues.map((d) => (d.id === id ? { ...d, status, url_image: URL.createObjectURL(file) } : d)),
-        }));
+      if (status === 0) {
+        const { status: reqStatus } = await $Due.updateStatus({ id, status });
+        if (reqStatus) {
+          setContractDues((prev) => ({
+            ...prev,
+            dues: prev.dues.map((d) => (d.id === id ? { ...d, status } : d)),
+          }));
+        }
+      } else {
+        const { status: reqStatus } = await $Due.updateStatus({ id, status, url_image: file });
+        if (reqStatus) {
+          setContractDues((prev) => ({
+            ...prev,
+            dues: prev.dues.map((d) => (d.id === id ? { ...d, status, url_image: URL.createObjectURL(file) } : d)),
+          }));
+        }
       }
     } else {
-      const { status: reqStatus } = await $Due.updateFirstDue({ contractId: id_contracts, status, url_image: file });
-
-      if (reqStatus) {
-        setContractDues((prev) => ({
-          ...prev,
-          dues: prev.dues.map((d) => (d.id === null ? { ...d, status, url_image: URL.createObjectURL(file) } : d)),
-        }));
+      if (status === 0) {
+        const { status: reqStatus } = await $Due.updateFirstDue({ contractId: id_contracts, status });
+        if (reqStatus) {
+          setContractDues((prev) => ({
+            ...prev,
+            dues: prev.dues.map((d) => (d.id === null ? { ...d, status } : d)),
+          }));
+        }
+      } else {
+        const { status: reqStatus } = await $Due.updateFirstDue({ contractId: id_contracts, status, url_image: file });
+        if (reqStatus) {
+          setContractDues((prev) => ({
+            ...prev,
+            dues: prev.dues.map((d) => (d.id === null ? { ...d, status, url_image: URL.createObjectURL(file) } : d)),
+          }));
+        }
       }
     }
-
     setLoadingDue(false);
   };
 
@@ -1199,9 +1215,23 @@ const Contracts = () => {
                 key={due.id}
                 secondaryAction={
                   <Stack direction="row" alignItems="center" gap={1}>
-                    {due.url_image && <Image src={due.url_image} alt="Due image" height={32} width={32} borderRadius={0.5} />}
+                    {due.url_image && due.status === 1 && (
+                      <Image src={due.url_image} alt="Due image" height={120} width={120} borderRadius={0.5} />
+                    )}
                     <Box position="relative">
-                      <Checkbox edge="end" disabled={loadingDue || due.status} checked={due.status} sx={{ margin: 0 }} />
+                      <Checkbox
+                        edge="end"
+                        checked={due.status}
+                        onChange={({ target }) =>
+                          onCheckDue({
+                            id: due.id,
+                            file: due.status === 1 ? "" : target.files[0],
+                            status: due.status === 1 ? 0 : 1,
+                            id_contracts: due.id_contracts,
+                          })
+                        }
+                        sx={{ margin: 0 }}
+                      />
                       <input
                         type="file"
                         style={{

@@ -14,6 +14,7 @@ export default class DueService {
     return await handleCall(async () => (await axios.putForm(`${this.API_URL}/contract-financed-quotas/${id}`, body, this.config)).data);
   }
   async updateFirstDue({ contractId, ...body }) {
+    console.log({ contractId, ...body });
     return await handleCall(
       async () => (await axios.putForm(`${this.API_URL}/contract-financed-quotas/firstPayment/${contractId}`, body, this.config)).data
     );

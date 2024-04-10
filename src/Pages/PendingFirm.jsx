@@ -50,7 +50,6 @@ function PendingFirm() {
     const { status, data } = await $Contract.get();
 
     if (status) {
-      console.log(data);
       if (data.data.some((contract) => !contract.urlSeconFromValidocus || !contract.urlValidocus)) {
         setContracts(data.data.filter((contract) => !contract.urlSeconFromValidocus || !contract.urlValidocus));
       }

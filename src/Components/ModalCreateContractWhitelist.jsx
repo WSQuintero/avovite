@@ -65,7 +65,6 @@ const ModalCreateContractWhitelist = ({ setFeedback }) => {
 
   const handleSearchUser = async () => {
     const idContract = contracts?.find((em) => String(em.email) === String(email)).id_user;
-    console.log(idContract);
 
     setId(Number(idContract));
     setUserInfoLoaded(true);

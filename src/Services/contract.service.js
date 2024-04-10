@@ -114,8 +114,8 @@ export default class ContractService {
   }
   async cancelContract({ id, files }) {
     const formData = new FormData();
-    formData.append("avoviteAssignmentDocument", files[0]);
-    formData.append("avovitePaymentStub", files[1]);
+    formData.append("files", files[0]);
+    formData.append("files", files[1]);
 
     return await handleCall(
       async () =>

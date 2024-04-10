@@ -65,7 +65,6 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       if (session?.user?.pending_to_pay_contracts && !session?.user?.isAdmin()) {
         return <Navigate to="/validation/payment" />;
       }
-      console.log(session.user);
       if (!session?.user?.isAdmin()) {
         if (
           session?.user?.pending_payed_contracts ||
