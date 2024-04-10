@@ -193,7 +193,10 @@ function ContractValidation() {
             <DialogTitle component={Grid} display="flex" flexDirection="column" alignItems="center">
               <CheckIcon fontSize="large" />
               <Typography textAlign="center" fontSize={22} fontWeight={500}>
-                Formulario completado exitosamente.
+                Formulario completado exitosamente. <br />
+                {actualCont?.mortgage_contract === 1
+                  ? "El contrato se está verificando con el área encargada para colocar el predio de la hipoteca. En un lapso máximo de 24 horas hábiles, estará en tu correo."
+                  : "El contrato ya fue enviado a tu correo para su respectiva firma."}
               </Typography>
             </DialogTitle>
             <DialogActions>
