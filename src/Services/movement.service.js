@@ -70,6 +70,25 @@ export default class MovementService {
       }
     });
   }
+  async exportOutstandingPayments() {
+    return await handleCall(async () => {
+      try {
+        const response = await axios.get(`${this.API_URL}/contracts/export/xlsx/morosos`, {
+          responseType: "blob",
+          headers: { Authorization: this.token },
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `archivo.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      } catch (error) {
+        console.error("Error al descargar el archivo:", error);
+      }
+    });
+  }
   async exportByDateMovements({ initDate, finalDate }) {
     return await handleCall(async () => {
       if (initDate && finalDate) {

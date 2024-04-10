@@ -258,6 +258,12 @@ function Movements({ handleClick }) {
   const onPageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+  const handleExportPending = () => {
+    const getExportedExcel = async () => {
+      await $Movement.exportOutstandingPayments();
+    };
+    getExportedExcel();
+  };
 
   return (
     <>
@@ -267,6 +273,14 @@ function Movements({ handleClick }) {
         <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">
+            <Button
+              variant="contained"
+              sx={{ width: "200px", height: "50px", fontSize: "12px" }}
+              onClick={handleExportPending}
+              startIcon={<DownloadIcon />}
+            >
+              Pendientes de pago
+            </Button>
             <Button
               variant="contained"
               sx={{ width: "200px", height: "50px", fontSize: "12px" }}
