@@ -46,6 +46,30 @@ export default class MovementService {
       }
     });
   }
+  async exportByDateEpayco({ initDate, finalDate, limit, page }) {
+    return await handleCall(async () => {
+      if (initDate && finalDate) {
+        try {
+          const response = await axios.get(
+            `${this.API_URL}/contracts/export/xlsx/epayco?transactionInitialDate=${initDate}&transactionEndDate=${finalDate}&page=${page}&limit=${limit}`,
+            {
+              responseType: "blob",
+              headers: { Authorization: this.token }, // Agregar el token a las cabeceras
+            }
+          );
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `archivo.xlsx`);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } catch (error) {
+          console.error("Error al descargar el archivo:", error);
+        }
+      }
+    });
+  }
   async exportByDateMovements({ initDate, finalDate }) {
     return await handleCall(async () => {
       if (initDate && finalDate) {

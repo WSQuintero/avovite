@@ -201,7 +201,13 @@ const columns = [
   {
     accessorKey: "snapshotContract",
     id: "snapshotContract",
-    header: "¿Historial de contrato?",
+    header: "Historial de contrato",
+    Cell: ({ renderedCellValue }) => <ContractButton renderedCellValue={renderedCellValue} />,
+  },
+  {
+    accessorKey: "snapshotFinanced ",
+    id: "snapshotContract",
+    header: "Historial de financiación",
     Cell: ({ renderedCellValue }) => <ContractButton renderedCellValue={renderedCellValue} />,
   },
 ];

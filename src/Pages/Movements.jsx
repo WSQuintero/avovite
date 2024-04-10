@@ -9,6 +9,7 @@ import DateRangeModalMovements from "../Components/Admin/DateRangeModalMovements
 import { Button } from "@mui/material";
 import DateRangeModal from "../Components/Admin/DateRangeModal";
 import DateRangeModalMovementsTwo from "../Components/Admin/DateRangeModalMovementsTwo";
+import DateRangeModalMovementsThree from "../Components/Admin/DateRangeModalMovementsThree";
 import { formatDate } from "../utilities";
 import { NumericFormat } from "react-number-format";
 import BackButton from "../Components/BackButton";
@@ -23,6 +24,7 @@ function Movements({ handleClick }) {
   const [feedback, setFeedback] = useState({ open: false, message: "", status: "success" });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpenTwo, setModalOpenTwo] = useState(false);
+  const [modalOpenThree, setModalOpenThree] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentSize, setCurrentSize] = useState(10);
 
@@ -241,12 +243,17 @@ function Movements({ handleClick }) {
   const handleCloseModalTwo = () => {
     setModalOpenTwo(false);
   };
-
+  const handleCloseModalThree = () => {
+    setModalOpenThree(false);
+  };
   const handleExportDataByDate = () => {
     setModalOpen(true);
   };
   const handleExportDataByDateTwo = () => {
     setModalOpenTwo(true);
+  };
+  const handleExportDataByDateThree = () => {
+    setModalOpenThree(true);
   };
   const onPageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -276,6 +283,14 @@ function Movements({ handleClick }) {
             >
               Movimientos
             </Button>
+            <Button
+              variant="contained"
+              sx={{ width: "200px", height: "50px", fontSize: "12px" }}
+              onClick={handleExportDataByDateThree}
+              startIcon={<DownloadIcon />}
+            >
+              Movimientos Epayco
+            </Button>
           </Grid>
         </Typography>
 
@@ -302,6 +317,7 @@ function Movements({ handleClick }) {
         </Snackbar>
         <DateRangeModalMovements open={modalOpen} onClose={handleCloseModal} contract={$Movement} />
         <DateRangeModalMovementsTwo open={modalOpenTwo} onClose={handleCloseModalTwo} contract={$Movement} />
+        <DateRangeModalMovementsThree open={modalOpenThree} onClose={handleCloseModalThree} contract={$Movement} />
       </PageWrapper>
       {/* Modal para seleccionar el rango de fechas */}
     </>
