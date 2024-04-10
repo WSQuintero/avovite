@@ -52,6 +52,8 @@ function ContractValidation() {
     if (status) {
       if (data.data.some((contract) => contract.state_second_form === 0 || contract.status_contracts === 0)) {
         setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
+      } else {
+        navigate("/");
       }
     }
   };

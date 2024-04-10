@@ -2,7 +2,7 @@ import { Box, Modal, Typography } from "@mui/material";
 
 function ModalFirmContract({ open, handleClose, informationContractFilter, contractsWithMortgageSigned }) {
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={false} onClose={handleClose}>
       <Box
         sx={{
           position: "absolute",
