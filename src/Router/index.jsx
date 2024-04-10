@@ -65,12 +65,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       if (session?.user?.pending_to_pay_contracts) {
         return <Navigate to="/validation/payment" />;
       }
-      console.log(session?.user);
-      if (!session?.user?.isAdmin()) {
-        if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
-          return <Navigate to="/validation/firm" />;
-        }
-      }
+
       if (!session?.user?.isAdmin()) {
         if (
           session?.user?.pending_payed_contracts ||
@@ -78,6 +73,11 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
           session.user.contractPedingWhiteList.length > 0
         ) {
           return <Navigate to="/validation/confirmation" />;
+        }
+      }
+      if (!session?.user?.isAdmin()) {
+        if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
+          return <Navigate to="/validation/firm" />;
         }
       }
     }
