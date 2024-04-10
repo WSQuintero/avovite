@@ -61,8 +61,6 @@ function PendingFirm() {
             (contract) => contract.urlSeconFromValidocus === "Pendiente de firma" || contract.urlValidocus === "Pendiente de firma"
           )
         );
-      } else {
-        navigate("/");
       }
     }
   };
