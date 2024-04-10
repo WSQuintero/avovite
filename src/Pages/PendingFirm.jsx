@@ -45,23 +45,6 @@ function PendingFirm() {
   const [actualCont, setActualCont] = useState(null);
   const $User = useUser();
 
-  useEffect(() => {
-    const get = async () => {
-      const { status, data } = await $Contract.get();
-
-      if (status) {
-        if (
-          !data.data.some(
-            (contract) => contract.urlSeconFromValidocus !== "Pendiente de firma" || contract.urlValidocus !== "Pendiente de firma"
-          )
-        ) {
-          navigate("/");
-        }
-      }
-    };
-    get();
-  }, []);
-
   const fetchContractsWhitelist = async () => {
     setOpenInvasiveForm(false);
 
@@ -70,13 +53,20 @@ function PendingFirm() {
     if (status) {
       if (
         data.data.some(
-          (contract) => contract.urlSeconFromValidocus !== "Pendiente de firma" || contract.urlValidocus !== "Pendiente de firma"
+          (contract) => contract.urlSeconFromValidocus === "Pendiente de firma" || contract.urlValidocus === "Pendiente de firma"
         )
       ) {
-        setContracts(data.data.filter((contract) => !contract.urlSeconFromValidocus || !contract.urlValidocus));
+        setContracts(
+          data.data.filter(
+            (contract) => contract.urlSeconFromValidocus === "Pendiente de firma" || contract.urlValidocus === "Pendiente de firma"
+          )
+        );
+      } else {
+        navigate("/");
       }
     }
   };
+
   const handleSelectContract = ({ id }) => {
     setIsKyc(true);
     const actualContract = contracts.find((contract) => contract.id === id);
