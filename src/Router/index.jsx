@@ -65,7 +65,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       if (session?.user?.pending_to_pay_contracts && !session?.user?.isAdmin()) {
         return <Navigate to="/validation/payment" />;
       }
-      if (!session?.user?.isAdmin()) {
+      if (meta.includes(HIDE_FOR_ADMIN)) {
         if (
           session?.user?.pending_payed_contracts ||
           session?.user?.last_contract?.state_second_form === 0 ||
