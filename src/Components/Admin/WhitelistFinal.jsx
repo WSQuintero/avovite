@@ -123,6 +123,13 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
       setServices(data.data);
     }
   };
+  function convertirFecha(fechaHora) {
+    const fecha = new Date(fechaHora);
+    const año = fecha.getFullYear();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    return `${año}-${mes}-${dia}`;
+  }
 
   const onCancelCreateContract = () => {
     setSelectedContract(null);
@@ -150,7 +157,7 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
       ...(totalFinancingValue !== 0
         ? {
             // Financing
-            id_user: id,
+            id_user: Number(id),
             financed: 1,
             with_guarantee: 0,
             contract_vites: parseFloat(contract.vites),
@@ -160,7 +167,7 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
             contract_discount: parseFloat(discountValue),
             total_contract_with_discount: parseFloat(totalValue),
             first_payment: parseFloat(contract.firstPaymentValue),
-            first_payment_date: formatDateToISO8601(contract.firstPaymentDate), // Modified to use ISO8601 format
+            first_payment_date: convertirFecha(formatDateToISO8601(contract.firstPaymentDate)), // Modified to use ISO8601 format
             total_financed: parseFloat(totalDuesValue),
             payment_numbers: dues.length,
             financed_contracts: dues.map((d, index) => ({
@@ -172,6 +179,8 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
           }
         : {
             // Financingn't
+            id_user: Number(id),
+
             financed: 0,
             with_guarantee: 0,
             contract_vites: parseFloat(contract.vites),
@@ -181,14 +190,13 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
             contract_discount: parseFloat(discountValue),
             total_contract_with_discount: parseFloat(totalValue),
             first_payment: parseFloat(contract.firstPaymentValue),
-            first_payment_date: formatDateToISO8601(contract.firstPaymentDate), // Modified to use ISO8601 format
+            first_payment_date: convertirFecha(formatDateToISO8601(contract.firstPaymentDate)), // Modified to use ISO8601 format
             enable_to_pay_epayco: contract.enable_to_pay_epayco ? 1 : 0,
           }),
       ...(contract.mortgage_contract === 1
         ? { mortgage_contract_aditional_text: contract.mortgage_contract === 1 ? contract.mortgage_contract_aditional_text : "" }
         : {}),
     };
-
     setLoadingCreating(true);
 
     send(body);
