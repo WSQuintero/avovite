@@ -50,6 +50,8 @@ function PendingFirm() {
 
     if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
       setContracts([...(session?.user?.pending_signature_contract ?? []), ...(session?.user?.pending_signature_second_form ?? [])]);
+    } else {
+      navigate("/");
     }
   };
 
