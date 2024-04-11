@@ -41,7 +41,7 @@ function Tab1({ $, service }) {
     const { status, data } = await $Verifik.search({ service, ...formData });
 
     if (status) {
-      setResults(data.data);
+      setResults(data?.data);
     }
 
     setLoading((prev) => ({ ...prev, fetching: false }));
@@ -49,60 +49,61 @@ function Tab1({ $, service }) {
 
   return (
     <>
-    <Container maxWidth="xxl">
+      <Container maxWidth="xxl">
+        <Stack spacing={4}>
+          <Typography fontWeight={600}>Registro Disciplinario en Colombia (Procuraduria)</Typography>
+          <Stack spacing={2} component="form" onSubmit={handleSearch}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <TextField
+                select
+                fullWidth
+                label="Tipo de documento"
+                value={formData.tipe_Document}
+                onChange={(event) => setFormData((prev) => ({ ...prev, tipe_Document: event.target.value }))}
+              >
+                <MenuItem disabled value="-">
+                  Selecciona una opción
+                </MenuItem>
+                {Object.keys(VERIFIK_DOCUMENTS).map(
+                  (document) =>
+                    VERIFIK_DOCUMENTS[document].for.includes(service) && (
+                      <MenuItem key={document} value={document}>
+                        {VERIFIK_DOCUMENTS[document].label}
+                      </MenuItem>
+                    )
+                )}
+              </TextField>
 
-      <Stack spacing={4}>
-        <Typography fontWeight={600}>Registro Disciplinario en Colombia (Procuraduria)</Typography>
-        <Stack spacing={2} component="form" onSubmit={handleSearch}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <TextField
-              select
-              fullWidth
-              label="Tipo de documento"
-              value={formData.tipe_Document}
-              onChange={(event) => setFormData((prev) => ({ ...prev, tipe_Document: event.target.value }))}
-            >
-              <MenuItem disabled value="-">Selecciona una opción</MenuItem>
-              {Object.keys(VERIFIK_DOCUMENTS).map(
-                (document) =>
-                  VERIFIK_DOCUMENTS[document].for.includes(service) && (
-                    <MenuItem key={document} value={document}>
-                      {VERIFIK_DOCUMENTS[document].label}
-                    </MenuItem>
-                  )
-              )}
-            </TextField>
-
-            <TextField
-              fullWidth
-              label="Número de documento"
-              value={formData.document}
-              onChange={(event) => setFormData((prev) => ({ ...prev, document: event.target.value }))}
-            />
+              <TextField
+                fullWidth
+                label="Número de documento"
+                value={formData?.document}
+                onChange={(event) => setFormData((prev) => ({ ...prev, document: event.target.value }))}
+              />
+            </Stack>
+            <LoadingButton loading={loading.fetching} variant="contained" type="submit">
+              Buscar
+            </LoadingButton>
           </Stack>
-          <LoadingButton loading={loading.fetching} variant="contained" type="submit">
-            Buscar
-          </LoadingButton>
+          <Collapse in={!!results}>
+            <Stack spacing={2}>
+              <Typography fontWeight={600}>Resultados:</Typography>
+              <Table>
+                <TableBody>
+                  <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                    <TableCell variant="head">Nombre</TableCell>
+                    <TableCell>{results?.data?.data?.fullName}</TableCell>
+                  </TableRow>
+                  <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                    <TableCell variant="head">Detalles</TableCell>
+                    <TableCell>{results?.data?.data?.legend}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Stack>
+          </Collapse>
         </Stack>
-        <Collapse in={!!results}>
-          <Stack spacing={2}>
-            <Typography fontWeight={600}>Resultados:</Typography>
-            <Table>
-              <TableBody>
-                <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                  <TableCell variant="head">Nombre</TableCell>
-                  <TableCell>{results?.data.data.fullName}</TableCell>
-                </TableRow>
-                <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                  <TableCell variant="head">Detalles</TableCell>
-                  <TableCell>{results?.data.data.legend}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Stack>
-        </Collapse>
-      </Stack>
-    </Container>
+      </Container>
     </>
   );
 }
@@ -142,7 +143,9 @@ function Tab2({ $, service }) {
               value={formData.tipe_Document}
               onChange={(event) => setFormData((prev) => ({ ...prev, tipe_Document: event.target.value }))}
             >
-              <MenuItem disabled value="-">Selecciona una opción</MenuItem>
+              <MenuItem disabled value="-">
+                Selecciona una opción
+              </MenuItem>
               {Object.keys(VERIFIK_DOCUMENTS).map(
                 (document) =>
                   VERIFIK_DOCUMENTS[document].for.includes(service) && (
@@ -170,11 +173,11 @@ function Tab2({ $, service }) {
               <TableBody>
                 <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                   <TableCell variant="head">Nombre</TableCell>
-                  <TableCell>{results?.data.data.fullName}</TableCell>
+                  <TableCell>{results?.data?.data?.fullName}</TableCell>
                 </TableRow>
                 <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                   <TableCell variant="head">Detalles</TableCell>
-                  <TableCell>{results?.data.data.details}</TableCell>
+                  <TableCell>{results?.data?.data?.details}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -201,8 +204,6 @@ function Tab3({ $, service }) {
 
     const { status, data } = await $Verifik.search({ service, ...formData });
 
-
-
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
@@ -219,7 +220,9 @@ function Tab3({ $, service }) {
               value={formData.tipe_Document}
               onChange={(event) => setFormData((prev) => ({ ...prev, tipe_Document: event.target.value }))}
             >
-              <MenuItem disabled value="-">Selecciona una opción</MenuItem>
+              <MenuItem disabled value="-">
+                Selecciona una opción
+              </MenuItem>
               {Object.keys(VERIFIK_DOCUMENTS).map(
                 (document) =>
                   VERIFIK_DOCUMENTS[document].for.includes(service) && (
@@ -286,8 +289,6 @@ function Tab4({ $, service }) {
 
     const { status, data } = await $Verifik.search({ service, ...formData });
 
-
-
     setLoading((prev) => ({ ...prev, fetching: false }));
   };
 
@@ -304,7 +305,9 @@ function Tab4({ $, service }) {
               value={formData.tipe_Document}
               onChange={(event) => setFormData((prev) => ({ ...prev, tipe_Document: event.target.value }))}
             >
-              <MenuItem disabled value="-">Selecciona una opción</MenuItem>
+              <MenuItem disabled value="-">
+                Selecciona una opción
+              </MenuItem>
               {Object.keys(VERIFIK_DOCUMENTS).map(
                 (document) =>
                   VERIFIK_DOCUMENTS[document].for.includes(service) && (
@@ -328,7 +331,9 @@ function Tab4({ $, service }) {
             value={formData.international}
             onChange={(event) => setFormData((prev) => ({ ...prev, international: event.target.value }))}
           >
-            <MenuItem disabled value="-">Selecciona una opción</MenuItem>
+            <MenuItem disabled value="-">
+              Selecciona una opción
+            </MenuItem>
             {Object.keys(VERIFIK_INTERNATIONAL).map((entity) => (
               <MenuItem key={entity} value={entity}>
                 {VERIFIK_INTERNATIONAL[entity]}
@@ -351,31 +356,30 @@ function Verifik() {
 
   return (
     <>
-    <BackButton/>
+      <BackButton />
 
-    <Stack>
-
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 6 }}>
-        <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
-          <Tab label="Registros Disciplinarios" />
-          <Tab label="Antecedentes Policiales" />
-          {/* <Tab label="Cumplimiento Policial de Medidas Correctivas" />
+      <Stack>
+        <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 6 }}>
+          <Tabs value={currentTab} onChange={(event, value) => setCurrentTab(value)}>
+            <Tab label="Registros Disciplinarios" />
+            <Tab label="Antecedentes Policiales" />
+            {/* <Tab label="Cumplimiento Policial de Medidas Correctivas" />
           <Tab label="Búsqueda DEA e Interpol" /> */}
-        </Tabs>
-      </Box>
-      <TabPanel unmountOnExit value={currentTab} index={0}>
-        <Tab1 $={$Verifik} service="disciplinary-records-procuraduria" />
-      </TabPanel>
-      <TabPanel unmountOnExit value={currentTab} index={1}>
-        <Tab2 $={$Verifik} service="police-background-check" />
-      </TabPanel>
-      {/* <TabPanel unmountOnExit value={currentTab} index={2}>
+          </Tabs>
+        </Box>
+        <TabPanel unmountOnExit value={currentTab} index={0}>
+          <Tab1 $={$Verifik} service="disciplinary-records-procuraduria" />
+        </TabPanel>
+        <TabPanel unmountOnExit value={currentTab} index={1}>
+          <Tab2 $={$Verifik} service="police-background-check" />
+        </TabPanel>
+        {/* <TabPanel unmountOnExit value={currentTab} index={2}>
         <Tab3 $={$Verifik} service="police-enforcement-corrective-measures" />
       </TabPanel> */}
-      {/* <TabPanel unmountOnExit value={currentTab} index={3}>
+        {/* <TabPanel unmountOnExit value={currentTab} index={3}>
         <Tab4 $={$Verifik} service="international-criminal-records" />
       </TabPanel> */}
-    </Stack>
+      </Stack>
     </>
   );
 }

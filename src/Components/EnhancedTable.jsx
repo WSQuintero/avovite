@@ -54,10 +54,10 @@ function EnhancedTable({
   const visibleRows = useMemo(() => {
     if (detailsProduction) {
       // Si detailsProduction es true, devolver los datos sin ordenar
-      return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+      return rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     } else {
       // Si detailsProduction es false, aplicar el ordenamiento normal
-      return stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+      return stableSort(rows, getComparator(order, orderBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     }
   }, [detailsProduction, order, orderBy, page, rows, rowsPerPage]);
 

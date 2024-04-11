@@ -1,15 +1,14 @@
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import React, { useState, useEffect } from "react";
 
-function BeneficiaryIdTypeSelector({ handleInputChange, value,selectedIdType,setSelectedIdType }) {
-
+function BeneficiaryIdTypeSelector({ handleInputChange, value, selectedIdType, setSelectedIdType }) {
   function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string?.charAt(0)?.toUpperCase() + string?.slice(1);
   }
-  const options = ['Cedula', 'Tarjeta Identidad', 'Cedula Extranjeria', 'Pasaporte', 'Registro Civil', 'DNI'];
+  const options = ["Cedula", "Tarjeta Identidad", "Cedula Extranjeria", "Pasaporte", "Registro Civil", "DNI"];
 
   useEffect(() => {
-    setSelectedIdType(capitalizeFirstLetter(String(value))||"");
+    setSelectedIdType(capitalizeFirstLetter(String(value)) || "");
   }, [value]);
 
   const handleChange = (event) => {
@@ -20,7 +19,7 @@ function BeneficiaryIdTypeSelector({ handleInputChange, value,selectedIdType,set
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="beneficiary-id-type-label" marginTop="20px"/>
+      <InputLabel id="beneficiary-id-type-label" marginTop="20px" />
       <Select
         labelId="beneficiary-id-type-label"
         id="beneficiary-id-type-select"

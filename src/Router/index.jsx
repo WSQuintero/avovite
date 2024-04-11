@@ -76,7 +76,10 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
         }
       }
       if (!session.user.isAdmin()) {
-        if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
+        if (
+          session?.user?.pending_signature_contract.length > 0 ||
+          (session?.user?.pending_signature_second_form.length > 0 && !session?.user?.pending_payed_contracts)
+        ) {
           return <Navigate to="/validation/firm" />;
         }
       }

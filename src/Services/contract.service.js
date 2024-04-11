@@ -79,17 +79,17 @@ export default class ContractService {
     );
   }
 
-  // async complete({ id, body, mortgage = false, pending = false } = {}) {
-  //   return await handleCall(
-  //     async () =>
-  //       (pending
-  //         ? await axios.put(`${this.API_URL}/contract-transactional-payments/complete/${id}`, body, this.config)
-  //         : mortgage
-  //         ? await axios.put(`${this.API_URL}/contracts/complete-contract-mortgage/${id}`, body, this.config)
-  //         : await axios.put(`${this.API_URL}/contracts/completeContract/${id}`, body, this.config)
-  //       ).data
-  //   );
-  // }
+  async completeFirst({ id, body, mortgage = false, pending = false } = {}) {
+    return await handleCall(
+      async () =>
+        (pending
+          ? await axios.put(`${this.API_URL}/contract-transactional-payments/complete/${id}`, body, this.config)
+          : mortgage
+          ? await axios.put(`${this.API_URL}/contracts/complete-contract-mortgage/${id}`, body, this.config)
+          : await axios.put(`${this.API_URL}/contracts/completeContract/${id}`, body, this.config)
+        ).data
+    );
+  }
   async complete({ id, body, mortgage = false, pending = false } = {}) {
     return await handleCall(
       async () =>

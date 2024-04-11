@@ -376,7 +376,7 @@ const Contracts = () => {
 
     setLoadingCreating(true);
 
-    const { status } = await $Contract.complete({
+    const { status } = await $Contract.completeFirst({
       id: selectedContract.id,
       mortgage: contract.mortgage_contract === 1,
       body: body,
