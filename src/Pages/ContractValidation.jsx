@@ -81,7 +81,6 @@ function ContractValidation() {
               contract.state_second_form_validocus !== "Pendiente de firma")
         )
       ) {
-        console.log(data.data);
         setContracts(data.data.filter((contract) => contract.state_second_form === 0 || contract.status_contracts === 0));
       } else {
         navigate("/");

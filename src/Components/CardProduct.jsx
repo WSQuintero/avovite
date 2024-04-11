@@ -42,7 +42,7 @@ function CardProduct({ product, sx, onBuy }) {
       </Box>
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
         <Typography fontWeight={600} sx={{ color }}>
-          {product.quantity} Vite{product.quantity > 1 ? "s" : ""}
+          {product.quantity}Vite{product.quantity > 1 ? "s" : ""}
         </Typography>
         <Typography color={color} fontWeight={600}>
           {product.product_name}

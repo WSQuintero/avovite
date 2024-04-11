@@ -67,7 +67,6 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
       }
 
       if (!session.user.isAdmin()) {
-        console.log(session?.user);
         if (
           session?.user?.pending_payed_contracts &&
           session?.user?.pending_signature_contract.length === 0 &&
