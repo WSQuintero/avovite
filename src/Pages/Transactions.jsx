@@ -84,6 +84,7 @@ function Transactions() {
                 <Button
                   size="small"
                   onClick={() => {
+                    console.log(mov);
                     setWithdrawalMovId(data);
                     setModal("modal-withdrawal");
                   }}

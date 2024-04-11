@@ -116,7 +116,6 @@ function ContractValidation() {
 
     if (status) {
       setContracts((prev) => prev.filter((c) => c.id !== contract.id));
-
       setModal("contract-success");
     } else {
       console.log("Error");
@@ -159,28 +158,34 @@ function ContractValidation() {
               <List>
                 {contracts.length > 0 &&
                   contracts?.map((contract) => (
-                    <ListItem
-                      key={contract.id}
-                      onClick={() => handleSelectContract(contract)}
-                      secondaryAction={
-                        <Button variant="contained" edge="end">
-                          Completar
-                        </Button>
-                      }
-                      disablePadding
-                    >
-                      <ListItemButton role={undefined} onClick={() => {}}>
-                        <ListItemIcon>
-                          <ContractIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={`Contrato AV-${contract.id}`}
-                          secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
-                          primaryTypographyProps={{ fontSize: 20, color: "primary" }}
-                          secondaryTypographyProps={{ color: "text.main" }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
+                    <>
+                      <ListItem
+                        key={contract.id}
+                        onClick={() => handleSelectContract(contract)}
+                        secondaryAction={
+                          <Button variant="contained" edge="end">
+                            Completar
+                          </Button>
+                        }
+                        disablePadding
+                      >
+                        <ListItemButton role={undefined} onClick={() => {}}>
+                          <ListItemIcon>
+                            <ContractIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={`Contrato AV-${contract.id}`}
+                            secondary={`Pago realizado el ${formatDate(contract.first_payment_date)}`}
+                            tertiary={contract.stateFignature}
+                            primaryTypographyProps={{ fontSize: 20, color: "primary" }}
+                            secondaryTypographyProps={{ color: "text.main" }}
+                          />
+                        </ListItemButton>
+                        <Typography variant="h4" sx={{ marginRight: 50 }}>
+                          {contract.stateFignature}
+                        </Typography>
+                      </ListItem>
+                    </>
                   ))}
               </List>
             </Grid>
