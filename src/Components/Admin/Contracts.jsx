@@ -857,7 +857,7 @@ const Contracts = () => {
               <DateRangeModal open={modalOpen} onClose={handleCloseModal} contract={$Contract} />{" "}
               {/* Pasar propiedades de estado y función de cierre al modal */}
             </>
-            <LoadingButton
+            {/* <LoadingButton
               loading={loadingRefreshing}
               variant={loadingRefreshing ? "contained" : "text"}
               color="primary"
@@ -865,7 +865,7 @@ const Contracts = () => {
               startIcon={<RefreshIcon />}
             >
               Refrescar firmas
-            </LoadingButton>
+            </LoadingButton> */}
             <Pagination currentPage={currentPage} onPageChange={onPageChange} />
           </Box>
         )}
