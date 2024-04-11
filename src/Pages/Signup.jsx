@@ -115,7 +115,7 @@ function SignUp() {
       return;
     }
 
-    const { status } = await $Auth.signup(user);
+    const { status, data } = await $Auth.signup(user);
 
     if (!status) {
       setFeedback({
@@ -129,6 +129,15 @@ function SignUp() {
         message: "Te has registrado exitosamente.",
         status: "success",
       });
+      console.log(data);
+      if (data.data === "Email already registered") {
+        setFeedback({
+          show: true,
+          message: "Tu email ya se encuentra registrado",
+          status: "error",
+        });
+        return;
+      }
       setOpenModal(true);
     }
   };

@@ -105,7 +105,7 @@ function ForgotPassword() {
             <Stack component="form" spacing={2} width="100%" onSubmit={handleForgotPassword}>
               <TextField fullWidth label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <Button fullWidth variant="contained" type="submit" size="large">
-                Request new password
+                Solicitar nueva contraseña
               </Button>
             </Stack>
           </Stack>
@@ -158,7 +158,7 @@ function ForgotPassword() {
                 />
               </Tooltip>
               <Button fullWidth variant="contained" type="submit" size="large">
-                Request new password
+                Solicitar nueva contraseña
               </Button>
             </Stack>
           </Stack>
