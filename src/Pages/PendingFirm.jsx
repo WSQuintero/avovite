@@ -48,14 +48,8 @@ function PendingFirm() {
   const fetchContractsWhitelist = async () => {
     setOpenInvasiveForm(false);
 
-    const { status, data } = await $Contract.get();
-
-    if (status) {
-      console.log(data);
-
-      if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
-        setContracts([...(session?.user?.pending_signature_contract ?? []), ...(session?.user?.pending_signature_second_form ?? [])]);
-      }
+    if (session?.user?.pending_signature_contract.length > 0 || session?.user?.pending_signature_second_form.length > 0) {
+      setContracts([...(session?.user?.pending_signature_contract ?? []), ...(session?.user?.pending_signature_second_form ?? [])]);
     }
   };
 
@@ -111,12 +105,12 @@ function PendingFirm() {
     return status;
   };
   useEffect(() => {
-    if (session.token) {
+    if (session.token && session.user) {
       (async () => {
         await fetchContractsWhitelist();
       })();
     }
-  }, [session.token]);
+  }, [session.token, session.user]);
   return (
     <>
       {!isKyc && <DialogKYC open={true} logout={() => logout()} onSubmit={handleSubmitKYC} contractId={contract?.id} />}
