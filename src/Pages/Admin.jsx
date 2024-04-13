@@ -14,6 +14,7 @@ import {
   Harvests,
   PaymentSplit,
   Verifik,
+  Marketing,
 } from "../Components/Admin/";
 import TicketList from "./TicketList";
 
@@ -29,6 +30,7 @@ const SECTIONS = {
   ticketList:<TicketList/>,
   verifik: <Verifik />,
   whitelist: <Whitelist />,
+  marketing: <Marketing/>
 };
 
 function Admin() {

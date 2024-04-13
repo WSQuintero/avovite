@@ -10,4 +10,5 @@ export { default as Suppliers } from './Suppliers';
 export { default as Users } from './Users';
 export { default as Verifik } from './Verifik';
 export { default as Whitelist } from './Whitelist';
+export { default as Marketing } from './Marketing';
 export * from './index';
