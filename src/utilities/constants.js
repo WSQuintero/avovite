@@ -160,3 +160,136 @@ export const TRANSACTION_TYPES = {
   revenue: "Ganancia",
   withdrawal: "Retiro",
 };
+
+
+export const noShowAppointmentsList = [
+  {
+    completeName: "Juan Pérez",
+    email: "juan@example.com",
+    date: "2024-04-14",
+    source: "facebook",
+    phoneNumber: "+1 1234567890",
+    lastAppointment: "2024-04-13",
+    status: "No-Show",
+    link: "2024-04-15"
+  },
+  {
+    completeName: "María García",
+    email: "maria@example.com",
+    date: "2024-04-15",
+    source: "whatsapp",
+    phoneNumber: "+1 2345678901",
+    lastAppointment: "2024-04-14",
+    status: "No-Show",
+    link: "2024-04-16"
+  },
+  {
+    completeName: "Elena Rodríguez",
+    email: "elena@example.com",
+    date: "2024-04-22",
+    source: "web",
+    phoneNumber: "+1 3456789012",
+    lastAppointment: "2024-04-21",
+    status: "No-Show",
+    link: "2024-04-23"
+  },
+  {
+    completeName: "David López",
+    email: "david@example.com",
+    date: "2024-04-23",
+    source: "excel",
+    phoneNumber: "+1 4567890123",
+    lastAppointment: "2024-04-22",
+    status: "No-Show",
+    link: "2024-04-24"
+  },
+];
+
+export const guestAttendeesList = [
+  {
+    completeName: "Carlos López",
+    email: "carlos@example.com",
+    date: "2024-04-16",
+    source: "facebook",
+    phoneNumber: "+1 5678901234",
+    lastAppointment: "2024-04-15",
+    status: "Available",
+    link: "2024-04-17"
+  },
+  {
+    completeName: "Laura Martínez",
+    email: "laura@example.com",
+    date: "2024-04-17",
+    source: "excel",
+    phoneNumber: "+1 6789012345",
+    lastAppointment: "2024-04-16",
+    status: "Available",
+    link: "2024-04-18"
+  },
+  {
+    completeName: "Mario Martínez",
+    email: "mario@example.com",
+    date: "2024-04-25",
+    source: "whatsapp",
+    phoneNumber: "+1 7890123456",
+    lastAppointment: "2024-04-24",
+    status: "Available",
+    link: "2024-04-26"
+  },
+];
+
+export const accountsWithoutInvitesList = [
+  {
+    completeName: "Pedro Rodríguez",
+    email: "pedro@example.com",
+    date: "2024-04-18",
+    source: "web",
+    phoneNumber: "+1 8901234567",
+    lastAppointment: "2024-04-17",
+    status: "Available",
+    link: "2024-04-19"
+  },
+];
+
+export const completedPurchasesList = [
+  {
+    completeName: "Luisa Fernández",
+    email: "luisa@example.com",
+    date: "2024-04-20",
+    source: "excel",
+    phoneNumber: "+1 9012345678",
+    lastAppointment: "2024-04-19",
+    status: "Available",
+    link: "2024-04-21"
+  },
+  {
+    completeName: "Javier Gómez",
+    email: "javier@example.com",
+    date: "2024-04-21",
+    source: "facebook",
+    phoneNumber: "+1 1234567890",
+    lastAppointment: "2024-04-20",
+    status: "Available",
+    link: "2024-04-22"
+  },
+  {
+    completeName: "Laura Pérez",
+    email: "laura@example.com",
+    date: "2024-04-28",
+    source: "web",
+    phoneNumber: "+1 2345678901",
+    lastAppointment: "2024-04-27",
+    status: "Available",
+    link: "2024-04-29"
+  },
+  {
+    completeName: "Juan García",
+    email: "juan@example.com",
+    date: "2024-04-29",
+    source: "whatsapp",
+    phoneNumber: "+1 3456789012",
+    lastAppointment: "2024-04-28",
+    status: "Available",
+    link: "2024-04-30"
+  },
+];
