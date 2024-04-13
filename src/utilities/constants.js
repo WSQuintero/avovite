@@ -293,3 +293,85 @@ export const completedPurchasesList = [
     link: "2024-04-30"
   },
 ];
+
+export const campaignsList = [
+  {
+    state_lead: "Zoom",
+    title: "Lorem Ipsum",
+    marketing_origin: "Instagram",
+    channels: "SMS, EMAIL, LLAMADA",
+    hour: "19:00:00",
+    created_at: "2024-04-19",
+    status: "Activa"
+  },
+  {
+    state_lead: "Calendly",
+    title: "Lorem Ipsum",
+    marketing_origin: "Facebook",
+    channels: "SMS, EMAIL, LLAMADA",
+    hour: "19:00:00",
+    created_at: "2024-04-20",
+    status: "Activa"
+  },
+  {
+    state_lead: "Lead",
+    title: "Lorem Ipsum",
+    marketing_origin: "Google",
+    channels: "SMS, EMAIL, LLAMADA",
+    hour: "19:00:00",
+    created_at: "2024-04-27",
+    status: "Activa"
+  },
+  {
+    state_lead: "Usuario Avovite",
+    title: "Lorem Ipsum",
+    marketing_origin: "YouTube",
+    channels: "SMS, EMAIL, LLAMADA",
+    hour: "19:00:00",
+    created_at: "2024-04-28",
+    status: "Activa"
+  },
+];
+
+export const messagesList = [
+  {
+    state_message: "Enviado",
+    title: "Lorem Ipsum",
+    marketing_origin: "Instagram",
+    channels: "SMS",
+    lead_email: "jhondoe@mail.com",
+    created_at: "2024-04-19",
+    lead_phone: "+57 311 789 552",
+    lead_fullname: "Jhon Doe"
+  },
+  {
+    state_message: "Rechazado",
+    title: "Lorem Ipsum",
+    marketing_origin: "Facebook",
+    channels: "SMS",
+    lead_email: "jhondoe@mail.com",
+    created_at: "2024-04-20",
+    lead_phone: "+57 311 789 552",
+    lead_fullname: "Jhon Doe"
+  },
+  {
+    state_message: "Enviado",
+    title: "Lorem Ipsum",
+    marketing_origin: "Google",
+    channels: "EMAIL",
+    lead_email: "jhondoe@mail.com",
+    created_at: "2024-04-27",
+    lead_phone: "+57 311 789 552",
+    lead_fullname: "Jhon Doe"
+  },
+  {
+    state_message: "Enviado",
+    title: "Lorem Ipsum",
+    marketing_origin: "YouTube",
+    channels: "LLAMADA",
+    lead_email: "jhondoe@mail.com",
+    created_at: "2024-04-28",
+    lead_phone: "+57 311 789 552",
+    lead_fullname: "Jhon Doe"
+  },
+];

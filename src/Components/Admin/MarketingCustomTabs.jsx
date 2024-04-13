@@ -9,7 +9,7 @@ const CustomTab = ({ label, selected, onClick }) => {
       sx={{ 
         marginRight: 1,
         fontSize: '14px',
-        width: '12.5%',
+        width: 'fit-content',
         color: 'black', 
         fontWeight:'300',
         backgroundColor: selected ? 'rgba(201, 233, 173, 1)' : 'transparent',
