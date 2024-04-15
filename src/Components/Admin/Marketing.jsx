@@ -2,17 +2,22 @@ import { useState } from 'react';
 import { Box, Button, MenuItem, Typography } from '@mui/material';
 import CustomTab from './MarketingCustomTabs';
 import Section from './MarketingSectionList';
+
+import MarketingStateConfig from "./MarketingStateConfig";
+import MarketingCampaignForm from "./MarketingCampaignForm";
+
 import { MaterialReactTable } from "material-react-table";
 import { noShowAppointmentsList, guestAttendeesList, accountsWithoutInvitesList, completedPurchasesList, campaignsList, messagesList  } from "../../utilities/constants";
 import MarketingCard from './MarketingCard';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import DateRangeModal from "./DateRangeModal";
 import { FileDownload as DownloadIcon, CreateNewFolder } from "@mui/icons-material";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { formatDate } from "../../utilities/index";
 
 const Marketing = () => {
+  const [configState, setConfigState] = useState(false);
   const [currentTab, setCurrentTab] = useState('Automation');
+  const [openCampaignForm, setOpenCampaignForm] = useState(false);
   const imageUrl = 'https://t1.ea.ltmcdn.com/es/posts/6/6/7/la_alimentacion_de_los_canguros_20766_orig.jpg'; 
 
   const handleClick = (tabName) => {
@@ -123,34 +128,80 @@ const Marketing = () => {
     }
   ];
 
+  const columnsMessagesState = [
+    {
+      accessorKey: "order",
+      id: "order",
+      header: "Orden",
+    },
+    {
+      accessorKey: "hour",
+      id: "hour",
+      header: "Hora",
+    },
+    {
+      accessorKey: "status",
+      id: "status",
+      header: "Status",
+    },
+    {
+      accessorKey: "title",
+      id: "title",
+      header: "Título",
+    },
+    {
+      accessorKey: "description",
+      id: "description",
+      header: "Descripción",
+    }
+  ];
+
   return (
     <div>
       <Box sx={{ borderBottom: 1, borderColor: 'transparent', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ flex: 3 }}>
-          <CustomTab label="Leads" selected={currentTab === 'Automation'} onClick={() => handleClick('Automation')} />
+          <CustomTab label="Leads" selected={(currentTab === 'Automation' || currentTab === 'ConfigState')} onClick={() => handleClick('Automation')} />
           <CustomTab label="Campañas" selected={currentTab === 'Campaign'} onClick={() => handleClick('Campaign')} />
           <CustomTab label="Histórico Mensajes" selected={currentTab === 'Message'} onClick={() => handleClick('Message')} />
         </Box>
         {currentTab === 'Automation'&&(<Button variant="contained" color="primary" onClick={() => console.log('Upload .xlss file')} startIcon={<FileUploadIcon/>}>
           Cargar .xlss con leads
         </Button>)}
-        {currentTab === 'Campaign'&&(<Button variant="contained" color="primary" onClick={() => console.log('Upload .xlss file')} startIcon={<CreateNewFolder/>}>
+        {currentTab === 'Campaign'&&(<Button variant="contained" color="primary" onClick={() => setOpenCampaignForm('add-campaign')} startIcon={<CreateNewFolder/>}>
           Nueva Campaña
         </Button>)}
       </Box>
       {currentTab === 'Automation'&&(<Box sx={{ padding: '25px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-          <Section title="No show Appointments" value={noShowAppointmentsList.length}>
+          <Section title="Lead" value={noShowAppointmentsList.length} onPressConfig={()=>{
+            handleClick('ConfigState');
+            setConfigState("Lead")
+          }}>
             {renderMarketingCards(noShowAppointmentsList)}
           </Section>
-          <Section title="Guest Attendees" value={guestAttendeesList.length}>
+          <Section title="Calendly" value={guestAttendeesList.length} onPressConfig={()=>{
+            handleClick('ConfigState');
+            setConfigState("Calendly")
+          }}>
             {renderMarketingCards(guestAttendeesList)}
           </Section>
-          <Section title="Accounts Without Invites" value={accountsWithoutInvitesList.length}>
+          <Section title="Zoom" value={accountsWithoutInvitesList.length} onPressConfig={()=>{
+            handleClick('ConfigState');
+            setConfigState("Zoom")
+          }}>
             {renderMarketingCards(accountsWithoutInvitesList)}
           </Section>
-          <Section title="Completed Purchases" value={completedPurchasesList.length}>
+          <Section title="Usuario Avovite" value={completedPurchasesList.length} onPressConfig={()=>{
+            handleClick('ConfigState');
+            setConfigState("Usuario Avovite")
+          }}>
             {renderMarketingCards(completedPurchasesList)}
+          </Section>
+          <Section title="Cliente Avovite" value={guestAttendeesList.length} onPressConfig={()=>{
+            handleClick('ConfigState');
+            setConfigState("Cliente Avovite")
+          }}>
+            {renderMarketingCards(guestAttendeesList)}
           </Section>
         </Box>
       </Box>)}
@@ -173,11 +224,10 @@ const Marketing = () => {
                 key={0}
                 disabled={original.status_contracts === 0}
                 onClick={() => {
-                  closeMenu();
-                  window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
+                  setOpenCampaignForm("update-campign")
                 }}
               >
-                Ejecutar Campaña
+                Editar
               </MenuItem>
             ]}
           />
@@ -212,6 +262,21 @@ const Marketing = () => {
           />
         </Box>
       </Box>)}
+
+
+      <MarketingCampaignForm 
+          modal={openCampaignForm}
+          onClose={()=>setOpenCampaignForm(false)}
+          onSubmit={()=>{}}
+      />
+
+      {currentTab === 'ConfigState'&&(<MarketingStateConfig 
+        configState={configState} 
+        onClose={()=>{
+          handleClick('Automation');
+          setConfigState(false);
+        }} 
+      />)}
     </div>
   );
 };
