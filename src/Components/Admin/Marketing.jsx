@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import dayjs from "dayjs";
-import { Box, Button, MenuItem, Typography, Grid, TextField, InputAdornment, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Button, MenuItem, Typography } from '@mui/material';
 import CustomTab from './MarketingCustomTabs';
 import Section from './MarketingSectionList';
-import { DatePicker } from "@mui/x-date-pickers";
+
+import MarketingStateConfig from "./MarketingStateConfig";
+import MarketingCampaignForm from "./MarketingCampaignForm";
+
 import { MaterialReactTable } from "material-react-table";
 import { noShowAppointmentsList, guestAttendeesList, accountsWithoutInvitesList, completedPurchasesList, campaignsList, messagesList  } from "../../utilities/constants";
 import MarketingCard from './MarketingCard';
@@ -11,11 +13,11 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { FileDownload as DownloadIcon, CreateNewFolder } from "@mui/icons-material";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { formatDate } from "../../utilities/index";
-import { NumericFormat } from "react-number-format";
 
 const Marketing = () => {
   const [configState, setConfigState] = useState(false);
   const [currentTab, setCurrentTab] = useState('Automation');
+  const [openCampaignForm, setOpenCampaignForm] = useState(false);
   const imageUrl = 'https://t1.ea.ltmcdn.com/es/posts/6/6/7/la_alimentacion_de_los_canguros_20766_orig.jpg'; 
 
   const handleClick = (tabName) => {
@@ -165,7 +167,7 @@ const Marketing = () => {
         {currentTab === 'Automation'&&(<Button variant="contained" color="primary" onClick={() => console.log('Upload .xlss file')} startIcon={<FileUploadIcon/>}>
           Cargar .xlss con leads
         </Button>)}
-        {currentTab === 'Campaign'&&(<Button variant="contained" color="primary" onClick={() => console.log('Upload .xlss file')} startIcon={<CreateNewFolder/>}>
+        {currentTab === 'Campaign'&&(<Button variant="contained" color="primary" onClick={() => setOpenCampaignForm('add-campaign')} startIcon={<CreateNewFolder/>}>
           Nueva Campaña
         </Button>)}
       </Box>
@@ -222,11 +224,10 @@ const Marketing = () => {
                 key={0}
                 disabled={original.status_contracts === 0}
                 onClick={() => {
-                  closeMenu();
-                  window.open(`${import.meta.env.VITE_API_URL}/contracts/files/${original.id}`, "_blank");
+                  setOpenCampaignForm("update-campign")
                 }}
               >
-                Ejecutar Campaña
+                Editar
               </MenuItem>
             ]}
           />
@@ -261,104 +262,21 @@ const Marketing = () => {
           />
         </Box>
       </Box>)}
-      {currentTab === 'ConfigState'&&(<Box sx={{ padding: '25px' }}>
-        <Typography fontWeight={'bold'}>{`Configuración estado ${configState}`}</Typography>
-        <Grid display="flex" flexDirection="column" gap={2} marginTop={3}>
-          <TextField
-            select
-            fullWidth
-            label="Canales"
-            value={""}
-            onChange={(event) =>{}}
-          >
-            <MenuItem disabled value="-">
-              Selecciona una opción
-            </MenuItem>
-            <MenuItem value={"SMS"}>
-              {"SMS"}
-            </MenuItem>
-            <MenuItem value={"EMAIL"}>
-              {"EMAIL"}
-            </MenuItem>
-            <MenuItem value={"LLAMADA"}>
-              {"LLAMADA"}
-            </MenuItem>
-          </TextField>
-          <NumericFormat
-            customInput={TextField}
-            label="Cada cuántos días desea enviar los mensajes"
-            variant="outlined"
-            value={''}
-            sx={{ width: "100%" }}
-            thousandSeparator
-            onValueChange={({ floatValue }) =>{}}
-          />
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={''}
-                  onChange={({ target }) => onChangeFields({ target: { name: "is_Cronjob", value: target.checked } })}
-                />
-              }
-              label="Mensajeria en orden consecutivo"
-            />
-          </FormGroup>
-          <NumericFormat
-            customInput={TextField}
-            label="Cantidad de mensajes en orden"
-            variant="outlined"
-            value={''}
-            sx={{ width: "100%" }}
-            thousandSeparator
-            onValueChange={({ floatValue }) =>{}}
-          />
-          <Grid display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-            <Button onClick={()=>{
-               handleClick('Automation');
-               setConfigState(false);
-            }}>Cancelar</Button>
-            <Button variant="contained">
-              Grabar
-            </Button>
-          </Grid>
-        </Grid>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-          <MaterialReactTable
-            columns={columnsMessagesState}
-            data={messagesList}
-            enableColumnFilterModes
-            enableColumnOrdering
-            enableRowActions
-            muiTablePaperProps={{ elevation: 0 }}
-            initialState={{ density: "compact" }}
-            muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
-            state={{ showSkeletons: false }}
-            localization={MRT_Localization_ES}
-            enablePagination={false}
-            renderRowActionMenuItems={({ closeMenu, row: { original } }) => [
-              <MenuItem
-                key={0}
-                disabled={original.status_contracts === 0}
-                onClick={() => {
-                  closeMenu();
-                }}
-              >
-                Editar Mensaje
-              </MenuItem>,
-              <MenuItem
-                key={0}
-                disabled={original.status_contracts === 0}
-                onClick={() => {
-                  closeMenu();
-                }}
-              >
-                Eliminar Mensaje
-              </MenuItem>
-            ]}
-          />
-        </Box>
-      </Box>)}
+
+
+      <MarketingCampaignForm 
+          modal={openCampaignForm}
+          onClose={()=>setOpenCampaignForm(false)}
+          onSubmit={()=>{}}
+      />
+
+      {currentTab === 'ConfigState'&&(<MarketingStateConfig 
+        configState={configState} 
+        onClose={()=>{
+          handleClick('Automation');
+          setConfigState(false);
+        }} 
+      />)}
     </div>
   );
 };
