@@ -214,6 +214,11 @@ const Sidebar = memo(function Sidebar({ collapseOn = "" }) {
         show: user?.isAdmin(),
       },
       {
+        name: "Marketing",
+        route: "/admin/marketing",
+        show: user?.isAdmin(),
+      },
+      {
         icon: <TicketIcon />,
         name: "Tickets",
         route: "/form-tickets",
