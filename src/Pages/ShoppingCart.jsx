@@ -164,6 +164,17 @@ function ShoppingCart() {
       });
 
       handler.open({ ...mandatory, ...aditional });
+      handler.on("payment_error", function (error) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      });
+
+      handler.on("payment_success", function (response) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      });
     } else {
       enqueueSnackbar(data.response.data.message, { variant: "error", autoHideDuration: 10000 });
     }
