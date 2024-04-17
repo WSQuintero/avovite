@@ -435,6 +435,7 @@ function InvasiveForm({ contractId }) {
     if (feedback.open) {
       setTimeout(() => {
         resetFeedback();
+        navigate("/")
       }, 3000);
     }
   }, [feedback.open]);
