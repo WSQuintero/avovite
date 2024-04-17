@@ -32,6 +32,8 @@ import BackgroundImage from "../assets/img/signup/background.png";
 import LogoImage from "../assets/img/common/logo.svg";
 import TermsAndConditions from "../Components/TermsAndConditions";
 import ConfirmationModal from "../Components/ConfirmationModal";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const StatusIcon = ({ status = false }) => {
   return status ? <CheckCircleIcon /> : <ErrorIcon />;
@@ -60,7 +62,7 @@ function SignUp() {
   );
 
   const [error, setError] = useState(undefined);
-
+  const [isVisible, setIsVisible] = useState(false);
   const onUserChange = (event) => {
     setError(false);
     const { name, value } = event.target;
@@ -286,7 +288,7 @@ function SignUp() {
           >
             <TextField
               name="password"
-              type="password"
+              type={isVisible ? "password" : "text"}
               label="Contraseña"
               sx={{ width: "100%" }}
               value={user.password}
@@ -295,6 +297,11 @@ function SignUp() {
                 startAdornment: (
                   <InputAdornment position="start">
                     <LockIcon color="primary" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="center" sx={{ padding: 2, cursor: "pointer" }} onClick={() => setIsVisible(!isVisible)}>
+                    {isVisible ? <FaEyeSlash /> : <FaEye />}
                   </InputAdornment>
                 ),
               }}
