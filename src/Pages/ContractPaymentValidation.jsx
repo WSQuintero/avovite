@@ -31,6 +31,7 @@ function ContractPaymentValidation() {
   const [{ user, token }] = useSession();
   const [contracts, setContracts] = useState([]);
   const [modal, setModal] = useState("warning");
+  const [actualContract, setActualContract] = useState();
   const $Contract = useMemo(() => (token ? new ContractService(token) : null), [token]);
   const [openFirstTime, setOpenFirstTime] = useState(false);
   const [message, setMessage] = useState("");
@@ -92,12 +93,13 @@ function ContractPaymentValidation() {
     if (contract?.rejectedCounter >= 2) {
       setMessage("Intentaste pagar dos veces sin éxito, Por favor comunícate con nuestro centro de ayuda.");
       setOpenFirstTime(true);
+      setActualContract(contract?.rejectedCounter);
+
       setTimeout(() => {
         onCloseFirstTime();
       }, 5000);
       return;
     }
-
     const mandatory = {
       name: "Pago del contrato pendiente",
       description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
@@ -229,7 +231,7 @@ function ContractPaymentValidation() {
           </Button>
         </DialogActions>
       </Dialog>
-      <ModalFirstTry open={openFirstTime} onClose={onCloseFirstTime} message={message} />
+      <ModalFirstTry open={openFirstTime} actualContract={actualContract} onClose={onCloseFirstTime} message={message} />
     </PageWrapper>
   );
 }

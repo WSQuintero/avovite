@@ -1,7 +1,8 @@
 import React from "react";
 import { Modal, Typography, Button } from "@mui/material";
 
-const ModalFirstTry = ({ open, onClose, message }) => {
+const ModalFirstTry = ({ open, onClose, message, actualContract }) => {
+  console.log(actualContract);
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
       <div
@@ -11,7 +12,19 @@ const ModalFirstTry = ({ open, onClose, message }) => {
           Mensaje
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          {message}
+          {message}{" "}
+          {actualContract >= 2 && (
+            <Button
+              onClick={() => {
+                window.open("https://wa.me/573227348601");
+              }}
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Ir a WhatsApp
+            </Button>
+          )}
         </Typography>
         <Button onClick={onClose} variant="contained" color="primary" sx={{ mt: 2 }}>
           Close

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Box, Grid, IconButton, Snackbar, Typography } from "@mui/material";
+import { Alert, Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, Typography } from "@mui/material";
 import { Refresh as RefreshIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import EnhancedTable from "../Components/EnhancedTable";
 import PageWrapper from "../Components/PageWrapper";
@@ -15,6 +15,9 @@ import { NumericFormat } from "react-number-format";
 import BackButton from "../Components/BackButton";
 import Pagination from "../Components/Admin/Pagination";
 import CustomContractRangeFilter from "../Components/Admin/CustomContractRangeFilter";
+import FilterIdContract from "../Components/Admin/FilterIdContract";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
+import MaterialReactTable from "material-react-table";
 
 function Movements({ handleClick }) {
   const [rows, setRows] = useState([]);
@@ -27,155 +30,128 @@ function Movements({ handleClick }) {
   const [modalOpenThree, setModalOpenThree] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentSize, setCurrentSize] = useState(10);
+  const [selectedFilter, setSelectedFilter] = useState("-");
+  const [filterContract, setFilterContract] = useState([]);
 
   const tableHeadCells = useMemo(
     () => [
       {
+        header: "Id movimiento",
+        accessorKey: "id",
         id: "id",
-        label: "Id movimiento",
         align: "center",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "ID del Contrato",
+        accessorKey: "contract_id",
         id: "contract_id",
-        label: "ID del Contrato",
-        disablePadding: false,
         align: "center",
-        format: (value) => value,
       },
       {
+        header: "Fecha de Aprobación",
+        accessorKey: "dateAproveed",
         id: "dateAproveed",
-        label: "Fecha de Aprobación",
         align: "center",
-        disablePadding: false,
-        format: (value) => {
-          if (!value) return;
-          const date = new Date(value);
-          return formatDate(date);
-        },
+        Cell: ({ renderedCellValue }) => (renderedCellValue ? formatDate(new Date(renderedCellValue)) : ""),
       },
       {
+        header: "Fecha de Creación",
+        accessorKey: "dateCreate",
         id: "dateCreate",
-        label: "Fecha de Creación",
         align: "center",
         width: "200px",
-        disablePadding: false,
-        format: (value) => {
-          const date = new Date(value);
-          return formatDate(date);
-        },
+        Cell: ({ renderedCellValue }) => formatDate(new Date(renderedCellValue)),
       },
       {
+        header: "Nombre Completo",
+        accessorKey: "fullname",
         id: "fullname",
-        label: "Nombre Completo",
         align: "center",
-        disablePadding: false,
         width: "500px",
-        format: (value) => value,
       },
-
       {
+        header: "Correo Electrónico",
+        accessorKey: "email",
         id: "email",
-        label: "Correo Electrónico",
         align: "center",
-        disablePadding: false,
-        format: (value) => value,
       },
-
       {
+        header: "Número de Identificación",
+        accessorKey: "id_number",
         id: "id_number",
-        label: "Número de Identificación",
         align: "center",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "Tipo de Identificación",
+        accessorKey: "id_type",
         id: "id_type",
-        label: "Tipo de Identificación",
         align: "center",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "ID de Usuario",
+        accessorKey: "id_user",
         id: "id_user",
-        label: "ID de Usuario",
         align: "center",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "Nombre del Banco",
+        accessorKey: "nombre_banco",
         id: "nombre_banco",
-        label: "Nombre del Banco",
         align: "center",
         width: "300px",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "Tipo de Cuenta",
+        accessorKey: "tipo_cuenta",
         id: "tipo_cuenta",
-        label: "Tipo de Cuenta",
         align: "center",
         width: "200px",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "Transacción",
+        accessorKey: "transaction",
         id: "transaction",
-        label: "Transacción",
         align: "center",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "Valor de la Transacción",
+        accessorKey: "transaction_value",
         id: "transaction_value",
-        label: "Valor de la Transacción",
         align: "center",
-        disablePadding: false,
-        format: (value) => (
+        Cell: ({ renderedCellValue }) => (
           <>
-            $<NumericFormat displayType="text" value={parseInt(value)} thousandSeparator></NumericFormat>
+            $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
           </>
         ),
       },
       {
+        header: "Número de Cuenta del Usuario",
+        accessorKey: "user_bank_account_number",
         id: "user_bank_account_number",
-        label: "Número de Cuenta del Usuario",
         align: "center",
         width: "300px",
-        disablePadding: false,
-        format: (value) => value,
       },
       {
+        header: "Tipo de Cuenta del Usuario",
+        accessorKey: "user_bank_account_type",
         id: "user_bank_account_type",
-        label: "Tipo de Cuenta del Usuario",
         align: "center",
         width: "200px",
-        disablePadding: false,
-        format: (value) => value,
       },
-      // {
-      //   id: "user_id_bank",
-      //   label: "ID del Banco del Usuario",
-      //   align: "center",
-      //   width: "200px",
-      //   disablePadding: false,
-      //   format: (value) => value,
-      // },
       {
+        header: "¿Retirado?",
+        accessorKey: "withdrawal",
         id: "withdrawal",
-        label: "¿Retirado?",
         align: "center",
-        disablePadding: false,
-        format: (value) => (value === 1 ? "Si" : "No"),
+        Cell: ({ renderedCellValue }) => (renderedCellValue === 1 ? "Si" : "No"),
       },
       {
+        header: "Resetear",
+        accessorKey: "reset",
         id: "reset",
-        label: "Resetear",
         align: "center",
-        disablePadding: false,
-        format: (value, row) => (
-          <IconButton color="primary" onClick={() => handleReset(row)}>
+        Cell: ({ row }) => (
+          <IconButton color="primary" onClick={() => handleReset(row.original)}>
             <RefreshIcon />
           </IconButton>
         ),
@@ -184,6 +160,9 @@ function Movements({ handleClick }) {
     []
   );
 
+  const handleChange = (event) => {
+    setSelectedFilter(event.target.value);
+  };
   const resetFeedback = () => {
     setFeedback((prev) => ({ show: false, message: prev.message, status: prev.status }));
   };
@@ -264,12 +243,71 @@ function Movements({ handleClick }) {
     };
     getExportedExcel();
   };
-
+  const handleSearchId = async (id) => {
+    try {
+      const { status, data } = await $Movement.getId({ id });
+      if ((status, data)) {
+        setFilterContract(
+          data.data.map((movement) => ({
+            contract_id: movement.contract_id,
+            dateAproveed: movement.dateAproveed,
+            dateCreate: movement.dateCreate,
+            email: movement.email,
+            fullname: movement.fullname,
+            id: movement.id,
+            id_number: movement.id_number,
+            id_type: movement.id_type,
+            id_user: movement.id_user,
+            nombre_banco: movement.nombre_banco,
+            tipo_cuenta: movement.tipo_cuenta,
+            transaction: movement.transaction,
+            transaction_value: movement.transaction_value,
+            user_bank_account_number: movement.user_bank_account_number,
+            // user_bank_account_type: movement.user_bank_account_type,
+            // user_id_bank: movement.user_id_bank,
+            withdrawal: movement.withdrawal,
+          }))
+        );
+        setLoading((prev) => ({ ...prev, fetching: false }));
+      }
+    } catch (error) {
+      console.error("Error al obtener los movimientos:", error);
+    }
+  };
   return (
     <>
       <PageWrapper>
         <BackButton />
-        <CustomContractRangeFilter setCurrentSize={setCurrentSize} setCurrentPage={setCurrentPage} />
+        {/* <CustomContractRangeFilter setCurrentSize={setCurrentSize} setCurrentPage={setCurrentPage} /> */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%", marginBottom: 2 }}>
+          <FormControl variant="outlined" sx={{ minWidth: "150px" }}>
+            <InputLabel id="filter-select-label">Filtrar</InputLabel>
+            <Select
+              labelId="filter-select-label"
+              value={selectedFilter}
+              onChange={handleChange}
+              label="Filtrar"
+              sx={{ width: "230px", height: "30px" }}
+              inputProps={{ sx: { height: "30px" } }}
+            >
+              <MenuItem value="" disabled>
+                Seleccione una opción
+              </MenuItem>
+              <MenuItem value="contractId">Filtrar por ID de movimiento</MenuItem>
+              <MenuItem value="page">Filtrar por página</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        {selectedFilter === "contractId" && (
+          <FilterIdContract
+            setFilterContract={setFilterContract}
+            handleSearchId={handleSearchId}
+            setCurrentSize={setCurrentSize}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
+        {selectedFilter === "page" && <CustomContractRangeFilter setCurrentSize={setCurrentSize} setCurrentPage={setCurrentPage} />}
         <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
           Movimientos
           <Grid display="flex" gap={2} marginTop="20px">
@@ -309,13 +347,33 @@ function Movements({ handleClick }) {
         </Typography>
 
         <Grid display="flex" flexDirection="column" gap={2} marginTop="20px">
-          <EnhancedTable
+          {/* <EnhancedTable
             loading={loading.fetching}
             headCells={tableHeadCells}
-            rows={rows}
+            rows={filterContract.length ? filterContract : rows}
             initialOrder="desc"
             currentPage={currentPage}
             onPageChange={onPageChange}
+          /> */}
+          <MaterialReactTable
+            columns={tableHeadCells}
+            data={filterContract?.length ? filterContract : rows}
+            enableColumnFilterModes
+            enableColumnOrdering
+            enableRowActions
+            muiTablePaperProps={{ elevation: 0 }}
+            initialState={{ density: "compact" }}
+            muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}
+            state={{ showSkeletons: loading.fetching }}
+            localization={MRT_Localization_ES}
+            enablePagination={false}
+            renderBottomToolbarCustomActions={({ table }) => (
+              <Box fullWidth sx={{ display: "flex", gap: 1, justifyContent: "space-around", width: "100%" }}>
+                <DateRangeModal open={modalOpen} onClose={handleCloseModal} contract={$Movement} />
+
+                <Pagination currentPage={currentPage} onPageChange={onPageChange} />
+              </Box>
+            )}
           />
         </Grid>
 

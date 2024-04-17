@@ -8,10 +8,12 @@ export default class MovementService {
     this.axios = axios.create({ headers: { Authorization: this.token } });
   }
 
-  async get({ page = 1, pagezise = 10 }) {
+  async get({ page = 1, pagezise = 10, id }) {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements?page=${page}&pagezise=${pagezise}`)).data);
   }
-
+  async getId({ id }) {
+    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements/${id}`)).data);
+  }
   async reset(id) {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements/reset/${id}`)).data);
   }

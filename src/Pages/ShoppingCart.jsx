@@ -118,6 +118,7 @@ function ShoppingCart() {
       setOpenFirstTime(true);
       setTimeout(() => {
         onCloseFirstTime();
+        window.location.reload();
       }, 5000);
       return;
     }
@@ -467,7 +468,7 @@ function ShoppingCart() {
           </Grid>
         </Grid>
       </Container>
-      <ModalFirstTry open={openFirstTime} onClose={onCloseFirstTime} message={message} />
+      <ModalFirstTry open={openFirstTime} actualContract={session?.user?.rejectedCounter} onClose={onCloseFirstTime} message={message} />
     </PageWrapper>
   );
 }

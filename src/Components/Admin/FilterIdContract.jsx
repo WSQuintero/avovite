@@ -14,7 +14,7 @@ function FilterIdContract({ setFilterContract, handleSearchId, setCurrentSize, s
     <Box sx={{ width: "auto", display: "flex", gap: 2, alignItems: "center", justifyContent: "center" }}>
       <Box gap={2} sx={{ display: "flex", width: "100%", justifyContent: "end", alignItems: "center", padding: 0, margin: 0 }}>
         <TextField
-          label="Id contrato"
+          label="Id"
           variant="outlined"
           value={startIndex}
           onChange={(e) => {
