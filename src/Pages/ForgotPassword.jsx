@@ -122,7 +122,7 @@ function ForgotPassword() {
             </Stack>
 
             <Stack component="form" spacing={2} width="100%" onSubmit={handleResetPassword}>
-              {/* <Tooltip
+              <Tooltip
                 placement="right"
                 title={
                   <Box display="flex" flexDirection="column">
@@ -140,23 +140,23 @@ function ForgotPassword() {
                     </Grid>
                   </Box>
                 }
-              > */}
-              <TextField
-                name="password"
-                type="password"
-                label="Contraseña"
-                sx={{ width: "100%" }}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon color="primary" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              {/* </Tooltip> */}
+              >
+                <TextField
+                  name="password"
+                  type="password"
+                  label="Contraseña"
+                  sx={{ width: "100%" }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Tooltip>
               <Button fullWidth variant="contained" type="submit" size="large">
                 Nueva contraseña
               </Button>
