@@ -314,20 +314,20 @@ function Vites() {
         </>
       ),
     },
-    {
-      accessorKey: "contract_amount",
-      id: "contract_amount",
-      header: "Valor de contrato",
-      Cell: ({ renderedCellValue }) => (
-        <>
-          $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
-        </>
-      ),
-    },
+    // {
+    //   accessorKey: "contract_amount",
+    //   id: "contract_amount",
+    //   header: "Valor de contrato",
+    //   Cell: ({ renderedCellValue }) => (
+    //     <>
+    //       $<NumericFormat displayType="text" value={parseInt(renderedCellValue)} thousandSeparator></NumericFormat>
+    //     </>
+    //   ),
+    // },
     {
       accessorKey: "total_contract_with_discount",
       id: "total_contract_with_discount",
-      header: "Valor contrato con descuento",
+      header: "Valor contrato",
       size: 300,
 
       Cell: ({ renderedCellValue }) => (
