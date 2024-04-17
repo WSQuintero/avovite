@@ -165,7 +165,8 @@ function PendingFirm() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Para poder continuar debes dirigirte a tu correo y realizar la firma de los contratos a continuación.
+                Para poder continuar debes dirigirte a tu correo y realizar la firma del{" "}
+                {!contracts[0].urlValidocus ? "Contrato" : !contracts[0].urlSeconFromValidocus ? "Formulario de vinculación" : "Ya firmado"}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
