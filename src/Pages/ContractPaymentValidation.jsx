@@ -92,9 +92,9 @@ function ContractPaymentValidation() {
     if (contract?.rejectedCounter >= 2) {
       setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
       setOpenFirstTime(true);
-      // setTimeout(() => {
-      //   onCloseFirstTime();
-      // }, 5000);
+      setTimeout(() => {
+        onCloseFirstTime();
+      }, 5000);
       return;
     }
 
@@ -126,19 +126,39 @@ function ContractPaymentValidation() {
       test: TESTING_EPAYCO,
     });
 
-    handler.open({ ...mandatory, ...aditional });
+    handler.open(
+      { ...mandatory, ...aditional },
+      {
+        onApproved: () => {
+          // Acciones después de un pago aprobado
+          window.location.reload(); // Refresca la página
+        },
+        onRejected: () => {
+          // Acciones después de un pago rechazado
+          window.location.reload(); // Refresca la página
+        },
+        onPending: () => {
+          // Acciones después de un pago pendiente
+          window.location.reload(); // Refresca la página
+        },
+        onError: () => {
+          // Acciones después de un error en el pago
+          window.location.reload(); // Refresca la página
+        },
+      }
+    );
 
-    // handler.on("payment_error", function (error) {
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 2000);
-    // });
+    handler.on("payment_error", function (error) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    });
 
-    // handler.on("payment_success", function (response) {
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 2000);
-    // });
+    handler.on("payment_success", function (response) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    });
   };
 
   useEffect(() => {
