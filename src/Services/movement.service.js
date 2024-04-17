@@ -12,7 +12,28 @@ export default class MovementService {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements?page=${page}&pagezise=${pagezise}`)).data);
   }
   async getId({ id }) {
-    return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements/${id}`)).data);
+    return await handleCall(async () => {
+      const response = await this.axios.get(`${this.API_URL}/movements?page=1&pagezise=1`, {
+        params: { key: "id", keyvalue: id },
+      });
+      return response.data;
+    });
+  }
+  async getIdNumber({ id }) {
+    return await handleCall(async () => {
+      const response = await this.axios.get(`${this.API_URL}/movements?page=1&pagezise=1`, {
+        params: { key: "id_number", keyvalue: id },
+      });
+      return response.data;
+    });
+  }
+  async getEmail({ email }) {
+    return await handleCall(async () => {
+      const response = await this.axios.get(`${this.API_URL}/movements?page=1&pagezise=1`, {
+        params: { key: "email", keyvalue: email },
+      });
+      return response.data;
+    });
   }
   async reset(id) {
     return await handleCall(async () => (await this.axios.get(`${this.API_URL}/movements/reset/${id}`)).data);

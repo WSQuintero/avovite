@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, Typography } from "@mui/material";
+import { Alert, Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from "@mui/material";
 import { Refresh as RefreshIcon, FileDownload as DownloadIcon } from "@mui/icons-material";
 import EnhancedTable from "../Components/EnhancedTable";
 import PageWrapper from "../Components/PageWrapper";
@@ -32,7 +32,7 @@ function Movements({ handleClick }) {
   const [currentSize, setCurrentSize] = useState(10);
   const [selectedFilter, setSelectedFilter] = useState("-");
   const [filterContract, setFilterContract] = useState([]);
-
+  const [email, setEmail] = useState();
   const tableHeadCells = useMemo(
     () => [
       {
@@ -160,6 +160,11 @@ function Movements({ handleClick }) {
     []
   );
 
+  const handleResetFilter = () => {
+    setCurrentPage(1);
+    setCurrentSize(10);
+    setFilterContract([]);
+  };
   const handleChange = (event) => {
     setSelectedFilter(event.target.value);
   };
@@ -274,6 +279,68 @@ function Movements({ handleClick }) {
       console.error("Error al obtener los movimientos:", error);
     }
   };
+  const handleSearchIdNumber = async (id) => {
+    try {
+      const { status, data } = await $Movement.getIdNumber({ id });
+      if ((status, data)) {
+        setFilterContract(
+          data.data.map((movement) => ({
+            contract_id: movement.contract_id,
+            dateAproveed: movement.dateAproveed,
+            dateCreate: movement.dateCreate,
+            email: movement.email,
+            fullname: movement.fullname,
+            id: movement.id,
+            id_number: movement.id_number,
+            id_type: movement.id_type,
+            id_user: movement.id_user,
+            nombre_banco: movement.nombre_banco,
+            tipo_cuenta: movement.tipo_cuenta,
+            transaction: movement.transaction,
+            transaction_value: movement.transaction_value,
+            user_bank_account_number: movement.user_bank_account_number,
+            // user_bank_account_type: movement.user_bank_account_type,
+            // user_id_bank: movement.user_id_bank,
+            withdrawal: movement.withdrawal,
+          }))
+        );
+        setLoading((prev) => ({ ...prev, fetching: false }));
+      }
+    } catch (error) {
+      console.error("Error al obtener los movimientos:", error);
+    }
+  };
+  const handleSearchEmail = async () => {
+    try {
+      const { status, data } = await $Movement.getEmail({ email });
+      if ((status, data)) {
+        setFilterContract(
+          data.data.map((movement) => ({
+            contract_id: movement.contract_id,
+            dateAproveed: movement.dateAproveed,
+            dateCreate: movement.dateCreate,
+            email: movement.email,
+            fullname: movement.fullname,
+            id: movement.id,
+            id_number: movement.id_number,
+            id_type: movement.id_type,
+            id_user: movement.id_user,
+            nombre_banco: movement.nombre_banco,
+            tipo_cuenta: movement.tipo_cuenta,
+            transaction: movement.transaction,
+            transaction_value: movement.transaction_value,
+            user_bank_account_number: movement.user_bank_account_number,
+            // user_bank_account_type: movement.user_bank_account_type,
+            // user_id_bank: movement.user_id_bank,
+            withdrawal: movement.withdrawal,
+          }))
+        );
+        setLoading((prev) => ({ ...prev, fetching: false }));
+      }
+    } catch (error) {
+      console.error("Error al obtener los movimientos:", error);
+    }
+  };
   return (
     <>
       <PageWrapper>
@@ -293,8 +360,10 @@ function Movements({ handleClick }) {
               <MenuItem value="" disabled>
                 Seleccione una opción
               </MenuItem>
-              <MenuItem value="contractId">Filtrar por ID de movimiento</MenuItem>
+              <MenuItem value="contractId">Filtrar por ID de contrato</MenuItem>
               <MenuItem value="page">Filtrar por página</MenuItem>
+              <MenuItem value="idNumber">Filtrar por documento de id.</MenuItem>
+              <MenuItem value="email">Filtrar por email.</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -306,6 +375,35 @@ function Movements({ handleClick }) {
             setCurrentSize={setCurrentSize}
             setCurrentPage={setCurrentPage}
           />
+        )}
+        {selectedFilter === "idNumber" && (
+          <FilterIdContract
+            setFilterContract={setFilterContract}
+            handleSearchId={handleSearchIdNumber}
+            setCurrentSize={setCurrentSize}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
+        {selectedFilter === "email" && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+              gap: 0.5,
+              height: 30,
+              marginTop: 5,
+              marginBottom: 5,
+            }}
+          >
+            <TextField onChange={(event) => setEmail(event.target.value)} sx={{ minWidth: "30%" }}></TextField>
+            <Button variant="contained" onClick={() => handleSearchEmail()}>
+              Aplicar
+            </Button>
+            <Button variant="outlined" onClick={handleResetFilter} sx={{ padding: 0.5, fontSize: 13 }}>
+              Restablecer
+            </Button>
+          </Box>
         )}
         {selectedFilter === "page" && <CustomContractRangeFilter setCurrentSize={setCurrentSize} setCurrentPage={setCurrentPage} />}
         <Typography fontWeight={600} color="primary.main" sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
