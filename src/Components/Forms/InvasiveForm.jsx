@@ -411,6 +411,7 @@ function InvasiveForm({ contractId }) {
   };
 
   useEffect(() => {
+    console.log(lastContract);
     if (token) {
       (async () => {
         await fetchContracts();
@@ -429,6 +430,31 @@ function InvasiveForm({ contractId }) {
       setActualContract(data.data[data.data.length - 1]);
     }
   };
+
+  useEffect(() => {
+    if (feedback.open) {
+      setTimeout(() => {
+        resetFeedback();
+      }, 3000);
+    }
+  }, [feedback.open]);
+
+  useEffect(() => {
+    if (lastContract) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        firstName: prevFormData.firstName || lastContract?.fullname?.split(" ")[0] || "",
+        lastName: prevFormData.lastName || lastContract?.fullname?.split(" ")[1] || "",
+        identificationTypeDeclarations: prevFormData?.identificationTypeDeclarations || lastContract?.id_type || "",
+        identificationNumber: prevFormData?.identificationNumber || lastContract?.id_number || "",
+        maritalStatus: lastContract?.civil_status || "",
+        occupation2PersonalNatural: lastContract?.economy_activity || "",
+        residenceAddressAndCity: lastContract?.country_of_residence || "",
+        cellphone: lastContract?.cellphone || "",
+        email: lastContract?.email || "",
+      }));
+    }
+  }, [lastContract]);
 
   return (
     <Container maxWidth="xxl" sx={{ marginY: 4, padding: 4, border: 1, borderRadius: 2, borderColor: "primary.main" }}>
@@ -580,7 +606,7 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>Tiene Residencia Permanente en Otro País</Label>
+              <Label>¿Tiene Residencia Permanente en Otro País? si o no</Label>
               <Switch
                 name="hasPermanentResidencyInAnotherCountry"
                 checked={Boolean(formData.hasPermanentResidencyInAnotherCountry)}
@@ -601,7 +627,7 @@ function InvasiveForm({ contractId }) {
           </Row>
           <Row>
             <Column>
-              <Label>Tiene Obligaciones Fiscales en Otro País</Label>
+              <Label>¿Tiene Obligaciones Fiscales en Otro País? si o no</Label>
               <Switch
                 name="hasTaxObligationsInAnotherCountry"
                 checked={Boolean(formData.hasTaxObligationsInAnotherCountry)}
@@ -610,7 +636,7 @@ function InvasiveForm({ contractId }) {
             </Column>
             {Boolean(formData.hasTaxObligationsInAnotherCountry) && (
               <Column>
-                <Label>Obligaciones Fiscales en Otro País</Label>
+                <Label>¿Cuál?</Label>
                 <TextField
                   fullWidth
                   name="hasTaxObligationsInAnotherCountryTexto"
@@ -673,21 +699,21 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>¿Persona Expuesta Políticamente?</Label>
+              <Label>¿Persona Expuesta Políticamente? si o no</Label>
               <Switch name="politicallyExposedPerson" checked={Boolean(formData.politicallyExposedPerson)} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>Representante Legal de Organización Internacional</Label>
+              <Label>¿Representante Legal de Organización Internacional? si o no</Label>
               <Switch name="InternationalOrgLegalRep" checked={Boolean(formData.InternationalOrgLegalRep)} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>Estatus de Administrador PEP</Label>
+              <Label>¿Estatus de Administrador PEP? si o no</Label>
               <Switch name="AdministratorPEPStatus" checked={Boolean(formData.AdministratorPEPStatus)} onChange={handleInputChange} />
             </Column>
           </Row>
@@ -730,7 +756,7 @@ function InvasiveForm({ contractId }) {
             </Column>
           </Row>
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
-            Persona jurídica
+            Persona jurídica (solo si aplica)
           </Typography>
 
           <Row>
@@ -912,7 +938,7 @@ function InvasiveForm({ contractId }) {
               </Row>
               <Row>
                 <Column>
-                  <Label>Residencia Permanente en Otro País</Label>
+                  <Label>¿Residencia Permanente en Otro País? si o no</Label>
                   <Switch
                     name={`shareholder_permanentResidenceInOtherCountry_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
@@ -1121,7 +1147,7 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>Realiza Transacciones en Moneda Extranjera</Label>
+              <Label>¿Realiza Transacciones en Moneda Extranjera? si o no</Label>
               <Switch
                 name="conductsForeignCurrencyTransactions"
                 onChange={handleInputChange}
@@ -1129,7 +1155,7 @@ function InvasiveForm({ contractId }) {
               />
             </Column>
             <Column>
-              <Label>Usa Productos Financieros en el Extranjero</Label>
+              <Label>¿Usa Productos Financieros en el Extranjero? si o no</Label>
               <Switch
                 name="usesFinancialProductsAbroad"
                 onChange={handleInputChange}
@@ -1292,17 +1318,17 @@ function InvasiveForm({ contractId }) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText fontSize={18} textAlign="center">
-            ¿Desea rellenarlo una vez más?
+            Por favor, diríjase a su correo para la respectiva firma.{" "}
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: "center" }}>
+        {/* <DialogActions sx={{ justifyContent: "center" }}>
           <Button onClick={() => navigate("/")} fullWidth>
             No
           </Button>
           <Button variant="contained" onClick={resetFeedback} fullWidth>
             Si
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       <ModalExistForm open={open} onClose={onClose} />
       <ModalErrorSendForm open={openError} onClose={onCloseError} />
