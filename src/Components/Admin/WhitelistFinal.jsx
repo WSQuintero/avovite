@@ -84,8 +84,7 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
       !contract.vites ||
       contract.discount === "" ||
       contract.firstPaymentValue === "" ||
-      dues.reduce((a, c) => a || isToday(new Date(c.date)), false),
-    [contract.discount, contract.firstPaymentValue, contract.vites, dues, totalDuesValue, totalFinancingValue]
+      dues.reduce((a, c) => a || isToday(new Date(c.date)), false)
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
   const [currentPage, setCurrentPage] = useState(1);
