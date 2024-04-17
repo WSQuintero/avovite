@@ -158,6 +158,7 @@ function ShoppingCart() {
         response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
       };
 
+      console.log("si");
       const handler = window.ePayco.checkout.configure({
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
         test: TESTING_EPAYCO,
