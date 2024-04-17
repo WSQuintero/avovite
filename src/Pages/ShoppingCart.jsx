@@ -105,8 +105,16 @@ function ShoppingCart() {
     setOpenConfirmationModal(false);
   };
   const handlePayment = async () => {
+    if (session?.user?.rejectedCounter?.some((contract) => contract.rejectedCounter === 1)) {
+      setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
+      setOpenFirstTime(true);
+      setTimeout(() => {
+        onCloseFirstTime();
+      });
+      return;
+    }
     if (session?.user?.rejectedCounter?.some((contract) => contract.rejectedCounter >= 2)) {
-      setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
+      setMessage("Intentaste pagar dos veces sin éxito, Por favor comunícate con nuestro centro de ayuda.");
       setOpenFirstTime(true);
       setTimeout(() => {
         onCloseFirstTime();

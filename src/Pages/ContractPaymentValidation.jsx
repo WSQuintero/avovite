@@ -90,7 +90,7 @@ function ContractPaymentValidation() {
       return;
     }
     if (contract?.rejectedCounter >= 2) {
-      setMessage("Intentaste pagar dos veces sin éxito, Por favor contacta a tu banco para verificar el motivo del rechazo");
+      setMessage("Intentaste pagar dos veces sin éxito, Por favor comunícate con nuestro centro de ayuda.");
       setOpenFirstTime(true);
       setTimeout(() => {
         onCloseFirstTime();
