@@ -131,7 +131,7 @@ function SignUp() {
         message: "Te has registrado exitosamente.",
         status: "success",
       });
-      console.log(data);
+
       if (data.data === "Email already registered") {
         setFeedback({
           show: true,
@@ -240,7 +240,7 @@ function SignUp() {
             name="fullname"
             label="Nombres y apellidos"
             sx={{ width: "100%" }}
-            value={user.fullname}
+            value={isNaN(Number(user.fullname)) ? user.fullname : ""}
             onInput={onUserChange}
             InputProps={{
               startAdornment: (
@@ -248,8 +248,12 @@ function SignUp() {
                   <PersonIcon color="primary" />
                 </InputAdornment>
               ),
+              inputProps: {
+                pattern: "[^0-9]*",
+              },
             }}
           />
+
           <TextField
             name="email"
             type="email"
