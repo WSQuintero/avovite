@@ -368,7 +368,7 @@ function SignUp() {
           {feedback.message}
         </Alert>
       </Snackbar>
-      {/* <ConfirmationModal open={openModal} onClose={handleCloseModal} /> */}
+      <ConfirmationModal open={openModal} onClose={handleCloseModal} />
     </Grid>
   );
 }
