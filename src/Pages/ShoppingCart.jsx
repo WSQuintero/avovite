@@ -158,13 +158,31 @@ function ShoppingCart() {
         response: `${APP_URL}/checkout?products=${JSON.stringify(shoppingCart.map((p) => ({ id: p.id })))}`,
       };
 
-      console.log("si");
       const handler = window.ePayco.checkout.configure({
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
         test: TESTING_EPAYCO,
       });
-
-      handler.open({ ...mandatory, ...aditional });
+      handler.open(
+        { ...mandatory, ...aditional },
+        {
+          onApproved: () => {
+            // Acciones después de un pago aprobado
+            window.location.reload(); // Refresca la página
+          },
+          onRejected: () => {
+            // Acciones después de un pago rechazado
+            window.location.reload(); // Refresca la página
+          },
+          onPending: () => {
+            // Acciones después de un pago pendiente
+            window.location.reload(); // Refresca la página
+          },
+          onError: () => {
+            // Acciones después de un error en el pago
+            window.location.reload(); // Refresca la página
+          },
+        }
+      );
 
       // handler.on("payment_error", function (error) {
       //   setTimeout(() => {
