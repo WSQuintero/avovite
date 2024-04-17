@@ -450,72 +450,19 @@ function InvasiveForm({ contractId }) {
           </Typography>
           <Row>
             <Column>
-              <Label>Primer Nombre</Label>
+              <Label>Nombre completo</Label>
               <TextField required fullWidth name="firstName" value={formData.firstName} onChange={handleInputChange} />
             </Column>
             <Column>
-              <Label>Apellido</Label>
+              <Label>Apellidos</Label>
               <TextField required fullWidth name="lastName" value={formData.lastName} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>Lugar de nacimiento</Label>
-              <TextField required fullWidth name="birthCountryAndCity" value={formData.birthCountryAndCity} onChange={handleInputChange} />
-            </Column>
-
-            <Column>
-              <Label>Fecha de nacimiento</Label>
-              <DatePicker
-                // slotProps={{ textField: { error: errors.birthdate } }}
-                value={dayjs(formData.birthDate)}
-                format="DD MMMM YYYY"
-                onChange={(value) => handleInputChange({ target: { name: "birthDate", value: value.toDate() } })}
-              />
-            </Column>
-          </Row>
-
-          <Row>
-            <Column>
-              <Label>Nacionalidad</Label>
-              <TextField required fullWidth name="nationality" value={formData.nationality} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Dirección de Residencia y Ciudad</Label>
-              <TextField
-                required
-                fullWidth
-                name="residenceAddressAndCity"
-                value={formData.residenceAddressAndCity}
-                onChange={handleInputChange}
-              />
-            </Column>
-          </Row>
-
-          <Row>
-            <Column>
-              <Label>Número de Teléfono</Label>
-              <TextField required fullWidth name="cellPhone" value={formData.cellPhone} onChange={handleInputChange} />
-            </Column>
-            <Column>
-              <Label>Correo Electrónico</Label>
-              <TextField required fullWidth name="email" value={formData.email} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Estado Civil</Label>
-              <TextField required fullWidth name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} />
-            </Column>
-          </Row>
-
-          <Row>
-            <Column>
               <Label>Nombres completos</Label>
-              <TextField required fullWidth name="names" value={formData.names} onChange={handleInputChange} />
+              <TextField required fullWidth name="names" value={`${formData?.firstName} ${formData?.lastName}`} disabled />
             </Column>
           </Row>
 
@@ -561,72 +508,73 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>Detalle de Residencia en EE. UU.</Label>
-              <FormControl component="fieldset">
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="dueToContract183Days"
-                        onChange={handleInputChange}
-                        checked={formData.usStayDetails.dueToContract183Days || false}
-                      />
-                    }
-                    label="Due to contract (183 days)"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="consecutive31DaysCurrentYear"
-                        onChange={handleInputChange}
-                        checked={formData.usStayDetails.consecutive31DaysCurrentYear || false}
-                      />
-                    }
-                    label="Consecutive 31 days in current year"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="previousYear121Days"
-                        onChange={handleInputChange}
-                        checked={formData.usStayDetails.previousYear121Days || false}
-                      />
-                    }
-                    label="Previous year: 121 days"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="secondYear60Days"
-                        onChange={handleInputChange}
-                        checked={formData.usStayDetails.secondYear60Days || false}
-                      />
-                    }
-                    label="Second year: 60 days"
-                  />
-                </FormGroup>
-              </FormControl>
+              <Label>País y ciudad de nacimiento</Label>
+              <TextField required fullWidth name="birthCountryAndCity" value={formData.birthCountryAndCity} onChange={handleInputChange} />
+            </Column>
+
+            <Column>
+              <Label>Fecha de nacimiento</Label>
+              <DatePicker
+                // slotProps={{ textField: { error: errors.birthdate } }}
+                value={dayjs(formData.birthDate)}
+                format="DD MMMM YYYY"
+                onChange={(value) => handleInputChange({ target: { name: "birthDate", value: value.toDate() } })}
+              />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>¿Persona Expuesta Políticamente?</Label>
-              <Switch name="politicallyExposedPerson" checked={Boolean(formData.politicallyExposedPerson)} onChange={handleInputChange} />
+              <Label>Nacionalidad</Label>
+              <TextField required fullWidth name="nationality" value={formData.nationality} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>Representante Legal de Organización Internacional</Label>
-              <Switch name="InternationalOrgLegalRep" checked={Boolean(formData.InternationalOrgLegalRep)} onChange={handleInputChange} />
+              <Label>Estado Civil</Label>
+              <TextField required fullWidth name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>Estatus de Administrador PEP</Label>
-              <Switch name="AdministratorPEPStatus" checked={Boolean(formData.AdministratorPEPStatus)} onChange={handleInputChange} />
+              <Label>Ocupación</Label>
+              <TextField
+                required
+                fullWidth
+                name="occupation2PersonalNatural"
+                value={formData.occupation2PersonalNatural}
+                onChange={handleInputChange}
+              />
+            </Column>
+            <Column>
+              <Label>Nombre de la Empresa</Label>
+              <TextField required fullWidth name="companyName" value={formData.companyName} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Dirección de Residencia y Ciudad</Label>
+              <TextField
+                required
+                fullWidth
+                name="residenceAddressAndCity"
+                value={formData.residenceAddressAndCity}
+                onChange={handleInputChange}
+              />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Número de Teléfono</Label>
+              <TextField required fullWidth name="cellPhone" value={formData.cellPhone} onChange={handleInputChange} />
+            </Column>
+            <Column>
+              <Label>Correo Electrónico</Label>
+              <TextField required fullWidth name="email" value={formData.email} onChange={handleInputChange} />
             </Column>
           </Row>
 
@@ -672,26 +620,86 @@ function InvasiveForm({ contractId }) {
               </Column>
             )}
           </Row>
+
+          <Row>
+            <Column>
+              <Label>Detalle de Residencia en EE. UU.</Label>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="dueToContract183Days"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.dueToContract183Days || false}
+                      />
+                    }
+                    label="Debido a contrato (183 días)"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="consecutive31DaysCurrentYear"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.consecutive31DaysCurrentYear || false}
+                      />
+                    }
+                    label="31 días consecutivos en el año actual"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="previousYear121Days"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.previousYear121Days || false}
+                      />
+                    }
+                    label="Año anterior: 121 días"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="secondYear60Days"
+                        onChange={handleInputChange}
+                        checked={formData.usStayDetails.secondYear60Days || false}
+                      />
+                    }
+                    label="Segundo año inmediatamente anterior: 60 días"
+                  />
+                </FormGroup>
+              </FormControl>
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>¿Persona Expuesta Políticamente?</Label>
+              <Switch name="politicallyExposedPerson" checked={Boolean(formData.politicallyExposedPerson)} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Representante Legal de Organización Internacional</Label>
+              <Switch name="InternationalOrgLegalRep" checked={Boolean(formData.InternationalOrgLegalRep)} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
+              <Label>Estatus de Administrador PEP</Label>
+              <Switch name="AdministratorPEPStatus" checked={Boolean(formData.AdministratorPEPStatus)} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
           {/* Actividad económica */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
             Actividad económica
           </Typography>
-          <Row>
-            <Column>
-              <Label>Ocupación</Label>
-              <TextField
-                required
-                fullWidth
-                name="occupation2PersonalNatural"
-                value={formData.occupation2PersonalNatural}
-                onChange={handleInputChange}
-              />
-            </Column>
-            <Column>
-              <Label>Nombre de la Empresa</Label>
-              <TextField required fullWidth name="companyName" value={formData.companyName} onChange={handleInputChange} />
-            </Column>
-          </Row>
+
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Persona natural
+          </Typography>
           <Row>
             <Column>
               <Label>Cargo</Label>
@@ -704,6 +712,13 @@ function InvasiveForm({ contractId }) {
           </Row>
           <Row>
             <Column>
+              <Label>Nombre de la empresa donde trabaja</Label>
+              <TextField required fullWidth name="businessName" value={formData.businessName} onChange={handleInputChange} />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column>
               <Label>Descripción de Actividad Económica</Label>
               <TextField
                 required
@@ -714,27 +729,39 @@ function InvasiveForm({ contractId }) {
               />
             </Column>
           </Row>
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Persona jurídica
+          </Typography>
+
           <Row>
+            <Column>
+              <Label>Razón social</Label>
+              <TextField required fullWidth name="businessName" value={formData.businessName} onChange={handleInputChange} />
+            </Column>
             <Column>
               <Label>NIT</Label>
               <TextField required fullWidth name="nit" value={formData.nit} onChange={handleInputChange} />
             </Column>
+          </Row>
+
+          <Row>
             <Column>
-              <Label>Nombre Comercial</Label>
-              <TextField required fullWidth name="businessName" value={formData.businessName} onChange={handleInputChange} />
+              <Label>Descripción de Actividad Económica</Label>
+              <TextField
+                required
+                fullWidth
+                name="economicActivityDescription"
+                value={formData.economicActivityDescription}
+                onChange={handleInputChange}
+              />
             </Column>
           </Row>
+
           <Row>
             <Column>
               <Label>Dirección de la Oficina Principal</Label>
               <TextField required fullWidth name="mainOfficeAddress" value={formData.mainOfficeAddress} onChange={handleInputChange} />
             </Column>
-            <Column>
-              <Label>Dirección de la Sucursal</Label>
-              <TextField required fullWidth name="branchOfficeAddress" value={formData.branchOfficeAddress} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
             <Column>
               <Label>Ciudad de la Oficina Principal</Label>
               <TextField
@@ -757,6 +784,10 @@ function InvasiveForm({ contractId }) {
             </Column>
           </Row>
           <Row>
+            <Column>
+              <Label>Dirección de la Sucursal</Label>
+              <TextField required fullWidth name="branchOfficeAddress" value={formData.branchOfficeAddress} onChange={handleInputChange} />
+            </Column>
             <Column>
               <Label>Ciudad de la Sucursal</Label>
               <TextField
@@ -781,69 +812,14 @@ function InvasiveForm({ contractId }) {
           <Row>
             <Column>
               <Label>Tipo de Empresa</Label>
-              <TextField required fullWidth name="companyType" value={formData.companyType} onChange={handleInputChange} />
+              <Select required fullWidth name="companyType" value={formData.companyType} onChange={handleInputChange}>
+                <MenuItem value="pública">Pública</MenuItem>
+                <MenuItem value="privada">Privada</MenuItem>
+                <MenuItem value="mixta">Mixta</MenuItem>
+              </Select>
             </Column>
           </Row>
-          <Row>
-            <Column>
-              <Label>Activos</Label>
-              <TextField fullWidth name="assets" value={formData.assets} onChange={handleInputChange} inputProps={{ pattern: "[0-9]*" }} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Deudas</Label>
-              <TextField
-                fullWidth
-                name="liabilities"
-                value={formData.liabilities}
-                onChange={handleInputChange}
-                inputProps={{ pattern: "[0-9]*" }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Ingreso Mensual</Label>
-              <TextField
-                fullWidth
-                name="monthlyIncome"
-                value={formData.monthlyIncome}
-                onChange={handleInputChange}
-                inputProps={{ pattern: "[0-9]*" }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Gastos Mensuales</Label>
-              <TextField
-                fullWidth
-                name="monthlyExpenses"
-                value={formData.monthlyExpenses}
-                onChange={handleInputChange}
-                inputProps={{ pattern: "[0-9]*" }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Capital</Label>
-              <TextField fullWidth name="equity" value={formData.equity} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Otros Ingresos</Label>
-              <TextField fullWidth name="otherIncome" value={formData.otherIncome} onChange={handleInputChange} />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Label>Detalles de Otros Ingresos</Label>
-              <TextField fullWidth name="otherIncomeDetails" value={formData.otherIncomeDetails} onChange={handleInputChange} />
-            </Column>
-          </Row>
+
           {/* Información de accionistas */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
             Información de accionistas
@@ -957,7 +933,7 @@ function InvasiveForm({ contractId }) {
                             checked={formData.shareholdersIdentification[index]?.usStayDetails.dueToContract183Days}
                           />
                         }
-                        label="Due to contract (183 days)"
+                        label="Debido a contrato (183 days)"
                       />
                       <FormControlLabel
                         control={
@@ -967,7 +943,7 @@ function InvasiveForm({ contractId }) {
                             checked={formData.shareholdersIdentification[index]?.usStayDetails.consecutive31DaysCurrentYear}
                           />
                         }
-                        label="Consecutive 31 days in current year"
+                        label="31 días consecutivos en el año actual"
                       />
                       <FormControlLabel
                         control={
@@ -977,7 +953,7 @@ function InvasiveForm({ contractId }) {
                             checked={formData.shareholdersIdentification[index]?.usStayDetails.previousYear121Days}
                           />
                         }
-                        label="Previous year: 121 days"
+                        label="Año anterior: 121 días"
                       />
                       <FormControlLabel
                         control={
@@ -987,7 +963,7 @@ function InvasiveForm({ contractId }) {
                             checked={formData.shareholdersIdentification[index]?.usStayDetails.secondYear60Days}
                           />
                         }
-                        label="Second year: 60 days"
+                        label="Segundo año inmediatamente anterior: 60 días"
                       />
                     </FormGroup>
                   </FormControl>
@@ -1007,40 +983,70 @@ function InvasiveForm({ contractId }) {
             </div>
           ))}
 
-          <Row>
-            <Column>
-              <Label>Conducts Foreign Currency Transactions</Label>
-              <FormControl component="fieldset">
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="conductsForeignCurrencyTransactionsType_imports"
-                        onChange={handleInputChange}
-                        checked={formData.conductsForeignCurrencyTransactionsType.imports}
-                      />
-                    }
-                    label="Imports"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="conductsForeignCurrencyTransactionsType_exports"
-                        onChange={handleInputChange}
-                        checked={formData.conductsForeignCurrencyTransactionsType.exports}
-                      />
-                    }
-                    label="Exports"
-                  />
-                </FormGroup>
-              </FormControl>
-            </Column>
-          </Row>
-
           {/* Información Bancaria */}
           <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
-            Información Bancaria
+            Información Financiera
           </Typography>
+          <Row>
+            <Column>
+              <Label>Activos</Label>
+              <TextField fullWidth name="assets" value={formData.assets} onChange={handleInputChange} inputProps={{ pattern: "[0-9]*" }} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Deudas</Label>
+              <TextField
+                fullWidth
+                name="liabilities"
+                value={formData.liabilities}
+                onChange={handleInputChange}
+                inputProps={{ pattern: "[0-9]*" }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Ingreso Mensual</Label>
+              <TextField
+                fullWidth
+                name="monthlyIncome"
+                value={formData.monthlyIncome}
+                onChange={handleInputChange}
+                inputProps={{ pattern: "[0-9]*" }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Gastos Mensuales</Label>
+              <TextField
+                fullWidth
+                name="monthlyExpenses"
+                value={formData.monthlyExpenses}
+                onChange={handleInputChange}
+                inputProps={{ pattern: "[0-9]*" }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Capital</Label>
+              <TextField fullWidth name="equity" value={formData.equity} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Otros Ingresos</Label>
+              <TextField fullWidth name="otherIncome" value={formData.otherIncome} onChange={handleInputChange} />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Label>Detalles de Otros Ingresos</Label>
+              <TextField fullWidth name="otherIncomeDetails" value={formData.otherIncomeDetails} onChange={handleInputChange} />
+            </Column>
+          </Row>
           <Row>
             <Column>
               <Label>Cantidad de Cuentas Bancarias</Label>
@@ -1051,6 +1057,38 @@ function InvasiveForm({ contractId }) {
                 value={formData.numberOfBankAccounts}
                 onChange={handleInputChange}
               />
+            </Column>
+          </Row>
+          <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+            Actividad en operaciones internacionales
+          </Typography>
+          <Row>
+            <Column>
+              <Label>¿Realiza Transacciones en Moneda Extranjera?</Label>
+              <FormControl component="fieldset">
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="conductsForeignCurrencyTransactionsType_imports"
+                        onChange={handleInputChange}
+                        checked={formData.conductsForeignCurrencyTransactionsType.imports}
+                      />
+                    }
+                    label="Importaciones"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="conductsForeignCurrencyTransactionsType_exports"
+                        onChange={handleInputChange}
+                        checked={formData.conductsForeignCurrencyTransactionsType.exports}
+                      />
+                    }
+                    label="Exportaciones"
+                  />
+                </FormGroup>
+              </FormControl>
             </Column>
           </Row>
           {Array.from({ length: formData.numberOfBankAccounts }, (_, index) => (
@@ -1196,7 +1234,7 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>Declaraciones de Nombre Completo</Label>
+              <Label>Nombre Completo Declaraciones</Label>
               <TextField fullWidth name="fullNameDeclarations" value={formData.fullNameDeclarations} onChange={handleInputChange} />
             </Column>
           </Row>
