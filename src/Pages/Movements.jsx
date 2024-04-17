@@ -360,7 +360,7 @@ function Movements({ handleClick }) {
             data={filterContract?.length ? filterContract : rows}
             enableColumnFilterModes
             enableColumnOrdering
-            enableRowActions
+            // enableRowActions
             muiTablePaperProps={{ elevation: 0 }}
             initialState={{ density: "compact" }}
             muiTableDetailPanelProps={{ sx: { backgroundColor: "white" } }}

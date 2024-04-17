@@ -437,6 +437,9 @@ function InvasiveForm({ contractId }) {
           <Grid display="flex" flexDirection="column" alignItems="center">
             <img src={LogoImage} width={160} height={160} alt="photo" />
             <Typography variant="h2" fontSize={24}></Typography>
+            <Typography fontSize={24} textAlign="center" fontWeight={600} color="primary" paddingY={1} marginX={-3}>
+              Formulario de vinculación
+            </Typography>
           </Grid>
         </Grid>
         <Box />
