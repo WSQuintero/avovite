@@ -87,6 +87,7 @@ function Transactions() {
                     setWithdrawalMovId(data);
                     setModal("modal-withdrawal");
                   }}
+                  disabled={data?.transaction === "pay"}
                   variant="contained"
                 >
                   Retirar
