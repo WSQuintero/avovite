@@ -62,7 +62,7 @@ function SignUp() {
   );
 
   const [error, setError] = useState(undefined);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const onUserChange = (event) => {
     setError(false);
     const { name, value } = event.target;
