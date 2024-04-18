@@ -61,6 +61,7 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
   }
 
   if (meta.includes(REQUIRES_VALIDATION)) {
+    console.log(session?.user?.pending_to_pay_contracts);
     if (session?.user) {
       if (session?.user?.pending_to_pay_contracts && !session?.user?.isAdmin()) {
         return <Navigate to="/validation/payment" />;
@@ -70,7 +71,8 @@ function PrivateRoute({ component: Component, meta = [], ...props }) {
         if (
           session?.user?.pending_payed_contracts &&
           session?.user?.pending_signature_contract.length === 0 &&
-          session?.user?.pending_signature_second_form.length === 0
+          session?.user?.pending_signature_second_form.length === 0 &&
+          !session?.user?.pending_to_pay_contracts
         ) {
           return <Navigate to="/validation/confirmation" />;
         }
