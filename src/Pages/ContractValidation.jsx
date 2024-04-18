@@ -116,6 +116,9 @@ function ContractValidation() {
     if (status) {
       setContracts((prev) => prev.filter((c) => c.id !== contract.id));
       setModal("contract-success");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } else {
       console.log("Error");
     }

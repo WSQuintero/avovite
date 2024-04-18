@@ -376,27 +376,31 @@ function InvasiveForm({ contractId }) {
       formDataToSend.append(`files`, file);
     });
     try {
-      const data = await $Contract.sendInvasiveForm(formDataToSend);
+      const { data, status } = await $Contract.sendInvasiveForm(formDataToSend);
 
-      if (data?.response?.data.success === "you already have an associated contract") {
-        setOpen(true);
-        setLoading(false);
-        navigate("/validation/confirmation");
-        return;
+      if (status) {
+        setFeedback({ open: true, message: "Formulario completado exitosamente, por favor verifica tu correo.", status: "success" });
+      } else {
+        if (data?.response?.data.success === "you already have an associated contract") {
+          setOpen(true);
+          setLoading(false);
+          navigate("/validation/confirmation");
+          return;
+        }
+        if (data?.name === "AxiosError") {
+          setFeedback({
+            open: true,
+            message: "Ha ocurrido un error inesperado. Por favor revisa que hayas cargado los documentos",
+            status: "error",
+          });
+          setLoading(false);
+          setOpenError(true);
+          return;
+        }
       }
-      if (data?.name === "AxiosError") {
-        setFeedback({
-          open: true,
-          message: "Ha ocurrido un error inesperado. Por favor revisa que hayas cargado los documentos",
-          status: "error",
-        });
-        setLoading(false);
-        setOpenError(true);
-        return;
-      }
+
       setLoading(false);
 
-      setFeedback({ open: true, message: "Formulario completado exitosamente, por favor verifica tu correo.", status: "success" });
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } catch (error) {
       setLoading(false);
@@ -411,7 +415,6 @@ function InvasiveForm({ contractId }) {
   };
 
   useEffect(() => {
-    console.log(lastContract);
     if (token) {
       (async () => {
         await fetchContracts();
@@ -432,10 +435,10 @@ function InvasiveForm({ contractId }) {
   };
 
   useEffect(() => {
-    if (feedback.open) {
+    if (feedback.open && feedback.status !== "error") {
       setTimeout(() => {
         resetFeedback();
-        navigate("/")
+        window.location.reload();
       }, 3000);
     }
   }, [feedback.open]);
@@ -477,7 +480,7 @@ function InvasiveForm({ contractId }) {
           </Typography>
           <Row>
             <Column>
-              <Label>Nombre completo</Label>
+              <Label>Nombre</Label>
               <TextField required fullWidth name="firstName" value={formData.firstName} onChange={handleInputChange} />
             </Column>
             <Column>
@@ -607,7 +610,7 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>¿Tiene Residencia Permanente en Otro País? si o no</Label>
+              <Label>¿Tiene Residencia Permanente en Otro País? no o si</Label>
               <Switch
                 name="hasPermanentResidencyInAnotherCountry"
                 checked={Boolean(formData.hasPermanentResidencyInAnotherCountry)}
@@ -628,7 +631,7 @@ function InvasiveForm({ contractId }) {
           </Row>
           <Row>
             <Column>
-              <Label>¿Tiene Obligaciones Fiscales en Otro País? si o no</Label>
+              <Label>¿Tiene Obligaciones Fiscales en Otro País? no o si</Label>
               <Switch
                 name="hasTaxObligationsInAnotherCountry"
                 checked={Boolean(formData.hasTaxObligationsInAnotherCountry)}
@@ -700,21 +703,21 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>¿Persona Expuesta Políticamente? si o no</Label>
+              <Label>¿Persona Expuesta Políticamente? no o si</Label>
               <Switch name="politicallyExposedPerson" checked={Boolean(formData.politicallyExposedPerson)} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>¿Representante Legal de Organización Internacional? si o no</Label>
+              <Label>¿Representante Legal de Organización Internacional? no o si</Label>
               <Switch name="InternationalOrgLegalRep" checked={Boolean(formData.InternationalOrgLegalRep)} onChange={handleInputChange} />
             </Column>
           </Row>
 
           <Row>
             <Column>
-              <Label>¿Estatus de Administrador PEP? si o no</Label>
+              <Label>¿Estatus de Administrador PEP? no o si</Label>
               <Switch name="AdministratorPEPStatus" checked={Boolean(formData.AdministratorPEPStatus)} onChange={handleInputChange} />
             </Column>
           </Row>
@@ -939,7 +942,7 @@ function InvasiveForm({ contractId }) {
               </Row>
               <Row>
                 <Column>
-                  <Label>¿Residencia Permanente en Otro País? si o no</Label>
+                  <Label>¿Residencia Permanente en Otro País? no o si</Label>
                   <Switch
                     name={`shareholder_permanentResidenceInOtherCountry_${index}`}
                     onChange={(e) => handleInputChangeAccionist(e, index)}
@@ -1148,7 +1151,7 @@ function InvasiveForm({ contractId }) {
 
           <Row>
             <Column>
-              <Label>¿Realiza Transacciones en Moneda Extranjera? si o no</Label>
+              <Label>¿Realiza Transacciones en Moneda Extranjera? no o si</Label>
               <Switch
                 name="conductsForeignCurrencyTransactions"
                 onChange={handleInputChange}
@@ -1156,7 +1159,7 @@ function InvasiveForm({ contractId }) {
               />
             </Column>
             <Column>
-              <Label>¿Usa Productos Financieros en el Extranjero? si o no</Label>
+              <Label>¿Usa Productos Financieros en el Extranjero? no o si</Label>
               <Switch
                 name="usesFinancialProductsAbroad"
                 onChange={handleInputChange}
