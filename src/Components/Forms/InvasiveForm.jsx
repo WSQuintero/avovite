@@ -454,7 +454,7 @@ function InvasiveForm({ contractId }) {
         maritalStatus: lastContract?.civil_status || "",
         occupation2PersonalNatural: lastContract?.economy_activity || "",
         residenceAddressAndCity: lastContract?.country_of_residence || "",
-        cellphone: lastContract?.cellphone || "",
+        cellPhone: lastContract?.cellphone || "",
         email: lastContract?.email || "",
       }));
     }

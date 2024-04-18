@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import {
+  Box,
   Button,
   Container,
   Dialog,
@@ -52,58 +53,6 @@ function ContractPaymentValidation() {
   };
 
   const handlePayment = async (contract) => {
-    if (contract?.rejectedCounter === 1) {
-      setMessage("Intentaste pagar, pero tu pago fue rechazado, entonces hemos recalculado el pago inicial para que puedas proceder.");
-      setOpenFirstTime(true);
-      setTimeout(() => {
-        onCloseFirstTime();
-        const mandatory = {
-          name: "Pago del contrato pendiente",
-          description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
-          invoice: `AV-${uuid()}`,
-          currency: "cop",
-          amount: contract.payment,
-          tax_base: "4000",
-          tax: "500",
-          tax_ico: "500",
-          country: "co",
-          lang: "es",
-        };
-
-        const aditional = {
-          extra1: null,
-          extra2: token,
-          extra3: contract.idcontrato,
-          extra4: null,
-          extra5: contract.dues,
-          confirmation: `${import.meta.env.VITE_API_URL}/contract-transactional-payments/financed`,
-          response: `${import.meta.env.VITE_APP_URL}/validation/payment`,
-        };
-
-        const handler = window.ePayco.checkout.configure({
-          key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
-          test: TESTING_EPAYCO,
-        });
-
-        handler.open({
-          ...mandatory,
-          ...aditional,
-          ...{ acepted: `${import.meta.VITE_APP_URL}`, rejected: `${import.meta.VITE_APP_URL}` },
-        });
-      }, 10000);
-
-      return;
-    }
-    if (contract?.rejectedCounter >= 2) {
-      setMessage("Intentaste pagar dos veces sin éxito, Por favor comunícate con nuestro centro de ayuda.");
-      setOpenFirstTime(true);
-      setActualContract(contract?.rejectedCounter);
-
-      setTimeout(() => {
-        onCloseFirstTime();
-      }, 5000);
-      return;
-    }
     const mandatory = {
       name: "Pago del contrato pendiente",
       description: contract.dues ? "Cuota del contrato pendiente" : "Primer pago del contrato pendiente",
@@ -133,7 +82,7 @@ function ContractPaymentValidation() {
     });
 
     handler.open(
-      { ...mandatory, ...aditional },
+      { ...mandatory, ...aditional, ...{ acepted: `${import.meta.VITE_APP_URL}`, rejected: `${import.meta.VITE_APP_URL}` } },
       {
         onApproved: () => {
           // Acciones después de un pago aprobado
@@ -175,6 +124,7 @@ function ContractPaymentValidation() {
     }
   }, [token]);
 
+  console.log(user);
   return (
     <PageWrapper isInvalidSession>
       <BackButton />
@@ -236,6 +186,20 @@ function ContractPaymentValidation() {
         </DialogActions>
       </Dialog>
       <ModalFirstTry open={openFirstTime} actualContract={actualContract} onClose={onCloseFirstTime} message={message} />
+      <Box sx={{ marginTop: 2 }}>
+        <Typography variant={"h4"}>Ten en cuenta</Typography>
+        <Typography sx={{ fontSize: 15 }}>Si tienes problemas al intentar pagar, por favor comunícate a este WhatsApp.</Typography>
+        <Button
+          onClick={() => {
+            window.open("https://wa.me/573227348601");
+          }}
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+        >
+          Ir a WhatsApp
+        </Button>
+      </Box>
     </PageWrapper>
   );
 }

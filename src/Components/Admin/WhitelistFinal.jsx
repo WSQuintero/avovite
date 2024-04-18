@@ -79,12 +79,8 @@ const WhitelistFinal = ({ setid, openTwo, id, send }) => {
   const totalDuesValue = useMemo(() => dues.reduce((a, c) => a + parseInt(c.value || 0), 0), [dues]);
   const totalSubDuesValue = useMemo(() => totalFinancingValue - (totalDuesValue || 0), [totalDuesValue, totalFinancingValue]);
   const contractIsDisabledToCreate = useMemo(
-    () =>
-      totalDuesValue !== totalFinancingValue ||
-      !contract.vites ||
-      contract.discount === "" ||
-      contract.firstPaymentValue === "" ||
-      dues.reduce((a, c) => a || isToday(new Date(c.date)), false)
+    () => totalDuesValue !== totalFinancingValue || !contract.vites || contract.discount === "" || contract.firstPaymentValue === ""
+    // dues.reduce((a, c) => a || isToday(new Date(c.date)), false)
   );
   const $Contract = useMemo(() => new ContractService(token), [token]);
   const [currentPage, setCurrentPage] = useState(1);
