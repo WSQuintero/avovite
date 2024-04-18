@@ -171,39 +171,19 @@ function ShoppingCart() {
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
         test: TESTING_EPAYCO,
       });
-      handler.open(
-        { ...mandatory, ...aditional },
-        {
-          onApproved: () => {
-            // Acciones después de un pago aprobado
-            window.location.reload(); // Refresca la página
-          },
-          onRejected: () => {
-            // Acciones después de un pago rechazado
-            window.location.reload(); // Refresca la página
-          },
-          onPending: () => {
-            // Acciones después de un pago pendiente
-            window.location.reload(); // Refresca la página
-          },
-          onError: () => {
-            // Acciones después de un error en el pago
-            window.location.reload(); // Refresca la página
-          },
-        }
-      );
+      handler.open({ ...mandatory, ...aditional, ...{ acepted: `${import.meta.VITE_APP_URL}`, rejected: `${import.meta.VITE_APP_URL}` } });
 
-      handler.on("payment_error", function (error) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      });
+      // handler.on("payment_error", function (error) {
+      //   setTimeout(() => {
+      //     window.location.reload();
+      //   }, 2000);
+      // });
 
-      handler.on("payment_success", function (response) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      });
+      // handler.on("payment_success", function (response) {
+      //   setTimeout(() => {
+      //     window.location.reload();
+      //   }, 2000);
+      // });
     } else {
       enqueueSnackbar(data.response.data.message, { variant: "error", autoHideDuration: 10000 });
     }

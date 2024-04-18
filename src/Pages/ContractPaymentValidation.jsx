@@ -85,7 +85,11 @@ function ContractPaymentValidation() {
           test: TESTING_EPAYCO,
         });
 
-        handler.open({ ...mandatory, ...aditional });
+        handler.open({
+          ...mandatory,
+          ...aditional,
+          ...{ acepted: `${import.meta.VITE_APP_URL}`, rejected: `${import.meta.VITE_APP_URL}` },
+        });
       }, 10000);
 
       return;
